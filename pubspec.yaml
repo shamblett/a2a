@@ -1,0 +1,29 @@
+name: a2a
+description: An implementation of the Google A2A protocol and SDK
+version: 0.0.1
+repository: https://github.com/shamblett/a2a
+homepage: https://github.com/shamblett/a2a
+
+funding:
+  - https://www.darticulate.com/#funding
+
+environment:
+  sdk: '>=3.8.0 <4.0.0'
+
+dependencies:
+    genkit: '^0.5.1'
+   
+
+dev_dependencies:
+  test: '^1.25.14'
+  lints: '^6.0.0'
+  dart_code_metrics_presets: '^2.21.0'
+
+topics:
+  - ai
+  - agents
+  - web
+
+screenshots:
+    - description: 'A2A'
+      path: example/screenshots/a2a.jpg
