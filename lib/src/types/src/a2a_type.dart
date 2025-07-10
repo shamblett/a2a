@@ -7,5 +7,17 @@
 
 part of '../types.dart';
 
-class a2aType {
+class A2AType {}
+
+/// Represents the possible states of a Task.
+enum TaskState {
+  submitted,
+  working,
+  inputRequired,
+  completed,
+  canceled,
+  failed,
+  rejected,
+  authRequired,
+  unknown,
 }
