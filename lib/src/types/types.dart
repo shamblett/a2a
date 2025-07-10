@@ -7,4 +7,5 @@
 
 library;
 
-part 'src/type.dart';
+part 'src/a2a_type.dart';
+part 'src/area/a2a_error.dart';

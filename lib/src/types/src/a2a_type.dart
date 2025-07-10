@@ -6,3 +6,6 @@
 */
 
 part of '../types.dart';
+
+class a2aType {
+}
