@@ -24,3 +24,7 @@ enum TaskState {
   authRequired,
   unknown,
 }
+
+interface class MySchema {
+  Map<String,Object> unknown = {};
+}
