@@ -20,7 +20,7 @@ mixin JSONRPCErrorResponseM {
 
   /// An identifier established by the Client that MUST contain a String, Number.
   /// Numbers SHOULD NOT contain fractional parts.
-  late (String, num) id;
+  late Id id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
   String jsonrpc = '2.0';

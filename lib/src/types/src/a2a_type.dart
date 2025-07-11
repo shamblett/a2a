@@ -9,6 +9,9 @@ part of '../types.dart';
 
 class A2AType {}
 
+/// The ID type
+typedef Id = (String, num);
+
 /// Represents the possible states of a Task.
 enum TaskState {
   submitted,
