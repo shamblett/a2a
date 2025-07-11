@@ -15,3 +15,4 @@ part 'src/area/a2a_security_scheme.dart';
 part 'src/area/a2a_cancel_task_response.dart';
 part 'src/area/a2a_get_task_push_notification_config_response.dart';
 part 'src/area/a2a_get_task_response.dart';
+part 'src/area/a2a_json_rpc_response.dart';
