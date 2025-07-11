@@ -13,3 +13,4 @@ part 'src/area/a2a_request.dart';
 part 'src/area/a2a_part.dart';
 part 'src/area/a2a_security_scheme.dart';
 part 'src/area/a2a_cancel_task_response.dart';
+part 'src/area/a2a_get_task_push_notification_config_response.dart';

@@ -10,6 +10,8 @@ part of '../../types.dart';
 /// A2A supported error types
 base class A2AError {}
 
+final class JSONRPCError extends A2AError {}
+
 final class JSONParseError extends A2AError {}
 
 final class InvalidRequestError extends A2AError {}
