@@ -16,11 +16,11 @@ final class JSONRPCErrorResponse extends A2ACancelTaskResponse
 final class CancelTaskSuccessResponse extends A2ACancelTaskResponse {}
 
 mixin JSONRPCErrorResponseM {
-  late A2AError error;
+  A2AError? error;
 
   /// An identifier established by the Client that MUST contain a String, Number.
   /// Numbers SHOULD NOT contain fractional parts.
-  late Id id;
+  Id? id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
   String jsonrpc = '2.0';
