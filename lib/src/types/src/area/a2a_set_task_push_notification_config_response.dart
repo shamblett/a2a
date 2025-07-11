@@ -14,5 +14,5 @@ final class JSONRPCErrorResponseSTPR
     extends A2ASetTaskPushNotificationConfigResponse
     with JSONRPCErrorResponseM {}
 
-final class SetTaskPushNotificationConfigSuccessResponse
+final class SetTaskPushNotificationConfigSuccessResponseSTPR
     extends A2ASetTaskPushNotificationConfigResponse {}

@@ -12,6 +12,9 @@ class A2AType {}
 /// The ID type
 typedef Id = (String, num);
 
+/// Structured value type
+typedef SV = Map<String,Object>;
+
 /// Represents the possible states of a Task.
 enum TaskState {
   submitted,
