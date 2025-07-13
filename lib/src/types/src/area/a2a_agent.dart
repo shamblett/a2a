@@ -9,3 +9,114 @@ part of '../../types.dart';
 
 /// Agent base class
 base class A2AAgent {}
+
+/// Defines optional capabilities supported by an agent.
+final class A2AAgentCapabilities {
+  /// Extensions supported by this agent.
+  List<A2AAgentExtension> extensions = [];
+
+  /// True if the agent can notify updates to client.
+  bool? pushNotifications;
+
+  /// True if the agent exposes status change history for tasks.
+  bool? stateTransitionHistory;
+
+  /// True if the agent supports SSE.
+  bool? streaming;
+}
+
+/// A declaration of an extension supported by an Agent.
+final class A2AAgentExtension {
+  /// A description of how this agent uses this extension.
+  String? description;
+
+  /// Optional configuration for the extension.
+  A2ASV? params;
+
+  /// Whether the client must follow specific requirements of the extension.
+  bool? required;
+
+  /// The URI of the extension.
+  String uri = '';
+}
+
+/// An AgentCard conveys key information:
+/// - Overall details (version, name, description, uses)
+/// - Skills: A set of capabilities the agent can perform
+/// - Default modalities/content types supported by the agent.
+/// - Authentication requirements.
+final class A2AAgentCard extends A2AAgent {
+  /// The set of interaction modes that the agent supports across all skills. This can be overridden per-skill.
+  /// Supported media types for input.
+  List<String> defaultModes = [];
+
+  /// Supported media types for output.
+  List<String> defaultOutputModes = [];
+
+  /// A human-readable description of the agent. Used to assist users and
+  /// other agents in understanding what the agent can do.
+  String description = '';
+
+  /// A URL to documentation for the agent.
+  String? documentation;
+
+  /// A URL to an icon for the agent.
+  String? iconUrl;
+
+  /// Human readable name of the agent.
+  String name = '';
+  A2AAgentProvider? agentProvider;
+
+  /// Security requirements for contacting the agent.
+  Map<String, A2ASecurityScheme>? securitySchemes;
+
+  /// Skills are a unit of capability that an agent can perform.
+  List<A2AAgentSkill> skills = [];
+
+  /// True if the agent supports providing an extended agent card when the user is authenticated.
+  /// Defaults to false if not specified.
+  bool? supportsAuthenticatedExtendedCard;
+
+  /// A URL to the address the agent is hosted at.
+  String url = '';
+
+  /// The version of the agent - format is up to the provider.
+  String version = '';
+}
+
+/// The service provider of the agent
+final class A2AAgentProvider extends A2AAgent {
+  /// Agent provider's organization name.
+  String organization = '';
+
+  /// Agent provider's URL.
+  String url = '';
+}
+
+/// Represents a unit of capability that an agent can perform.
+final class A2AAgentSkill extends A2AAgent {
+  /// Description of the skill - will be used by the client or a human
+  /// as a hint to understand what the skill does.
+  String description = '';
+
+  /// The set of example scenarios that the skill can perform.
+  /// Will be used by the client as a hint to understand how the skill can be used.
+  List<String> examples = [];
+
+  /// Unique identifier for the agent's skill.
+  String id = '';
+
+  /// The set of interaction modes that the skill supports
+  /// (if different than the default).
+  /// Supported media types for input.
+  List<String>? inputModes;
+
+  /// Human readable name of the skill.
+  String name = '';
+
+  /// Supported media types for output.
+  List<String>? outputModes;
+
+  /// Set of tag words describing classes of capabilities for this specific skill.
+  List<String>? tags;
+}
