@@ -42,6 +42,44 @@ final class A2AHTTPAuthSecurityScheme extends A2ASecurityScheme {
   final type = 'http';
 }
 
-final class A2AOAuth2SecurityScheme extends A2ASecurityScheme {}
+/// OAuth2.0 security scheme configuration.
+final class A2AOAuth2SecurityScheme extends A2ASecurityScheme {
+  /// Description of this security scheme.
+  String? description;
+  A2AOAuthFlows? flows;
+  final type = 'oauth2';
+}
+
+/// An object containing configuration information for the flow types supported.
+final class A2AOAuthFlows extends A2ASecurityScheme {
+  A2AAuthorizationCodeOAuthFlow? authorizationCode;
+  A2AClientCredentialsOAuthFlow? clientCredentials;
+  A2AImplicitOAuthFlow? implicit;
+  A2APasswordOAuthFlow? password;
+}
+
+/// Configuration for the OAuth Implicit flow
+final class A2AImplicitOAuthFlow {
+  /// The authorization URL to be used for this flow. This MUST be in the form of a URL. The OAuth2
+  /// standard requires the use of TLS
+  String authorizationUrl = '';
+
+  /// The URL to be used for obtaining refresh tokens. This MUST be in the form of a URL. The OAuth2
+  /// standard requires the use of TLS.
+  String? refreshUrl;
+
+  /// The available scopes for the OAuth2 security scheme. A map between the scope name and a short
+  /// description for it. The map MAY be empty.
+  Map<String,String> scopes = {};
+}
+
+/// Configuration for the OAuth Authorization Code flow. Previously called accessCode in OpenAPI 2.0.
+final class A2AAuthorizationCodeOAuthFlow {}
+
+/// Configuration for the OAuth Client Credentials flow. Previously called application in OpenAPI 2.0
+final class A2AClientCredentialsOAuthFlow {}
+
+/// Configuration for the OAuth Resource Owner Password flow
+final class A2APasswordOAuthFlow {}
 
 final class A2AOpenIdConnectSecurityScheme extends A2ASecurityScheme {}
