@@ -10,10 +10,10 @@ part of '../../types.dart';
 /// A2A supported request types
 base class A2ARequest {}
 
-final class SendMessageRequest extends A2ARequest {
+final class A2ASendMessageRequest extends A2ARequest {
   /// An identifier established by the Client that MUST contain a String, Number.
   /// Numbers SHOULD NOT contain fractional parts.
-  Id? id;
+  A2AId? id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
   final jsonrpc = '2.0';
@@ -23,38 +23,38 @@ final class SendMessageRequest extends A2ARequest {
 }
 
 /// JSON-RPC request model for the 'message/stream' method.
-final class SendStreamingMessageRequest extends A2ARequest {
+final class A2ASendStreamingMessageRequest extends A2ARequest {
   /// An identifier established by the Client that MUST contain a String, Number.
   /// Numbers SHOULD NOT contain fractional parts.
-  Id? id;
+  A2AId? id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
   final jsonrpc = '2.0';
 
   /// A String containing the name of the method to be invoked.
   final method = 'message/stream';
-  MessageSendParams? params;
+  A2AMessageSendParams? params;
 }
 
 /// JSON-RPC request model for the 'tasks/get' method.
-final class GetTaskRequest extends A2ARequest {
+final class A2AGetTaskRequest extends A2ARequest {
   /// An identifier established by the Client that MUST contain a String, Number.
   /// Numbers SHOULD NOT contain fractional parts.
-  Id? id;
+  A2AId? id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
   final jsonrpc = '2.0';
 
   /// A String containing the name of the method to be invoked.
   final method = 'tasks/get';
-  TaskQueryParams? params;
+  A2ATaskQueryParams? params;
 }
 
 /// JSON-RPC request model for the 'tasks/cancel' method.
-final class CancelTaskRequest extends A2ARequest {
+final class A2ACancelTaskRequest extends A2ARequest {
   /// An identifier established by the Client that MUST contain a String, Number.
   /// Numbers SHOULD NOT contain fractional parts.
-  Id? id;
+  A2AId? id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
   final jsonrpc = '2.0';
@@ -65,24 +65,24 @@ final class CancelTaskRequest extends A2ARequest {
 }
 
 /// JSON-RPC request model for the 'tasks/pushNotificationConfig/set' method.
-final class SetTaskPushNotificationConfigRequest extends A2ARequest {
+final class A2ASetTaskPushNotificationConfigRequest extends A2ARequest {
   /// An identifier established by the Client that MUST contain a String, Number.
   /// Numbers SHOULD NOT contain fractional parts.
-  Id? id;
+  A2AId? id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
   final jsonrpc = '2.0';
 
   /// A String containing the name of the method to be invoked.
   String method = 'tasks/pushNotificationConfig/set';
-  TaskPushNotificationConfig? params;
+  A2ATaskPushNotificationConfig? params;
 }
 
 /// JSON-RPC request model for the 'tasks/pushNotificationConfig/get' method.
-final class GetTaskPushNotificationConfigRequest extends A2ARequest {
+final class A2AGetTaskPushNotificationConfigRequest extends A2ARequest {
   /// An identifier established by the Client that MUST contain a String, Number.
   /// Numbers SHOULD NOT contain fractional parts.
-  Id? id;
+  A2AId? id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
   final jsonrpc = '2.0';
@@ -93,10 +93,10 @@ final class GetTaskPushNotificationConfigRequest extends A2ARequest {
 }
 
 /// JSON-RPC request model for the 'tasks/resubscribe' method.
-final class TaskResubscriptionRequest extends A2ARequest {
+final class A2ATaskResubscriptionRequest extends A2ARequest {
   /// An identifier established by the Client that MUST contain a String, Number.
   /// Numbers SHOULD NOT contain fractional parts.
-  Id? id;
+  A2AId? id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
   final jsonrpc = '2.0';
@@ -106,8 +106,8 @@ final class TaskResubscriptionRequest extends A2ARequest {
   TaskIdParams? params;
 }
 
-class TaskPushNotificationConfig1 {
-  PushNotificationAuthenticationInfo? authentication;
+class A2ATaskPushNotificationConfig1 {
+  A2APushNotificationAuthenticationInfo? authentication;
 
   /// Push Notification ID - created by server to support multiple callbacks
   String id = '';
@@ -119,8 +119,8 @@ class TaskPushNotificationConfig1 {
   String url = '';
 }
 
-class TaskPushNotificationConfig {
-  TaskPushNotificationConfig1? pushNotificationConfig;
+class A2ATaskPushNotificationConfig {
+  A2ATaskPushNotificationConfig1? pushNotificationConfig;
 
   /// Task Id
   String id = '';
@@ -131,10 +131,10 @@ class TaskIdParams {
   String id = '';
 
   /// Metadata
-  SV? metadata;
+  A2ASV? metadata;
 }
 
-class TaskQueryParams {
+class A2ATaskQueryParams {
   /// Number of recent messages to be retrieved.
   int? historyLength;
 
@@ -142,18 +142,18 @@ class TaskQueryParams {
   String id = '';
 
   /// Metadata
-  SV? metadata;
+  A2ASV? metadata;
 }
 
-class MessageSendParams {
-  MessageSendConfiguration? configuration;
-  Message message = Message();
+class A2AMessageSendParams {
+  A2AMessageSendConfiguration? configuration;
+  A2AMessage message = A2AMessage();
 
   /// Extension metadata.
-  SV? metadata;
+  A2ASV? metadata;
 }
 
-class MessageSendConfiguration {
+class A2AMessageSendConfiguration {
   /// Accepted output modalities by the client.
   List<String> acceptedOutputModes = [];
 
@@ -163,11 +163,11 @@ class MessageSendConfiguration {
   /// Number of recent messages to be retrieved.
   num? historyLength;
 
-  PushNotificationConfig? pushNotificationConfig;
+  A2APushNotificationConfig? pushNotificationConfig;
 }
 
-class PushNotificationConfig {
-  PushNotificationAuthenticationInfo? authentication;
+class A2APushNotificationConfig {
+  A2APushNotificationAuthenticationInfo? authentication;
 
   /// Push Notification ID - created by server to support multiple callbacks
   String? id;
@@ -179,7 +179,7 @@ class PushNotificationConfig {
   String url = '';
 }
 
-class PushNotificationAuthenticationInfo {
+class A2APushNotificationAuthenticationInfo {
   /// Optional credentials
   String? credentials;
 

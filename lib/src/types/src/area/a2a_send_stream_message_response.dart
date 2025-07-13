@@ -10,8 +10,8 @@ part of '../../types.dart';
 /// JSON-RPC response model for the 'message/send' method.
 base class A2ASendStreamMessageResponse {}
 
-final class JSONRPCErrorResponseSSM extends A2ASendStreamMessageResponse
-    with JSONRPCErrorResponseM {}
+final class A2AJSONRPCErrorResponseSSM extends A2ASendStreamMessageResponse
+    with A2AJSONRPCErrorResponseM {}
 
-final class SendStreamMessageSuccessResponseR
+final class A2ASendStreamMessageSuccessResponseR
     extends A2ASendStreamMessageResponse {}

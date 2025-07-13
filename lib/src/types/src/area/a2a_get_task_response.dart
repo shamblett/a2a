@@ -10,7 +10,7 @@ part of '../../types.dart';
 /// JSON-RPC response for the 'tasks/get' method.
 base class A2AGetTaskResponse {}
 
-final class JSONRPCErrorResponseT extends A2AGetTaskResponse
-    with JSONRPCErrorResponseM {}
+final class A2AJSONRPCErrorResponseT extends A2AGetTaskResponse
+    with A2AJSONRPCErrorResponseM {}
 
-final class GetTaskSuccessResponse extends A2AGetTaskResponse {}
+final class A2AGetTaskSuccessResponse extends A2AGetTaskResponse {}

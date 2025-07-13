@@ -10,19 +10,19 @@ part of '../../types.dart';
 /// Represents a JSON-RPC 2.0 Response object.
 base class A2AJsonRpcResponse {}
 
-final class JSONRPCErrorResponseR extends A2AJsonRpcResponse
-    with JSONRPCErrorResponseM {}
+final class A2AJSONRPCErrorResponseR extends A2AJsonRpcResponse
+    with A2AJSONRPCErrorResponseM {}
 
-final class SendMessageSuccessResponse extends A2AJsonRpcResponse {}
+final class A2ASendMessageSuccessResponse extends A2AJsonRpcResponse {}
 
-final class SendStreamingMessageSuccessResponse extends A2AJsonRpcResponse {}
+final class A2ASendStreamingMessageSuccessResponse extends A2AJsonRpcResponse {}
 
-final class GetTaskSuccessResponseR extends A2AJsonRpcResponse {}
+final class A2AGetTaskSuccessResponseR extends A2AJsonRpcResponse {}
 
-final class CancelTaskSuccessResponseR extends A2AJsonRpcResponse {}
+final class A2ACancelTaskSuccessResponseR extends A2AJsonRpcResponse {}
 
-final class SetTaskPushNotificationConfigSuccessResponse
+final class A2ASetTaskPushNotificationConfigSuccessResponse
     extends A2AJsonRpcResponse {}
 
-final class GetTaskPushNotificationConfigSuccessResponseR
+final class A2AGetTaskPushNotificationConfigSuccessResponseR
     extends A2AJsonRpcResponse {}

@@ -10,13 +10,13 @@ part of '../types.dart';
 class A2AType {}
 
 /// The ID type
-typedef Id = (String, num);
+typedef A2AId = (String, num);
 
 /// Structured value type
-typedef SV = Map<String, Object>;
+typedef A2ASV = Map<String, Object>;
 
 /// Represents the possible states of a Task.
-enum TaskState {
+enum A2ATaskState {
   submitted,
   working,
   inputRequired,
@@ -28,12 +28,12 @@ enum TaskState {
   unknown,
 }
 
-interface class MySchema {
+interface class A2AMySchema {
   Map<String, Object> unknown = {};
 }
 
 /// The message being sent to the server.
-class Message {
+class A2AMessage {
   /// The context the message is associated with
   String? contextId;
 
@@ -47,7 +47,7 @@ class Message {
   String messageId = '';
 
   /// Extension metadata.
-  SV? metadata;
+  A2ASV? metadata;
 
   /// Message content
   List<A2APart>? parts = [];
