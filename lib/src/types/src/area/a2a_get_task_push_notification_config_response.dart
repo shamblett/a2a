@@ -14,5 +14,14 @@ final class A2AJSONRPCErrorResponseGTPR
     extends A2AGetTaskPushNotificationConfigResponse
     with A2AJSONRPCErrorResponseM {}
 
+/// JSON-RPC success response model for the 'tasks/pushNotificationConfig/get' method.
 final class A2AGetTaskPushNotificationConfigSuccessResponse
-    extends A2AGetTaskPushNotificationConfigResponse {}
+    extends A2AGetTaskPushNotificationConfigResponse {
+  /// An identifier established by the Client that MUST contain a String, Number.
+  /// Numbers SHOULD NOT contain fractional parts.
+  A2AId? id;
+
+  /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
+  final jsonrpc = '2.0';
+  A2ATaskPushNotificationConfig1? result;
+}
