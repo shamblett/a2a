@@ -70,16 +70,64 @@ final class A2AImplicitOAuthFlow {
 
   /// The available scopes for the OAuth2 security scheme. A map between the scope name and a short
   /// description for it. The map MAY be empty.
-  Map<String,String> scopes = {};
+  Map<String, String> scopes = {};
 }
 
 /// Configuration for the OAuth Authorization Code flow. Previously called accessCode in OpenAPI 2.0.
-final class A2AAuthorizationCodeOAuthFlow {}
+final class A2AAuthorizationCodeOAuthFlow {
+  /// The authorization URL to be used for this flow. This MUST be in the form of a URL. The OAuth2
+  /// standard requires the use of TLS
+  String authorizationUrl = '';
+
+  /// The URL to be used for obtaining refresh tokens. This MUST be in the form of a URL. The OAuth2
+  /// standard requires the use of TLS.
+  String? refreshUrl;
+
+  /// The available scopes for the OAuth2 security scheme. A map between the scope name and a short
+  /// description for it. The map MAY be empty.
+  Map<String, String> scopes = {};
+
+  /// The token URL to be used for this flow. This MUST be in the form of a URL. The OAuth2 standard
+  /// requires the use of TLS.
+  String tokenUrl = '';
+}
 
 /// Configuration for the OAuth Client Credentials flow. Previously called application in OpenAPI 2.0
-final class A2AClientCredentialsOAuthFlow {}
+final class A2AClientCredentialsOAuthFlow {
+  /// The URL to be used for obtaining refresh tokens. This MUST be in the form of a URL. The OAuth2
+  /// standard requires the use of TLS.
+  String refreshUrl = '';
+
+  /// The available scopes for the OAuth2 security scheme. A map between the scope name and a short
+  /// description for it. The map MAY be empty.
+  Map<String, String> scopes = {};
+
+  /// The token URL to be used for this flow. This MUST be in the form of a URL. The OAuth2 standard
+  /// requires the use of TLS.
+  String tokenUrl = '';
+}
 
 /// Configuration for the OAuth Resource Owner Password flow
-final class A2APasswordOAuthFlow {}
+final class A2APasswordOAuthFlow {
+  /// The URL to be used for obtaining refresh tokens. This MUST be in the form of a URL. The OAuth2
+  /// standard requires the use of TLS.
+  String refreshUrl = '';
 
-final class A2AOpenIdConnectSecurityScheme extends A2ASecurityScheme {}
+  /// The available scopes for the OAuth2 security scheme. A map between the scope name and a short
+  /// description for it. The map MAY be empty.
+  Map<String, String> scopes = {};
+
+  /// The token URL to be used for this flow. This MUST be in the form of a URL. The OAuth2 standard
+  /// requires the use of TLS.
+  String tokenUrl = '';
+}
+
+/// OpenID Connect security scheme configuration.
+final class A2AOpenIdConnectSecurityScheme extends A2ASecurityScheme {
+  /// Description of this security scheme.
+  String? description;
+
+  /// Well-known URL to discover the [[OpenID-Connect-Discovery]] provider metadata.
+  String openIdConnectUrl = '';
+  final type = 'openIdConnect';
+}
