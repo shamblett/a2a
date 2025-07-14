@@ -10,7 +10,17 @@ part of '../../types.dart';
 /// A2A supported error types
 base class A2AError {}
 
-final class A2AJSONRPCError extends A2AError {}
+final class A2AJSONRPCError extends A2AError {
+  /// A Number that indicates the error type that occurred.
+  num code = 0;
+
+  /// A Primitive or Structured value that contains additional information about the error.
+  /// This may be omitted.
+  A2ASV? data;
+
+  /// A String providing a short description of the error.
+  String message = '';
+}
 
 /// JSON-RPC error indicating invalid JSON was received by the server.
 final class A2AJSONParseError extends A2AError {
