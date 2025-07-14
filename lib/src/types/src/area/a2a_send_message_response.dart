@@ -22,5 +22,6 @@ final class A2ASendMessageSuccessResponseR extends A2ASendMessageResponse {
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
   final jsonrpc = '2.0';
 
-  /// The result object on success
+  /// The result object on success, [A2ATask] or [A2AMessage]
+  Object result = Object();
 }
