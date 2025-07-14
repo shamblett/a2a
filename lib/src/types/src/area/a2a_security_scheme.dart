@@ -9,7 +9,7 @@ part of '../../types.dart';
 
 /// Mirrors the OpenAPI Security Scheme Object
 /// (https://swagger.io/specification/#security-scheme-object)
-base class A2ASecurityScheme {}
+sealed class A2ASecurityScheme {}
 
 /// API Key security scheme.
 final class A2AAPIKeySecurityScheme extends A2ASecurityScheme {

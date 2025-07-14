@@ -8,7 +8,7 @@
 part of '../../types.dart';
 
 /// JSON-RPC response for the 'tasks/pushNotificationConfig/get' method.
-base class A2AGetTaskPushNotificationConfigResponse {}
+sealed class A2AGetTaskPushNotificationConfigResponse {}
 
 final class A2AJSONRPCErrorResponseGTPR
     extends A2AGetTaskPushNotificationConfigResponse

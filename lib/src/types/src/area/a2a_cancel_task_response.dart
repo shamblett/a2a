@@ -8,7 +8,7 @@
 part of '../../types.dart';
 
 /// JSON-RPC response for the 'tasks/cancel' method.
-base class A2ACancelTaskResponse {}
+sealed class A2ACancelTaskResponse {}
 
 final class A2AJSONRPCErrorResponse extends A2ACancelTaskResponse
     with A2AJSONRPCErrorResponseM {}

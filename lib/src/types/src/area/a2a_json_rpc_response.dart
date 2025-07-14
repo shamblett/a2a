@@ -8,7 +8,7 @@
 part of '../../types.dart';
 
 /// Represents a JSON-RPC 2.0 Response object.
-base class A2AJsonRpcResponse {}
+sealed class A2AJsonRpcResponse {}
 
 final class A2AJSONRPCErrorResponseR extends A2AJsonRpcResponse
     with A2AJSONRPCErrorResponseM {}

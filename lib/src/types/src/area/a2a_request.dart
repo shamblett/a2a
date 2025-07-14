@@ -8,7 +8,7 @@
 part of '../../types.dart';
 
 /// A2A supported request types
-base class A2ARequest {}
+sealed class A2ARequest {}
 
 final class A2ASendMessageRequest extends A2ARequest {
   /// An identifier established by the Client that MUST contain a String, Number.

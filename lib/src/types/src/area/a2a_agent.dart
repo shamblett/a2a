@@ -7,8 +7,8 @@
 
 part of '../../types.dart';
 
-/// Agent base class
-base class A2AAgent {}
+/// Agent class
+sealed class A2AAgent {}
 
 /// Defines optional capabilities supported by an agent.
 final class A2AAgentCapabilities {

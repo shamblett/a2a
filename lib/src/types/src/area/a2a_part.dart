@@ -8,7 +8,7 @@
 part of '../../types.dart';
 
 /// Represents a part of a message, which can be text, a file, or structured data.
-base class A2APart {}
+sealed class A2APart {}
 
 /// Represents a text segment within parts.
 final class A2ATextPart extends A2APart {
@@ -46,7 +46,7 @@ final class A2ADataPart extends A2APart {
 }
 
 /// File type variants
-base class A2AFilePartVariant {}
+sealed class A2AFilePartVariant {}
 
 /// Define the variant where 'bytes' is present and 'uri' is absent
 final class FileWithBytes extends A2AFilePartVariant {

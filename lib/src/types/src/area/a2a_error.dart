@@ -8,7 +8,7 @@
 part of '../../types.dart';
 
 /// A2A supported error types
-base class A2AError {}
+sealed class A2AError {}
 
 final class A2AJSONRPCError extends A2AError {
   /// A Number that indicates the error type that occurred.

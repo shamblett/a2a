@@ -8,9 +8,19 @@
 part of '../../types.dart';
 
 /// JSON-RPC response model for the 'message/send' method.
-base class A2ASendMessageResponse {}
+sealed class A2ASendMessageResponse {}
 
 final class A2AJSONRPCErrorResponseSM extends A2ASendMessageResponse
     with A2AJSONRPCErrorResponseM {}
 
-final class A2ASendMessageSuccessResponseR extends A2ASendMessageResponse {}
+/// JSON-RPC success response model for the 'message/send' method.
+final class A2ASendMessageSuccessResponseR extends A2ASendMessageResponse {
+  /// An identifier established by the Client that MUST contain a String, Number.
+  /// Numbers SHOULD NOT contain fractional parts.
+  A2AId? id;
+
+  /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
+  final jsonrpc = '2.0';
+
+  /// The result object on success
+}
