@@ -61,3 +61,24 @@ class A2AMessage {
   /// Identifier of task the message is related to
   String? taskId;
 }
+
+/// Represents an artifact generated for a task.
+class A2AArtifact {
+  /// Unique identifier for the artifact.
+  String artifactId = '';
+
+  /// Optional description for the artifact.
+  String? description;
+
+  /// The URIs of extensions that are present or contributed to this Artifact.
+  List<String> extensions = [];
+
+  /// Extension metadata.
+  A2ASV? metadata;
+
+  /// Optional name for the artifact.
+  String? name;
+
+  /// Artifact parts
+  List<A2APart> parts = [];
+}
