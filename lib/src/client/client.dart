@@ -11,4 +11,4 @@ import 'package:web/web.dart';
 
 import '/src/types/types.dart';
 
-export 'src/client.dart';
+export 'src/a2a_client.dart';
