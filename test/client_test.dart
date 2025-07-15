@@ -14,11 +14,11 @@ import 'package:http/http.dart';
 
 import 'package:a2a/a2a.dart';
 
-import 'support/server.dart';
+import 'support/a2a_test_server.dart';
 
 Future<int> main() async {
   /// Start the test server
-   print('Client Test:: starting.....');
+  print('Client Test:: starting.....');
   final server = await A2ATestServer().start();
 
   /// Check it
@@ -26,7 +26,7 @@ Future<int> main() async {
     scheme: 'http',
     host: 'localhost',
     port: 8080,
-    path: 'localhost/helloworld',
+    path: 'helloworld',
   );
   final response = await get(checkPath);
   if (response.statusCode != 200) {
@@ -34,7 +34,7 @@ Future<int> main() async {
     server.stop();
     exit(-1);
   }
-  if (response.body != 'helloworld') {
+  if (response.body != 'Hello, World!') {
     print('Client Test:: hell world failed, body is ${response.body}');
     server.stop();
     exit(-1);

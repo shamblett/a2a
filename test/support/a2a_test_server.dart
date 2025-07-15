@@ -23,9 +23,6 @@ class A2ATestServer {
   /// The server
   late HttpServer server;
 
-  /// Cascade routing
-  final cascade = Cascade();
-
   // Router instance to handler requests.
   late shelf_router.Router router;
 
@@ -37,11 +34,11 @@ class A2ATestServer {
 
   /// Start the server
   Future<A2ATestServer> start() async {
-    cascade.add(router.call);
-    dartVersion = _setDartVersion();
     router = shelf_router.Router()
       ..get('/helloworld', _helloWorldHandler)
       ..get('/info.json', _infoHandler);
+    final cascade = Cascade().add(router.call);
+    dartVersion = _setDartVersion();
     server = await shelf_io.serve(
       // See https://pub.dev/documentation/shelf/latest/shelf/logRequests.html
       logRequests()
