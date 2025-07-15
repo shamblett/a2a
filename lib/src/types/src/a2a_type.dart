@@ -9,8 +9,8 @@ part of '../types.dart';
 
 class A2AType {}
 
-/// The ID type
-typedef A2AId = (String, num);
+/// The ID type, String or num.
+typedef A2AId = Object;
 
 /// Structured value type
 typedef A2ASV = Map<String, Object>;
