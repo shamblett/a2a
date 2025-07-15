@@ -5,5 +5,5 @@
 * Copyright :  S.Hamblett
 */
 
-export 'src/types/types.dart';
-export 'src/client/client.dart';
+library;
+

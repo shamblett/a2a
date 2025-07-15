@@ -5,5 +5,10 @@
 * Copyright :  S.Hamblett
 */
 
-export 'src/types/types.dart';
-export 'src/client/client.dart';
+import 'dart:js_interop';
+
+import 'package:web/web.dart';
+
+import '/src/types/types.dart';
+
+export 'src/client.dart';
