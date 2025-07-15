@@ -32,3 +32,4 @@ dart_code_metrics:
     - avoid-global-state : false
     - avoid-non-null-assertion : false
     - no-magic-number : false
+    - avoid-substring : false

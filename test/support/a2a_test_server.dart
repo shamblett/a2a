@@ -14,6 +14,7 @@ import 'dart:async';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_router/shelf_router.dart' as shelf_router;
+import 'package:http/http.dart' as http;
 
 /// The test server class
 class A2ATestServer {
@@ -77,4 +78,28 @@ class A2ATestServer {
       'requestCount': ++requestCount,
     }),
   );
+}
+
+class Utilities {
+  /// Check the server is running, returns false if not
+  static FutureOr<bool> checkServer() async {
+    bool ret = true;
+    final checkPath = Uri(
+      scheme: 'http',
+      host: 'localhost',
+      port: 8080,
+      path: 'helloworld',
+    );
+    final response = await http.get(checkPath);
+    if (response.statusCode != 200) {
+      print('Client Test:: status code error, value is ${response.statusCode}');
+      ret = false;
+    }
+    if (response.body != 'Hello, World!') {
+      print('Client Test:: hell world failed, body is ${response.body}');
+      ret = false;
+    }
+
+    return ret;
+  }
 }

@@ -14,13 +14,13 @@ import '/src/types/types.dart';
 /// with A2A-compliant agents.
 ///
 class A2AClient {
-  String _agentBaseUrl = '';
+  String agentBaseUrl = '';
+
+  String serviceEndpointUrl = '';
 
   late Future<A2AAgentCard> _agentCardPromise;
 
   int _requestIdCounter = 1;
-
-  late String _serviceEndpointUrl;
 
   /// Constructs an A2AClient instance.
   ///
@@ -29,10 +29,11 @@ class A2AClient {
   /// The `url` field from the Agent Card will be used as the RPC service endpoint.
   /// @param agentBaseUrl The base URL of the A2A agent (e.g., https://agent.example.com).
   A2AClient(String agentBaseUrl) {
-    _agentBaseUrl = agentBaseUrl.replaceAll(
-      '//\$/',
-      '',
-    ); // Remove trailing slash if any
+    if (agentBaseUrl.endsWith('/')) {
+      this.agentBaseUrl = agentBaseUrl.substring(0, agentBaseUrl.length - 1);
+    } else {
+      this.agentBaseUrl = agentBaseUrl;
+    }
     _agentCardPromise = _fetchAndCacheAgentCard();
   }
 
@@ -40,7 +41,7 @@ class A2AClient {
   /// This method is called by the constructor.
   /// @returns A Promise that resolves to the AgentCard.
   Future<A2AAgentCard> _fetchAndCacheAgentCard() async {
-    final agentCardUrl = '$_agentBaseUrl/.well-known/agent.json';
+    final agentCardUrl = '$agentBaseUrl/.well-known/agent.json';
     try {
       final response = await http.fetch(
         agentCardUrl,
@@ -52,13 +53,13 @@ class A2AClient {
           '${response.statusText}',
         );
       }
-      final agentCard = await response.json() as A2AAgentCard;
+      final agentCard = await response.json();
       if (agentCard.url.isEmpty) {
         throw Exception(
           'fetchAndCacheAgentCard:: Fetched Agent Card does not contain a valid "url" for the service endpoint.',
         );
       }
-      _serviceEndpointUrl = agentCard.url;
+      serviceEndpointUrl = agentCard.url;
       return agentCard;
     } catch (e) {
       print('_fetchAndCacheAgentCard:: Error fetching or parsing Agent Card:');

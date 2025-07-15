@@ -5,12 +5,14 @@
 * Copyright :  S.Hamblett
 */
 
+@TestOn('vm')
 library;
 
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:test/test.dart';
-import 'package:http/http.dart';
+import 'package:shelf/shelf.dart';
 
 import 'package:a2a/a2a.dart';
 
@@ -19,32 +21,45 @@ import 'support/a2a_test_server.dart';
 Future<int> main() async {
   /// Start the test server
   print('Client Test:: starting.....');
-  final server = await A2ATestServer().start();
+  final testServer = await A2ATestServer().start();
 
   /// Check it
-  final checkPath = Uri(
-    scheme: 'http',
-    host: 'localhost',
-    port: 8080,
-    path: 'helloworld',
-  );
-  final response = await get(checkPath);
-  if (response.statusCode != 200) {
-    print('Client Test:: status code error, value is ${response.statusCode}');
-    server.stop();
-    exit(-1);
-  }
-  if (response.body != 'Hello, World!') {
-    print('Client Test:: hell world failed, body is ${response.body}');
-    server.stop();
+  final ok = await Utilities.checkServer();
+  if (!ok) {
+    print('Client Test - Server is not available, exiting');
     exit(-1);
   }
 
-  print('Client Test:: waiting.....');
-  await Future.delayed(Duration(seconds: 5));
+  /// JSON encoder
+  String jsonEncode(Object? data) => JsonEncoder.withIndent(' ').convert(data);
 
-  print('Client Test:: exiting.....');
-  server.stop();
+  /// Tests
+  test('Construction', () async {
+    Response handler(Request request) => Response(
+      200,
+      headers: {
+        'content-type': 'application/json',
+        'Cache-Control': 'no-store',
+      },
+      body: jsonEncode({
+        'defaultModes': [],
+        'defaultOutputModes': [],
+        'description': 'The description',
+        'documentation': 'The documentation',
+        'iconUrl': 'http://iconUrl',
+        'name': 'Test Agent',
+        'skills': [],
+        'url': 'http://url',
+        'version': '1.0',
+      }),
+    );
+    const baseUrl = 'http://localhost:8080/';
+    testServer.router.get('/.well-known/agent.json', handler);
+    final testAgent = A2AClient(baseUrl);
+    await Future.delayed(Duration(seconds: 1));
+    expect(testAgent.agentBaseUrl, 'http://localhost:8080');
+    //expect(testAgent.serviceEndpointUrl, 'http://url');
+  });
 
   return 0;
 }
