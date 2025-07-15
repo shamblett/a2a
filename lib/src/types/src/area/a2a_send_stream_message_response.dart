@@ -10,6 +10,7 @@ part of '../../types.dart';
 /// JSON-RPC response model for the 'message/send' method.
 sealed class A2ASendStreamMessageResponse {}
 
+/// JSON RPC error response object
 final class A2AJSONRPCErrorResponseSSM extends A2ASendStreamMessageResponse
     with A2AJSONRPCErrorResponseM {}
 

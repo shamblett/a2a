@@ -111,3 +111,15 @@ class A2ATaskStatus {
   /// ISO 8601 datetime string when the status was recorded.
   String? timestamp;
 }
+
+/// Common JSON error response mixin
+mixin A2AJSONRPCErrorResponseM {
+  A2AError? error;
+
+  /// An identifier established by the Client that MUST contain a String, Number.
+  /// Numbers SHOULD NOT contain fractional parts.
+  A2AId? id;
+
+  /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
+  String jsonrpc = '2.0';
+}

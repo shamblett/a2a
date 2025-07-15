@@ -61,7 +61,7 @@ final class A2ACancelTaskRequest extends A2ARequest {
 
   /// A String containing the name of the method to be invoked.
   String method = 'tasks/cancel';
-  TaskIdParams? params;
+  A2ATaskIdParams? params;
 }
 
 /// JSON-RPC request model for the 'tasks/pushNotificationConfig/set' method.
@@ -89,7 +89,7 @@ final class A2AGetTaskPushNotificationConfigRequest extends A2ARequest {
 
   /// A String containing the name of the method to be invoked.
   String method = 'tasks/pushNotificationConfig/get';
-  TaskIdParams? params;
+  A2ATaskIdParams? params;
 }
 
 /// JSON-RPC request model for the 'tasks/resubscribe' method.
@@ -103,9 +103,10 @@ final class A2ATaskResubscriptionRequest extends A2ARequest {
 
   /// A String containing the name of the method to be invoked.
   String method = 'tasks/resubscribe';
-  TaskIdParams? params;
+  A2ATaskIdParams? params;
 }
 
+/// The result object on success.
 class A2ATaskPushNotificationConfig1 {
   A2APushNotificationAuthenticationInfo? authentication;
 
@@ -119,6 +120,8 @@ class A2ATaskPushNotificationConfig1 {
   String url = '';
 }
 
+/// A Structured value that holds the parameter values to be used during the invocation of
+/// the method.
 class A2ATaskPushNotificationConfig {
   A2ATaskPushNotificationConfig1? pushNotificationConfig;
 
@@ -126,7 +129,9 @@ class A2ATaskPushNotificationConfig {
   String id = '';
 }
 
-class TaskIdParams {
+/// A Structured value that holds the parameter values to be used during the invocation of
+/// the method.
+class A2ATaskIdParams {
   /// Task id.
   String id = '';
 
@@ -134,6 +139,8 @@ class TaskIdParams {
   A2ASV? metadata;
 }
 
+/// A Structured value that holds the parameter values to be used during the invocation of
+/// the method.
 class A2ATaskQueryParams {
   /// Number of recent messages to be retrieved.
   int? historyLength;
@@ -145,6 +152,8 @@ class A2ATaskQueryParams {
   A2ASV? metadata;
 }
 
+/// A Structured value that holds the parameter values to be used during the invocation of
+/// the method.
 class A2AMessageSendParams {
   A2AMessageSendConfiguration? configuration;
   A2AMessage message = A2AMessage();
@@ -153,6 +162,7 @@ class A2AMessageSendParams {
   A2ASV? metadata;
 }
 
+/// Send message configuration.
 class A2AMessageSendConfiguration {
   /// Accepted output modalities by the client.
   List<String> acceptedOutputModes = [];
@@ -166,6 +176,7 @@ class A2AMessageSendConfiguration {
   A2APushNotificationConfig? pushNotificationConfig;
 }
 
+/// Where the server should send notifications when disconnected.
 class A2APushNotificationConfig {
   A2APushNotificationAuthenticationInfo? authentication;
 
@@ -179,6 +190,7 @@ class A2APushNotificationConfig {
   String url = '';
 }
 
+/// Defines authentication details for push notifications.
 class A2APushNotificationAuthenticationInfo {
   /// Optional credentials
   String? credentials;

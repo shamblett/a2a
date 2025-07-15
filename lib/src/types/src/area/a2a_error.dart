@@ -10,6 +10,8 @@ part of '../../types.dart';
 /// A2A supported error types
 sealed class A2AError {}
 
+/// Represents a JSON-RPC 2.0 Error object.
+/// This is typically included in a JSONRPCErrorResponse when an error occurs.
 final class A2AJSONRPCError extends A2AError {
   /// A Number that indicates the error type that occurred.
   num code = 0;

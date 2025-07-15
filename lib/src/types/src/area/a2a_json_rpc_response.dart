@@ -13,16 +13,41 @@ sealed class A2AJsonRpcResponse {}
 final class A2AJSONRPCErrorResponseR extends A2AJsonRpcResponse
     with A2AJSONRPCErrorResponseM {}
 
-final class A2ASendMessageSuccessResponse extends A2AJsonRpcResponse {}
+/// JSON-RPC success response model for the 'message/send' method.
+final class A2ASendMessageSuccessResponse extends A2AJsonRpcResponse {
+  /// An identifier established by the Client that MUST contain a String, Number.
+  /// Numbers SHOULD NOT contain fractional parts.
+  A2AId? id;
 
-final class A2ASendStreamingMessageSuccessResponse extends A2AJsonRpcResponse {}
+  /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
+  final jsonrpc = '2.0';
 
-final class A2AGetTaskSuccessResponseR extends A2AJsonRpcResponse {}
+  /// The result object on success, [A2ATask} or [A2AMessage]
+  Object? result;
+}
 
-final class A2ACancelTaskSuccessResponseR extends A2AJsonRpcResponse {}
+/// JSON-RPC success response model for the 'message/stream' method.
+final class A2ASendStreamingMessageSuccessResponse extends A2AJsonRpcResponse {
+  /// An identifier established by the Client that MUST contain a String, Number.
+  /// Numbers SHOULD NOT contain fractional parts.
+  A2AId? id;
 
+  /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
+  final jsonrpc = '2.0';
+
+  /// The result object on success, [A2ATask}, [A2AMessage], [A2ATaskStatusUpdateEvent] or
+  /// [A2ATaskArtifactUpdateEvent]
+  Object? result;
+}
+
+/// JSON-RPC success response model for the 'tasks/pushNotificationConfig/set' method.
 final class A2ASetTaskPushNotificationConfigSuccessResponse
-    extends A2AJsonRpcResponse {}
+    extends A2AJsonRpcResponse {
+  /// An identifier established by the Client that MUST contain a String, Number.
+  /// Numbers SHOULD NOT contain fractional parts.
+  A2AId? id;
 
-final class A2AGetTaskPushNotificationConfigSuccessResponseR
-    extends A2AJsonRpcResponse {}
+  /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
+  final jsonrpc = '2.0';
+  A2ATaskPushNotificationConfig1? result;
+}

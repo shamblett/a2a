@@ -10,6 +10,7 @@ part of '../../types.dart';
 /// JSON-RPC response for the 'tasks/get' method.
 sealed class A2AGetTaskResponse {}
 
+/// Represents a JSON-RPC 2.0 Error Response object.
 final class A2AJSONRPCErrorResponseT extends A2AGetTaskResponse
     with A2AJSONRPCErrorResponseM {}
 
