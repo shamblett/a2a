@@ -18,6 +18,7 @@ import 'support/server.dart';
 
 Future<int> main() async {
   /// Start the test server
+   print('Client Test:: starting.....');
   final server = await A2ATestServer().start();
 
   /// Check it
