@@ -5,10 +5,4 @@
 * Copyright :  S.Hamblett
 */
 
-import 'dart:js_interop';
-
-import 'package:web/web.dart';
-
-import '/src/types/types.dart';
-
 export 'src/a2a_client.dart';

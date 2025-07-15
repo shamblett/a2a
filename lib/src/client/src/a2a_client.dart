@@ -7,7 +7,8 @@
 
 library;
 
-import 'package:a2a/src/types/types.dart';
+import 'package:oxy/oxy.dart' as http;
+import '/src/types/types.dart';
 
 /// A2AClient is a TypeScript HTTP client for interacting
 /// with A2A-compliant agents.
@@ -32,12 +33,36 @@ class A2AClient {
       '//\$/',
       '',
     ); // Remove trailing slash if any
+    _agentCardPromise = _fetchAndCacheAgentCard();
   }
 
   /// Fetches the Agent Card from the agent's well-known URI and caches its service endpoint URL.
   /// This method is called by the constructor.
   /// @returns A Promise that resolves to the AgentCard.
   Future<A2AAgentCard> _fetchAndCacheAgentCard() async {
-
+    final agentCardUrl = '$_agentBaseUrl/.well-known/agent.json';
+    try {
+      final response = await http.fetch(
+        agentCardUrl,
+        headers: http.Headers()..append('Accept', 'application/json'),
+      );
+      if (!response.ok) {
+        throw Exception(
+          'fetchAndCacheAgentCard:: Failed to fetch Agent Card from $agentCardUrl: ${response.status} :  '
+          '${response.statusText}',
+        );
+      }
+      final agentCard = await response.json() as A2AAgentCard;
+      if (agentCard.url.isEmpty) {
+        throw Exception(
+          'fetchAndCacheAgentCard:: Fetched Agent Card does not contain a valid "url" for the service endpoint.',
+        );
+      }
+      _serviceEndpointUrl = agentCard.url;
+      return agentCard;
+    } catch (e) {
+      print('_fetchAndCacheAgentCard:: Error fetching or parsing Agent Card:');
+      rethrow;
+    }
   }
 }
