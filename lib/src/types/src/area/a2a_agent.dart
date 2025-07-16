@@ -11,6 +11,7 @@ part of '../../a2a_types.dart';
 sealed class A2AAgent {}
 
 /// Defines optional capabilities supported by an agent.
+@JsonSerializable(explicitToJson: true)
 final class A2AAgentCapabilities {
   /// Extensions supported by this agent.
   List<A2AAgentExtension> extensions = [];
@@ -23,9 +24,17 @@ final class A2AAgentCapabilities {
 
   /// True if the agent supports SSE.
   bool? streaming;
+
+  A2AAgentCapabilities();
+
+  factory A2AAgentCapabilities.fromJson(Map<String, dynamic> json) =>
+      _$A2AAgentCapabilitiesFromJson(json);
+
+  Map<String, dynamic> toJson() => _$A2AAgentCapabilitiesToJson(this);
 }
 
 /// A declaration of an extension supported by an Agent.
+@JsonSerializable(explicitToJson: true)
 final class A2AAgentExtension {
   /// A description of how this agent uses this extension.
   String? description;
@@ -38,6 +47,13 @@ final class A2AAgentExtension {
 
   /// The URI of the extension.
   String uri = '';
+
+  A2AAgentExtension();
+
+  factory A2AAgentExtension.fromJson(Map<String, dynamic> json) =>
+      _$A2AAgentExtensionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$A2AAgentExtensionToJson(this);
 }
 
 /// An AgentCard conveys key information:
@@ -47,9 +63,11 @@ final class A2AAgentExtension {
 /// - Authentication requirements.
 @JsonSerializable(explicitToJson: true)
 final class A2AAgentCard extends A2AAgent {
+  A2AAgentCapabilities? capabilities;
+
   /// The set of interaction modes that the agent supports across all skills. This can be overridden per-skill.
   /// Supported media types for input.
-  List<String> defaultModes = [];
+  List<String> defaultInputModes = [];
 
   /// Supported media types for output.
   List<String> defaultOutputModes = [];
@@ -59,7 +77,7 @@ final class A2AAgentCard extends A2AAgent {
   String description = '';
 
   /// A URL to documentation for the agent.
-  String? documentation;
+  String? documentationUrl;
 
   /// A URL to an icon for the agent.
   String? iconUrl;
@@ -67,6 +85,9 @@ final class A2AAgentCard extends A2AAgent {
   /// Human readable name of the agent.
   String name = '';
   A2AAgentProvider? agentProvider;
+
+  /// Security requirements for contacting the agent.
+  Map<String, List<String>> security = {};
 
   /// Security requirements for contacting the agent.
   Map<String, A2ASecurityScheme>? securitySchemes;
@@ -86,10 +107,10 @@ final class A2AAgentCard extends A2AAgent {
 
   A2AAgentCard();
 
-  factory A2AAgentCard.fromJson(Map<String,dynamic> json) => _$A2AAgentCardFromJson(json);
+  factory A2AAgentCard.fromJson(Map<String, dynamic> json) =>
+      _$A2AAgentCardFromJson(json);
 
-  Map<String,dynamic> toJson() => _$A2AAgentCardToJson(this);
-
+  Map<String, dynamic> toJson() => _$A2AAgentCardToJson(this);
 }
 
 /// The service provider of the agent
@@ -103,9 +124,10 @@ final class A2AAgentProvider extends A2AAgent {
 
   A2AAgentProvider();
 
-  factory A2AAgentProvider.fromJson(Map<String,dynamic> json) => _$A2AAgentProviderFromJson(json);
+  factory A2AAgentProvider.fromJson(Map<String, dynamic> json) =>
+      _$A2AAgentProviderFromJson(json);
 
-  Map<String,dynamic> toJson() => _$A2AAgentProviderToJson(this);
+  Map<String, dynamic> toJson() => _$A2AAgentProviderToJson(this);
 }
 
 /// Represents a unit of capability that an agent can perform.
@@ -138,7 +160,8 @@ final class A2AAgentSkill extends A2AAgent {
 
   A2AAgentSkill();
 
-  factory A2AAgentSkill.fromJson(Map<String,dynamic> json) => _$A2AAgentSkillFromJson(json);
+  factory A2AAgentSkill.fromJson(Map<String, dynamic> json) =>
+      _$A2AAgentSkillFromJson(json);
 
-  Map<String,dynamic> toJson() => _$A2AAgentSkillToJson(this);
+  Map<String, dynamic> toJson() => _$A2AAgentSkillToJson(this);
 }

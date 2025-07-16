@@ -12,20 +12,65 @@ A2ASecurityScheme _$A2ASecuritySchemeFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$A2ASecuritySchemeToJson(A2ASecurityScheme instance) =>
     <String, dynamic>{};
 
+A2AAgentCapabilities _$A2AAgentCapabilitiesFromJson(
+  Map<String, dynamic> json,
+) => A2AAgentCapabilities()
+  ..extensions = (json['extensions'] as List<dynamic>)
+      .map((e) => A2AAgentExtension.fromJson(e as Map<String, dynamic>))
+      .toList()
+  ..pushNotifications = json['pushNotifications'] as bool?
+  ..stateTransitionHistory = json['stateTransitionHistory'] as bool?
+  ..streaming = json['streaming'] as bool?;
+
+Map<String, dynamic> _$A2AAgentCapabilitiesToJson(
+  A2AAgentCapabilities instance,
+) => <String, dynamic>{
+  'extensions': instance.extensions.map((e) => e.toJson()).toList(),
+  'pushNotifications': instance.pushNotifications,
+  'stateTransitionHistory': instance.stateTransitionHistory,
+  'streaming': instance.streaming,
+};
+
+A2AAgentExtension _$A2AAgentExtensionFromJson(Map<String, dynamic> json) =>
+    A2AAgentExtension()
+      ..description = json['description'] as String?
+      ..params = (json['params'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as Object),
+      )
+      ..required = json['required'] as bool?
+      ..uri = json['uri'] as String;
+
+Map<String, dynamic> _$A2AAgentExtensionToJson(A2AAgentExtension instance) =>
+    <String, dynamic>{
+      'description': instance.description,
+      'params': instance.params,
+      'required': instance.required,
+      'uri': instance.uri,
+    };
+
 A2AAgentCard _$A2AAgentCardFromJson(Map<String, dynamic> json) => A2AAgentCard()
-  ..defaultModes = (json['defaultModes'] as List<dynamic>)
+  ..capabilities = json['capabilities'] == null
+      ? null
+      : A2AAgentCapabilities.fromJson(
+          json['capabilities'] as Map<String, dynamic>,
+        )
+  ..defaultInputModes = (json['defaultInputModes'] as List<dynamic>)
       .map((e) => e as String)
       .toList()
   ..defaultOutputModes = (json['defaultOutputModes'] as List<dynamic>)
       .map((e) => e as String)
       .toList()
   ..description = json['description'] as String
-  ..documentation = json['documentation'] as String?
+  ..documentationUrl = json['documentationUrl'] as String?
   ..iconUrl = json['iconUrl'] as String?
   ..name = json['name'] as String
   ..agentProvider = json['agentProvider'] == null
       ? null
       : A2AAgentProvider.fromJson(json['agentProvider'] as Map<String, dynamic>)
+  ..security = (json['security'] as Map<String, dynamic>).map(
+    (k, e) =>
+        MapEntry(k, (e as List<dynamic>).map((e) => e as String).toList()),
+  )
   ..securitySchemes = (json['securitySchemes'] as Map<String, dynamic>?)?.map(
     (k, e) =>
         MapEntry(k, A2ASecurityScheme.fromJson(e as Map<String, dynamic>)),
@@ -40,13 +85,15 @@ A2AAgentCard _$A2AAgentCardFromJson(Map<String, dynamic> json) => A2AAgentCard()
 
 Map<String, dynamic> _$A2AAgentCardToJson(A2AAgentCard instance) =>
     <String, dynamic>{
-      'defaultModes': instance.defaultModes,
+      'capabilities': instance.capabilities?.toJson(),
+      'defaultInputModes': instance.defaultInputModes,
       'defaultOutputModes': instance.defaultOutputModes,
       'description': instance.description,
-      'documentation': instance.documentation,
+      'documentationUrl': instance.documentationUrl,
       'iconUrl': instance.iconUrl,
       'name': instance.name,
       'agentProvider': instance.agentProvider?.toJson(),
+      'security': instance.security,
       'securitySchemes': instance.securitySchemes?.map(
         (k, e) => MapEntry(k, e.toJson()),
       ),
