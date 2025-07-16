@@ -39,7 +39,7 @@ class A2AClient {
 
   /// Fetches the Agent Card from the agent's well-known URI and caches its service endpoint URL.
   /// This method is called by the constructor.
-  /// @returns A Promise that resolves to the AgentCard.
+  /// @returns A Future that eventually resolves to the AgentCard.
   Future<A2AAgentCard> _fetchAndCacheAgentCard() async {
     final agentCardUrl = '$agentBaseUrl/.well-known/agent.json';
     try {
