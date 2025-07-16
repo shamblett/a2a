@@ -37,11 +37,32 @@ class A2AClient {
     _agentCard = _fetchAndCacheAgentCard();
   }
 
+  /// Retrieves the Agent Card.
+  /// If an `agentBaseUrl` is provided, it fetches the card from that specific URL.
+  /// Otherwise, it returns the card fetched and cached during client construction.
+  /// @param agentBaseUrl Optional. The base URL of the agent to fetch the card from.
+  /// If provided, this will fetch a new card, not use the cached one from the constructor's URL.
+  /// @returns A Promise that resolves to the AgentCard.
+  Future<A2AAgentCard> getAgentCard({String? agentBaseUrl}) async {
+    if (agentBaseUrl != null) {
+      return _fetchAndCacheAgentCard(baseUrl: agentBaseUrl);
+    }
+    // If no specific URL is given, return the initially configured agent's card.
+    return _agentCard;
+  }
+
   /// Fetches the Agent Card from the agent's well-known URI and caches its service endpoint URL.
   /// This method is called by the constructor.
   /// @returns A Future that eventually resolves to the AgentCard.
-  Future<A2AAgentCard> _fetchAndCacheAgentCard() async {
-    final agentCardUrl = '$agentBaseUrl/.well-known/agent.json';
+  Future<A2AAgentCard> _fetchAndCacheAgentCard({String baseUrl = ''}) async {
+    var fetchUrl = agentBaseUrl;
+    if (baseUrl.isNotEmpty) {
+      if (baseUrl.endsWith('/')) {
+        baseUrl = baseUrl.substring(0, baseUrl.length - 1);
+      }
+      fetchUrl = baseUrl;
+    }
+    final agentCardUrl = '$fetchUrl/.well-known/agent.json';
     try {
       final response = await http.fetch(
         agentCardUrl,

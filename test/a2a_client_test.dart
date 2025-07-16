@@ -22,6 +22,7 @@ Future<int> main() async {
   /// Start the test server
   print('Client Test:: starting.....');
   final testServer = await A2ATestServer().start();
+  late A2AClient testAgent;
 
   /// Check it
   final ok = await Utilities.checkServer();
@@ -55,15 +56,19 @@ Future<int> main() async {
     );
     const baseUrl = 'http://localhost:8080/';
     testServer.router.get('/.well-known/agent.json', handler);
-    final testAgent = A2AClient(baseUrl);
+    testAgent = A2AClient(baseUrl);
     await Future.delayed(Duration(seconds: 1));
     expect(testAgent.agentBaseUrl, 'http://localhost:8080');
     expect(testAgent.serviceEndpointUrl, 'http://url');
   });
 
   group('Agent', () {
-    test('Get Agent Card', () {
-
+    test('Get Agent Card', () async {
+      final agentCard = await testAgent.getAgentCard();
+      expect(testAgent.agentBaseUrl, 'http://localhost:8080');
+      expect(testAgent.serviceEndpointUrl, 'http://url');
+      expect(agentCard.agentProvider, isNull);
+      expect(agentCard.description, 'The description');
     });
   });
   return 0;
