@@ -55,14 +55,14 @@ Future<int> main() async {
     testAgent = A2AClient(baseUrl);
     await Future.delayed(Duration(seconds: 1));
     expect(testAgent.agentBaseUrl, 'http://localhost:8080');
-    expect(testAgent.serviceEndpointUrl, 'http://url');
+    expect(await testAgent.serviceEndpoint, 'http://url');
   });
 
   group('Agent', () {
     test('Get Agent Card', () async {
       final agentCard = await testAgent.getAgentCard();
       expect(testAgent.agentBaseUrl, 'http://localhost:8080');
-      expect(testAgent.serviceEndpointUrl, 'http://url');
+      expect(await testAgent.serviceEndpoint, 'http://url');
       expect(agentCard.agentProvider, isNull);
       expect(agentCard.description, 'The Description');
       expect(agentCard.name, 'The Name');

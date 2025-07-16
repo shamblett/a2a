@@ -16,11 +16,29 @@ import '/src/types/a2a_types.dart';
 class A2AClient {
   String agentBaseUrl = '';
 
-  String serviceEndpointUrl = '';
+  late String _serviceEndpointUrl;
 
   late Future<A2AAgentCard> _agentCard;
 
   int _requestIdCounter = 1;
+
+  /// Gets the RPC service endpoint URL. Ensures the agent card has been fetched first.
+  /// @returns a future that resolves to the service endpoint URL string.
+  Future<String> get serviceEndpoint async {
+    if (_serviceEndpointUrl.isNotEmpty) {
+      return _serviceEndpointUrl;
+    }
+    // If serviceEndpointUrl is not set, it means the agent card fetch is pending or failed.
+    // Awaiting agentCard will either resolve it or throw if fetching failed.
+    await _agentCard;
+    if (_serviceEndpointUrl.isEmpty) {
+      // This case should ideally be covered by the error handling in _fetchAndCacheAgentCard
+      throw Exception(
+        'serviceEndpoint:: Agent Card URL for RPC endpoint is not available. Fetching might have failed.',
+      );
+    }
+    return _serviceEndpointUrl;
+  }
 
   /// Constructs an A2AClient instance.
   ///
@@ -86,7 +104,7 @@ class A2AClient {
         );
       }
       if (cache) {
-        serviceEndpointUrl = agentCard.url;
+        _serviceEndpointUrl = agentCard.url;
       }
       return agentCard;
     } catch (e) {
