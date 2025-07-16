@@ -5,7 +5,7 @@
 * Copyright :  S.Hamblett
 */
 
-part of '../../types.dart';
+part of '../../a2a_types.dart';
 
 /// A2A supported request types
 sealed class A2ARequest {}

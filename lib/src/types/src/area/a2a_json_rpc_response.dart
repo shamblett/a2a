@@ -5,7 +5,7 @@
 * Copyright :  S.Hamblett
 */
 
-part of '../../types.dart';
+part of '../../a2a_types.dart';
 
 /// Represents a JSON-RPC 2.0 Response object.
 sealed class A2AJsonRpcResponse {}

@@ -8,7 +8,7 @@
 library;
 
 import 'package:oxy/oxy.dart' as http;
-import '/src/types/types.dart';
+import '/src/types/a2a_types.dart';
 
 /// A2AClient is a TypeScript HTTP client for interacting
 /// with A2A-compliant agents.

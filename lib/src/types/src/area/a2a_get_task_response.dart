@@ -5,7 +5,7 @@
 * Copyright :  S.Hamblett
 */
 
-part of '../../types.dart';
+part of '../../a2a_types.dart';
 
 /// JSON-RPC response for the 'tasks/get' method.
 sealed class A2AGetTaskResponse {}

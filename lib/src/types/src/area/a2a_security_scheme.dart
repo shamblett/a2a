@@ -5,11 +5,18 @@
 * Copyright :  S.Hamblett
 */
 
-part of '../../types.dart';
+part of '../../a2a_types.dart';
 
 /// Mirrors the OpenAPI Security Scheme Object
 /// (https://swagger.io/specification/#security-scheme-object)
-sealed class A2ASecurityScheme {}
+@JsonSerializable(explicitToJson: true)
+class A2ASecurityScheme {
+  A2ASecurityScheme();
+
+  factory A2ASecurityScheme.fromJson(Map<String,dynamic> json) => _$A2ASecuritySchemeFromJson(json);
+
+  Map<String,dynamic> toJson() => _$A2ASecuritySchemeToJson(this);
+}
 
 /// API Key security scheme.
 final class A2AAPIKeySecurityScheme extends A2ASecurityScheme {

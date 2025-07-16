@@ -7,6 +7,8 @@
 
 library;
 
+import 'package:json_annotation/json_annotation.dart';
+
 part 'src/a2a_type.dart';
 part 'src/area/a2a_error.dart';
 part 'src/area/a2a_request.dart';
@@ -20,3 +22,6 @@ part 'src/area/a2a_json_rpc_response.dart';
 part 'src/area/a2a_send_message_response.dart';
 part 'src/area/a2a_send_stream_message_response.dart';
 part 'src/area/a2a_agent.dart';
+
+/// JSON
+part 'a2a_types.g.dart';

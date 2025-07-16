@@ -5,7 +5,7 @@
 * Copyright :  S.Hamblett
 */
 
-part of '../../types.dart';
+part of '../../a2a_types.dart';
 
 /// Represents a part of a message, which can be text, a file, or structured data.
 sealed class A2APart {}

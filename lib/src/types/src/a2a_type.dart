@@ -5,7 +5,7 @@
 * Copyright :  S.Hamblett
 */
 
-part of '../types.dart';
+part of '../a2a_types.dart';
 
 class A2AType {}
 

@@ -5,7 +5,7 @@
 * Copyright :  S.Hamblett
 */
 
-part of '../../types.dart';
+part of '../../a2a_types.dart';
 
 /// Agent class
 sealed class A2AAgent {}
@@ -45,6 +45,7 @@ final class A2AAgentExtension {
 /// - Skills: A set of capabilities the agent can perform
 /// - Default modalities/content types supported by the agent.
 /// - Authentication requirements.
+@JsonSerializable(explicitToJson: true)
 final class A2AAgentCard extends A2AAgent {
   /// The set of interaction modes that the agent supports across all skills. This can be overridden per-skill.
   /// Supported media types for input.
@@ -82,18 +83,33 @@ final class A2AAgentCard extends A2AAgent {
 
   /// The version of the agent - format is up to the provider.
   String version = '';
+
+  A2AAgentCard();
+
+  factory A2AAgentCard.fromJson(Map<String,dynamic> json) => _$A2AAgentCardFromJson(json);
+
+  Map<String,dynamic> toJson() => _$A2AAgentCardToJson(this);
+
 }
 
 /// The service provider of the agent
+@JsonSerializable(explicitToJson: true)
 final class A2AAgentProvider extends A2AAgent {
   /// Agent provider's organization name.
   String organization = '';
 
   /// Agent provider's URL.
   String url = '';
+
+  A2AAgentProvider();
+
+  factory A2AAgentProvider.fromJson(Map<String,dynamic> json) => _$A2AAgentProviderFromJson(json);
+
+  Map<String,dynamic> toJson() => _$A2AAgentProviderToJson(this);
 }
 
 /// Represents a unit of capability that an agent can perform.
+@JsonSerializable(explicitToJson: true)
 final class A2AAgentSkill extends A2AAgent {
   /// Description of the skill - will be used by the client or a human
   /// as a hint to understand what the skill does.
@@ -119,4 +135,10 @@ final class A2AAgentSkill extends A2AAgent {
 
   /// Set of tag words describing classes of capabilities for this specific skill.
   List<String>? tags;
+
+  A2AAgentSkill();
+
+  factory A2AAgentSkill.fromJson(Map<String,dynamic> json) => _$A2AAgentSkillFromJson(json);
+
+  Map<String,dynamic> toJson() => _$A2AAgentSkillToJson(this);
 }
