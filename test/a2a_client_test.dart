@@ -36,23 +36,19 @@ Future<int> main() async {
 
   /// Tests
   test('Construction', () async {
+    final testCard = A2AAgentCard()
+      ..description = 'The Description'
+      ..name = 'The Name'
+      ..url = 'http://url'
+      ..version = '1.0';
+    final testCardJson = testCard.toJson();
     Response handler(Request request) => Response(
       200,
       headers: {
         'content-type': 'application/json',
         'Cache-Control': 'no-store',
       },
-      body: jsonEncode({
-        'defaultModes': [],
-        'defaultOutputModes': [],
-        'description': 'The description',
-        'documentation': 'The documentation',
-        'iconUrl': 'http://iconUrl',
-        'name': 'Test Agent',
-        'skills': [],
-        'url': 'http://url',
-        'version': '1.0',
-      }),
+      body: jsonEncode(testCardJson),
     );
     const baseUrl = 'http://localhost:8080/';
     testServer.router.get('/.well-known/agent.json', handler);
@@ -68,7 +64,9 @@ Future<int> main() async {
       expect(testAgent.agentBaseUrl, 'http://localhost:8080');
       expect(testAgent.serviceEndpointUrl, 'http://url');
       expect(agentCard.agentProvider, isNull);
-      expect(agentCard.description, 'The description');
+      expect(agentCard.description, 'The Description');
+      expect(agentCard.name, 'The Name');
+      expect(agentCard.version, '1.0');
     });
   });
   return 0;

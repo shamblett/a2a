@@ -52,15 +52,19 @@ class A2AClient {
   }
 
   /// Fetches the Agent Card from the agent's well-known URI and caches its service endpoint URL.
+  /// If a [baseUrl] parameter is supplied this will be used instead of the agent base url and
+  /// the card details will not be cached, just returned.
   /// This method is called by the constructor.
   /// @returns A Future that eventually resolves to the AgentCard.
   Future<A2AAgentCard> _fetchAndCacheAgentCard({String baseUrl = ''}) async {
     var fetchUrl = agentBaseUrl;
+    bool cache = true;
     if (baseUrl.isNotEmpty) {
       if (baseUrl.endsWith('/')) {
         baseUrl = baseUrl.substring(0, baseUrl.length - 1);
       }
       fetchUrl = baseUrl;
+      cache = false;
     }
     final agentCardUrl = '$fetchUrl/.well-known/agent.json';
     try {
@@ -81,7 +85,9 @@ class A2AClient {
           'fetchAndCacheAgentCard:: Fetched Agent Card does not contain a valid "url" for the service endpoint.',
         );
       }
-      serviceEndpointUrl = agentCard.url;
+      if (cache) {
+        serviceEndpointUrl = agentCard.url;
+      }
       return agentCard;
     } catch (e) {
       print('_fetchAndCacheAgentCard:: Error fetching or parsing Agent Card:');

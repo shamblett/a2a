@@ -49,11 +49,9 @@ Map<String, dynamic> _$A2AAgentExtensionToJson(A2AAgentExtension instance) =>
     };
 
 A2AAgentCard _$A2AAgentCardFromJson(Map<String, dynamic> json) => A2AAgentCard()
-  ..capabilities = json['capabilities'] == null
-      ? null
-      : A2AAgentCapabilities.fromJson(
-          json['capabilities'] as Map<String, dynamic>,
-        )
+  ..capabilities = A2AAgentCapabilities.fromJson(
+    json['capabilities'] as Map<String, dynamic>,
+  )
   ..defaultInputModes = (json['defaultInputModes'] as List<dynamic>)
       .map((e) => e as String)
       .toList()
@@ -85,7 +83,7 @@ A2AAgentCard _$A2AAgentCardFromJson(Map<String, dynamic> json) => A2AAgentCard()
 
 Map<String, dynamic> _$A2AAgentCardToJson(A2AAgentCard instance) =>
     <String, dynamic>{
-      'capabilities': instance.capabilities?.toJson(),
+      'capabilities': instance.capabilities.toJson(),
       'defaultInputModes': instance.defaultInputModes,
       'defaultOutputModes': instance.defaultOutputModes,
       'description': instance.description,

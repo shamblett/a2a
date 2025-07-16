@@ -63,7 +63,7 @@ final class A2AAgentExtension {
 /// - Authentication requirements.
 @JsonSerializable(explicitToJson: true)
 final class A2AAgentCard extends A2AAgent {
-  A2AAgentCapabilities? capabilities;
+  A2AAgentCapabilities capabilities = A2AAgentCapabilities();
 
   /// The set of interaction modes that the agent supports across all skills. This can be overridden per-skill.
   /// Supported media types for input.
