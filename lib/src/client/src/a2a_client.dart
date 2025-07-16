@@ -18,7 +18,7 @@ class A2AClient {
 
   String serviceEndpointUrl = '';
 
-  late Future<A2AAgentCard> _agentCardPromise;
+  late Future<A2AAgentCard> _agentCard;
 
   int _requestIdCounter = 1;
 
@@ -34,7 +34,7 @@ class A2AClient {
     } else {
       this.agentBaseUrl = agentBaseUrl;
     }
-    _agentCardPromise = _fetchAndCacheAgentCard();
+    _agentCard = _fetchAndCacheAgentCard();
   }
 
   /// Fetches the Agent Card from the agent's well-known URI and caches its service endpoint URL.
@@ -53,7 +53,8 @@ class A2AClient {
           '${response.statusText}',
         );
       }
-      final agentCard = await response.json();
+      final agentCardJson = await response.json();
+      final agentCard = A2AAgentCard.fromJson(agentCardJson);
       if (agentCard.url.isEmpty) {
         throw Exception(
           'fetchAndCacheAgentCard:: Fetched Agent Card does not contain a valid "url" for the service endpoint.',
