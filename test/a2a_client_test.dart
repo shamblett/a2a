@@ -61,5 +61,10 @@ Future<int> main() async {
     expect(testAgent.serviceEndpointUrl, 'http://url');
   });
 
+  group('Agent', () {
+    test('Get Agent Card', () {
+
+    });
+  });
   return 0;
 }
