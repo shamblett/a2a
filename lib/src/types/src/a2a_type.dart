@@ -17,14 +17,23 @@ typedef A2ASV = Map<String, Object>;
 
 /// Represents the possible states of a Task.
 enum A2ATaskState {
+  @JsonValue('submitted')
   submitted,
+  @JsonValue('working')
   working,
+  @JsonValue('input-required')
   inputRequired,
+  @JsonValue('completed')
   completed,
+  @JsonValue('canceled')
   canceled,
+  @JsonValue('failed')
   failed,
+  @JsonValue('rejected')
   rejected,
+  @JsonValue('auth-required')
   authRequired,
+  @JsonValue('unknown')
   unknown,
 }
 

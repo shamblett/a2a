@@ -8,9 +8,16 @@
 part of '../../a2a_types.dart';
 
 /// Represents a part of a message, which can be text, a file, or structured data.
-sealed class A2APart {}
+class A2APart {
+  A2APart();
+
+  factory A2APart.fromJson(Map<String, dynamic> json) => A2APart();
+
+  Map<String, dynamic> toJson() => {};
+}
 
 /// Represents a text segment within parts.
+@JsonSerializable(explicitToJson: true)
 final class A2ATextPart extends A2APart {
   /// Part type - text for TextParts
   final kind = 'text';
@@ -20,9 +27,18 @@ final class A2ATextPart extends A2APart {
 
   /// Text content
   String text = '';
+
+  A2ATextPart();
+
+  factory A2ATextPart.fromJson(Map<String, dynamic> json) =>
+      _$A2ATextPartFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$A2ATextPartToJson(this);
 }
 
 /// Represents a File segment within parts.
+@JsonSerializable(explicitToJson: true)
 final class A2AFilePart extends A2APart {
   /// Part type - file for TextParts
   final kind = 'file';
@@ -32,8 +48,18 @@ final class A2AFilePart extends A2APart {
 
   /// File content either as url or bytes
   A2AFilePartVariant? file;
+
+  A2AFilePart();
+
+  factory A2AFilePart.fromJson(Map<String, dynamic> json) =>
+      _$A2AFilePartFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$A2AFilePartToJson(this);
 }
 
+/// Represents a Data segment within parts.
+@JsonSerializable(explicitToJson: true)
 final class A2ADataPart extends A2APart {
   /// Structured data content
   A2ASV data = {};
@@ -43,13 +69,29 @@ final class A2ADataPart extends A2APart {
 
   /// Optional metadata associated with the part.
   A2ASV? metadata;
+
+  A2ADataPart();
+
+  factory A2ADataPart.fromJson(Map<String, dynamic> json) =>
+      _$A2ADataPartFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$A2ADataPartToJson(this);
 }
 
 /// File type variants
-sealed class A2AFilePartVariant {}
+class A2AFilePartVariant {
+  A2AFilePartVariant();
+
+  factory A2AFilePartVariant.fromJson(Map<String, dynamic> json) =>
+      A2AFilePartVariant();
+
+  Map<String, dynamic> toJson() => {};
+}
 
 /// Define the variant where 'bytes' is present and 'uri' is absent
-final class FileWithBytes extends A2AFilePartVariant {
+@JsonSerializable(explicitToJson: true)
+final class A2AFileWithBytes extends A2AFilePartVariant {
   /// base64 encoded content of the file
   String bytes = '';
 
@@ -58,9 +100,18 @@ final class FileWithBytes extends A2AFilePartVariant {
 
   /// Optional name for the file
   String name = '';
+
+  A2AFileWithBytes();
+
+  factory A2AFileWithBytes.fromJson(Map<String, dynamic> json) =>
+      _$A2AFileWithBytesFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$A2AFileWithBytesToJson(this);
 }
 
 /// Define the variant where 'uri' is present and 'bytes' is absent
+@JsonSerializable(explicitToJson: true)
 final class A2AFileWithUrl extends A2AFilePartVariant {
   /// Optional mimeType for the file
   String mimeTYpe = '';
@@ -70,4 +121,12 @@ final class A2AFileWithUrl extends A2AFilePartVariant {
 
   /// URL for the File content
   String url = '';
+
+  A2AFileWithUrl();
+
+  factory A2AFileWithUrl.fromJson(Map<String, dynamic> json) =>
+      _$A2AFileWithUrlFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$A2AFileWithUrlToJson(this);
 }

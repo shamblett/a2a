@@ -8,7 +8,13 @@
 part of '../../a2a_types.dart';
 
 /// A2A supported error types
-sealed class A2AError {}
+class A2AError {
+  A2AError();
+
+  factory A2AError.fromJson(Map<String, dynamic> json) => A2AError();
+
+  Map<String, dynamic> toJson() => {};
+}
 
 /// Represents a JSON-RPC 2.0 Error object.
 /// This is typically included in a JSONRPCErrorResponse when an error occurs.

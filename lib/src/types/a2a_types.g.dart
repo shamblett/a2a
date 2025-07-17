@@ -6,6 +6,172 @@ part of 'a2a_types.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+A2AMessage _$A2AMessageFromJson(Map<String, dynamic> json) => A2AMessage()
+  ..contextId = json['contextId'] as String?
+  ..extensions = (json['extensions'] as List<dynamic>?)
+      ?.map((e) => e as String)
+      .toList()
+  ..messageId = json['messageId'] as String
+  ..metadata = (json['metadata'] as Map<String, dynamic>?)?.map(
+    (k, e) => MapEntry(k, e as Object),
+  )
+  ..parts = (json['parts'] as List<dynamic>?)
+      ?.map((e) => A2APart.fromJson(e as Map<String, dynamic>))
+      .toList()
+  ..referenceTaskIds = (json['referenceTaskIds'] as List<dynamic>)
+      .map((e) => e as String)
+      .toList()
+  ..role = json['role'] as String
+  ..taskId = json['taskId'] as String?;
+
+Map<String, dynamic> _$A2AMessageToJson(A2AMessage instance) =>
+    <String, dynamic>{
+      'contextId': instance.contextId,
+      'extensions': instance.extensions,
+      'messageId': instance.messageId,
+      'metadata': instance.metadata,
+      'parts': instance.parts?.map((e) => e.toJson()).toList(),
+      'referenceTaskIds': instance.referenceTaskIds,
+      'role': instance.role,
+      'taskId': instance.taskId,
+    };
+
+A2AArtifact _$A2AArtifactFromJson(Map<String, dynamic> json) => A2AArtifact()
+  ..artifactId = json['artifactId'] as String
+  ..description = json['description'] as String?
+  ..extensions = (json['extensions'] as List<dynamic>)
+      .map((e) => e as String)
+      .toList()
+  ..metadata = (json['metadata'] as Map<String, dynamic>?)?.map(
+    (k, e) => MapEntry(k, e as Object),
+  )
+  ..name = json['name'] as String?
+  ..parts = (json['parts'] as List<dynamic>)
+      .map((e) => A2APart.fromJson(e as Map<String, dynamic>))
+      .toList();
+
+Map<String, dynamic> _$A2AArtifactToJson(A2AArtifact instance) =>
+    <String, dynamic>{
+      'artifactId': instance.artifactId,
+      'description': instance.description,
+      'extensions': instance.extensions,
+      'metadata': instance.metadata,
+      'name': instance.name,
+      'parts': instance.parts.map((e) => e.toJson()).toList(),
+    };
+
+A2ATask _$A2ATaskFromJson(Map<String, dynamic> json) => A2ATask()
+  ..artifacts = (json['artifacts'] as List<dynamic>)
+      .map((e) => A2AArtifact.fromJson(e as Map<String, dynamic>))
+      .toList()
+  ..contextId = json['contextId'] as String
+  ..history = (json['history'] as List<dynamic>?)
+      ?.map((e) => A2AMessage.fromJson(e as Map<String, dynamic>))
+      .toList()
+  ..id = json['id'] as String
+  ..metadata = (json['metadata'] as Map<String, dynamic>?)?.map(
+    (k, e) => MapEntry(k, e as Object),
+  )
+  ..status = json['status'] == null
+      ? null
+      : A2ATaskStatus.fromJson(json['status'] as Map<String, dynamic>);
+
+Map<String, dynamic> _$A2ATaskToJson(A2ATask instance) => <String, dynamic>{
+  'artifacts': instance.artifacts.map((e) => e.toJson()).toList(),
+  'contextId': instance.contextId,
+  'history': instance.history?.map((e) => e.toJson()).toList(),
+  'id': instance.id,
+  'metadata': instance.metadata,
+  'status': instance.status?.toJson(),
+};
+
+A2ATaskStatus _$A2ATaskStatusFromJson(Map<String, dynamic> json) =>
+    A2ATaskStatus()
+      ..message = json['message'] == null
+          ? null
+          : A2AMessage.fromJson(json['message'] as Map<String, dynamic>)
+      ..state = $enumDecodeNullable(_$A2ATaskStateEnumMap, json['state'])
+      ..timestamp = json['timestamp'] as String?;
+
+Map<String, dynamic> _$A2ATaskStatusToJson(A2ATaskStatus instance) =>
+    <String, dynamic>{
+      'message': instance.message?.toJson(),
+      'state': _$A2ATaskStateEnumMap[instance.state],
+      'timestamp': instance.timestamp,
+    };
+
+const _$A2ATaskStateEnumMap = {
+  A2ATaskState.submitted: 'submitted',
+  A2ATaskState.working: 'working',
+  A2ATaskState.inputRequired: 'input-required',
+  A2ATaskState.completed: 'completed',
+  A2ATaskState.canceled: 'canceled',
+  A2ATaskState.failed: 'failed',
+  A2ATaskState.rejected: 'rejected',
+  A2ATaskState.authRequired: 'auth-required',
+  A2ATaskState.unknown: 'unknown',
+};
+
+A2ATextPart _$A2ATextPartFromJson(Map<String, dynamic> json) => A2ATextPart()
+  ..metadata = (json['metadata'] as Map<String, dynamic>?)?.map(
+    (k, e) => MapEntry(k, e as Object),
+  )
+  ..text = json['text'] as String;
+
+Map<String, dynamic> _$A2ATextPartToJson(A2ATextPart instance) =>
+    <String, dynamic>{'metadata': instance.metadata, 'text': instance.text};
+
+A2AFilePart _$A2AFilePartFromJson(Map<String, dynamic> json) => A2AFilePart()
+  ..metadata = (json['metadata'] as Map<String, dynamic>?)?.map(
+    (k, e) => MapEntry(k, e as Object),
+  )
+  ..file = json['file'] == null
+      ? null
+      : A2AFilePartVariant.fromJson(json['file'] as Map<String, dynamic>);
+
+Map<String, dynamic> _$A2AFilePartToJson(A2AFilePart instance) =>
+    <String, dynamic>{
+      'metadata': instance.metadata,
+      'file': instance.file?.toJson(),
+    };
+
+A2ADataPart _$A2ADataPartFromJson(Map<String, dynamic> json) => A2ADataPart()
+  ..data = (json['data'] as Map<String, dynamic>).map(
+    (k, e) => MapEntry(k, e as Object),
+  )
+  ..metadata = (json['metadata'] as Map<String, dynamic>?)?.map(
+    (k, e) => MapEntry(k, e as Object),
+  );
+
+Map<String, dynamic> _$A2ADataPartToJson(A2ADataPart instance) =>
+    <String, dynamic>{'data': instance.data, 'metadata': instance.metadata};
+
+A2AFileWithBytes _$A2AFileWithBytesFromJson(Map<String, dynamic> json) =>
+    A2AFileWithBytes()
+      ..bytes = json['bytes'] as String
+      ..mimeTYpe = json['mimeTYpe'] as String
+      ..name = json['name'] as String;
+
+Map<String, dynamic> _$A2AFileWithBytesToJson(A2AFileWithBytes instance) =>
+    <String, dynamic>{
+      'bytes': instance.bytes,
+      'mimeTYpe': instance.mimeTYpe,
+      'name': instance.name,
+    };
+
+A2AFileWithUrl _$A2AFileWithUrlFromJson(Map<String, dynamic> json) =>
+    A2AFileWithUrl()
+      ..mimeTYpe = json['mimeTYpe'] as String
+      ..name = json['name'] as String
+      ..url = json['url'] as String;
+
+Map<String, dynamic> _$A2AFileWithUrlToJson(A2AFileWithUrl instance) =>
+    <String, dynamic>{
+      'mimeTYpe': instance.mimeTYpe,
+      'name': instance.name,
+      'url': instance.url,
+    };
+
 A2AAPIKeySecurityScheme _$A2AAPIKeySecuritySchemeFromJson(
   Map<String, dynamic> json,
 ) => A2AAPIKeySecurityScheme()
@@ -161,6 +327,35 @@ Map<String, dynamic> _$A2APasswordOAuthFlowToJson(
   'scopes': instance.scopes,
   'tokenUrl': instance.tokenUrl,
 };
+
+A2AJSONRPCErrorResponse _$A2AJSONRPCErrorResponseFromJson(
+  Map<String, dynamic> json,
+) => A2AJSONRPCErrorResponse()
+  ..error = json['error'] == null
+      ? null
+      : A2AError.fromJson(json['error'] as Map<String, dynamic>)
+  ..id = json['id']
+  ..jsonrpc = json['jsonrpc'] as String;
+
+Map<String, dynamic> _$A2AJSONRPCErrorResponseToJson(
+  A2AJSONRPCErrorResponse instance,
+) => <String, dynamic>{
+  'error': instance.error?.toJson(),
+  'id': instance.id,
+  'jsonrpc': instance.jsonrpc,
+};
+
+A2ACancelTaskSuccessResponse _$A2ACancelTaskSuccessResponseFromJson(
+  Map<String, dynamic> json,
+) => A2ACancelTaskSuccessResponse()
+  ..id = json['id']
+  ..result = json['result'] == null
+      ? null
+      : A2ATask.fromJson(json['result'] as Map<String, dynamic>);
+
+Map<String, dynamic> _$A2ACancelTaskSuccessResponseToJson(
+  A2ACancelTaskSuccessResponse instance,
+) => <String, dynamic>{'id': instance.id, 'result': instance.result?.toJson()};
 
 A2AAgentCapabilities _$A2AAgentCapabilitiesFromJson(
   Map<String, dynamic> json,
