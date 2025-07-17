@@ -112,6 +112,204 @@ const _$A2ATaskStateEnumMap = {
   A2ATaskState.unknown: 'unknown',
 };
 
+A2AJSONRPCError _$A2AJSONRPCErrorFromJson(Map<String, dynamic> json) =>
+    A2AJSONRPCError()
+      ..code = (json['code'] as num).toInt()
+      ..data = (json['data'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as Object),
+      )
+      ..message = json['message'] as String;
+
+Map<String, dynamic> _$A2AJSONRPCErrorToJson(A2AJSONRPCError instance) =>
+    <String, dynamic>{
+      'code': instance.code,
+      'data': instance.data,
+      'message': instance.message,
+    };
+
+A2AJSONParseError _$A2AJSONParseErrorFromJson(Map<String, dynamic> json) =>
+    A2AJSONParseError()
+      ..code = (json['code'] as num).toInt()
+      ..data = (json['data'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as Object),
+      )
+      ..message = json['message'] as String;
+
+Map<String, dynamic> _$A2AJSONParseErrorToJson(A2AJSONParseError instance) =>
+    <String, dynamic>{
+      'code': instance.code,
+      'data': instance.data,
+      'message': instance.message,
+    };
+
+A2AInvalidRequestError _$A2AInvalidRequestErrorFromJson(
+  Map<String, dynamic> json,
+) => A2AInvalidRequestError()
+  ..code = (json['code'] as num).toInt()
+  ..data = (json['data'] as Map<String, dynamic>?)?.map(
+    (k, e) => MapEntry(k, e as Object),
+  )
+  ..message = json['message'] as String;
+
+Map<String, dynamic> _$A2AInvalidRequestErrorToJson(
+  A2AInvalidRequestError instance,
+) => <String, dynamic>{
+  'code': instance.code,
+  'data': instance.data,
+  'message': instance.message,
+};
+
+A2AMethodNotFoundError _$A2AMethodNotFoundErrorFromJson(
+  Map<String, dynamic> json,
+) => A2AMethodNotFoundError()
+  ..code = (json['code'] as num).toInt()
+  ..data = (json['data'] as Map<String, dynamic>?)?.map(
+    (k, e) => MapEntry(k, e as Object),
+  )
+  ..message = json['message'] as String;
+
+Map<String, dynamic> _$A2AMethodNotFoundErrorToJson(
+  A2AMethodNotFoundError instance,
+) => <String, dynamic>{
+  'code': instance.code,
+  'data': instance.data,
+  'message': instance.message,
+};
+
+A2AInvalidParamsError _$A2AInvalidParamsErrorFromJson(
+  Map<String, dynamic> json,
+) => A2AInvalidParamsError()
+  ..code = (json['code'] as num).toInt()
+  ..data = (json['data'] as Map<String, dynamic>?)?.map(
+    (k, e) => MapEntry(k, e as Object),
+  )
+  ..message = json['message'] as String;
+
+Map<String, dynamic> _$A2AInvalidParamsErrorToJson(
+  A2AInvalidParamsError instance,
+) => <String, dynamic>{
+  'code': instance.code,
+  'data': instance.data,
+  'message': instance.message,
+};
+
+A2AInternalError _$A2AInternalErrorFromJson(Map<String, dynamic> json) =>
+    A2AInternalError()
+      ..code = (json['code'] as num).toInt()
+      ..data = (json['data'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as Object),
+      )
+      ..message = json['message'] as String;
+
+Map<String, dynamic> _$A2AInternalErrorToJson(A2AInternalError instance) =>
+    <String, dynamic>{
+      'code': instance.code,
+      'data': instance.data,
+      'message': instance.message,
+    };
+
+A2ATaskNotFoundError _$A2ATaskNotFoundErrorFromJson(
+  Map<String, dynamic> json,
+) => A2ATaskNotFoundError()
+  ..code = (json['code'] as num).toInt()
+  ..data = (json['data'] as Map<String, dynamic>?)?.map(
+    (k, e) => MapEntry(k, e as Object),
+  )
+  ..message = json['message'] as String;
+
+Map<String, dynamic> _$A2ATaskNotFoundErrorToJson(
+  A2ATaskNotFoundError instance,
+) => <String, dynamic>{
+  'code': instance.code,
+  'data': instance.data,
+  'message': instance.message,
+};
+
+A2ATaskNotCancelableError _$A2ATaskNotCancelableErrorFromJson(
+  Map<String, dynamic> json,
+) => A2ATaskNotCancelableError()
+  ..code = (json['code'] as num).toInt()
+  ..data = (json['data'] as Map<String, dynamic>?)?.map(
+    (k, e) => MapEntry(k, e as Object),
+  )
+  ..message = json['message'] as String;
+
+Map<String, dynamic> _$A2ATaskNotCancelableErrorToJson(
+  A2ATaskNotCancelableError instance,
+) => <String, dynamic>{
+  'code': instance.code,
+  'data': instance.data,
+  'message': instance.message,
+};
+
+A2APushNotificationNotSupportedError
+_$A2APushNotificationNotSupportedErrorFromJson(Map<String, dynamic> json) =>
+    A2APushNotificationNotSupportedError()
+      ..code = (json['code'] as num).toInt()
+      ..data = (json['data'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as Object),
+      )
+      ..message = json['message'] as String;
+
+Map<String, dynamic> _$A2APushNotificationNotSupportedErrorToJson(
+  A2APushNotificationNotSupportedError instance,
+) => <String, dynamic>{
+  'code': instance.code,
+  'data': instance.data,
+  'message': instance.message,
+};
+
+A2AUnsupportedOperationError _$A2AUnsupportedOperationErrorFromJson(
+  Map<String, dynamic> json,
+) => A2AUnsupportedOperationError()
+  ..code = (json['code'] as num).toInt()
+  ..data = (json['data'] as Map<String, dynamic>?)?.map(
+    (k, e) => MapEntry(k, e as Object),
+  )
+  ..message = json['message'] as String;
+
+Map<String, dynamic> _$A2AUnsupportedOperationErrorToJson(
+  A2AUnsupportedOperationError instance,
+) => <String, dynamic>{
+  'code': instance.code,
+  'data': instance.data,
+  'message': instance.message,
+};
+
+A2AContentTypeNotSupportedError _$A2AContentTypeNotSupportedErrorFromJson(
+  Map<String, dynamic> json,
+) => A2AContentTypeNotSupportedError()
+  ..code = (json['code'] as num).toInt()
+  ..data = (json['data'] as Map<String, dynamic>?)?.map(
+    (k, e) => MapEntry(k, e as Object),
+  )
+  ..message = json['message'] as String;
+
+Map<String, dynamic> _$A2AContentTypeNotSupportedErrorToJson(
+  A2AContentTypeNotSupportedError instance,
+) => <String, dynamic>{
+  'code': instance.code,
+  'data': instance.data,
+  'message': instance.message,
+};
+
+A2AInvalidAgentResponseError _$A2AInvalidAgentResponseErrorFromJson(
+  Map<String, dynamic> json,
+) => A2AInvalidAgentResponseError()
+  ..code = (json['code'] as num).toInt()
+  ..data = (json['data'] as Map<String, dynamic>?)?.map(
+    (k, e) => MapEntry(k, e as Object),
+  )
+  ..message = json['message'] as String;
+
+Map<String, dynamic> _$A2AInvalidAgentResponseErrorToJson(
+  A2AInvalidAgentResponseError instance,
+) => <String, dynamic>{
+  'code': instance.code,
+  'data': instance.data,
+  'message': instance.message,
+};
+
 A2ATextPart _$A2ATextPartFromJson(Map<String, dynamic> json) => A2ATextPart()
   ..metadata = (json['metadata'] as Map<String, dynamic>?)?.map(
     (k, e) => MapEntry(k, e as Object),
