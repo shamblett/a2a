@@ -33,6 +33,7 @@ interface class A2AMySchema {
 }
 
 /// The message being sent to the server.
+@JsonSerializable(explicitToJson: true)
 class A2AMessage {
   /// The context the message is associated with
   String? contextId;
@@ -60,9 +61,17 @@ class A2AMessage {
 
   /// Identifier of task the message is related to
   String? taskId;
+
+  A2AMessage();
+
+  factory A2AMessage.fromJson(Map<String, dynamic> json) =>
+      _$A2AMessageFromJson(json);
+
+  Map<String, dynamic> toJson() => _$A2AMessageToJson(this);
 }
 
 /// Represents an artifact generated for a task.
+@JsonSerializable(explicitToJson: true)
 class A2AArtifact {
   /// Unique identifier for the artifact.
   String artifactId = '';
@@ -81,9 +90,17 @@ class A2AArtifact {
 
   /// Artifact parts
   List<A2APart> parts = [];
+
+  A2AArtifact();
+
+  factory A2AArtifact.fromJson(Map<String, dynamic> json) =>
+      _$A2AArtifactFromJson(json);
+
+  Map<String, dynamic> toJson() => _$A2AArtifactToJson(this);
 }
 
 /// The result object on success.
+@JsonSerializable(explicitToJson: true)
 class A2ATask {
   /// Collection of artifacts created by the agent.
   List<A2AArtifact> artifacts = [];
@@ -101,15 +118,30 @@ class A2ATask {
   /// Extension metadata.
   A2ASV? metadata;
   A2ATaskStatus? status;
+
+  A2ATask();
+
+  factory A2ATask.fromJson(Map<String, dynamic> json) =>
+      _$A2ATaskFromJson(json);
+
+  Map<String, dynamic> toJson() => _$A2ATaskToJson(this);
 }
 
 /// Current status of the task
+@JsonSerializable(explicitToJson: true)
 class A2ATaskStatus {
   A2AMessage? message;
   A2ATaskState? state;
 
   /// ISO 8601 datetime string when the status was recorded.
   String? timestamp;
+
+  A2ATaskStatus();
+
+  factory A2ATaskStatus.fromJson(Map<String, dynamic> json) =>
+      _$A2ATaskStatusFromJson(json);
+
+  Map<String, dynamic> toJson() => _$A2ATaskStatusToJson(this);
 }
 
 /// Common JSON error response mixin

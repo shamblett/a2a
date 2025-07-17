@@ -8,13 +8,63 @@
 part of '../../a2a_types.dart';
 
 /// JSON-RPC response for the 'tasks/cancel' method.
-sealed class A2ACancelTaskResponse {}
+@JsonSerializable(explicitToJson: true)
+class A2ACancelTaskResponse {
+
+  A2ACancelTaskResponse();
+
+  factory A2ACancelTaskResponse.fromJson(Map<String, dynamic> json) {
+    if (!json.containsKey('error')) {
+      return A2ACancelTaskResponse();
+    } else {
+      switch (json['type']) {
+        case 'apiKey':
+          return A2AAPIKeySecurityScheme.fromJson(json);
+        case 'http':
+          return A2AHTTPAuthSecurityScheme.fromJson(json);
+        case 'oauth2':
+          return A2AOAuth2SecurityScheme.fromJson(json);
+        case 'openIdConnect':
+          return A2AOpenIdConnectSecurityScheme.fromJson(json);
+        default:
+          return A2ASecurityScheme();
+      }
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    if (this is A2AAPIKeySecurityScheme) {
+      return (this as A2AAPIKeySecurityScheme).toJson();
+    }
+    if (this is A2AHTTPAuthSecurityScheme) {
+      return (this as A2AHTTPAuthSecurityScheme).toJson();
+    }
+    if (this is A2AOAuth2SecurityScheme) {
+      return (this as A2AOAuth2SecurityScheme).toJson();
+    }
+    if (this is A2AOpenIdConnectSecurityScheme) {
+      return (this as A2AOpenIdConnectSecurityScheme).toJson();
+    }
+
+    return {};
+  }
+}
 
 /// JSON-RPC response for the 'tasks/cancel' method.
+@JsonSerializable(explicitToJson: true)
 final class A2AJSONRPCErrorResponse extends A2ACancelTaskResponse
-    with A2AJSONRPCErrorResponseM {}
+    with A2AJSONRPCErrorResponseM {
+
+  A2AJSONRPCErrorResponse();
+
+  factory A2AJSONRPCErrorResponse.fromJson(Map<String, dynamic> json) =>
+      _$A2AJSONRPCErrorResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$A2AJSONRPCErrorResponseToJson(this);
+}
 
 /// JSON-RPC success response model for the 'tasks/cancel' method.
+@JsonSerializable(explicitToJson: true)
 final class A2ACancelTaskSuccessResponse extends A2ACancelTaskResponse {
   /// An identifier established by the Client that MUST contain a String, Number.
   /// Numbers SHOULD NOT contain fractional parts.
@@ -23,4 +73,11 @@ final class A2ACancelTaskSuccessResponse extends A2ACancelTaskResponse {
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
   final jsonrpc = '2.0';
   A2ATask? result;
+
+  A2ACancelTaskSuccessResponse();
+
+  factory A2ACancelTaskSuccessResponse.fromJson(Map<String, dynamic> json) =>
+      _$A2ACancelTaskSuccessResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$A2ACancelTaskSuccessResponseToJson(this);
 }
