@@ -11,7 +11,8 @@ A2AAPIKeySecurityScheme _$A2AAPIKeySecuritySchemeFromJson(
 ) => A2AAPIKeySecurityScheme()
   ..description = json['description'] as String?
   ..location = json['location'] as String
-  ..name = json['name'] as String?;
+  ..name = json['name'] as String?
+  ..type = json['type'] as String;
 
 Map<String, dynamic> _$A2AAPIKeySecuritySchemeToJson(
   A2AAPIKeySecurityScheme instance,
@@ -19,6 +20,7 @@ Map<String, dynamic> _$A2AAPIKeySecuritySchemeToJson(
   'description': instance.description,
   'location': instance.location,
   'name': instance.name,
+  'type': instance.type,
 };
 
 A2AHTTPAuthSecurityScheme _$A2AHTTPAuthSecuritySchemeFromJson(
@@ -26,7 +28,8 @@ A2AHTTPAuthSecurityScheme _$A2AHTTPAuthSecuritySchemeFromJson(
 ) => A2AHTTPAuthSecurityScheme()
   ..headerFormat = json['headerFormat'] as String?
   ..description = json['description'] as String?
-  ..scheme = json['scheme'] as String;
+  ..scheme = json['scheme'] as String
+  ..type = json['type'] as String;
 
 Map<String, dynamic> _$A2AHTTPAuthSecuritySchemeToJson(
   A2AHTTPAuthSecurityScheme instance,
@@ -34,6 +37,7 @@ Map<String, dynamic> _$A2AHTTPAuthSecuritySchemeToJson(
   'headerFormat': instance.headerFormat,
   'description': instance.description,
   'scheme': instance.scheme,
+  'type': instance.type,
 };
 
 A2AOAuth2SecurityScheme _$A2AOAuth2SecuritySchemeFromJson(
@@ -42,26 +46,30 @@ A2AOAuth2SecurityScheme _$A2AOAuth2SecuritySchemeFromJson(
   ..description = json['description'] as String?
   ..flows = json['flows'] == null
       ? null
-      : A2AOAuthFlows.fromJson(json['flows'] as Map<String, dynamic>);
+      : A2AOAuthFlows.fromJson(json['flows'] as Map<String, dynamic>)
+  ..type = json['type'] as String;
 
 Map<String, dynamic> _$A2AOAuth2SecuritySchemeToJson(
   A2AOAuth2SecurityScheme instance,
 ) => <String, dynamic>{
   'description': instance.description,
   'flows': instance.flows?.toJson(),
+  'type': instance.type,
 };
 
 A2AOpenIdConnectSecurityScheme _$A2AOpenIdConnectSecuritySchemeFromJson(
   Map<String, dynamic> json,
 ) => A2AOpenIdConnectSecurityScheme()
   ..description = json['description'] as String?
-  ..openIdConnectUrl = json['openIdConnectUrl'] as String;
+  ..openIdConnectUrl = json['openIdConnectUrl'] as String
+  ..type = json['type'] as String;
 
 Map<String, dynamic> _$A2AOpenIdConnectSecuritySchemeToJson(
   A2AOpenIdConnectSecurityScheme instance,
 ) => <String, dynamic>{
   'description': instance.description,
   'openIdConnectUrl': instance.openIdConnectUrl,
+  'type': instance.type,
 };
 
 A2AOAuthFlows _$A2AOAuthFlowsFromJson(

@@ -61,7 +61,7 @@ final class A2AAPIKeySecurityScheme extends A2ASecurityScheme {
 
   /// The name of the header, query or cookie parameter to be used.
   String? name;
-  final String type = 'apiKey';
+  String type = 'apiKey';
 
   A2AAPIKeySecurityScheme();
 
@@ -87,7 +87,7 @@ final class A2AHTTPAuthSecurityScheme extends A2ASecurityScheme {
   /// in RFC7235. The values used SHOULD be registered in the IANA Authentication Scheme registry.
   /// The value is case-insensitive, as defined in RFC7235.
   String scheme = '';
-  final type = 'http';
+  String type = 'http';
 
   A2AHTTPAuthSecurityScheme();
 
@@ -104,7 +104,7 @@ final class A2AOAuth2SecurityScheme extends A2ASecurityScheme {
   /// Description of this security scheme.
   String? description;
   A2AOAuthFlows? flows;
-  final type = 'oauth2';
+  String type = 'oauth2';
 
   A2AOAuth2SecurityScheme();
 
@@ -123,7 +123,7 @@ final class A2AOpenIdConnectSecurityScheme extends A2ASecurityScheme {
 
   /// Well-known URL to discover the [[OpenID-Connect-Discovery]] provider metadata.
   String openIdConnectUrl = '';
-  final type = 'openIdConnect';
+  String type = 'openIdConnect';
 
   A2AOpenIdConnectSecurityScheme();
 
