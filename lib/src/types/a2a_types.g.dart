@@ -6,11 +6,153 @@ part of 'a2a_types.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-A2ASecurityScheme _$A2ASecuritySchemeFromJson(Map<String, dynamic> json) =>
-    A2ASecurityScheme();
+A2AAPIKeySecurityScheme _$A2AAPIKeySecuritySchemeFromJson(
+  Map<String, dynamic> json,
+) => A2AAPIKeySecurityScheme()
+  ..description = json['description'] as String?
+  ..location = json['location'] as String
+  ..name = json['name'] as String?;
 
-Map<String, dynamic> _$A2ASecuritySchemeToJson(A2ASecurityScheme instance) =>
-    <String, dynamic>{};
+Map<String, dynamic> _$A2AAPIKeySecuritySchemeToJson(
+  A2AAPIKeySecurityScheme instance,
+) => <String, dynamic>{
+  'description': instance.description,
+  'location': instance.location,
+  'name': instance.name,
+};
+
+A2AHTTPAuthSecurityScheme _$A2AHTTPAuthSecuritySchemeFromJson(
+  Map<String, dynamic> json,
+) => A2AHTTPAuthSecurityScheme()
+  ..headerFormat = json['headerFormat'] as String?
+  ..description = json['description'] as String?
+  ..scheme = json['scheme'] as String;
+
+Map<String, dynamic> _$A2AHTTPAuthSecuritySchemeToJson(
+  A2AHTTPAuthSecurityScheme instance,
+) => <String, dynamic>{
+  'headerFormat': instance.headerFormat,
+  'description': instance.description,
+  'scheme': instance.scheme,
+};
+
+A2AOAuth2SecurityScheme _$A2AOAuth2SecuritySchemeFromJson(
+  Map<String, dynamic> json,
+) => A2AOAuth2SecurityScheme()
+  ..description = json['description'] as String?
+  ..flows = json['flows'] == null
+      ? null
+      : A2AOAuthFlows.fromJson(json['flows'] as Map<String, dynamic>);
+
+Map<String, dynamic> _$A2AOAuth2SecuritySchemeToJson(
+  A2AOAuth2SecurityScheme instance,
+) => <String, dynamic>{
+  'description': instance.description,
+  'flows': instance.flows?.toJson(),
+};
+
+A2AOpenIdConnectSecurityScheme _$A2AOpenIdConnectSecuritySchemeFromJson(
+  Map<String, dynamic> json,
+) => A2AOpenIdConnectSecurityScheme()
+  ..description = json['description'] as String?
+  ..openIdConnectUrl = json['openIdConnectUrl'] as String;
+
+Map<String, dynamic> _$A2AOpenIdConnectSecuritySchemeToJson(
+  A2AOpenIdConnectSecurityScheme instance,
+) => <String, dynamic>{
+  'description': instance.description,
+  'openIdConnectUrl': instance.openIdConnectUrl,
+};
+
+A2AOAuthFlows _$A2AOAuthFlowsFromJson(
+  Map<String, dynamic> json,
+) => A2AOAuthFlows()
+  ..authorizationCode = json['authorizationCode'] == null
+      ? null
+      : A2AAuthorizationCodeOAuthFlow.fromJson(
+          json['authorizationCode'] as Map<String, dynamic>,
+        )
+  ..clientCredentials = json['clientCredentials'] == null
+      ? null
+      : A2AClientCredentialsOAuthFlow.fromJson(
+          json['clientCredentials'] as Map<String, dynamic>,
+        )
+  ..implicit = json['implicit'] == null
+      ? null
+      : A2AImplicitOAuthFlow.fromJson(json['implicit'] as Map<String, dynamic>)
+  ..password = json['password'] == null
+      ? null
+      : A2APasswordOAuthFlow.fromJson(json['password'] as Map<String, dynamic>);
+
+Map<String, dynamic> _$A2AOAuthFlowsToJson(A2AOAuthFlows instance) =>
+    <String, dynamic>{
+      'authorizationCode': instance.authorizationCode?.toJson(),
+      'clientCredentials': instance.clientCredentials?.toJson(),
+      'implicit': instance.implicit?.toJson(),
+      'password': instance.password?.toJson(),
+    };
+
+A2AImplicitOAuthFlow _$A2AImplicitOAuthFlowFromJson(
+  Map<String, dynamic> json,
+) => A2AImplicitOAuthFlow()
+  ..authorizationUrl = json['authorizationUrl'] as String
+  ..refreshUrl = json['refreshUrl'] as String?
+  ..scopes = Map<String, String>.from(json['scopes'] as Map);
+
+Map<String, dynamic> _$A2AImplicitOAuthFlowToJson(
+  A2AImplicitOAuthFlow instance,
+) => <String, dynamic>{
+  'authorizationUrl': instance.authorizationUrl,
+  'refreshUrl': instance.refreshUrl,
+  'scopes': instance.scopes,
+};
+
+A2AAuthorizationCodeOAuthFlow _$A2AAuthorizationCodeOAuthFlowFromJson(
+  Map<String, dynamic> json,
+) => A2AAuthorizationCodeOAuthFlow()
+  ..authorizationUrl = json['authorizationUrl'] as String
+  ..refreshUrl = json['refreshUrl'] as String?
+  ..scopes = Map<String, String>.from(json['scopes'] as Map)
+  ..tokenUrl = json['tokenUrl'] as String;
+
+Map<String, dynamic> _$A2AAuthorizationCodeOAuthFlowToJson(
+  A2AAuthorizationCodeOAuthFlow instance,
+) => <String, dynamic>{
+  'authorizationUrl': instance.authorizationUrl,
+  'refreshUrl': instance.refreshUrl,
+  'scopes': instance.scopes,
+  'tokenUrl': instance.tokenUrl,
+};
+
+A2AClientCredentialsOAuthFlow _$A2AClientCredentialsOAuthFlowFromJson(
+  Map<String, dynamic> json,
+) => A2AClientCredentialsOAuthFlow()
+  ..refreshUrl = json['refreshUrl'] as String
+  ..scopes = Map<String, String>.from(json['scopes'] as Map)
+  ..tokenUrl = json['tokenUrl'] as String;
+
+Map<String, dynamic> _$A2AClientCredentialsOAuthFlowToJson(
+  A2AClientCredentialsOAuthFlow instance,
+) => <String, dynamic>{
+  'refreshUrl': instance.refreshUrl,
+  'scopes': instance.scopes,
+  'tokenUrl': instance.tokenUrl,
+};
+
+A2APasswordOAuthFlow _$A2APasswordOAuthFlowFromJson(
+  Map<String, dynamic> json,
+) => A2APasswordOAuthFlow()
+  ..refreshUrl = json['refreshUrl'] as String
+  ..scopes = Map<String, String>.from(json['scopes'] as Map)
+  ..tokenUrl = json['tokenUrl'] as String;
+
+Map<String, dynamic> _$A2APasswordOAuthFlowToJson(
+  A2APasswordOAuthFlow instance,
+) => <String, dynamic>{
+  'refreshUrl': instance.refreshUrl,
+  'scopes': instance.scopes,
+  'tokenUrl': instance.tokenUrl,
+};
 
 A2AAgentCapabilities _$A2AAgentCapabilitiesFromJson(
   Map<String, dynamic> json,
