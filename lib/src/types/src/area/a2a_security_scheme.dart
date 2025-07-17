@@ -12,9 +12,41 @@ part of '../../a2a_types.dart';
 class A2ASecurityScheme {
   A2ASecurityScheme();
 
-  factory A2ASecurityScheme.fromJson(Map<String, dynamic> json) {}
+  factory A2ASecurityScheme.fromJson(Map<String, dynamic> json) {
+    if (!json.containsKey('type')) {
+      return A2ASecurityScheme();
+    } else {
+      switch (json['type']) {
+        case 'apiKey':
+          return A2AAPIKeySecurityScheme.fromJson(json);
+        case 'http':
+          return A2AHTTPAuthSecurityScheme.fromJson(json);
+        case 'oauth2':
+          return A2AOAuth2SecurityScheme.fromJson(json);
+        case 'openIdConnect':
+          return A2AOpenIdConnectSecurityScheme.fromJson(json);
+        default:
+          return A2ASecurityScheme();
+      }
+    }
+  }
 
-  Map<String, dynamic> toJson() {}
+  Map<String, dynamic> toJson() {
+    if (this is A2AAPIKeySecurityScheme) {
+      return (this as A2AAPIKeySecurityScheme).toJson();
+    }
+    if (this is A2AHTTPAuthSecurityScheme) {
+      return (this as A2AHTTPAuthSecurityScheme).toJson();
+    }
+    if (this is A2AOAuth2SecurityScheme) {
+      return (this as A2AOAuth2SecurityScheme).toJson();
+    }
+    if (this is A2AOpenIdConnectSecurityScheme) {
+      return (this as A2AOpenIdConnectSecurityScheme).toJson();
+    }
+
+    return {};
+  }
 }
 
 /// API Key security scheme.
