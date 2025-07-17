@@ -12,7 +12,7 @@ class A2ACancelTaskResponse {
   A2ACancelTaskResponse();
 
   factory A2ACancelTaskResponse.fromJson(Map<String, dynamic> json) {
-    return !json.containsKey('error')
+    return json.containsKey('error')
         ? A2AJSONRPCErrorResponse.fromJson(json)
         : A2ACancelTaskSuccessResponse.fromJson((json));
   }
@@ -50,7 +50,7 @@ final class A2ACancelTaskSuccessResponse extends A2ACancelTaskResponse {
   A2AId? id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
-  final jsonrpc = '2.0';
+  String jsonrpc = '2.0';
   A2ATask? result;
 
   A2ACancelTaskSuccessResponse();

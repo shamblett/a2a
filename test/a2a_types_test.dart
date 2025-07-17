@@ -84,4 +84,38 @@ void main() {
       expect(testScheme1.type, 'openIdConnect');
     });
   });
+  group('Cancel Task Response', () {
+    test('A2AJSONRPCErrorResponse', () {
+      var cancelTaskResponse = A2ACancelTaskResponse();
+      var json = <String, dynamic>{};
+
+      var testResponse = A2AJSONRPCErrorResponse()
+        ..error = A2AError()
+        ..id = 1;
+      cancelTaskResponse = testResponse;
+      json = cancelTaskResponse.toJson();
+      cancelTaskResponse = A2ACancelTaskResponse();
+      cancelTaskResponse = A2ACancelTaskResponse.fromJson(json);
+      expect(cancelTaskResponse is A2AJSONRPCErrorResponse, isTrue);
+      final testresponse1 = cancelTaskResponse as A2AJSONRPCErrorResponse;
+      expect(testresponse1.error is A2AError, isTrue);
+      expect(testresponse1.id, 1);
+    });
+    test('A2ACancelTaskSuccessResponse', () {
+      var cancelTaskResponse = A2ACancelTaskResponse();
+      var json = <String, dynamic>{};
+
+      var testResponse = A2ACancelTaskSuccessResponse()
+        ..result = A2ATask()
+        ..id = 2;
+      cancelTaskResponse = testResponse;
+      json = cancelTaskResponse.toJson();
+      cancelTaskResponse = A2ACancelTaskResponse();
+      cancelTaskResponse = A2ACancelTaskResponse.fromJson(json);
+      expect(cancelTaskResponse is A2ACancelTaskSuccessResponse, isTrue);
+      final testresponse1 = cancelTaskResponse as A2ACancelTaskSuccessResponse;
+      expect(testresponse1.result is A2ATask, isTrue);
+      expect(testresponse1.id, 2);
+    });
+  });
 }

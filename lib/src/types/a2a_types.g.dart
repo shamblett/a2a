@@ -349,13 +349,18 @@ A2ACancelTaskSuccessResponse _$A2ACancelTaskSuccessResponseFromJson(
   Map<String, dynamic> json,
 ) => A2ACancelTaskSuccessResponse()
   ..id = json['id']
+  ..jsonrpc = json['jsonrpc'] as String
   ..result = json['result'] == null
       ? null
       : A2ATask.fromJson(json['result'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$A2ACancelTaskSuccessResponseToJson(
   A2ACancelTaskSuccessResponse instance,
-) => <String, dynamic>{'id': instance.id, 'result': instance.result?.toJson()};
+) => <String, dynamic>{
+  'id': instance.id,
+  'jsonrpc': instance.jsonrpc,
+  'result': instance.result?.toJson(),
+};
 
 A2AAgentCapabilities _$A2AAgentCapabilitiesFromJson(
   Map<String, dynamic> json,
