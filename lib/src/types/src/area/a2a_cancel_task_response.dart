@@ -9,12 +9,19 @@ part of '../../a2a_types.dart';
 
 /// JSON-RPC response for the 'tasks/cancel' method.
 class A2ACancelTaskResponse {
+  /// True if the response is an error
+  bool isError = false;
+
   A2ACancelTaskResponse();
 
   factory A2ACancelTaskResponse.fromJson(Map<String, dynamic> json) {
-    return json.containsKey('error')
-        ? A2AJSONRPCErrorResponse.fromJson(json)
-        : A2ACancelTaskSuccessResponse.fromJson((json));
+    if (json.containsKey('error')) {
+      final response = A2AJSONRPCErrorResponse.fromJson(json);
+      response.isError = true;
+      return response;
+    } else {
+      return A2ACancelTaskSuccessResponse.fromJson((json));
+    }
   }
 
   Map<String, dynamic> toJson() {

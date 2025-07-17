@@ -24,9 +24,80 @@ class A2AError {
 
   A2AError();
 
-  factory A2AError.fromJson(Map<String, dynamic> json) => A2AError();
+  factory A2AError.fromJson(Map<String, dynamic> json) {
+    if (!json.containsKey('type')) {
+      return A2AError();
+    } else {
+      switch (json['code']) {
+        case jsonRpc:
+          return A2AJSONRPCError.fromJson(json);
+        case jsonParse:
+          return A2AJSONParseError.fromJson(json);
+        case invalidRequest:
+          return A2AInvalidRequestError.fromJson(json);
+        case methodNotFound:
+          return A2AMethodNotFoundError.fromJson(json);
+        case invalidParams:
+          return A2AInvalidParamsError.fromJson(json);
+        case internal:
+          return A2AInternalError.fromJson(json);
+        case taskNotFound:
+          return A2ATaskNotFoundError.fromJson(json);
+        case taskNotCancellable:
+          return A2ATaskNotCancelableError.fromJson(json);
+        case pushNotificationNotSupported:
+          return A2APushNotificationNotSupportedError.fromJson(json);
+        case unsupportedOperation:
+          return A2AUnsupportedOperationError.fromJson(json);
+        case contentTypeNotSupported:
+          return A2AContentTypeNotSupportedError.fromJson(json);
+        case invalidAgentResponse:
+          return A2AInvalidAgentResponseError.fromJson(json);
+        default:
+          return A2AError();
+      }
+    }
+  }
 
-  Map<String, dynamic> toJson() => {};
+  Map<String, dynamic> toJson() {
+    if (this is A2AJSONRPCError) {
+      return (this as A2AJSONRPCError).toJson();
+    }
+    if (this is A2AJSONParseError) {
+      return (this as A2AJSONParseError).toJson();
+    }
+    if (this is A2AInvalidRequestError) {
+      return (this as A2AInvalidRequestError).toJson();
+    }
+    if (this is A2AMethodNotFoundError) {
+      return (this as A2AMethodNotFoundError).toJson();
+    }
+    if (this is A2AInvalidParamsError) {
+      return (this as A2AInvalidParamsError).toJson();
+    }
+    if (this is A2AInternalError) {
+      return (this as A2AInternalError).toJson();
+    }
+    if (this is A2ATaskNotFoundError) {
+      return (this as A2ATaskNotFoundError).toJson();
+    }
+    if (this is A2ATaskNotCancelableError) {
+      return (this as A2ATaskNotCancelableError).toJson();
+    }
+    if (this is A2APushNotificationNotSupportedError) {
+      return (this as A2APushNotificationNotSupportedError).toJson();
+    }
+    if (this is A2AUnsupportedOperationError) {
+      return (this as A2AUnsupportedOperationError).toJson();
+    }
+    if (this is A2AContentTypeNotSupportedError) {
+      return (this as A2AContentTypeNotSupportedError).toJson();
+    }
+    if (this is A2AInvalidAgentResponseError) {
+      return (this as A2AInvalidAgentResponseError).toJson();
+    }
+    return {};
+  }
 }
 
 /// Represents a JSON-RPC 2.0 Error object.

@@ -96,6 +96,7 @@ void main() {
       json = cancelTaskResponse.toJson();
       cancelTaskResponse = A2ACancelTaskResponse();
       cancelTaskResponse = A2ACancelTaskResponse.fromJson(json);
+      expect(cancelTaskResponse.isError, true);
       expect(cancelTaskResponse is A2AJSONRPCErrorResponse, isTrue);
       final testresponse1 = cancelTaskResponse as A2AJSONRPCErrorResponse;
       expect(testresponse1.error is A2AError, isTrue);
