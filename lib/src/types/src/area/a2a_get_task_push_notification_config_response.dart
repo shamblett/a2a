@@ -8,7 +8,7 @@
 part of '../../a2a_types.dart';
 
 /// JSON-RPC response for the 'tasks/pushNotificationConfig/get' method.
-sealed class A2AGetTaskPushNotificationConfigResponse {
+class A2AGetTaskPushNotificationConfigResponse {
   /// True if the response is an error
   bool isError = false;
 

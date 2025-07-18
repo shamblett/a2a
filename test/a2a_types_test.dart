@@ -325,4 +325,43 @@ void main() {
       expect(testError1.code, A2AError.invalidAgentResponse);
     });
   });
+  group('Push Notification Config Response', () {
+    test('A2AJSONRPCErrorResponseGTPR', () {
+      var pncTaskResponse = A2AGetTaskPushNotificationConfigResponse();
+      var json = <String, dynamic>{};
+
+      var testResponse = A2AJSONRPCErrorResponseGTPR()
+        ..error = A2AError()
+        ..id = 1;
+      pncTaskResponse = testResponse;
+      json = pncTaskResponse.toJson();
+      pncTaskResponse = A2AGetTaskPushNotificationConfigResponse();
+      pncTaskResponse = A2AGetTaskPushNotificationConfigResponse.fromJson(json);
+      expect(pncTaskResponse.isError, true);
+      expect(pncTaskResponse is A2AJSONRPCErrorResponseGTPR, isTrue);
+      final testResponse1 = pncTaskResponse as A2AJSONRPCErrorResponseGTPR;
+      expect(testResponse1.error is A2AError, isTrue);
+      expect(testResponse1.id, 1);
+    });
+    test('A2AGetTaskPushNotificationConfigSuccessResponse', () {
+      var pncTaskResponse = A2AGetTaskPushNotificationConfigResponse();
+      var json = <String, dynamic>{};
+
+      var testResponse = A2AGetTaskPushNotificationConfigSuccessResponse()
+        ..result = A2ATaskPushNotificationConfig1()
+        ..id = 2;
+      pncTaskResponse = testResponse;
+      json = pncTaskResponse.toJson();
+      pncTaskResponse = A2AGetTaskPushNotificationConfigResponse();
+      pncTaskResponse = A2AGetTaskPushNotificationConfigResponse.fromJson(json);
+      expect(
+        pncTaskResponse is A2AGetTaskPushNotificationConfigSuccessResponse,
+        isTrue,
+      );
+      final testResponse1 =
+          pncTaskResponse as A2AGetTaskPushNotificationConfigSuccessResponse;
+      expect(testResponse1.result is A2ATaskPushNotificationConfig1, isTrue);
+      expect(testResponse1.id, 2);
+    });
+  });
 }
