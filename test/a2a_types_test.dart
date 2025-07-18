@@ -364,4 +364,40 @@ void main() {
       expect(testResponse1.id, 2);
     });
   });
+  group('Task Response', () {
+    test('A2AJSONRPCErrorResponseT', () {
+      var taskResponse = A2AGetTaskResponse();
+      var json = <String, dynamic>{};
+
+      var testResponse = A2AJSONRPCErrorResponseT()
+        ..error = A2AError()
+        ..id = 1;
+      taskResponse = testResponse;
+      json = taskResponse.toJson();
+
+      taskResponse = A2AGetTaskResponse();
+      taskResponse = A2AGetTaskResponse.fromJson(json);
+      expect(taskResponse.isError, true);
+      expect(taskResponse is A2AJSONRPCErrorResponseT, isTrue);
+      final testResponse1 = taskResponse as A2AJSONRPCErrorResponseT;
+      expect(testResponse1.error is A2AError, isTrue);
+      expect(testResponse1.id, 1);
+    });
+    test('A2AGetTaskSuccessResponse', () {
+      var taskResponse = A2AGetTaskResponse();
+      var json = <String, dynamic>{};
+
+      var testResponse = A2AGetTaskSuccessResponse()
+        ..result = A2ATask()
+        ..id = 2;
+      taskResponse = testResponse;
+      json = taskResponse.toJson();
+      taskResponse = A2AGetTaskResponse();
+      taskResponse = A2AGetTaskResponse.fromJson(json);
+      expect(taskResponse is A2AGetTaskSuccessResponse, isTrue);
+      final testResponse1 = taskResponse as A2AGetTaskSuccessResponse;
+      expect(testResponse1.result is A2ATask, isTrue);
+      expect(testResponse1.id, 2);
+    });
+  });
 }
