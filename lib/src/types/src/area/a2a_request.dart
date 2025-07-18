@@ -107,6 +107,7 @@ final class A2ATaskResubscriptionRequest extends A2ARequest {
 }
 
 /// The result object on success.
+@JsonSerializable(explicitToJson: true)
 class A2ATaskPushNotificationConfig1 {
   A2APushNotificationAuthenticationInfo? authentication;
 
@@ -118,6 +119,13 @@ class A2ATaskPushNotificationConfig1 {
 
   /// URL for sending the push notifications.
   String url = '';
+
+  A2ATaskPushNotificationConfig1();
+
+  factory A2ATaskPushNotificationConfig1.fromJson(Map<String, dynamic> json) =>
+      _$A2ATaskPushNotificationConfig1FromJson(json);
+
+  Map<String, dynamic> toJson() => _$A2ATaskPushNotificationConfig1ToJson(this);
 }
 
 /// A Structured value that holds the parameter values to be used during the invocation of
@@ -191,10 +199,19 @@ class A2APushNotificationConfig {
 }
 
 /// Defines authentication details for push notifications.
+@JsonSerializable(explicitToJson: true)
 class A2APushNotificationAuthenticationInfo {
   /// Optional credentials
   String? credentials;
 
   /// Supported authentication schemes - e.g. Basic, Bearer
   List<String> schemes = [];
+
+  A2APushNotificationAuthenticationInfo();
+
+  factory A2APushNotificationAuthenticationInfo.fromJson(Map<String, dynamic> json) =>
+      _$A2APushNotificationAuthenticationInfoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$A2APushNotificationAuthenticationInfoToJson(this);
 }
+

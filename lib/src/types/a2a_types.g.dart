@@ -310,6 +310,42 @@ Map<String, dynamic> _$A2AInvalidAgentResponseErrorToJson(
   'message': instance.message,
 };
 
+A2ATaskPushNotificationConfig1 _$A2ATaskPushNotificationConfig1FromJson(
+  Map<String, dynamic> json,
+) => A2ATaskPushNotificationConfig1()
+  ..authentication = json['authentication'] == null
+      ? null
+      : A2APushNotificationAuthenticationInfo.fromJson(
+          json['authentication'] as Map<String, dynamic>,
+        )
+  ..id = json['id'] as String
+  ..token = json['token'] as String?
+  ..url = json['url'] as String;
+
+Map<String, dynamic> _$A2ATaskPushNotificationConfig1ToJson(
+  A2ATaskPushNotificationConfig1 instance,
+) => <String, dynamic>{
+  'authentication': instance.authentication?.toJson(),
+  'id': instance.id,
+  'token': instance.token,
+  'url': instance.url,
+};
+
+A2APushNotificationAuthenticationInfo
+_$A2APushNotificationAuthenticationInfoFromJson(Map<String, dynamic> json) =>
+    A2APushNotificationAuthenticationInfo()
+      ..credentials = json['credentials'] as String?
+      ..schemes = (json['schemes'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList();
+
+Map<String, dynamic> _$A2APushNotificationAuthenticationInfoToJson(
+  A2APushNotificationAuthenticationInfo instance,
+) => <String, dynamic>{
+  'credentials': instance.credentials,
+  'schemes': instance.schemes,
+};
+
 A2ATextPart _$A2ATextPartFromJson(Map<String, dynamic> json) => A2ATextPart()
   ..metadata = (json['metadata'] as Map<String, dynamic>?)?.map(
     (k, e) => MapEntry(k, e as Object),
@@ -529,6 +565,7 @@ Map<String, dynamic> _$A2APasswordOAuthFlowToJson(
 A2AJSONRPCErrorResponse _$A2AJSONRPCErrorResponseFromJson(
   Map<String, dynamic> json,
 ) => A2AJSONRPCErrorResponse()
+  ..isError = json['isError'] as bool
   ..error = json['error'] == null
       ? null
       : A2AError.fromJson(json['error'] as Map<String, dynamic>)
@@ -538,6 +575,7 @@ A2AJSONRPCErrorResponse _$A2AJSONRPCErrorResponseFromJson(
 Map<String, dynamic> _$A2AJSONRPCErrorResponseToJson(
   A2AJSONRPCErrorResponse instance,
 ) => <String, dynamic>{
+  'isError': instance.isError,
   'error': instance.error?.toJson(),
   'id': instance.id,
   'jsonrpc': instance.jsonrpc,
@@ -546,6 +584,7 @@ Map<String, dynamic> _$A2AJSONRPCErrorResponseToJson(
 A2ACancelTaskSuccessResponse _$A2ACancelTaskSuccessResponseFromJson(
   Map<String, dynamic> json,
 ) => A2ACancelTaskSuccessResponse()
+  ..isError = json['isError'] as bool
   ..id = json['id']
   ..jsonrpc = json['jsonrpc'] as String
   ..result = json['result'] == null
@@ -555,8 +594,48 @@ A2ACancelTaskSuccessResponse _$A2ACancelTaskSuccessResponseFromJson(
 Map<String, dynamic> _$A2ACancelTaskSuccessResponseToJson(
   A2ACancelTaskSuccessResponse instance,
 ) => <String, dynamic>{
+  'isError': instance.isError,
   'id': instance.id,
   'jsonrpc': instance.jsonrpc,
+  'result': instance.result?.toJson(),
+};
+
+A2AJSONRPCErrorResponseGTPR _$A2AJSONRPCErrorResponseGTPRFromJson(
+  Map<String, dynamic> json,
+) => A2AJSONRPCErrorResponseGTPR()
+  ..isError = json['isError'] as bool
+  ..error = json['error'] == null
+      ? null
+      : A2AError.fromJson(json['error'] as Map<String, dynamic>)
+  ..id = json['id']
+  ..jsonrpc = json['jsonrpc'] as String;
+
+Map<String, dynamic> _$A2AJSONRPCErrorResponseGTPRToJson(
+  A2AJSONRPCErrorResponseGTPR instance,
+) => <String, dynamic>{
+  'isError': instance.isError,
+  'error': instance.error?.toJson(),
+  'id': instance.id,
+  'jsonrpc': instance.jsonrpc,
+};
+
+A2AGetTaskPushNotificationConfigSuccessResponse
+_$A2AGetTaskPushNotificationConfigSuccessResponseFromJson(
+  Map<String, dynamic> json,
+) => A2AGetTaskPushNotificationConfigSuccessResponse()
+  ..isError = json['isError'] as bool
+  ..id = json['id']
+  ..result = json['result'] == null
+      ? null
+      : A2ATaskPushNotificationConfig1.fromJson(
+          json['result'] as Map<String, dynamic>,
+        );
+
+Map<String, dynamic> _$A2AGetTaskPushNotificationConfigSuccessResponseToJson(
+  A2AGetTaskPushNotificationConfigSuccessResponse instance,
+) => <String, dynamic>{
+  'isError': instance.isError,
+  'id': instance.id,
   'result': instance.result?.toJson(),
 };
 

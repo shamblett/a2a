@@ -8,14 +8,52 @@
 part of '../../a2a_types.dart';
 
 /// JSON-RPC response for the 'tasks/pushNotificationConfig/get' method.
-sealed class A2AGetTaskPushNotificationConfigResponse {}
+sealed class A2AGetTaskPushNotificationConfigResponse {
+  /// True if the response is an error
+  bool isError = false;
+
+  A2AGetTaskPushNotificationConfigResponse();
+
+  factory A2AGetTaskPushNotificationConfigResponse.fromJson(
+    Map<String, dynamic> json,
+  ) {
+    if (json.containsKey('error')) {
+      final response = A2AJSONRPCErrorResponseGTPR.fromJson(json);
+      response.isError = true;
+      return response;
+    } else {
+      return A2AGetTaskPushNotificationConfigSuccessResponse.fromJson((json));
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    if (this is A2AJSONRPCErrorResponseGTPR) {
+      return (this as A2AJSONRPCErrorResponseGTPR).toJson();
+    }
+    if (this is A2AGetTaskPushNotificationConfigSuccessResponse) {
+      return (this as A2AGetTaskPushNotificationConfigSuccessResponse).toJson();
+    }
+
+    return {};
+  }
+}
 
 /// Represents a JSON-RPC 2.0 Error Response object.
+@JsonSerializable(explicitToJson: true)
 final class A2AJSONRPCErrorResponseGTPR
     extends A2AGetTaskPushNotificationConfigResponse
-    with A2AJSONRPCErrorResponseM {}
+    with A2AJSONRPCErrorResponseM {
+  A2AJSONRPCErrorResponseGTPR();
+
+  factory A2AJSONRPCErrorResponseGTPR.fromJson(Map<String, dynamic> json) =>
+      _$A2AJSONRPCErrorResponseGTPRFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$A2AJSONRPCErrorResponseGTPRToJson(this);
+}
 
 /// JSON-RPC success response model for the 'tasks/pushNotificationConfig/get' method.
+@JsonSerializable(explicitToJson: true)
 final class A2AGetTaskPushNotificationConfigSuccessResponse
     extends A2AGetTaskPushNotificationConfigResponse {
   /// An identifier established by the Client that MUST contain a String, Number.
@@ -25,4 +63,14 @@ final class A2AGetTaskPushNotificationConfigSuccessResponse
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
   final jsonrpc = '2.0';
   A2ATaskPushNotificationConfig1? result;
+
+  A2AGetTaskPushNotificationConfigSuccessResponse();
+
+  factory A2AGetTaskPushNotificationConfigSuccessResponse.fromJson(
+    Map<String, dynamic> json,
+  ) => _$A2AGetTaskPushNotificationConfigSuccessResponseFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$A2AGetTaskPushNotificationConfigSuccessResponseToJson(this);
 }
