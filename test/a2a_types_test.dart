@@ -137,5 +137,192 @@ void main() {
       expect(testError1.message, 'The message');
       expect(testError1.code, A2AError.jsonRpc);
     });
+    test('A2AJSONParseError', () {
+      var error = A2AError();
+      var json = <String, dynamic>{};
+
+      var testError = A2AJSONParseError()
+        ..message = 'The message'
+        ..data = {'First': 1};
+      error = testError;
+      json = error.toJson();
+      error = A2AError();
+      error = A2AError.fromJson(json);
+      expect(error is A2AJSONParseError, isTrue);
+      final testError1 = error as A2AJSONParseError;
+      expect(testError1.data, {'First': 1});
+      expect(testError1.message, 'The message');
+      expect(testError1.code, A2AError.jsonParse);
+    });
+    test('A2AInvalidRequestError', () {
+      var error = A2AError();
+      var json = <String, dynamic>{};
+
+      var testError = A2AInvalidRequestError()
+        ..message = 'The message'
+        ..data = {'First': 1};
+      error = testError;
+      json = error.toJson();
+      error = A2AError();
+      error = A2AError.fromJson(json);
+      expect(error is A2AInvalidRequestError, isTrue);
+      final testError1 = error as A2AInvalidRequestError;
+      expect(testError1.data, {'First': 1});
+      expect(testError1.message, 'The message');
+      expect(testError1.code, A2AError.invalidRequest);
+    });
+    test('A2AMethodNotFoundError', () {
+      var error = A2AError();
+      var json = <String, dynamic>{};
+
+      var testError = A2AMethodNotFoundError()
+        ..message = 'The message'
+        ..data = {'First': 1};
+      error = testError;
+      json = error.toJson();
+      error = A2AError();
+      error = A2AError.fromJson(json);
+      expect(error is A2AMethodNotFoundError, isTrue);
+      final testError1 = error as A2AMethodNotFoundError;
+      expect(testError1.data, {'First': 1});
+      expect(testError1.message, 'The message');
+      expect(testError1.code, A2AError.methodNotFound);
+    });
+    test('A2AInvalidParamsError', () {
+      var error = A2AError();
+      var json = <String, dynamic>{};
+
+      var testError = A2AInvalidParamsError()
+        ..message = 'The message'
+        ..data = {'First': 1};
+      error = testError;
+      json = error.toJson();
+      error = A2AError();
+      error = A2AError.fromJson(json);
+      expect(error is A2AInvalidParamsError, isTrue);
+      final testError1 = error as A2AInvalidParamsError;
+      expect(testError1.data, {'First': 1});
+      expect(testError1.message, 'The message');
+      expect(testError1.code, A2AError.invalidParams);
+    });
+    test('A2AInternalError', () {
+      var error = A2AError();
+      var json = <String, dynamic>{};
+
+      var testError = A2AInternalError()
+        ..message = 'The message'
+        ..data = {'First': 1};
+      error = testError;
+      json = error.toJson();
+      error = A2AError();
+      error = A2AError.fromJson(json);
+      expect(error is A2AInternalError, isTrue);
+      final testError1 = error as A2AInternalError;
+      expect(testError1.data, {'First': 1});
+      expect(testError1.message, 'The message');
+      expect(testError1.code, A2AError.internal);
+    });
+    test('A2ATaskNotFoundError', () {
+      var error = A2AError();
+      var json = <String, dynamic>{};
+
+      var testError = A2ATaskNotFoundError()
+        ..message = 'The message'
+        ..data = {'First': 1};
+      error = testError;
+      json = error.toJson();
+      error = A2AError();
+      error = A2AError.fromJson(json);
+      expect(error is A2ATaskNotFoundError, isTrue);
+      final testError1 = error as A2ATaskNotFoundError;
+      expect(testError1.data, {'First': 1});
+      expect(testError1.message, 'The message');
+      expect(testError1.code, A2AError.taskNotFound);
+    });
+    test('A2ATaskNotCancelableError', () {
+      var error = A2AError();
+      var json = <String, dynamic>{};
+
+      var testError = A2ATaskNotCancelableError()
+        ..message = 'The message'
+        ..data = {'First': 1};
+      error = testError;
+      json = error.toJson();
+      error = A2AError();
+      error = A2AError.fromJson(json);
+      expect(error is A2ATaskNotCancelableError, isTrue);
+      final testError1 = error as A2ATaskNotCancelableError;
+      expect(testError1.data, {'First': 1});
+      expect(testError1.message, 'The message');
+      expect(testError1.code, A2AError.taskNotCancellable);
+    });
+    test('A2APushNotificationNotSupportedError', () {
+      var error = A2AError();
+      var json = <String, dynamic>{};
+
+      var testError = A2APushNotificationNotSupportedError()
+        ..message = 'The message'
+        ..data = {'First': 1};
+      error = testError;
+      json = error.toJson();
+      error = A2AError();
+      error = A2AError.fromJson(json);
+      expect(error is A2APushNotificationNotSupportedError, isTrue);
+      final testError1 = error as A2APushNotificationNotSupportedError;
+      expect(testError1.data, {'First': 1});
+      expect(testError1.message, 'The message');
+      expect(testError1.code, A2AError.pushNotificationNotSupported);
+    });
+    test('A2AUnsupportedOperationError', () {
+      var error = A2AError();
+      var json = <String, dynamic>{};
+
+      var testError = A2AUnsupportedOperationError()
+        ..message = 'The message'
+        ..data = {'First': 1};
+      error = testError;
+      json = error.toJson();
+      error = A2AError();
+      error = A2AError.fromJson(json);
+      expect(error is A2AUnsupportedOperationError, isTrue);
+      final testError1 = error as A2AUnsupportedOperationError;
+      expect(testError1.data, {'First': 1});
+      expect(testError1.message, 'The message');
+      expect(testError1.code, A2AError.unsupportedOperation);
+    });
+    test('A2AContentTypeNotSupportedError', () {
+      var error = A2AError();
+      var json = <String, dynamic>{};
+
+      var testError = A2AContentTypeNotSupportedError()
+        ..message = 'The message'
+        ..data = {'First': 1};
+      error = testError;
+      json = error.toJson();
+      error = A2AError();
+      error = A2AError.fromJson(json);
+      expect(error is A2AContentTypeNotSupportedError, isTrue);
+      final testError1 = error as A2AContentTypeNotSupportedError;
+      expect(testError1.data, {'First': 1});
+      expect(testError1.message, 'The message');
+      expect(testError1.code, A2AError.contentTypeNotSupported);
+    });
+    test('A2AInvalidAgentResponseError', () {
+      var error = A2AError();
+      var json = <String, dynamic>{};
+
+      var testError = A2AInvalidAgentResponseError()
+        ..message = 'The message'
+        ..data = {'First': 1};
+      error = testError;
+      json = error.toJson();
+      error = A2AError();
+      error = A2AError.fromJson(json);
+      expect(error is A2AInvalidAgentResponseError, isTrue);
+      final testError1 = error as A2AInvalidAgentResponseError;
+      expect(testError1.data, {'First': 1});
+      expect(testError1.message, 'The message');
+      expect(testError1.code, A2AError.invalidAgentResponse);
+    });
   });
 }
