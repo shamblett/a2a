@@ -25,7 +25,7 @@ class A2AError {
   A2AError();
 
   factory A2AError.fromJson(Map<String, dynamic> json) {
-    if (!json.containsKey('type')) {
+    if (!json.containsKey('code')) {
       return A2AError();
     } else {
       switch (json['code']) {
