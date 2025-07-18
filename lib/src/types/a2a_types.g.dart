@@ -639,6 +639,42 @@ Map<String, dynamic> _$A2AGetTaskPushNotificationConfigSuccessResponseToJson(
   'result': instance.result?.toJson(),
 };
 
+A2AJSONRPCErrorResponseT _$A2AJSONRPCErrorResponseTFromJson(
+  Map<String, dynamic> json,
+) => A2AJSONRPCErrorResponseT()
+  ..isError = json['isError'] as bool
+  ..error = json['error'] == null
+      ? null
+      : A2AError.fromJson(json['error'] as Map<String, dynamic>)
+  ..id = json['id']
+  ..jsonrpc = json['jsonrpc'] as String;
+
+Map<String, dynamic> _$A2AJSONRPCErrorResponseTToJson(
+  A2AJSONRPCErrorResponseT instance,
+) => <String, dynamic>{
+  'isError': instance.isError,
+  'error': instance.error?.toJson(),
+  'id': instance.id,
+  'jsonrpc': instance.jsonrpc,
+};
+
+A2AGetTaskSuccessResponse _$A2AGetTaskSuccessResponseFromJson(
+  Map<String, dynamic> json,
+) => A2AGetTaskSuccessResponse()
+  ..isError = json['isError'] as bool
+  ..id = json['id']
+  ..result = json['result'] == null
+      ? null
+      : A2ATask.fromJson(json['result'] as Map<String, dynamic>);
+
+Map<String, dynamic> _$A2AGetTaskSuccessResponseToJson(
+  A2AGetTaskSuccessResponse instance,
+) => <String, dynamic>{
+  'isError': instance.isError,
+  'id': instance.id,
+  'result': instance.result?.toJson(),
+};
+
 A2AAgentCapabilities _$A2AAgentCapabilitiesFromJson(
   Map<String, dynamic> json,
 ) => A2AAgentCapabilities()

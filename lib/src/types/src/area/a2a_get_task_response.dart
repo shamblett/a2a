@@ -8,13 +8,49 @@
 part of '../../a2a_types.dart';
 
 /// JSON-RPC response for the 'tasks/get' method.
-sealed class A2AGetTaskResponse {}
+class A2AGetTaskResponse {
+  /// True if the response is an error
+  bool isError = false;
+
+  A2AGetTaskResponse();
+
+  factory A2AGetTaskResponse.fromJson(Map<String, dynamic> json) {
+    if (json.containsKey('error')) {
+      final response = A2AJSONRPCErrorResponseT.fromJson(json);
+      response.isError = true;
+      return response;
+    } else {
+      return A2AGetTaskSuccessResponse.fromJson((json));
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    if (this is A2AJSONRPCErrorResponseT) {
+      return (this as A2AJSONRPCErrorResponseT).toJson();
+    }
+    if (this is A2AGetTaskSuccessResponse) {
+      return (this as A2AGetTaskSuccessResponse).toJson();
+    }
+
+    return {};
+  }
+}
 
 /// Represents a JSON-RPC 2.0 Error Response object.
+@JsonSerializable(explicitToJson: true)
 final class A2AJSONRPCErrorResponseT extends A2AGetTaskResponse
-    with A2AJSONRPCErrorResponseM {}
+    with A2AJSONRPCErrorResponseM {
+  A2AJSONRPCErrorResponseT();
+
+  factory A2AJSONRPCErrorResponseT.fromJson(Map<String, dynamic> json) =>
+      _$A2AJSONRPCErrorResponseTFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$A2AJSONRPCErrorResponseTToJson(this);
+}
 
 /// JSON-RPC success response for the 'tasks/get' method.
+@JsonSerializable(explicitToJson: true)
 final class A2AGetTaskSuccessResponse extends A2AGetTaskResponse {
   /// An identifier established by the Client that MUST contain a String, Number.
   /// Numbers SHOULD NOT contain fractional parts.
@@ -23,4 +59,12 @@ final class A2AGetTaskSuccessResponse extends A2AGetTaskResponse {
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
   final jsonrpc = '2.0';
   A2ATask? result;
+
+  A2AGetTaskSuccessResponse();
+
+  factory A2AGetTaskSuccessResponse.fromJson(Map<String, dynamic> json) =>
+      _$A2AGetTaskSuccessResponseFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$A2AGetTaskSuccessResponseToJson(this);
 }
