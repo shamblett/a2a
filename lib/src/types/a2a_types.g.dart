@@ -663,12 +663,121 @@ A2AGetTaskSuccessResponse _$A2AGetTaskSuccessResponseFromJson(
 ) => A2AGetTaskSuccessResponse()
   ..isError = json['isError'] as bool
   ..id = json['id']
+  ..jsonrpc = json['jsonrpc'] as String
   ..result = json['result'] == null
       ? null
       : A2ATask.fromJson(json['result'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$A2AGetTaskSuccessResponseToJson(
   A2AGetTaskSuccessResponse instance,
+) => <String, dynamic>{
+  'isError': instance.isError,
+  'id': instance.id,
+  'jsonrpc': instance.jsonrpc,
+  'result': instance.result?.toJson(),
+};
+
+A2AJSONRPCErrorResponseS _$A2AJSONRPCErrorResponseSFromJson(
+  Map<String, dynamic> json,
+) => A2AJSONRPCErrorResponseS()
+  ..isError = json['isError'] as bool
+  ..error = json['error'] == null
+      ? null
+      : A2AError.fromJson(json['error'] as Map<String, dynamic>)
+  ..id = json['id']
+  ..jsonrpc = json['jsonrpc'] as String;
+
+Map<String, dynamic> _$A2AJSONRPCErrorResponseSToJson(
+  A2AJSONRPCErrorResponseS instance,
+) => <String, dynamic>{
+  'isError': instance.isError,
+  'error': instance.error?.toJson(),
+  'id': instance.id,
+  'jsonrpc': instance.jsonrpc,
+};
+
+A2AJSONRPCErrorResponseSS _$A2AJSONRPCErrorResponseSSFromJson(
+  Map<String, dynamic> json,
+) => A2AJSONRPCErrorResponseSS()
+  ..isError = json['isError'] as bool
+  ..error = json['error'] == null
+      ? null
+      : A2AError.fromJson(json['error'] as Map<String, dynamic>)
+  ..id = json['id']
+  ..jsonrpc = json['jsonrpc'] as String;
+
+Map<String, dynamic> _$A2AJSONRPCErrorResponseSSToJson(
+  A2AJSONRPCErrorResponseSS instance,
+) => <String, dynamic>{
+  'isError': instance.isError,
+  'error': instance.error?.toJson(),
+  'id': instance.id,
+  'jsonrpc': instance.jsonrpc,
+};
+
+A2AJSONRPCErrorResponsePNCR _$A2AJSONRPCErrorResponsePNCRFromJson(
+  Map<String, dynamic> json,
+) => A2AJSONRPCErrorResponsePNCR()
+  ..isError = json['isError'] as bool
+  ..error = json['error'] == null
+      ? null
+      : A2AError.fromJson(json['error'] as Map<String, dynamic>)
+  ..id = json['id']
+  ..jsonrpc = json['jsonrpc'] as String;
+
+Map<String, dynamic> _$A2AJSONRPCErrorResponsePNCRToJson(
+  A2AJSONRPCErrorResponsePNCR instance,
+) => <String, dynamic>{
+  'isError': instance.isError,
+  'error': instance.error?.toJson(),
+  'id': instance.id,
+  'jsonrpc': instance.jsonrpc,
+};
+
+A2ASendMessageSuccessResponse _$A2ASendMessageSuccessResponseFromJson(
+  Map<String, dynamic> json,
+) => A2ASendMessageSuccessResponse()
+  ..isError = json['isError'] as bool
+  ..id = json['id']
+  ..result = json['result'];
+
+Map<String, dynamic> _$A2ASendMessageSuccessResponseToJson(
+  A2ASendMessageSuccessResponse instance,
+) => <String, dynamic>{
+  'isError': instance.isError,
+  'id': instance.id,
+  'result': instance.result,
+};
+
+A2ASendStreamingMessageSuccessResponse
+_$A2ASendStreamingMessageSuccessResponseFromJson(Map<String, dynamic> json) =>
+    A2ASendStreamingMessageSuccessResponse()
+      ..isError = json['isError'] as bool
+      ..id = json['id']
+      ..result = json['result'];
+
+Map<String, dynamic> _$A2ASendStreamingMessageSuccessResponseToJson(
+  A2ASendStreamingMessageSuccessResponse instance,
+) => <String, dynamic>{
+  'isError': instance.isError,
+  'id': instance.id,
+  'result': instance.result,
+};
+
+A2ASetTaskPushNotificationConfigSuccessResponse
+_$A2ASetTaskPushNotificationConfigSuccessResponseFromJson(
+  Map<String, dynamic> json,
+) => A2ASetTaskPushNotificationConfigSuccessResponse()
+  ..isError = json['isError'] as bool
+  ..id = json['id']
+  ..result = json['result'] == null
+      ? null
+      : A2ATaskPushNotificationConfig1.fromJson(
+          json['result'] as Map<String, dynamic>,
+        );
+
+Map<String, dynamic> _$A2ASetTaskPushNotificationConfigSuccessResponseToJson(
+  A2ASetTaskPushNotificationConfigSuccessResponse instance,
 ) => <String, dynamic>{
   'isError': instance.isError,
   'id': instance.id,
