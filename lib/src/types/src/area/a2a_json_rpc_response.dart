@@ -1,3 +1,5 @@
+// ignore_for_file: no-equal-then-else
+
 /*
 * Package : a2a
 * Author : S. Hamblett <steve.hamblett@linux.com>
@@ -11,6 +13,41 @@ part of '../../a2a_types.dart';
 class A2AJsonRpcResponse {
   /// True if the response is an error
   bool isError = false;
+
+  A2AJsonRpcResponse();
+
+  factory A2AJsonRpcResponse.fromJson(Map<String, dynamic> json) {
+    if (json.containsKey('result')) {
+      // Not an error
+      if ((json['result'] as Map).containsKey('kind')) {
+        // Check which message response it is
+        return json['result']['kind'] == 'artifact-update' ||
+                json['result']['kind'] == 'status-update'
+            ? A2ASendStreamingMessageSuccessResponse.fromJson(json)
+            : A2ASendMessageSuccessResponse.fromJson(json);
+      }
+      // Check for Push notification
+      return (json['result'] as Map).containsKey('token')
+          ? A2ASetTaskPushNotificationConfigSuccessResponse.fromJson(json)
+          : A2ASendMessageSuccessResponse.fromJson(json);
+    } else {
+      // Error, doesn't matter which response we pick
+      return A2AJSONRPCErrorResponseS.fromJson(json)..isError = true;
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    if (this is A2ASendStreamingMessageSuccessResponse) {
+      return (this as A2ASendStreamingMessageSuccessResponse).toJson();
+    }
+    if (this is A2ASendStreamingMessageSuccessResponse) {
+      return (this as A2ASendStreamingMessageSuccessResponse).toJson();
+    }
+    if (this is A2ASetTaskPushNotificationConfigSuccessResponse) {
+      return (this as A2ASetTaskPushNotificationConfigSuccessResponse).toJson();
+    }
+    return {};
+  }
 }
 
 /// JSON-RPC response model for the 'message/send' method.
@@ -27,6 +64,7 @@ class A2ASendMessageResponse extends A2AJsonRpcResponse {
     }
   }
 
+  @override
   Map<String, dynamic> toJson() {
     if (this is A2AJSONRPCErrorResponseS) {
       return (this as A2AJSONRPCErrorResponseS).toJson();
@@ -45,14 +83,15 @@ class A2ASendStreamingMessageResponse extends A2AJsonRpcResponse {
 
   factory A2ASendStreamingMessageResponse.fromJson(Map<String, dynamic> json) {
     if (json.containsKey('error')) {
-      final response = A2AJSONRPCErrorResponseSS.fromJson(json);
+      final response = A2AJSONRPCErrorResponseS.fromJson(json);
       response.isError = true;
-      return response;
+      return response as A2AJSONRPCErrorResponseSS;
     } else {
       return A2ASendStreamingMessageSuccessResponse.fromJson((json));
     }
   }
 
+  @override
   Map<String, dynamic> toJson() {
     if (this is A2AJSONRPCErrorResponseSS) {
       return (this as A2AJSONRPCErrorResponseSS).toJson();
@@ -73,14 +112,15 @@ class SetTaskPushNotificationConfigResponse extends A2AJsonRpcResponse {
     Map<String, dynamic> json,
   ) {
     if (json.containsKey('error')) {
-      final response = A2AJSONRPCErrorResponsePNCR.fromJson(json);
+      final response = A2AJSONRPCErrorResponseS.fromJson(json);
       response.isError = true;
-      return response;
+      return response as A2AJSONRPCErrorResponsePNCR;
     } else {
       return A2ASetTaskPushNotificationConfigSuccessResponse.fromJson((json));
     }
   }
 
+  @override
   Map<String, dynamic> toJson() {
     if (this is A2AJSONRPCErrorResponsePNCR) {
       return (this as A2AJSONRPCErrorResponsePNCR).toJson();

@@ -400,4 +400,40 @@ void main() {
       expect(testResponse1.id, 2);
     });
   });
+  group('JSON RPC Response', () {
+    test('Send Message Response - Error', () {
+      var messageResponse = A2AJsonRpcResponse();
+      var json = <String, dynamic>{};
+
+      var testResponse = A2AJSONRPCErrorResponseS()
+        ..error = A2AError()
+        ..id = 1;
+      messageResponse = testResponse;
+      json = messageResponse.toJson();
+
+      messageResponse = A2AJsonRpcResponse();
+      messageResponse = A2AJsonRpcResponse.fromJson(json);
+      expect(messageResponse.isError, true);
+      expect(messageResponse is A2AJSONRPCErrorResponseS, isTrue);
+      final testResponse1 = messageResponse as A2AJSONRPCErrorResponseS;
+      expect(testResponse1.error is A2AError, isTrue);
+      expect(testResponse1.id, 1);
+    });
+    test('Send Message Response - Success', () {
+      var messageResponse = A2AJsonRpcResponse();
+      var json = <String, dynamic>{};
+
+      var testResponse = A2ASendMessageSuccessResponse()
+        ..result = A2ATask().toJson()
+        ..id = 2;
+      messageResponse = testResponse;
+      json = messageResponse.toJson();
+      messageResponse = A2AJsonRpcResponse();
+      messageResponse = A2AJsonRpcResponse.fromJson(json);
+      expect(messageResponse is A2ASendMessageSuccessResponse, isTrue);
+      final testResponse1 = messageResponse as A2ASendMessageSuccessResponse;
+      expect(testResponse1.result is A2ATask, isTrue);
+      expect(testResponse1.id, 2);
+    });
+  });
 }
