@@ -423,9 +423,14 @@ void main() {
       var messageResponse = A2AJsonRpcResponse();
       var json = <String, dynamic>{};
 
+      final task = A2ATask()
+        ..id = '3'
+        ..status = A2ATaskStatus()
+        ..contextId = 'Context id';
       var testResponse = A2ASendMessageSuccessResponse()
-        ..result = A2ATask().toJson()
-        ..id = 2;
+        ..id = 2
+        ..result = task.toJson();
+
       messageResponse = testResponse;
       json = messageResponse.toJson();
       messageResponse = A2AJsonRpcResponse();
