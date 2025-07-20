@@ -181,7 +181,7 @@ final class A2ASendMessageSuccessResponse extends A2ASendMessageResponse {
   A2AId? id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
-  final jsonrpc = '2.0';
+  String jsonrpc = '2.0';
 
   /// The result object on success, [A2ATask] or [A2AMessage]
   Object? result;
@@ -231,7 +231,7 @@ final class A2ASendStreamingMessageSuccessResponse
   A2AId? id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
-  final jsonrpc = '2.0';
+  String jsonrpc = '2.0';
 
   /// The result object on success, [A2ATask], [A2AMessage], [A2ATaskStatusUpdateEvent] or
   /// [A2ATaskArtifactUpdateEvent]
@@ -306,7 +306,7 @@ final class A2ASetTaskPushNotificationConfigSuccessResponse
   A2AId? id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
-  final jsonrpc = '2.0';
+  String  jsonrpc = '2.0';
   A2ATaskPushNotificationConfig1? result;
 
   A2ASetTaskPushNotificationConfigSuccessResponse();

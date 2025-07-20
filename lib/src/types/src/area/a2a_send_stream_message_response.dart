@@ -22,7 +22,7 @@ final class A2ASendStreamMessageSuccessResponseR
   A2AId? id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
-  final jsonrpc = '2.0';
+  String  jsonrpc = '2.0';
 
   /// The result object on success, [A2ATask], [A2AMessage], [A2ATaskStatusUpdateEvent]
   /// [A2ATaskArtifactUpdateEvent]

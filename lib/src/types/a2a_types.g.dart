@@ -314,6 +314,135 @@ Map<String, dynamic> _$A2AInvalidAgentResponseErrorToJson(
   'message': instance.message,
 };
 
+A2ASendMessageRequest _$A2ASendMessageRequestFromJson(
+  Map<String, dynamic> json,
+) => A2ASendMessageRequest()
+  ..id = json['id']
+  ..jsonrpc = json['jsonrpc'] as String
+  ..method = json['method'] as String;
+
+Map<String, dynamic> _$A2ASendMessageRequestToJson(
+  A2ASendMessageRequest instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'jsonrpc': instance.jsonrpc,
+  'method': instance.method,
+};
+
+A2ASendStreamingMessageRequest _$A2ASendStreamingMessageRequestFromJson(
+  Map<String, dynamic> json,
+) => A2ASendStreamingMessageRequest()
+  ..id = json['id']
+  ..jsonrpc = json['jsonrpc'] as String
+  ..method = json['method'] as String
+  ..params = json['params'] == null
+      ? null
+      : A2AMessageSendParams.fromJson(json['params'] as Map<String, dynamic>);
+
+Map<String, dynamic> _$A2ASendStreamingMessageRequestToJson(
+  A2ASendStreamingMessageRequest instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'jsonrpc': instance.jsonrpc,
+  'method': instance.method,
+  'params': instance.params?.toJson(),
+};
+
+A2AGetTaskRequest _$A2AGetTaskRequestFromJson(Map<String, dynamic> json) =>
+    A2AGetTaskRequest()
+      ..id = json['id']
+      ..jsonrpc = json['jsonrpc'] as String
+      ..method = json['method'] as String
+      ..params = json['params'] == null
+          ? null
+          : A2ATaskQueryParams.fromJson(json['params'] as Map<String, dynamic>);
+
+Map<String, dynamic> _$A2AGetTaskRequestToJson(A2AGetTaskRequest instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'jsonrpc': instance.jsonrpc,
+      'method': instance.method,
+      'params': instance.params?.toJson(),
+    };
+
+A2ACancelTaskRequest _$A2ACancelTaskRequestFromJson(
+  Map<String, dynamic> json,
+) => A2ACancelTaskRequest()
+  ..id = json['id']
+  ..jsonrpc = json['jsonrpc'] as String
+  ..method = json['method'] as String
+  ..params = json['params'] == null
+      ? null
+      : A2ATaskIdParams.fromJson(json['params'] as Map<String, dynamic>);
+
+Map<String, dynamic> _$A2ACancelTaskRequestToJson(
+  A2ACancelTaskRequest instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'jsonrpc': instance.jsonrpc,
+  'method': instance.method,
+  'params': instance.params?.toJson(),
+};
+
+A2ASetTaskPushNotificationConfigRequest
+_$A2ASetTaskPushNotificationConfigRequestFromJson(Map<String, dynamic> json) =>
+    A2ASetTaskPushNotificationConfigRequest()
+      ..id = json['id']
+      ..jsonrpc = json['jsonrpc'] as String
+      ..method = json['method'] as String
+      ..params = json['params'] == null
+          ? null
+          : A2ATaskPushNotificationConfig.fromJson(
+              json['params'] as Map<String, dynamic>,
+            );
+
+Map<String, dynamic> _$A2ASetTaskPushNotificationConfigRequestToJson(
+  A2ASetTaskPushNotificationConfigRequest instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'jsonrpc': instance.jsonrpc,
+  'method': instance.method,
+  'params': instance.params?.toJson(),
+};
+
+A2AGetTaskPushNotificationConfigRequest
+_$A2AGetTaskPushNotificationConfigRequestFromJson(Map<String, dynamic> json) =>
+    A2AGetTaskPushNotificationConfigRequest()
+      ..id = json['id']
+      ..jsonrpc = json['jsonrpc'] as String
+      ..method = json['method'] as String
+      ..params = json['params'] == null
+          ? null
+          : A2ATaskIdParams.fromJson(json['params'] as Map<String, dynamic>);
+
+Map<String, dynamic> _$A2AGetTaskPushNotificationConfigRequestToJson(
+  A2AGetTaskPushNotificationConfigRequest instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'jsonrpc': instance.jsonrpc,
+  'method': instance.method,
+  'params': instance.params?.toJson(),
+};
+
+A2ATaskResubscriptionRequest _$A2ATaskResubscriptionRequestFromJson(
+  Map<String, dynamic> json,
+) => A2ATaskResubscriptionRequest()
+  ..id = json['id']
+  ..jsonrpc = json['jsonrpc'] as String
+  ..method = json['method'] as String
+  ..params = json['params'] == null
+      ? null
+      : A2ATaskIdParams.fromJson(json['params'] as Map<String, dynamic>);
+
+Map<String, dynamic> _$A2ATaskResubscriptionRequestToJson(
+  A2ATaskResubscriptionRequest instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'jsonrpc': instance.jsonrpc,
+  'method': instance.method,
+  'params': instance.params?.toJson(),
+};
+
 A2ATaskPushNotificationConfig1 _$A2ATaskPushNotificationConfig1FromJson(
   Map<String, dynamic> json,
 ) => A2ATaskPushNotificationConfig1()
@@ -328,6 +457,113 @@ A2ATaskPushNotificationConfig1 _$A2ATaskPushNotificationConfig1FromJson(
 
 Map<String, dynamic> _$A2ATaskPushNotificationConfig1ToJson(
   A2ATaskPushNotificationConfig1 instance,
+) => <String, dynamic>{
+  'authentication': instance.authentication?.toJson(),
+  'id': instance.id,
+  'token': instance.token,
+  'url': instance.url,
+};
+
+A2ATaskPushNotificationConfig _$A2ATaskPushNotificationConfigFromJson(
+  Map<String, dynamic> json,
+) => A2ATaskPushNotificationConfig()
+  ..pushNotificationConfig = json['pushNotificationConfig'] == null
+      ? null
+      : A2ATaskPushNotificationConfig1.fromJson(
+          json['pushNotificationConfig'] as Map<String, dynamic>,
+        )
+  ..id = json['id'] as String;
+
+Map<String, dynamic> _$A2ATaskPushNotificationConfigToJson(
+  A2ATaskPushNotificationConfig instance,
+) => <String, dynamic>{
+  'pushNotificationConfig': instance.pushNotificationConfig?.toJson(),
+  'id': instance.id,
+};
+
+A2ATaskIdParams _$A2ATaskIdParamsFromJson(Map<String, dynamic> json) =>
+    A2ATaskIdParams()
+      ..id = json['id'] as String
+      ..metadata = (json['metadata'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as Object),
+      );
+
+Map<String, dynamic> _$A2ATaskIdParamsToJson(A2ATaskIdParams instance) =>
+    <String, dynamic>{'id': instance.id, 'metadata': instance.metadata};
+
+A2ATaskQueryParams _$A2ATaskQueryParamsFromJson(Map<String, dynamic> json) =>
+    A2ATaskQueryParams()
+      ..historyLength = (json['historyLength'] as num?)?.toInt()
+      ..id = json['id'] as String
+      ..metadata = (json['metadata'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as Object),
+      );
+
+Map<String, dynamic> _$A2ATaskQueryParamsToJson(A2ATaskQueryParams instance) =>
+    <String, dynamic>{
+      'historyLength': instance.historyLength,
+      'id': instance.id,
+      'metadata': instance.metadata,
+    };
+
+A2AMessageSendParams _$A2AMessageSendParamsFromJson(
+  Map<String, dynamic> json,
+) => A2AMessageSendParams()
+  ..configuration = json['configuration'] == null
+      ? null
+      : A2AMessageSendConfiguration.fromJson(
+          json['configuration'] as Map<String, dynamic>,
+        )
+  ..message = A2AMessage.fromJson(json['message'] as Map<String, dynamic>)
+  ..metadata = (json['metadata'] as Map<String, dynamic>?)?.map(
+    (k, e) => MapEntry(k, e as Object),
+  );
+
+Map<String, dynamic> _$A2AMessageSendParamsToJson(
+  A2AMessageSendParams instance,
+) => <String, dynamic>{
+  'configuration': instance.configuration?.toJson(),
+  'message': instance.message.toJson(),
+  'metadata': instance.metadata,
+};
+
+A2AMessageSendConfiguration _$A2AMessageSendConfigurationFromJson(
+  Map<String, dynamic> json,
+) => A2AMessageSendConfiguration()
+  ..acceptedOutputModes = (json['acceptedOutputModes'] as List<dynamic>)
+      .map((e) => e as String)
+      .toList()
+  ..blocking = json['blocking'] as bool
+  ..historyLength = json['historyLength'] as num?
+  ..pushNotificationConfig = json['pushNotificationConfig'] == null
+      ? null
+      : A2APushNotificationConfig.fromJson(
+          json['pushNotificationConfig'] as Map<String, dynamic>,
+        );
+
+Map<String, dynamic> _$A2AMessageSendConfigurationToJson(
+  A2AMessageSendConfiguration instance,
+) => <String, dynamic>{
+  'acceptedOutputModes': instance.acceptedOutputModes,
+  'blocking': instance.blocking,
+  'historyLength': instance.historyLength,
+  'pushNotificationConfig': instance.pushNotificationConfig?.toJson(),
+};
+
+A2APushNotificationConfig _$A2APushNotificationConfigFromJson(
+  Map<String, dynamic> json,
+) => A2APushNotificationConfig()
+  ..authentication = json['authentication'] == null
+      ? null
+      : A2APushNotificationAuthenticationInfo.fromJson(
+          json['authentication'] as Map<String, dynamic>,
+        )
+  ..id = json['id'] as String?
+  ..token = json['token'] as String?
+  ..url = json['url'] as String;
+
+Map<String, dynamic> _$A2APushNotificationConfigToJson(
+  A2APushNotificationConfig instance,
 ) => <String, dynamic>{
   'authentication': instance.authentication?.toJson(),
   'id': instance.id,
@@ -641,6 +877,7 @@ _$A2AGetTaskPushNotificationConfigSuccessResponseFromJson(
 ) => A2AGetTaskPushNotificationConfigSuccessResponse()
   ..isError = json['isError'] as bool
   ..id = json['id']
+  ..jsonrpc = json['jsonrpc'] as String
   ..result = json['result'] == null
       ? null
       : A2ATaskPushNotificationConfig1.fromJson(
@@ -652,6 +889,7 @@ Map<String, dynamic> _$A2AGetTaskPushNotificationConfigSuccessResponseToJson(
 ) => <String, dynamic>{
   'isError': instance.isError,
   'id': instance.id,
+  'jsonrpc': instance.jsonrpc,
   'result': instance.result?.toJson(),
 };
 
@@ -755,6 +993,7 @@ A2ASendMessageSuccessResponse _$A2ASendMessageSuccessResponseFromJson(
 ) => A2ASendMessageSuccessResponse()
   ..isError = json['isError'] as bool
   ..id = json['id']
+  ..jsonrpc = json['jsonrpc'] as String
   ..result = json['result'];
 
 Map<String, dynamic> _$A2ASendMessageSuccessResponseToJson(
@@ -762,6 +1001,7 @@ Map<String, dynamic> _$A2ASendMessageSuccessResponseToJson(
 ) => <String, dynamic>{
   'isError': instance.isError,
   'id': instance.id,
+  'jsonrpc': instance.jsonrpc,
   'result': instance.result,
 };
 
@@ -770,6 +1010,7 @@ _$A2ASendStreamingMessageSuccessResponseFromJson(Map<String, dynamic> json) =>
     A2ASendStreamingMessageSuccessResponse()
       ..isError = json['isError'] as bool
       ..id = json['id']
+      ..jsonrpc = json['jsonrpc'] as String
       ..result = json['result'];
 
 Map<String, dynamic> _$A2ASendStreamingMessageSuccessResponseToJson(
@@ -777,6 +1018,7 @@ Map<String, dynamic> _$A2ASendStreamingMessageSuccessResponseToJson(
 ) => <String, dynamic>{
   'isError': instance.isError,
   'id': instance.id,
+  'jsonrpc': instance.jsonrpc,
   'result': instance.result,
 };
 
@@ -786,6 +1028,7 @@ _$A2ASetTaskPushNotificationConfigSuccessResponseFromJson(
 ) => A2ASetTaskPushNotificationConfigSuccessResponse()
   ..isError = json['isError'] as bool
   ..id = json['id']
+  ..jsonrpc = json['jsonrpc'] as String
   ..result = json['result'] == null
       ? null
       : A2ATaskPushNotificationConfig1.fromJson(
@@ -797,6 +1040,7 @@ Map<String, dynamic> _$A2ASetTaskPushNotificationConfigSuccessResponseToJson(
 ) => <String, dynamic>{
   'isError': instance.isError,
   'id': instance.id,
+  'jsonrpc': instance.jsonrpc,
   'result': instance.result?.toJson(),
 };
 
