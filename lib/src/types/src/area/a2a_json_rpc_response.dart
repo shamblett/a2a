@@ -28,7 +28,7 @@ class A2AJsonRpcResponse {
       }
       // Check for Push notification
       return (json['result'] as Map).containsKey('token')
-          ? A2ASetTaskPushNotificationConfigSuccessResponse.fromJson(json)
+          ? A2ASetTaskPushNotificationConfigSuccessResponse().fromJson(json)
           : A2ASendMessageSuccessResponse().fromJson(json);
     } else {
       // Error, doesn't matter which response we pick
@@ -116,7 +116,7 @@ class SetTaskPushNotificationConfigResponse extends A2AJsonRpcResponse {
       response.isError = true;
       return response as A2AJSONRPCErrorResponsePNCR;
     } else {
-      return A2ASetTaskPushNotificationConfigSuccessResponse.fromJson((json));
+      return A2ASetTaskPushNotificationConfigSuccessResponse().fromJson((json));
     }
   }
 
@@ -311,11 +311,32 @@ final class A2ASetTaskPushNotificationConfigSuccessResponse
 
   A2ASetTaskPushNotificationConfigSuccessResponse();
 
-  factory A2ASetTaskPushNotificationConfigSuccessResponse.fromJson(
+  A2ASetTaskPushNotificationConfigSuccessResponse fromJson(
     Map<String, dynamic> json,
-  ) => _$A2ASetTaskPushNotificationConfigSuccessResponseFromJson(json);
+  ) {
+    final response = _$A2ASetTaskPushNotificationConfigSuccessResponseFromJson(
+      json,
+    );
+
+    if (json.containsKey('result')) {
+      response.result = _$A2ATaskPushNotificationConfig1FromJson(
+        json['result'],
+      );
+      return response;
+    }
+    return this;
+  }
 
   @override
-  Map<String, dynamic> toJson() =>
-      _$A2ASetTaskPushNotificationConfigSuccessResponseToJson(this);
+  Map<String, dynamic> toJson() {
+    final json = _$A2ASetTaskPushNotificationConfigSuccessResponseToJson(this);
+    if (result != null) {
+      json['result'] = _$A2ATaskPushNotificationConfig1ToJson(
+        result as A2ATaskPushNotificationConfig1,
+      );
+      return json;
+    }
+
+    return json;
+  }
 }
