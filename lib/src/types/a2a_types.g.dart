@@ -11,6 +11,7 @@ A2AMessage _$A2AMessageFromJson(Map<String, dynamic> json) => A2AMessage()
   ..extensions = (json['extensions'] as List<dynamic>?)
       ?.map((e) => e as String)
       .toList()
+  ..kind = json['kind'] as String
   ..messageId = json['messageId'] as String
   ..metadata = (json['metadata'] as Map<String, dynamic>?)?.map(
     (k, e) => MapEntry(k, e as Object),
@@ -28,6 +29,7 @@ Map<String, dynamic> _$A2AMessageToJson(A2AMessage instance) =>
     <String, dynamic>{
       'contextId': instance.contextId,
       'extensions': instance.extensions,
+      'kind': instance.kind,
       'messageId': instance.messageId,
       'metadata': instance.metadata,
       'parts': instance.parts?.map((e) => e.toJson()).toList(),
@@ -69,6 +71,7 @@ A2ATask _$A2ATaskFromJson(Map<String, dynamic> json) => A2ATask()
       ?.map((e) => A2AMessage.fromJson(e as Map<String, dynamic>))
       .toList()
   ..id = json['id'] as String
+  ..kind = json['kind'] as String
   ..metadata = (json['metadata'] as Map<String, dynamic>?)?.map(
     (k, e) => MapEntry(k, e as Object),
   )
@@ -81,6 +84,7 @@ Map<String, dynamic> _$A2ATaskToJson(A2ATask instance) => <String, dynamic>{
   'contextId': instance.contextId,
   'history': instance.history?.map((e) => e.toJson()).toList(),
   'id': instance.id,
+  'kind': instance.kind,
   'metadata': instance.metadata,
   'status': instance.status?.toJson(),
 };

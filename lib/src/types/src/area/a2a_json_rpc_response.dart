@@ -24,12 +24,12 @@ class A2AJsonRpcResponse {
         return json['result']['kind'] == 'artifact-update' ||
                 json['result']['kind'] == 'status-update'
             ? A2ASendStreamingMessageSuccessResponse.fromJson(json)
-            : A2ASendMessageSuccessResponse.fromJson(json);
+            : A2ASendMessageSuccessResponse().fromJson(json);
       }
       // Check for Push notification
       return (json['result'] as Map).containsKey('token')
           ? A2ASetTaskPushNotificationConfigSuccessResponse.fromJson(json)
-          : A2ASendMessageSuccessResponse.fromJson(json);
+          : A2ASendMessageSuccessResponse().fromJson(json);
     } else {
       // Error, doesn't matter which response we pick
       return A2AJSONRPCErrorResponseS.fromJson(json)..isError = true;
@@ -60,7 +60,7 @@ class A2ASendMessageResponse extends A2AJsonRpcResponse {
       response.isError = true;
       return response;
     } else {
-      return A2ASendMessageSuccessResponse.fromJson((json));
+      return A2ASendMessageSuccessResponse().fromJson((json));
     }
   }
 
@@ -188,11 +188,39 @@ final class A2ASendMessageSuccessResponse extends A2ASendMessageResponse {
 
   A2ASendMessageSuccessResponse();
 
-  factory A2ASendMessageSuccessResponse.fromJson(Map<String, dynamic> json) =>
-      _$A2ASendMessageSuccessResponseFromJson(json);
+  A2ASendMessageSuccessResponse fromJson(Map<String, dynamic> json) {
+    // Decode the result
+    final response = _$A2ASendMessageSuccessResponseFromJson(json);
+    if (json.containsKey('result')) {
+      if (json['result']['kind'] == 'task') {
+        response.result = _$A2ATaskFromJson(json['result']);
+        return response;
+      }
+
+      if (json['result']['kind'] == 'message') {
+        response.result = _$A2AMessageFromJson(json['result']);
+        return response;
+      }
+    }
+
+    return this;
+  }
 
   @override
-  Map<String, dynamic> toJson() => _$A2ASendMessageSuccessResponseToJson(this);
+  Map<String, dynamic> toJson() {
+    final json = _$A2ASendMessageSuccessResponseToJson(this);
+    if (result != null) {
+      if (result is A2ATask) {
+        json['result'] = _$A2ATaskToJson(result as A2ATask);
+        return json;
+      }
+      if (result is A2AMessage) {
+        json['result'] = _$A2AMessageToJson(result as A2AMessage);
+        return json;
+      }
+    }
+    return json;
+  }
 }
 
 /// JSON-RPC success response model for the 'message/stream' method.
@@ -214,7 +242,7 @@ final class A2ASendStreamingMessageSuccessResponse
 
   factory A2ASendStreamingMessageSuccessResponse.fromJson(
     Map<String, dynamic> json,
-      // TODO fix result
+    // TODO fix result
   ) => _$A2ASendStreamingMessageSuccessResponseFromJson(json);
 
   @override

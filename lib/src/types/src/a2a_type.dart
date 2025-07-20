@@ -51,7 +51,7 @@ class A2AMessage {
   List<String>? extensions;
 
   /// Event type
-  final kind = 'message';
+  String kind = 'message';
 
   /// Identifier created by the message creator
   String messageId = '';
@@ -122,7 +122,7 @@ class A2ATask {
   String id = '';
 
   /// Event type
-  final kind = 'task';
+  String kind = 'task';
 
   /// Extension metadata.
   A2ASV? metadata;

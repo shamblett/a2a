@@ -429,7 +429,7 @@ void main() {
         ..contextId = 'Context id';
       var testResponse = A2ASendMessageSuccessResponse()
         ..id = 2
-        ..result = task.toJson();
+        ..result = task;
 
       messageResponse = testResponse;
       json = messageResponse.toJson();
@@ -438,6 +438,10 @@ void main() {
       expect(messageResponse is A2ASendMessageSuccessResponse, isTrue);
       final testResponse1 = messageResponse as A2ASendMessageSuccessResponse;
       expect(testResponse1.result is A2ATask, isTrue);
+      final taskResponse = testResponse1.result as A2ATask;
+      expect(taskResponse.contextId, 'Context id');
+      expect(taskResponse.id, '3');
+      expect(taskResponse.status is A2ATaskStatus, isTrue);
       expect(testResponse1.id, 2);
     });
   });
