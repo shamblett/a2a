@@ -399,13 +399,13 @@ Map<String, dynamic> _$A2ADataPartToJson(A2ADataPart instance) =>
 A2AFileWithBytes _$A2AFileWithBytesFromJson(Map<String, dynamic> json) =>
     A2AFileWithBytes()
       ..bytes = json['bytes'] as String
-      ..mimeTYpe = json['mimeTYpe'] as String
+      ..mimeType = json['mimeType'] as String
       ..name = json['name'] as String;
 
 Map<String, dynamic> _$A2AFileWithBytesToJson(A2AFileWithBytes instance) =>
     <String, dynamic>{
       'bytes': instance.bytes,
-      'mimeTYpe': instance.mimeTYpe,
+      'mimeType': instance.mimeType,
       'name': instance.name,
     };
 

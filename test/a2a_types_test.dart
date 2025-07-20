@@ -536,8 +536,44 @@ void main() {
     });
   });
   group('Parts', () {
-    test('A2AFilePart', () {
+    test('A2ATextPart', () {
+      var part = A2APart();
+      var json = <String, dynamic>{};
 
+      final textPart = A2ATextPart()
+        ..metadata = {'First': 1}
+        ..text = 'The text';
+      part = textPart;
+      json = part.toJson();
+      part = A2APart();
+      part = A2APart.fromJson(json);
+      expect(part is A2ATextPart, isTrue);
+      final part1 = part as A2ATextPart;
+      expect(part1.text, 'The text');
+      expect(part1.metadata, {'First': 1});
+    });
+    test('A2AFilePart', () {
+      var part = A2APart();
+      var json = <String, dynamic>{};
+
+      final variant = A2AFileWithBytes()
+        ..mimeType = 'image'
+        ..name = 'The name'
+        ..bytes = 'The bytes';
+      final filePart = A2AFilePart()
+        ..metadata = {'Second': 2}
+        ..file = variant as A2AFilePartVariant;
+      part = filePart;
+      json = part.toJson();
+      part = A2APart();
+      part = A2APart.fromJson(json);
+      expect(part is A2AFilePart, isTrue);
+      final part1 = part as A2AFilePart;
+      expect(part1.metadata, {'Second': 2});
+      final variant1 = part1.file as A2AFileWithBytes;
+      expect(variant1.name, 'The name');
+      expect(variant1.mimeType, 'image');
+      expect(variant1.bytes, 'The bytes');
     });
   });
 }

@@ -11,9 +11,35 @@ part of '../../a2a_types.dart';
 class A2APart {
   A2APart();
 
-  factory A2APart.fromJson(Map<String, dynamic> json) => A2APart();
+  factory A2APart.fromJson(Map<String, dynamic> json) {
+    if (json.containsKey('kind')) {
+      if (json['kind'] == 'text') {
+        return A2ATextPart.fromJson(json);
+      }
+      if (json['kind'] == 'file') {
+        return A2AFilePart.fromJson(json);
+      }
+      if (json['kind'] == 'data') {
+        return A2ADataPart.fromJson(json);
+      }
+    }
 
-  Map<String, dynamic> toJson() => {};
+    return A2APart();
+  }
+
+  Map<String, dynamic> toJson() {
+    if (this is A2ATextPart) {
+      return A2ATextPart().toJson();
+    }
+    if (this is A2AFilePart) {
+      return A2AFilePart().toJson();
+    }
+    if (this is A2ADataPart) {
+      return A2ADataPart().toJson();
+    }
+
+    return {};
+  }
 }
 
 /// Represents a text segment within parts.
@@ -83,10 +109,27 @@ final class A2ADataPart extends A2APart {
 class A2AFilePartVariant {
   A2AFilePartVariant();
 
-  factory A2AFilePartVariant.fromJson(Map<String, dynamic> json) =>
-      A2AFilePartVariant();
+  factory A2AFilePartVariant.fromJson(Map<String, dynamic> json) {
+    if (json.containsKey('bytes')) {
+      return A2AFileWithBytes.fromJson(json);
+    }
+    if (json.containsKey('url')) {
+      return A2AFileWithBytes.fromJson(json);
+    }
 
-  Map<String, dynamic> toJson() => {};
+    return A2AFilePartVariant();
+  }
+
+  Map<String, dynamic> toJson() {
+    if (this is A2AFileWithBytes) {
+      return (this as A2AFileWithBytes).toJson();
+    }
+    if (this is A2AFileWithUrl) {
+      return (this as A2AFileWithUrl).toJson();
+    }
+
+    return {};
+  }
 }
 
 /// Define the variant where 'bytes' is present and 'uri' is absent
@@ -96,7 +139,7 @@ final class A2AFileWithBytes extends A2AFilePartVariant {
   String bytes = '';
 
   /// Optional mimeType for the file
-  String mimeTYpe = '';
+  String mimeType = '';
 
   /// Optional name for the file
   String name = '';
