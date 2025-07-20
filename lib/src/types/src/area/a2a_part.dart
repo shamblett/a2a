@@ -20,7 +20,7 @@ class A2APart {
 @JsonSerializable(explicitToJson: true)
 final class A2ATextPart extends A2APart {
   /// Part type - text for TextParts
-  final kind = 'text';
+  String kind = 'text';
 
   /// Optional metadata associated with the part.
   A2ASV? metadata;
@@ -41,7 +41,7 @@ final class A2ATextPart extends A2APart {
 @JsonSerializable(explicitToJson: true)
 final class A2AFilePart extends A2APart {
   /// Part type - file for TextParts
-  final kind = 'file';
+  String kind = 'file';
 
   /// Optional metadata associated with the part.
   A2ASV? metadata;
@@ -65,7 +65,7 @@ final class A2ADataPart extends A2APart {
   A2ASV data = {};
 
   /// Part type - data for DataParts
-  final kind = 'data';
+  String kind = 'data';
 
   /// Optional metadata associated with the part.
   A2ASV? metadata;

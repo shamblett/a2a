@@ -535,4 +535,9 @@ void main() {
       expect(testResponse1.id, 2);
     });
   });
+  group('Parts', () {
+    test('A2AFilePart', () {
+
+    });
+  });
 }

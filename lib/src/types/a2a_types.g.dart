@@ -351,15 +351,21 @@ Map<String, dynamic> _$A2APushNotificationAuthenticationInfoToJson(
 };
 
 A2ATextPart _$A2ATextPartFromJson(Map<String, dynamic> json) => A2ATextPart()
+  ..kind = json['kind'] as String
   ..metadata = (json['metadata'] as Map<String, dynamic>?)?.map(
     (k, e) => MapEntry(k, e as Object),
   )
   ..text = json['text'] as String;
 
 Map<String, dynamic> _$A2ATextPartToJson(A2ATextPart instance) =>
-    <String, dynamic>{'metadata': instance.metadata, 'text': instance.text};
+    <String, dynamic>{
+      'kind': instance.kind,
+      'metadata': instance.metadata,
+      'text': instance.text,
+    };
 
 A2AFilePart _$A2AFilePartFromJson(Map<String, dynamic> json) => A2AFilePart()
+  ..kind = json['kind'] as String
   ..metadata = (json['metadata'] as Map<String, dynamic>?)?.map(
     (k, e) => MapEntry(k, e as Object),
   )
@@ -369,6 +375,7 @@ A2AFilePart _$A2AFilePartFromJson(Map<String, dynamic> json) => A2AFilePart()
 
 Map<String, dynamic> _$A2AFilePartToJson(A2AFilePart instance) =>
     <String, dynamic>{
+      'kind': instance.kind,
       'metadata': instance.metadata,
       'file': instance.file?.toJson(),
     };
@@ -377,12 +384,17 @@ A2ADataPart _$A2ADataPartFromJson(Map<String, dynamic> json) => A2ADataPart()
   ..data = (json['data'] as Map<String, dynamic>).map(
     (k, e) => MapEntry(k, e as Object),
   )
+  ..kind = json['kind'] as String
   ..metadata = (json['metadata'] as Map<String, dynamic>?)?.map(
     (k, e) => MapEntry(k, e as Object),
   );
 
 Map<String, dynamic> _$A2ADataPartToJson(A2ADataPart instance) =>
-    <String, dynamic>{'data': instance.data, 'metadata': instance.metadata};
+    <String, dynamic>{
+      'data': instance.data,
+      'kind': instance.kind,
+      'metadata': instance.metadata,
+    };
 
 A2AFileWithBytes _$A2AFileWithBytesFromJson(Map<String, dynamic> json) =>
     A2AFileWithBytes()
