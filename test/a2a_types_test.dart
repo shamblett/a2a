@@ -444,5 +444,51 @@ void main() {
       expect(taskResponse.status is A2ATaskStatus, isTrue);
       expect(testResponse1.id, 2);
     });
+    test('Send Streaming Message Response - Error', () {
+      var messageResponse = A2AJsonRpcResponse();
+      var json = <String, dynamic>{};
+
+      var testResponse = A2AJSONRPCErrorResponseSS()
+        ..error = A2AError()
+        ..id = 1;
+      messageResponse = testResponse;
+      json = messageResponse.toJson();
+
+      messageResponse = A2AJsonRpcResponse();
+      messageResponse = A2AJsonRpcResponse.fromJson(json);
+      expect(messageResponse.isError, true);
+      expect(messageResponse is A2AJSONRPCErrorResponseS, isTrue);
+      final testResponse1 = messageResponse as A2AJSONRPCErrorResponseS;
+      expect(testResponse1.error is A2AError, isTrue);
+      expect(testResponse1.id, 1);
+    });
+    test('Send Streaming Message Response - Success', () {
+      var messageResponse = A2AJsonRpcResponse();
+      var json = <String, dynamic>{};
+
+      final message = A2AMessage()
+        ..messageId = '1'
+        ..contextId = 'Context id'
+        ..taskId = '6'
+        ..referenceTaskIds = ['1', '2', '3'];
+      var testResponse = A2ASendStreamingMessageSuccessResponse()
+        ..id = 2
+        ..result = message;
+
+      messageResponse = testResponse;
+      json = messageResponse.toJson();
+      messageResponse = A2AJsonRpcResponse();
+      messageResponse = A2AJsonRpcResponse.fromJson(json);
+      expect(messageResponse is A2ASendStreamingMessageSuccessResponse, isTrue);
+      final testResponse1 =
+          messageResponse as A2ASendStreamingMessageSuccessResponse;
+      expect(testResponse1.result is A2AMessage, isTrue);
+      final taskResponse = testResponse1.result as A2AMessage;
+      expect(taskResponse.contextId, 'Context id');
+      expect(taskResponse.messageId, '1');
+      expect(taskResponse.taskId, '6');
+      expect(taskResponse.referenceTaskIds, ['1', '2', '3']);
+      expect(testResponse1.id, 2);
+    });
   });
 }

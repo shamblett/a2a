@@ -30,6 +30,7 @@ final class A2ASendStreamMessageSuccessResponseR
 }
 
 /// Sent by server during sendStream or subscribe requests
+@JsonSerializable(explicitToJson: true)
 final class A2ATaskStatusUpdateEvent {
   /// The context the task is associated with
   String contextId = '';
@@ -39,7 +40,7 @@ final class A2ATaskStatusUpdateEvent {
   bool end = false;
 
   /// Event type
-  final kind = 'status-update';
+  String kind = 'status-update';
 
   /// Extension metadata.
   A2ASV? metadata;
@@ -47,9 +48,17 @@ final class A2ATaskStatusUpdateEvent {
 
   /// Task Id
   String taskId = '';
+
+  A2ATaskStatusUpdateEvent();
+
+  factory A2ATaskStatusUpdateEvent.fromJson(Map<String, dynamic> json) =>
+      _$A2ATaskStatusUpdateEventFromJson(json);
+
+  Map<String, dynamic> toJson() => _$A2ATaskStatusUpdateEventToJson(this);
 }
 
 /// Sent by server during sendStream or subscribe requests
+@JsonSerializable(explicitToJson: true)
 final class A2ATaskArtifactUpdateEvent {
   /// Indicates if this artifact appends to a previous one
   bool? append;
@@ -59,7 +68,7 @@ final class A2ATaskArtifactUpdateEvent {
   String contextId = '';
 
   /// Event type
-  final kind = 'artifact-update';
+  String kind = 'artifact-update';
 
   /// Indicates if this is the last chunk of the artifact
   bool? lastChunk;
@@ -69,4 +78,11 @@ final class A2ATaskArtifactUpdateEvent {
 
   /// Task Id
   String taskId = '';
+
+  A2ATaskArtifactUpdateEvent();
+
+  factory A2ATaskArtifactUpdateEvent.fromJson(Map<String, dynamic> json) =>
+      _$A2ATaskArtifactUpdateEventFromJson(json);
+
+  Map<String, dynamic> toJson() => _$A2ATaskArtifactUpdateEventToJson(this);
 }

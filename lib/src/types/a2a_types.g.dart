@@ -788,6 +788,58 @@ Map<String, dynamic> _$A2ASetTaskPushNotificationConfigSuccessResponseToJson(
   'result': instance.result?.toJson(),
 };
 
+A2ATaskStatusUpdateEvent _$A2ATaskStatusUpdateEventFromJson(
+  Map<String, dynamic> json,
+) => A2ATaskStatusUpdateEvent()
+  ..contextId = json['contextId'] as String
+  ..end = json['end'] as bool
+  ..kind = json['kind'] as String
+  ..metadata = (json['metadata'] as Map<String, dynamic>?)?.map(
+    (k, e) => MapEntry(k, e as Object),
+  )
+  ..status = json['status'] == null
+      ? null
+      : A2ATaskStatus.fromJson(json['status'] as Map<String, dynamic>)
+  ..taskId = json['taskId'] as String;
+
+Map<String, dynamic> _$A2ATaskStatusUpdateEventToJson(
+  A2ATaskStatusUpdateEvent instance,
+) => <String, dynamic>{
+  'contextId': instance.contextId,
+  'end': instance.end,
+  'kind': instance.kind,
+  'metadata': instance.metadata,
+  'status': instance.status?.toJson(),
+  'taskId': instance.taskId,
+};
+
+A2ATaskArtifactUpdateEvent _$A2ATaskArtifactUpdateEventFromJson(
+  Map<String, dynamic> json,
+) => A2ATaskArtifactUpdateEvent()
+  ..append = json['append'] as bool?
+  ..artifact = json['artifact'] == null
+      ? null
+      : A2AArtifact.fromJson(json['artifact'] as Map<String, dynamic>)
+  ..contextId = json['contextId'] as String
+  ..kind = json['kind'] as String
+  ..lastChunk = json['lastChunk'] as bool?
+  ..metadata = (json['metadata'] as Map<String, dynamic>?)?.map(
+    (k, e) => MapEntry(k, e as Object),
+  )
+  ..taskId = json['taskId'] as String;
+
+Map<String, dynamic> _$A2ATaskArtifactUpdateEventToJson(
+  A2ATaskArtifactUpdateEvent instance,
+) => <String, dynamic>{
+  'append': instance.append,
+  'artifact': instance.artifact?.toJson(),
+  'contextId': instance.contextId,
+  'kind': instance.kind,
+  'lastChunk': instance.lastChunk,
+  'metadata': instance.metadata,
+  'taskId': instance.taskId,
+};
+
 A2AAgentCapabilities _$A2AAgentCapabilitiesFromJson(
   Map<String, dynamic> json,
 ) => A2AAgentCapabilities()

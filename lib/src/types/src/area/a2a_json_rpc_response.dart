@@ -23,7 +23,7 @@ class A2AJsonRpcResponse {
         // Check which message response it is
         return json['result']['kind'] == 'artifact-update' ||
                 json['result']['kind'] == 'status-update'
-            ? A2ASendStreamingMessageSuccessResponse.fromJson(json)
+            ? A2ASendStreamingMessageSuccessResponse().fromJson(json)
             : A2ASendMessageSuccessResponse().fromJson(json);
       }
       // Check for Push notification
@@ -87,7 +87,7 @@ class A2ASendStreamingMessageResponse extends A2AJsonRpcResponse {
       response.isError = true;
       return response as A2AJSONRPCErrorResponseSS;
     } else {
-      return A2ASendStreamingMessageSuccessResponse.fromJson((json));
+      return A2ASendStreamingMessageSuccessResponse().fromJson((json));
     }
   }
 
@@ -196,7 +196,6 @@ final class A2ASendMessageSuccessResponse extends A2ASendMessageResponse {
         response.result = _$A2ATaskFromJson(json['result']);
         return response;
       }
-
       if (json['result']['kind'] == 'message') {
         response.result = _$A2AMessageFromJson(json['result']);
         return response;
@@ -240,14 +239,62 @@ final class A2ASendStreamingMessageSuccessResponse
 
   A2ASendStreamingMessageSuccessResponse();
 
-  factory A2ASendStreamingMessageSuccessResponse.fromJson(
-    Map<String, dynamic> json,
-    // TODO fix result
-  ) => _$A2ASendStreamingMessageSuccessResponseFromJson(json);
+  A2ASendStreamingMessageSuccessResponse fromJson(Map<String, dynamic> json) {
+    final response = _$A2ASendStreamingMessageSuccessResponseFromJson(json);
+
+    if (json.containsKey('result')) {
+      if (json['result']['kind'] == 'task') {
+        response.result = _$A2ATaskFromJson(json['result']);
+        return response;
+      }
+      if (json['result']['kind'] == 'message') {
+        response.result = _$A2AMessageFromJson(json['result']);
+        return response;
+      }
+      if (json['result']['kind'] == 'status-update') {
+        response.result = _$A2ATaskStatusUpdateEventFromJson(json['result']);
+        return response;
+      }
+      if (json['result']['kind'] == 'artifact-update') {
+        response.result = _$A2ATaskArtifactUpdateEventFromJson(json['result']);
+        return response;
+      }
+    }
+
+    return this;
+  }
 
   @override
-  Map<String, dynamic> toJson() =>
-      _$A2ASendStreamingMessageSuccessResponseToJson(this);
+  Map<String, dynamic> toJson() {
+    final json = _$A2ASendStreamingMessageSuccessResponseToJson(this);
+    if (result != null) {
+      if (result is A2ATask) {
+        json['result'] = _$A2ATaskToJson(result as A2ATask);
+        return json;
+      }
+      if (result is A2AMessage) {
+        json['result'] = _$A2AMessageToJson(result as A2AMessage);
+        return json;
+      }
+      if (result is A2ATask) {
+        json['result'] = _$A2ATaskToJson(result as A2ATask);
+        return json;
+      }
+      if (result is A2ATaskStatusUpdateEvent) {
+        json['result'] = _$A2ATaskStatusUpdateEventToJson(
+          result as A2ATaskStatusUpdateEvent,
+        );
+        return json;
+      }
+      if (result is A2ATaskArtifactUpdateEvent) {
+        json['result'] = _$A2ATaskArtifactUpdateEventToJson(
+          result as A2ATaskArtifactUpdateEvent,
+        );
+        return json;
+      }
+    }
+    return json;
+  }
 }
 
 /// JSON-RPC success response model for the 'tasks/pushNotificationConfig/set' method.
