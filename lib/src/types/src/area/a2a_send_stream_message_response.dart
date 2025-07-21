@@ -8,12 +8,45 @@
 part of '../../a2a_types.dart';
 
 /// JSON-RPC response model for the 'message/send' method.
-class A2ASendStreamMessageResponse {}
+class A2ASendStreamMessageResponse {
+  /// True if the response is an error
+  bool isError = false;
+
+  A2ASendStreamMessageResponse();
+
+  factory A2ASendStreamMessageResponse.fromJson(Map<String, dynamic> json) {
+    return json.containsKey('result')
+          ? A2ASendStreamMessageSuccessResponseR.fromJson(json)
+          : A2AJSONRPCErrorResponseSSM.fromJson(json)
+      ..isError = true;
+  }
+
+  Map<String, dynamic> toJson() {
+    if (this is A2ASendStreamMessageSuccessResponseR) {
+      return (this as A2ASendStreamMessageSuccessResponseR).toJson();
+    }
+    if (this is A2ASendStreamingMessageSuccessResponse) {
+      return (this as A2ASendStreamingMessageSuccessResponse).toJson();
+    }
+    if (this is A2ASetTaskPushNotificationConfigSuccessResponse) {
+      return (this as A2ASetTaskPushNotificationConfigSuccessResponse).toJson();
+    }
+    return {};
+  }
+}
 
 /// JSON RPC error response object
 @JsonSerializable(explicitToJson: true)
 final class A2AJSONRPCErrorResponseSSM extends A2ASendStreamMessageResponse
-    with A2AJSONRPCErrorResponseM {}
+    with A2AJSONRPCErrorResponseM {
+  A2AJSONRPCErrorResponseSSM();
+
+  factory A2AJSONRPCErrorResponseSSM.fromJson(Map<String, dynamic> json) =>
+      _$A2AJSONRPCErrorResponseSSMFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$A2AJSONRPCErrorResponseSSMToJson(this);
+}
 
 /// JSON-RPC success response model for the 'message/stream' method.
 @JsonSerializable(explicitToJson: true)
@@ -24,11 +57,21 @@ final class A2ASendStreamMessageSuccessResponseR
   A2AId? id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
-  String  jsonrpc = '2.0';
+  String jsonrpc = '2.0';
 
   /// The result object on success, [A2ATask], [A2AMessage], [A2ATaskStatusUpdateEvent]
   /// [A2ATaskArtifactUpdateEvent]
   Object? result;
+
+  A2ASendStreamMessageSuccessResponseR();
+
+  factory A2ASendStreamMessageSuccessResponseR.fromJson(
+    Map<String, dynamic> json,
+  ) => _$A2ASendStreamMessageSuccessResponseRFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$A2ASendStreamMessageSuccessResponseRToJson(this);
 }
 
 /// Sent by server during sendStream or subscribe requests

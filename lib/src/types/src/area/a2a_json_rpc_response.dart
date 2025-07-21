@@ -37,8 +37,8 @@ class A2AJsonRpcResponse {
   }
 
   Map<String, dynamic> toJson() {
-    if (this is A2ASendStreamingMessageSuccessResponse) {
-      return (this as A2ASendStreamingMessageSuccessResponse).toJson();
+    if (this is A2ASendMessageSuccessResponse) {
+      return (this as A2ASendMessageSuccessResponse).toJson();
     }
     if (this is A2ASendStreamingMessageSuccessResponse) {
       return (this as A2ASendStreamingMessageSuccessResponse).toJson();
