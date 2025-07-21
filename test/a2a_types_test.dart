@@ -577,6 +577,125 @@ void main() {
     });
   });
   group('Request', () {
-    test('A2ASendMessageRequest', () {});
+    test('A2ASendMessageRequest', () {
+      var request = A2ARequest();
+      var json = <String, dynamic>{};
+
+      var testRequest = A2ASendMessageRequest()..id = 1;
+      request = testRequest;
+      json = request.toJson();
+      request = A2ARequest();
+      request = A2ARequest.fromJson(json);
+      expect(request is A2ASendMessageRequest, isTrue);
+      final request1 = request as A2ASendMessageRequest;
+      expect(request1.id, 1);
+    });
+    test('A2ASendStreamingMessageRequest', () {
+      var request = A2ARequest();
+      var json = <String, dynamic>{};
+
+      var testRequest = A2ASendStreamingMessageRequest()..id = 1;
+      request = testRequest;
+      json = request.toJson();
+      request = A2ARequest();
+      request = A2ARequest.fromJson(json);
+      expect(request is A2ASendStreamingMessageRequest, isTrue);
+      final request1 = request as A2ASendStreamingMessageRequest;
+      expect(request1.id, 1);
+    });
+    test('A2AGetTaskRequest', () {
+      var request = A2ARequest();
+      var json = <String, dynamic>{};
+      final params = A2ATaskQueryParams()
+        ..id = '2'
+        ..historyLength = 1
+        ..metadata = {'First': 1};
+      var testRequest = A2AGetTaskRequest()
+        ..id = 1
+        ..params = params;
+      request = testRequest;
+      json = request.toJson();
+      request = A2ARequest();
+      request = A2ARequest.fromJson(json);
+      expect(request is A2AGetTaskRequest, isTrue);
+      final request1 = request as A2AGetTaskRequest;
+      expect(request1.id, 1);
+      expect(request.params?.id, '2');
+      expect(request1.params?.historyLength, 1);
+      expect(request1.params?.metadata, {'First': 1});
+    });
+    test('A2ACancelTaskRequest', () {
+      var request = A2ARequest();
+      var json = <String, dynamic>{};
+      final params = A2ATaskIdParams()
+        ..id = '2'
+        ..metadata = {'First': 1};
+      var testRequest = A2ACancelTaskRequest()
+        ..id = 1
+        ..params = params;
+      request = testRequest;
+      json = request.toJson();
+      request = A2ARequest();
+      request = A2ARequest.fromJson(json);
+      expect(request is A2ACancelTaskRequest, isTrue);
+      final request1 = request as A2ACancelTaskRequest;
+      expect(request1.id, 1);
+      expect(request.params?.id, '2');
+      expect(request1.params?.metadata, {'First': 1});
+    });
+    test('A2ASetTaskPushNotificationConfigRequest', () {
+      var request = A2ARequest();
+      var json = <String, dynamic>{};
+      final params = A2ATaskPushNotificationConfig()..id = '2';
+      var testRequest = A2ASetTaskPushNotificationConfigRequest()
+        ..id = 1
+        ..params = params;
+      request = testRequest;
+      json = request.toJson();
+      request = A2ARequest();
+      request = A2ARequest.fromJson(json);
+      expect(request is A2ASetTaskPushNotificationConfigRequest, isTrue);
+      final request1 = request as A2ASetTaskPushNotificationConfigRequest;
+      expect(request1.id, 1);
+      expect(request.params?.id, '2');
+    });
+    test('A2AGetTaskPushNotificationConfigRequest', () {
+      var request = A2ARequest();
+      var json = <String, dynamic>{};
+      final params = A2ATaskIdParams()
+        ..id = '2'
+        ..metadata = {'First': 1};
+      var testRequest = A2AGetTaskPushNotificationConfigRequest()
+        ..id = 1
+        ..params = params;
+      request = testRequest;
+      json = request.toJson();
+      request = A2ARequest();
+      request = A2ARequest.fromJson(json);
+      expect(request is A2AGetTaskPushNotificationConfigRequest, isTrue);
+      final request1 = request as A2AGetTaskPushNotificationConfigRequest;
+      expect(request1.id, 1);
+      expect(request.params?.id, '2');
+      expect(request1.params?.metadata, {'First': 1});
+    });
+    test('A2ATaskResubscriptionRequest', () {
+      var request = A2ARequest();
+      var json = <String, dynamic>{};
+      final params = A2ATaskIdParams()
+        ..id = '2'
+        ..metadata = {'First': 1};
+      var testRequest = A2ATaskResubscriptionRequest()
+        ..id = 1
+        ..params = params;
+      request = testRequest;
+      json = request.toJson();
+      request = A2ARequest();
+      request = A2ARequest.fromJson(json);
+      expect(request is A2ATaskResubscriptionRequest, isTrue);
+      final request1 = request as A2ATaskResubscriptionRequest;
+      expect(request1.id, 1);
+      expect(request.params?.id, '2');
+      expect(request1.params?.metadata, {'First': 1});
+    });
   });
 }
