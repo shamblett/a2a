@@ -25,12 +25,7 @@ class A2ASendStreamMessageResponse {
     if (this is A2ASendStreamMessageSuccessResponseR) {
       return (this as A2ASendStreamMessageSuccessResponseR).toJson();
     }
-    if (this is A2ASendStreamingMessageSuccessResponse) {
-      return (this as A2ASendStreamingMessageSuccessResponse).toJson();
-    }
-    if (this is A2ASetTaskPushNotificationConfigSuccessResponse) {
-      return (this as A2ASetTaskPushNotificationConfigSuccessResponse).toJson();
-    }
+
     return {};
   }
 }
@@ -67,11 +62,62 @@ final class A2ASendStreamMessageSuccessResponseR
 
   factory A2ASendStreamMessageSuccessResponseR.fromJson(
     Map<String, dynamic> json,
-  ) => _$A2ASendStreamMessageSuccessResponseRFromJson(json);
+  ) {
+    final response = _$A2ASendStreamMessageSuccessResponseRFromJson(json);
+
+    if (json.containsKey('result')) {
+      if (json['result']['kind'] == 'task') {
+        response.result = _$A2ATaskFromJson(json['result']);
+        return response;
+      }
+      if (json['result']['kind'] == 'message') {
+        response.result = _$A2AMessageFromJson(json['result']);
+        return response;
+      }
+      if (json['result']['kind'] == 'status-update') {
+        response.result = _$A2ATaskStatusUpdateEventFromJson(json['result']);
+        return response;
+      }
+      if (json['result']['kind'] == 'artifact-update') {
+        response.result = _$A2ATaskArtifactUpdateEventFromJson(json['result']);
+        return response;
+      }
+    }
+
+    return A2ASendStreamMessageSuccessResponseR();
+  }
 
   @override
-  Map<String, dynamic> toJson() =>
-      _$A2ASendStreamMessageSuccessResponseRToJson(this);
+  Map<String, dynamic> toJson() {
+    final json = _$A2ASendStreamMessageSuccessResponseRToJson(this);
+    if (result != null) {
+      if (result is A2ATask) {
+        json['result'] = _$A2ATaskToJson(result as A2ATask);
+        return json;
+      }
+      if (result is A2AMessage) {
+        json['result'] = _$A2AMessageToJson(result as A2AMessage);
+        return json;
+      }
+      if (result is A2ATask) {
+        json['result'] = _$A2ATaskToJson(result as A2ATask);
+        return json;
+      }
+      if (result is A2ATaskStatusUpdateEvent) {
+        json['result'] = _$A2ATaskStatusUpdateEventToJson(
+          result as A2ATaskStatusUpdateEvent,
+        );
+        return json;
+      }
+      if (result is A2ATaskArtifactUpdateEvent) {
+        json['result'] = _$A2ATaskArtifactUpdateEventToJson(
+          result as A2ATaskArtifactUpdateEvent,
+        );
+        return json;
+      }
+    }
+    return json;
+  }
 }
 
 /// Sent by server during sendStream or subscribe requests
