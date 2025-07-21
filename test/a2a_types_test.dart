@@ -698,4 +698,24 @@ void main() {
       expect(request1.params?.metadata, {'First': 1});
     });
   });
+  group('Send Stream Message Response', () {
+    test('A2ASendMessageRequest - Error', () {
+      var messageResponse = A2ASendStreamMessageResponse();
+      var json = <String, dynamic>{};
+
+      var testResponse = A2AJSONRPCErrorResponseSSM()
+        ..error = A2AError()
+        ..id = 1;
+      messageResponse = testResponse;
+      json = messageResponse.toJson();
+
+      messageResponse = A2ASendStreamMessageResponse();
+      messageResponse = A2ASendStreamMessageResponse.fromJson(json);
+      expect(messageResponse.isError, true);
+      expect(messageResponse is A2AJSONRPCErrorResponseSSM, isTrue);
+      final testResponse1 = messageResponse as A2AJSONRPCErrorResponseSSM;
+      expect(testResponse1.error is A2AError, isTrue);
+      expect(testResponse1.id, 1);
+    });
+  });
 }
