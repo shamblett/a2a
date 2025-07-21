@@ -744,4 +744,50 @@ void main() {
       expect(testResponse1.id, 2);
     });
   });
+  group('Task Push Notification Config Message Response', () {
+    test('A2ASetTaskPushNotificationConfigResponse - Error', () {
+      var messageResponse = A2ASetTaskPushNotificationConfigResponse();
+      var json = <String, dynamic>{};
+
+      var testResponse = A2AJSONRPCErrorResponseSTPR()
+        ..error = A2AError()
+        ..id = 1;
+      messageResponse = testResponse;
+      json = messageResponse.toJson();
+
+      messageResponse = A2ASetTaskPushNotificationConfigResponse();
+      messageResponse = A2ASetTaskPushNotificationConfigResponse.fromJson(json);
+      expect(messageResponse.isError, true);
+      expect(messageResponse is A2AJSONRPCErrorResponseSTPR, isTrue);
+      final testResponse1 = messageResponse as A2AJSONRPCErrorResponseSTPR;
+      expect(testResponse1.error is A2AError, isTrue);
+      expect(testResponse1.id, 1);
+    });
+    test('A2ASetTaskPushNotificationConfigResponse - Success', () {
+      var messageResponse = A2ASetTaskPushNotificationConfigResponse();
+      var json = <String, dynamic>{};
+
+      final config = A2ATaskPushNotificationConfig()..id = '3';
+      var testResponse = A2ASetTaskPushNotificationConfigSuccessResponseSTPR()
+        ..id = 2
+        ..result = config;
+
+      messageResponse = testResponse;
+      json = messageResponse.toJson();
+      messageResponse = A2ASetTaskPushNotificationConfigResponse();
+      messageResponse = A2ASetTaskPushNotificationConfigResponse.fromJson(json);
+      expect(
+        messageResponse is A2ASetTaskPushNotificationConfigSuccessResponseSTPR,
+        isTrue,
+      );
+      final testResponse1 =
+          messageResponse
+              as A2ASetTaskPushNotificationConfigSuccessResponseSTPR;
+      expect(testResponse1.result is A2ATaskPushNotificationConfig, isTrue);
+      final taskResponse =
+          testResponse1.result as A2ATaskPushNotificationConfig;
+      expect(taskResponse.id, '3');
+      expect(testResponse1.id, 2);
+    });
+  });
 }
