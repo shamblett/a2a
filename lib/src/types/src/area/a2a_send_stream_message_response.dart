@@ -8,13 +8,15 @@
 part of '../../a2a_types.dart';
 
 /// JSON-RPC response model for the 'message/send' method.
-sealed class A2ASendStreamMessageResponse {}
+class A2ASendStreamMessageResponse {}
 
 /// JSON RPC error response object
+@JsonSerializable(explicitToJson: true)
 final class A2AJSONRPCErrorResponseSSM extends A2ASendStreamMessageResponse
     with A2AJSONRPCErrorResponseM {}
 
 /// JSON-RPC success response model for the 'message/stream' method.
+@JsonSerializable(explicitToJson: true)
 final class A2ASendStreamMessageSuccessResponseR
     extends A2ASendStreamMessageResponse {
   /// An identifier established by the Client that MUST contain a String, Number.
