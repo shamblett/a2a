@@ -8,7 +8,67 @@
 part of '../../a2a_types.dart';
 
 /// A2A supported request types
-sealed class A2ARequest {}
+class A2ARequest {
+  static const messageSend = 'message/send';
+  static const messageStream = 'message/stream';
+  static const tasksGet = 'tasks/get';
+  static const tasksCancel = 'tasks/cancel';
+  static const tasksPncSet = 'tasks/pushNotificationConfig/set';
+  static const tasksPncGet = 'tasks/pushNotificationConfig/get';
+  static const tasksResubscribe = 'tasks/resubscribe';
+
+  factory A2ARequest.fromJson(Map<String, dynamic> json) {
+    if (!json.containsKey('method')) {
+      return A2ARequest();
+    } else {
+      switch (json['method']) {
+        case messageSend:
+          return A2ASendMessageRequest.fromJson(json);
+        case messageStream:
+          return A2ASendStreamingMessageRequest.fromJson(json);
+        case tasksGet:
+          return A2AGetTaskRequest.fromJson(json);
+        case tasksCancel:
+          return A2ACancelTaskRequest.fromJson(json);
+        case tasksPncSet:
+          return A2ASetTaskPushNotificationConfigRequest.fromJson(json);
+        case tasksPncGet:
+          return A2AGetTaskPushNotificationConfigRequest.fromJson(json);
+        case tasksResubscribe:
+          return A2ATaskResubscriptionRequest.fromJson(json);
+        default:
+          return A2ARequest();
+      }
+    }
+  }
+
+  A2ARequest();
+
+  Map<String, dynamic> toJson() {
+    if (this is A2ASendMessageRequest) {
+      return (this as A2ASendMessageRequest).toJson();
+    }
+    if (this is A2ASendStreamingMessageRequest) {
+      return (this as A2ASendStreamingMessageRequest).toJson();
+    }
+    if (this is A2AGetTaskRequest) {
+      return (this as A2AGetTaskRequest).toJson();
+    }
+    if (this is A2ACancelTaskRequest) {
+      return (this as A2ACancelTaskRequest).toJson();
+    }
+    if (this is A2ASetTaskPushNotificationConfigRequest) {
+      return (this as A2ASetTaskPushNotificationConfigRequest).toJson();
+    }
+    if (this is A2AGetTaskPushNotificationConfigRequest) {
+      return (this as A2AGetTaskPushNotificationConfigRequest).toJson();
+    }
+    if (this is A2ATaskResubscriptionRequest) {
+      return (this as A2ATaskResubscriptionRequest).toJson();
+    }
+    return {};
+  }
+}
 
 /// JSON-RPC request model for the 'message/send' method.
 @JsonSerializable(explicitToJson: true)
@@ -28,6 +88,7 @@ final class A2ASendMessageRequest extends A2ARequest {
   factory A2ASendMessageRequest.fromJson(Map<String, dynamic> json) =>
       _$A2ASendMessageRequestFromJson(json);
 
+  @override
   Map<String, dynamic> toJson() => _$A2ASendMessageRequestToJson(this);
 }
 
@@ -50,6 +111,7 @@ final class A2ASendStreamingMessageRequest extends A2ARequest {
   factory A2ASendStreamingMessageRequest.fromJson(Map<String, dynamic> json) =>
       _$A2ASendStreamingMessageRequestFromJson(json);
 
+  @override
   Map<String, dynamic> toJson() => _$A2ASendStreamingMessageRequestToJson(this);
 }
 
@@ -72,6 +134,7 @@ final class A2AGetTaskRequest extends A2ARequest {
   factory A2AGetTaskRequest.fromJson(Map<String, dynamic> json) =>
       _$A2AGetTaskRequestFromJson(json);
 
+  @override
   Map<String, dynamic> toJson() => _$A2AGetTaskRequestToJson(this);
 }
 
@@ -94,6 +157,7 @@ final class A2ACancelTaskRequest extends A2ARequest {
   factory A2ACancelTaskRequest.fromJson(Map<String, dynamic> json) =>
       _$A2ACancelTaskRequestFromJson(json);
 
+  @override
   Map<String, dynamic> toJson() => _$A2ACancelTaskRequestToJson(this);
 }
 
@@ -117,6 +181,7 @@ final class A2ASetTaskPushNotificationConfigRequest extends A2ARequest {
     Map<String, dynamic> json,
   ) => _$A2ASetTaskPushNotificationConfigRequestFromJson(json);
 
+  @override
   Map<String, dynamic> toJson() =>
       _$A2ASetTaskPushNotificationConfigRequestToJson(this);
 }
@@ -141,6 +206,7 @@ final class A2AGetTaskPushNotificationConfigRequest extends A2ARequest {
     Map<String, dynamic> json,
   ) => _$A2AGetTaskPushNotificationConfigRequestFromJson(json);
 
+  @override
   Map<String, dynamic> toJson() =>
       _$A2AGetTaskPushNotificationConfigRequestToJson(this);
 }
@@ -164,6 +230,7 @@ final class A2ATaskResubscriptionRequest extends A2ARequest {
   factory A2ATaskResubscriptionRequest.fromJson(Map<String, dynamic> json) =>
       _$A2ATaskResubscriptionRequestFromJson(json);
 
+  @override
   Map<String, dynamic> toJson() => _$A2ATaskResubscriptionRequestToJson(this);
 }
 

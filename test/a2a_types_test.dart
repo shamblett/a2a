@@ -576,4 +576,7 @@ void main() {
       expect(variant1.bytes, 'The bytes');
     });
   });
+  group('Request', () {
+    test('A2ASendMessageRequest', () {});
+  });
 }
