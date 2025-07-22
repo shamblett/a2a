@@ -116,6 +116,23 @@ const _$A2ATaskStateEnumMap = {
   A2ATaskState.unknown: 'unknown',
 };
 
+A2AJsonRpcRequest _$A2AJsonRpcRequestFromJson(Map<String, dynamic> json) =>
+    A2AJsonRpcRequest()
+      ..id = json['id']
+      ..jsonrpc = json['jsonrpc'] as String
+      ..method = json['method'] as String
+      ..params = (json['params'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as Object),
+      );
+
+Map<String, dynamic> _$A2AJsonRpcRequestToJson(A2AJsonRpcRequest instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'jsonrpc': instance.jsonrpc,
+      'method': instance.method,
+      'params': instance.params,
+    };
+
 A2AJSONRPCError _$A2AJSONRPCErrorFromJson(Map<String, dynamic> json) =>
     A2AJSONRPCError()
       ..code = (json['code'] as num).toInt()

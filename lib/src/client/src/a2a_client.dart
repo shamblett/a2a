@@ -112,4 +112,29 @@ class A2AClient {
       rethrow;
     }
   }
+
+  /// Helper method to make a generic JSON-RPC POST request.
+  /// @param method The RPC method name.
+  /// @param params The parameters for the RPC method.
+  /// @returns A Promise that resolves to the RPC response.
+  Future<TResponse>_postRpcRequest<TParams, TResponse>(
+  String method,
+  TParams params
+  ) async {
+    final endpoint = await serviceEndpoint;
+    final requestId = _requestIdCounter++;
+    final rpcRequest = A2AJsonRpcRequest()
+    ..method = method
+    ..id = requestId
+    ..params = params as A2ASV;
+
+    final headers = http.Headers()
+    ..append('Accept', 'application/json')
+    ..append('Content-Type', 'application/json');
+    final httpResponse = await  http.fetch(endpoint,
+      method : 'POST',
+      headers : headers,
+      body : http.Body.json(rpcRequest.toJson())
+    );
+  }
 }

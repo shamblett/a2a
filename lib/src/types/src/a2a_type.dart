@@ -164,3 +164,27 @@ mixin A2AJSONRPCErrorResponseM {
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
   String jsonrpc = '2.0';
 }
+
+/// Represents a JSON-RPC 2.0 Request object.
+@JsonSerializable(explicitToJson: true)
+class A2AJsonRpcRequest {
+  /// An identifier established by the Client that MUST contain a String, Number.
+  /// Numbers SHOULD NOT contain fractional parts.
+  A2AId? id;
+
+  /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
+  String jsonrpc = '2.0';
+
+  /// A String containing the name of the method to be invoked.
+  String method = 'get';
+
+  /// A Structured value that holds the parameter values to be used during the invocation of the method.
+  A2ASV? params;
+
+  A2AJsonRpcRequest();
+
+  factory A2AJsonRpcRequest.fromJson(Map<String, dynamic> json) =>
+      _$A2AJsonRpcRequestFromJson(json);
+
+  Map<String, dynamic> toJson() => _$A2AJsonRpcRequestToJson(this);
+}
