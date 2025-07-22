@@ -7,6 +7,7 @@
 
 library;
 
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:oxy/oxy.dart' as http;
@@ -20,7 +21,7 @@ class A2AClient {
 
   late String _serviceEndpointUrl;
 
-  late Future<A2AAgentCard> _agentCard;
+  A2AAgentCard? _agentCard;
 
   int _requestIdCounter = 1;
 
@@ -32,7 +33,9 @@ class A2AClient {
     }
     // If serviceEndpointUrl is not set, it means the agent card fetch is pending or failed.
     // Awaiting agentCard will either resolve it or throw if fetching failed.
-    await _agentCard;
+    if (_agentCard == null) {
+      await _fetchAndCacheAgentCard();
+    }
     if (_serviceEndpointUrl.isEmpty) {
       // This case should ideally be covered by the error handling in _fetchAndCacheAgentCard
       throw Exception(
@@ -54,7 +57,7 @@ class A2AClient {
     } else {
       this.agentBaseUrl = agentBaseUrl;
     }
-    _agentCard = _fetchAndCacheAgentCard();
+    _fetchAndCacheAgentCard();
   }
 
   /// Retrieves the Agent Card.
@@ -64,11 +67,107 @@ class A2AClient {
   /// If provided, this will fetch a new card, not use the cached one from the constructor's URL.
   /// @returns A Promise that resolves to the AgentCard.
   Future<A2AAgentCard> getAgentCard({String? agentBaseUrl}) async {
+    final completer = Completer<A2AAgentCard>();
     if (agentBaseUrl != null) {
-      return _fetchAndCacheAgentCard(baseUrl: agentBaseUrl);
+      final agentCard = await _fetchAndCacheAgentCard(baseUrl: agentBaseUrl);
+      completer.complete(agentCard);
+    } else {
+      // If no specific URL is given, return the initially configured agent's card.
+      completer.complete(_agentCard);
     }
-    // If no specific URL is given, return the initially configured agent's card.
-    return _agentCard;
+    return completer.future;
+  }
+
+  /// Sends a message to the agent.
+  /// The behavior (blocking/non-blocking) and push notification configuration
+  /// are specified within the `params.configuration` object.
+  /// Optionally, `params.message.contextId` or `params.message.taskId` can be provided.
+  /// @param params The parameters for sending the message, including the message content and configuration.
+  /// @returns A Promise resolving to SendMessageResponse, which can be a Message, Task, or an error.
+  Future<A2ASendMessageResponse> sendMessage(
+    A2AMessageSendParams params,
+  ) async =>
+      await _postRpcRequest<A2AMessageSendParams, A2ASendMessageResponse>(
+        'message/send',
+        params,
+      );
+
+  /// Sends a message to the agent and streams back responses using Server-Sent Events (SSE).
+  /// Push notification configuration can be specified in `params.configuration`.
+  /// Optionally, `params.message.contextId` or `params.message.taskId` can be provided.
+  /// Requires the agent to support streaming (`capabilities.streaming: true` in AgentCard).
+  /// @param params The parameters for sending the message.
+  /// @returns yielding [A2AStreamEventData] (Message, Task, TaskStatusUpdateEvent, or TaskArtifactUpdateEvent).
+  /// The generator throws an error if streaming is not supported or if an HTTP/SSE error occurs.
+  Stream<A2AStreamEventData> sendMessageStream(
+    A2AMessageSendParams params,
+  ) async* {
+    // Ensure agent card is fetched
+    if (_agentCard != null) {
+      if (_agentCard!.capabilities.streaming != null) {
+        if (!_agentCard!.capabilities.streaming!) {
+          throw Exception(
+            'sendMessageStream:: Agent does not support streaming (AgentCard.capabilities.streaming is not true).',
+          );
+        }
+      } else {
+        throw Exception(
+          'sendMessageStream: Agent does not support streaming (AgentCard.capabilities.streaming is null).',
+        );
+      }
+    } else {
+      throw Exception('Agent does not support streaming agent card is null');
+    }
+
+    final endpoint = await serviceEndpoint;
+    final requestId = _requestIdCounter++;
+    final rpcRequest = A2AJsonRpcRequest()
+      ..method = 'message/stream'
+      ..id = requestId
+      ..params = params as A2ASV;
+
+    final headers = http.Headers()
+      ..append('Accept', 'application/json')
+      ..append('Content-Type', 'application/json');
+    final httpResponse = await http.fetch(
+      endpoint,
+      method: 'POST',
+      headers: headers,
+      body: http.Body.json(rpcRequest.toJson()),
+    );
+
+    if (!httpResponse.ok) {
+      var errorBodyText = '(empty or non-JSON response)';
+      try {
+        errorBodyText = await httpResponse.text();
+        final errorJson = (json.decode(errorBodyText) as Map<String, dynamic>);
+        // If the body is a valid JSON-RPC error response, let it be handled by the standard parsing below.
+        // However, if it's not even a JSON-RPC structure but still an error, throw based on HTTP status.
+        if (!errorJson.containsKey('jsonrpc') &&
+            errorJson.containsKey('error')) {
+          final error = json.encode(errorJson['error']['data']);
+          throw Exception(
+            'RPC error for "message/stream": ${errorJson["error"]["message"]} '
+            '(Code: ${errorJson["error"]["code"]}, HTTP Status: ${httpResponse.status}), Data: $error',
+          );
+        } else if (!errorJson.containsKey('jsonrpc')) {
+          throw Exception(
+            'HTTP error for "message/stream" Status: ${httpResponse.status} ${httpResponse.statusText}. Response: $errorBodyText',
+          );
+        }
+      } catch (e) {
+        // If parsing the error body fails or it's not a JSON-RPC error, throw a generic HTTP error.
+        // If it was already an error thrown from within the try block, rethrow it.
+        if (e.toString().contains('RPC error for') ||
+            e.toString().contains('HTTP error for')) {
+          rethrow;
+        }
+      }
+    }
+
+    // Yield events from the parsed SSE stream.
+    // Each event's 'data' field is a JSON-RPC response.
+    //TODO yield* this._parseA2ASseStream<A2AStreamEventData>(response, clientRequestId);
   }
 
   /// Fetches the Agent Card from the agent's well-known URI and caches its service endpoint URL.
@@ -107,6 +206,7 @@ class A2AClient {
       }
       if (cache) {
         _serviceEndpointUrl = agentCard.url;
+        _agentCard = agentCard;
       }
       return agentCard;
     } catch (e) {

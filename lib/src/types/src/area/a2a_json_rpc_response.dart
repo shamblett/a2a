@@ -306,7 +306,7 @@ final class A2ASetTaskPushNotificationConfigSuccessResponse
   A2AId? id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
-  String  jsonrpc = '2.0';
+  String jsonrpc = '2.0';
   A2ATaskPushNotificationConfig1? result;
 
   A2ASetTaskPushNotificationConfigSuccessResponse();

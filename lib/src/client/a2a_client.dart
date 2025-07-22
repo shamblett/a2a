@@ -5,5 +5,4 @@
 * Copyright :  S.Hamblett
 */
 
-
 export 'src/a2a_client.dart';

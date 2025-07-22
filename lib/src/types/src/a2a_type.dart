@@ -41,6 +41,9 @@ interface class A2AMySchema {
   Map<String, Object> unknown = {};
 }
 
+/// // Helper type for the data yielded by streaming methods
+typedef A2AStreamEventData = A2ASendStreamMessageSuccessResponseR;
+
 /// The message being sent to the server.
 @JsonSerializable(explicitToJson: true)
 class A2AMessage {
