@@ -33,3 +33,4 @@ dart_code_metrics:
     - avoid-non-null-assertion : false
     - no-magic-number : false
     - avoid-substring : false
+    - avoid-dynamic : false

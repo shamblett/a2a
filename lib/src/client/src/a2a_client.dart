@@ -7,6 +7,8 @@
 
 library;
 
+import 'dart:convert';
+
 import 'package:oxy/oxy.dart' as http;
 import '/src/types/a2a_types.dart';
 
@@ -117,24 +119,66 @@ class A2AClient {
   /// @param method The RPC method name.
   /// @param params The parameters for the RPC method.
   /// @returns A Promise that resolves to the RPC response.
-  Future<TResponse>_postRpcRequest<TParams, TResponse>(
-  String method,
-  TParams params
+  Future<TResponse> _postRpcRequest<TParams, TResponse>(
+    String method,
+    TParams params,
   ) async {
     final endpoint = await serviceEndpoint;
     final requestId = _requestIdCounter++;
     final rpcRequest = A2AJsonRpcRequest()
-    ..method = method
-    ..id = requestId
-    ..params = params as A2ASV;
+      ..method = method
+      ..id = requestId
+      ..params = params as A2ASV;
 
     final headers = http.Headers()
-    ..append('Accept', 'application/json')
-    ..append('Content-Type', 'application/json');
-    final httpResponse = await  http.fetch(endpoint,
-      method : 'POST',
-      headers : headers,
-      body : http.Body.json(rpcRequest.toJson())
+      ..append('Accept', 'application/json')
+      ..append('Content-Type', 'application/json');
+    final httpResponse = await http.fetch(
+      endpoint,
+      method: 'POST',
+      headers: headers,
+      body: http.Body.json(rpcRequest.toJson()),
     );
+
+    if (!httpResponse.ok) {
+      var errorBodyText = '(empty or non-JSON response)';
+      try {
+        errorBodyText = await httpResponse.text();
+        final errorJson = (json.decode(errorBodyText) as Map<String, dynamic>);
+        // If the body is a valid JSON-RPC error response, let it be handled by the standard parsing below.
+        // However, if it's not even a JSON-RPC structure but still an error, throw based on HTTP status.
+        if (!errorJson.containsKey('jsonrpc') &&
+            errorJson.containsKey('error')) {
+          final error = json.encode(errorJson['error']['data']);
+          throw Exception(
+            'RPC error for $method: ${errorJson["error"]["message"]} '
+            '(Code: ${errorJson["error"]["code"]}, HTTP Status: ${httpResponse.status}), Data: $error',
+          );
+        } else if (!errorJson.containsKey('jsonrpc')) {
+          throw Exception(
+            'HTTP error for $method Status: ${httpResponse.status} ${httpResponse.statusText}. Response: $errorBodyText',
+          );
+        }
+      } catch (e) {
+        // If parsing the error body fails or it's not a JSON-RPC error, throw a generic HTTP error.
+        // If it was already an error thrown from within the try block, rethrow it.
+        if (e.toString().contains('RPC error for') ||
+            e.toString().contains('HTTP error for')) {
+          rethrow;
+        }
+      }
+    }
+
+    final rpcResponse = (await httpResponse.json() as Map<String, dynamic>);
+    if (rpcResponse.containsKey('id') && rpcResponse['id']! == requestId) {
+      // This is a significant issue for request-response matching.
+      throw Exception(
+        'RPC response ID mismatch for method $method. Expected $requestId, got ${rpcResponse["id"]}',
+      );
+    }
+
+    // Return the response
+    dynamic response;
+    return (response.fromJson(rpcResponse) as TResponse);
   }
 }
