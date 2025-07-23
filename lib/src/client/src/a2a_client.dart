@@ -306,8 +306,46 @@ class A2AClient {
       },
     );
     final reader = response.body.transform(transformer);
-    String buffer = ''; // Holds incomplete lines from the stream
+    List<String> buffer = []; // Holds incomplete lines from the stream
     String eventDataBuffer =
         ''; // Holds accumulated 'data:' lines for the current event
+
+    try {
+      while (true) {
+        final value = await reader.first;
+        if (await reader.isEmpty) {
+          if (eventDataBuffer.isNotEmpty) {
+            //final result = _processSseEventData<TStreamItem>(eventDataBuffer, originalRequestId);
+            //yield result;
+          }
+          break;
+        }
+        buffer.add(value);
+        for (String line in buffer) {
+          if (line.contains('\n')) {
+            line = line.trim();
+            if (line.isEmpty) {
+              // Empty line: signifies the end of an event
+              if (eventDataBuffer.isNotEmpty) {
+                // If we have accumulated data for an event
+                //const result = this._processSseEventData<TStreamItem>(eventDataBuffer, originalRequestId);
+                //yield result;
+                eventDataBuffer = ''; // Reset buffer for the next event
+              }
+            } else if (line.startsWith('data:')) {
+              // Append data (multi-line data is possible)
+              eventDataBuffer += line.substring(5);
+              // Comment lines starting with : in SSE are ignored
+              // Other SSE fields like 'event:', 'id:', 'retry:'.
+              // The A2A spec primarily focuses on the 'data' field for JSON-RPC payloads.
+              // For now, we don't specifically handle these other SSE fields unless required by spec.
+            }
+          }
+        }
+        buffer.clear();
+      }
+    } catch (e, s) {
+      Error.throwWithStackTrace(e, s);
+    }
   }
 }
