@@ -9,6 +9,7 @@ library;
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:oxy/oxy.dart' as http;
 import '/src/types/a2a_types.dart';
@@ -251,12 +252,12 @@ class A2AClient {
             errorJson.containsKey('error')) {
           final error = json.encode(errorJson['error']['data']);
           throw Exception(
-            'RPC error for $method: ${errorJson["error"]["message"]} '
+            '_postRpcRequest:: RPC error for $method: ${errorJson["error"]["message"]} '
             '(Code: ${errorJson["error"]["code"]}, HTTP Status: ${httpResponse.status}), Data: $error',
           );
         } else if (!errorJson.containsKey('jsonrpc')) {
           throw Exception(
-            'HTTP error for $method Status: ${httpResponse.status} ${httpResponse.statusText}. Response: $errorBodyText',
+            '_postRpcRequest:: HTTP error for $method Status: ${httpResponse.status} ${httpResponse.statusText}. Response: $errorBodyText',
           );
         }
       } catch (e) {
@@ -273,12 +274,40 @@ class A2AClient {
     if (rpcResponse.containsKey('id') && rpcResponse['id']! == requestId) {
       // This is a significant issue for request-response matching.
       throw Exception(
-        'RPC response ID mismatch for method $method. Expected $requestId, got ${rpcResponse["id"]}',
+        '_postRpcRequest:: RPC response ID mismatch for method $method. Expected $requestId, got ${rpcResponse["id"]}',
       );
     }
 
     // Return the response
     dynamic response;
     return (response.fromJson(rpcResponse) as TResponse);
+  }
+
+  /// Parses an HTTP response body as an A2A Server-Sent Event stream.
+  /// Each 'data' field of an SSE event is expected to be a JSON-RPC 2.0 Response object,
+  /// specifically a SendStreamingMessageResponse (or similar structure for resubscribe).
+  /// @param response The HTTP Response object whose body is the SSE stream.
+  /// @param originalRequestId The ID of the client's JSON-RPC request that initiated this stream.
+  /// Used to validate the `id` in the streamed JSON-RPC responses.
+  /// @returns An AsyncGenerator yielding the `result` field of each valid JSON-RPC success response from the stream.
+  Stream<TStreamItem> _parseA2ASseStream<TStreamItem>(
+    http.Response response,
+    A2AId originalRequestId,
+  ) async* {
+    if (await response.body.isEmpty) {
+      throw Exception(
+        '_parseA2ASseStream:: SSE response body is undefined. Cannot read stream.',
+      );
+    }
+
+    final transformer = StreamTransformer<Uint8List, String>.fromHandlers(
+      handleData: (data, sink) {
+        sink.add(Utf8Decoder().convert(data));
+      },
+    );
+    final reader = response.body.transform(transformer);
+    String buffer = ''; // Holds incomplete lines from the stream
+    String eventDataBuffer =
+        ''; // Holds accumulated 'data:' lines for the current event
   }
 }

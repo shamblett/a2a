@@ -44,6 +44,8 @@ final class A2AJSONRPCErrorResponseSSM extends A2ASendStreamMessageResponse
 }
 
 /// JSON-RPC success response model for the 'message/stream' method.
+/// This response is also used to carry streaming responses from the server(SSE)
+/// in its [result] parameter.
 @JsonSerializable(explicitToJson: true)
 final class A2ASendStreamMessageSuccessResponseR
     extends A2ASendStreamMessageResponse {
