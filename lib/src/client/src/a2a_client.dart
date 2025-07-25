@@ -386,6 +386,21 @@ class A2AClient {
           'Client request ID: $originalRequestId, event response ID: ${a2aStreamResponse.id}',
         );
       }
+
+      if (a2aStreamResponse.isError) {
+        final err = a2aStreamResponse as A2AJSONRPCErrorResponseSSM;
+        throw Exception(
+          '_processSseEventData:: SSE event contained an error: ${err.error}',
+        );
+      }
+
+      // Check if 'result' exists, as it's mandatory for successful JSON-RPC responses
+      if ( a2aStreamResponse.result == null ) {
+        throw Exception('_processSseEventData:: SSE event JSON-RPC response is missing "result" field. Data: $jsonData');
+      }
+
+      return a2aSreamResponse.result as TStreamItem;
+
     } catch (e, s) {
       print('');
     }
