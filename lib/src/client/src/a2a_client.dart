@@ -395,14 +395,26 @@ class A2AClient {
       }
 
       // Check if 'result' exists, as it's mandatory for successful JSON-RPC responses
-      if ( a2aStreamResponse.result == null ) {
-        throw Exception('_processSseEventData:: SSE event JSON-RPC response is missing "result" field. Data: $jsonData');
+      if (a2aStreamResponse.result == null) {
+        throw Exception(
+          '_processSseEventData:: SSE event JSON-RPC response is missing "result" field. Data: $jsonData',
+        );
       }
 
-      return a2aSreamResponse.result as TStreamItem;
-
+      return a2aStreamResponse.result as TStreamItem;
     } catch (e, s) {
-      print('');
+      // Catch errors from JSON.parse or if it's an error response that was thrown by this function
+      if (e.toString().contains('SSE event contained an error') ||
+          e.toString().contains(
+            'SSE event JSON-RPC response is missing "result" field',
+          )) {
+        Error.throwWithStackTrace(e, s);
+      }
+      // For other parsing errors or unexpected structures:
+      Error.throwWithStackTrace(
+        '_processSseEventData:: Failed to parse SSE event data: "${jsonData.substring(0, 100)}',
+        s,
+      );
     }
   }
 }
