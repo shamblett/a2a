@@ -113,11 +113,13 @@ class A2AClient {
         }
       } else {
         throw Exception(
-          'sendMessageStream: Agent does not support streaming (AgentCard.capabilities.streaming is null).',
+          'sendMessageStream:: Agent does not support streaming (AgentCard.capabilities.streaming is null).',
         );
       }
     } else {
-      throw Exception('Agent does not support streaming agent card is null');
+      throw Exception(
+        'sendMessageStream::Agent does not support streaming agent card is null',
+      );
     }
 
     final endpoint = await serviceEndpoint;
@@ -129,7 +131,7 @@ class A2AClient {
 
     final headers = http.Headers()
       ..append('Accept', 'application/json')
-      ..append('Content-Type', 'application/json');
+      ..append('Content-Type', 'text/event-stream');
     final response = await http.fetch(
       endpoint,
       method: 'POST',
@@ -158,6 +160,148 @@ class A2AClient {
       }
       throw Exception(
         'sendMessageStream::  HTTP error establishing stream, Status: ${response.status}'
+        'Status text: ${response.statusText}',
+      );
+    }
+    if (!response.headers
+        .get('Content-Type')!
+        .startsWith('text/event-stream')) {
+      // Server should explicitly set this content type for SSE.
+      throw Exception(
+        "sendMessageStream::  Invalid response Content-Type for SSE stream. Expected 'text/event-stream'.",
+      );
+    }
+    // Yield events from the parsed SSE stream.
+    // Each event's 'data' field is a JSON-RPC response.
+    yield* _parseA2ASseStream<A2AStreamEventData>(response, requestId);
+  }
+
+  /// Sets or updates the push notification configuration for a given task.
+  /// Requires the agent to support push notifications (`capabilities.pushNotifications: true` in AgentCard).
+  /// @param params Parameters containing the taskId and the TaskPushNotificationConfig.
+  /// @returns A Promise resolving to SetTaskPushNotificationConfigResponse.
+  Future<A2ASetTaskPushNotificationConfigResponse>
+  setTaskPushNotificationConfig(A2ATaskPushNotificationConfig params) async {
+    // Ensure agent card is fetched
+    if (_agentCard != null) {
+      if (_agentCard!.capabilities.pushNotifications != null) {
+        if (!_agentCard!.capabilities.streaming!) {
+          throw Exception(
+            'setTaskPushNotificationConfig:: Agent does not support push notification (AgentCard.capabilities.pushnotifications is not true).',
+          );
+        }
+      } else {
+        throw Exception(
+          'setTaskPushNotificationConfig:: Agent does not support push notifications(AgentCard.capabilities.pushnotifications is null).',
+        );
+      }
+    } else {
+      throw Exception(
+        'setTaskPushNotificationConfig:: Agent does not support push notifications agent card is null',
+      );
+    }
+
+    // The 'params' directly matches the structure expected by the RPC method.
+    return _postRpcRequest<
+      A2ATaskPushNotificationConfig,
+      A2ASetTaskPushNotificationConfigResponse
+    >('tasks/pushNotificationConfig/set', params);
+  }
+
+  /// Gets the push notification configuration for a given task.
+  /// @param params Parameters containing the taskId.
+  /// @returns A Promise resolving to GetTaskPushNotificationConfigResponse.
+  Future<A2AGetTaskPushNotificationConfigResponse>
+  getTaskPushNotificationConfig(A2ATaskIdParams params) async {
+    // The 'params' (TaskIdParams) directly matches the structure expected by the RPC method.
+    return _postRpcRequest<
+      A2ATaskIdParams,
+      A2AGetTaskPushNotificationConfigResponse
+    >('tasks/pushNotificationConfig/get', params);
+  }
+
+  /// Retrieves a task by its ID.
+  /// @param params Parameters containing the taskId and optional historyLength.
+  /// @returns A Promise resolving to GetTaskResponse, which contains the Task object or an error.
+  Future<A2AGetTaskResponse> getTask(A2ATaskQueryParams params) async =>
+      _postRpcRequest<A2ATaskQueryParams, A2AGetTaskResponse>(
+        'tasks/get',
+        params,
+      );
+
+  /// Cancels a task by its ID.
+  /// @param params Parameters containing the taskId.
+  /// @returns A Promise resolving to CancelTaskResponse, which contains the updated Task object or an error.
+  Future<A2ACancelTaskResponse> cancelTask(A2ATaskIdParams params) async =>
+      _postRpcRequest<A2ATaskIdParams, A2ACancelTaskResponse>(
+        'tasks/cancel',
+        params,
+      );
+
+  /// Resubscribes to a task's event stream using Server-Sent Events (SSE).
+  /// This is used if a previous SSE connection for an active task was broken.
+  /// Requires the agent to support streaming (`capabilities.streaming: true` in AgentCard).
+  /// @param params Parameters containing the taskId.
+  /// @returns An AsyncGenerator yielding A2AStreamEventData ([A2AMessage], [A2ATask],
+  /// [A2ATaskStatusUpdateEvent], or [A2ATaskArtifactUpdateEvent]).
+  Stream<A2AStreamEventData> resubscribeTask(A2ATaskIdParams params) async* {
+    // Ensure agent card is fetched
+    if (_agentCard != null) {
+      if (_agentCard!.capabilities.streaming != null) {
+        if (!_agentCard!.capabilities.streaming!) {
+          throw Exception(
+            'resubscribeTask:: Agent does not support streaming (AgentCard.capabilities.streaming is not true).',
+          );
+        }
+      } else {
+        throw Exception(
+          'resubscribeTask:: Agent does not support streaming (AgentCard.capabilities.streaming is null).',
+        );
+      }
+    } else {
+      throw Exception(
+        'resubscribeTask::Agent does not support streaming agent card is null',
+      );
+    }
+
+    final endpoint = await serviceEndpoint;
+    final requestId = _requestIdCounter++;
+    final rpcRequest = A2AJsonRpcRequest()
+      ..method = 'tasks/resubscribe'
+      ..id = requestId
+      ..params = params as A2ASV;
+
+    final headers = http.Headers()
+      ..append('Accept', 'application/json')
+      ..append('Content-Type', 'text/event-stream');
+    final response = await http.fetch(
+      endpoint,
+      method: 'POST',
+      headers: headers,
+      body: http.Body.json(rpcRequest.toJson()),
+    );
+
+    if (!response.ok) {
+      var errorBody = '';
+      try {
+        errorBody = await response.text();
+        final errorJson = json.decode(errorBody) as Map<String, dynamic>;
+        if (errorJson.containsKey('error')) {
+          throw Exception(
+            'resubscribeTask:: HTTP error establishing stream for tasks/resubscribe: '
+            ' ${response.status} ${response.statusText}. RPC Error: ${(errorJson as dynamic).error.message} '
+            ' (Code: ${(errorJson as dynamic).error.code})',
+          );
+        }
+      } catch (e, s) {
+        Error.throwWithStackTrace(
+          'resubscribeTask:: HTTP error establishing stream, Status: ${response.status}'
+          'Status text: ${response.statusText} Response: $errorBody',
+          s,
+        );
+      }
+      throw Exception(
+        'resubscribeTask::  HTTP error establishing stream, Status: ${response.status}'
         'Status text: ${response.statusText}',
       );
     }
