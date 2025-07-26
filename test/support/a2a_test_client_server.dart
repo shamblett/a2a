@@ -17,7 +17,7 @@ import 'package:shelf_router/shelf_router.dart' as shelf_router;
 import 'package:http/http.dart' as http;
 
 /// The test server class
-class A2ATestServer {
+class A2ATestClientServer {
   /// Port
   int port = 8080;
 
@@ -31,10 +31,10 @@ class A2ATestServer {
 
   String dartVersion = '<Not Set>';
 
-  A2ATestServer();
+  A2ATestClientServer();
 
   /// Start the server
-  Future<A2ATestServer> start() async {
+  Future<A2ATestClientServer> start() async {
     router = shelf_router.Router()
       ..get('/helloworld', _helloWorldHandler)
       ..get('/info.json', _infoHandler);
