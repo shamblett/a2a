@@ -13,7 +13,7 @@ import 'dart:async';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-typedef RpcHandler = void Function(WebSocketChannel socket);
+typedef RpcHandler = void Function(HttpRequest request);
 
 /// The client RPC test server
 class A2ATestRPCServer {
@@ -25,9 +25,7 @@ class A2ATestRPCServer {
 
   Future<void> start(RpcHandler handler) async {
     httpServer = await HttpServer.bind(InternetAddress.loopbackIPv4, 8081);
-    var connectedChannels = httpServer
-        .transform(WebSocketTransformer())
-        .map(IOWebSocketChannel.new);
+    var connectedChannels = httpServer;
     connectedChannels.listen(handler);
   }
 

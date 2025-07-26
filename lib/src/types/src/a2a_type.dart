@@ -13,7 +13,7 @@ class A2AType {}
 typedef A2AId = Object;
 
 /// Structured value type
-typedef A2ASV = Map<String, Object>;
+typedef A2ASV = Map<String, dynamic>;
 
 /// Represents the possible states of a Task.
 enum A2ATaskState {

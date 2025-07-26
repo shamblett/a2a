@@ -376,7 +376,7 @@ class A2AClient {
     final rpcRequest = A2AJsonRpcRequest()
       ..method = method
       ..id = requestId
-      ..params = params as A2ASV;
+      ..params = (params as dynamic).toJson();
 
     final headers = http.Headers()
       ..append('Accept', 'application/json')
@@ -404,9 +404,16 @@ class A2AClient {
           );
         } else if (!errorJson.containsKey('jsonrpc')) {
           throw Exception(
-            '_postRpcRequest:: HTTP error for $method Status: ${httpResponse.status} ${httpResponse.statusText}. Response: $errorBodyText',
+            '_postRpcRequest:: HTTP error for $method Status: ${httpResponse.status} ${httpResponse.statusText}. '
+            'Response: $errorBodyText',
           );
         }
+      } on FormatException catch (e, s) {
+        // Empty body maybe
+        Error.throwWithStackTrace(
+          '_postRpcRequest:: Format exception : ${e.message}',
+          s,
+        );
       } catch (e) {
         // If parsing the error body fails or it's not a JSON-RPC error, throw a generic HTTP error.
         // If it was already an error thrown from within the try block, rethrow it.

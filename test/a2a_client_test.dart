@@ -11,6 +11,7 @@ library;
 import 'dart:io';
 import 'dart:convert';
 
+import 'package:stream_channel/stream_channel.dart';
 import 'package:test/test.dart';
 import 'package:shelf/shelf.dart';
 import 'package:json_rpc_2/json_rpc_2.dart' as rpc;
@@ -81,19 +82,26 @@ Future<int> main() async {
   group('Client RPC', () {
     test('Send Message', () async {
       final rpcServer = A2ATestRPCServer();
-      void handler(WebSocketChannel socket) {
-        final server = rpc.Server(socket.cast<String>());
+      void handler(HttpRequest request) {
+        final server = rpc.Server(StreamChannel<String>());
         server.registerMethod('message/send', (rpc.Parameters params) {
           print(params);
         });
         server.listen();
       }
+      try {
+        await rpcServer.start(handler);
+        await Future.delayed(Duration(seconds: 1));
+        final params = A2AMessageSendParams()
+          ..metadata = {'First': 1};
+        final response = await testClient.sendMessage(params);
+        expect(response.isError, isFalse);
+      } catch(e) {
+        rethrow;
+        rpcServer.stop();
+      }
 
-      await rpcServer.start(handler);
-      final params = A2AMessageSendParams()..metadata = {'First': 1};
-      final response = await testClient.sendMessage(params);
-      expect(response.isError, isFalse);
-      rpcServer.stop();
+      //rpcServer.stop();
     });
   });
   return 0;
