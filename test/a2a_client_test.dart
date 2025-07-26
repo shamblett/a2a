@@ -76,5 +76,8 @@ Future<int> main() async {
     });
   });
 
+  group('Client RPC', () {
+    test('Send Message', () async {});
+  });
   return 0;
 }
