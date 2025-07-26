@@ -21,18 +21,18 @@ import 'support/a2a_test_client_server.dart';
 Future<int> main() async {
   late A2AClient testClient;
 
-  /// Start the client test server
+  // Start the client test server
   print('Client Test:: starting.....');
   final testClientServer = await A2ATestClientServer().start();
 
-  /// Check it
+  // Check it
   final ok = await Utilities.checkServer();
   if (!ok) {
     print('Client Test - Server is not available, exiting');
     exit(-1);
   }
 
-  /// JSON encoder
+  // JSON encoder
   String jsonEncode(Object? data) => JsonEncoder.withIndent(' ').convert(data);
 
   group('Client', () {

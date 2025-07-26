@@ -16,7 +16,7 @@ import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_router/shelf_router.dart' as shelf_router;
 import 'package:http/http.dart' as http;
 
-/// The test server class
+/// The client test server
 class A2ATestClientServer {
   /// Port
   int port = 8080;
