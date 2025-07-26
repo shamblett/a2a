@@ -13,10 +13,12 @@ import 'dart:convert';
 
 import 'package:test/test.dart';
 import 'package:shelf/shelf.dart';
-
+import 'package:json_rpc_2/json_rpc_2.dart' as rpc;
+import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:a2a/a2a.dart';
 
 import 'support/a2a_test_client_server.dart';
+import 'support/a2a_test_rpc_server.dart';
 
 Future<int> main() async {
   late A2AClient testClient;
@@ -77,7 +79,22 @@ Future<int> main() async {
   });
 
   group('Client RPC', () {
-    test('Send Message', () async {});
+    test('Send Message', () async {
+      final rpcServer = A2ATestRPCServer();
+      void handler(WebSocketChannel socket) {
+        final server = rpc.Server(socket.cast<String>());
+        server.registerMethod('message/send', (rpc.Parameters params) {
+          print(params);
+        });
+        server.listen();
+      }
+
+      await rpcServer.start(handler);
+      final params = A2AMessageSendParams()..metadata = {'First': 1};
+      final response = await testClient.sendMessage(params);
+      expect(response.isError, isFalse);
+      rpcServer.stop();
+    });
   });
   return 0;
 }
