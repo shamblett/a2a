@@ -27,6 +27,7 @@ dev_dependencies:
   http: '^1.4.0'
   json_serializable: '^6.9.5'
   build_runner: '^2.5.4'
+  json_rpc_2: '^4.0.0'
 
 topics:
   - ai
