@@ -8,8 +8,6 @@
 @TestOn('vm')
 library;
 
-import 'dart:convert';
-
 import 'package:test/test.dart';
 
 import 'package:a2a/a2a.dart';
@@ -17,11 +15,18 @@ import 'package:a2a/a2a.dart';
 /// Tests the client against the remote agent located at
 /// https://sample-a2a-agent-908687846511.us-central1.run.app
 /// See the README file in test/support/hosts/cli for more details.
+///
+/// This agent returns the following JSON for its Agent Card :-
+///
+/// '{"capabilities":{"streaming":true},"defaultInputModes":["text","text/plain"],
+/// "defaultOutputModes":["text","text/plain"],"description":"Agent to give interesting facts.",
+/// "name":"facts_agent","protocolVersion":"0.2.6","skills":[{"description":"Searches Google for interesting facts",
+/// "examples":["Provide an interesting fact about New York City."],"id":"give_facts","
+/// name":"Provide Interesting Facts","tags":["search","google","facts"]}],
+/// "url":"https://sample-a2a-agent-908687846511.us-central1.run.app/","version":"1.0.0"}'
+
 Future<int> main() async {
   late A2AClient testClient;
-
-  // JSON encoder
-  String jsonEncode(Object? data) => JsonEncoder.withIndent(' ').convert(data);
 
   group('Client', () {
     test('Construction', () async {
@@ -54,10 +59,13 @@ Future<int> main() async {
       await testClient.serviceEndpoint,
       'https://sample-a2a-agent-908687846511.us-central1.run.app/',
     );
-    expect(agentCard.agentProvider, isNull);
-    expect(agentCard.description, 'The Description');
-    expect(agentCard.name, 'The Name');
-    expect(agentCard.version, '1.0');
+    expect(agentCard.capabilities.streaming, isTrue);
+    expect(agentCard.defaultInputModes, ['text', 'text/plain']);
+    expect(agentCard.defaultOutputModes, ['text', 'text/plain']);
+    expect(agentCard.description, 'Agent to give interesting facts.');
+    expect(agentCard.name, 'facts_agent');
+    expect(agentCard.version, '1.0.0');
+    expect(agentCard.skills.isNotEmpty, isTrue);
   });
   test('Get Service Endpoint', () async {
     final endpoint = await testClient.serviceEndpoint;
