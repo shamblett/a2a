@@ -21,10 +21,10 @@ Future<int> main() async {
 
   group('Client', () {
     test('Construction', () async {
-      const baseUrl = 'http://localhost:8080/';
+      const baseUrl = 'https://sample-a2a-agent-908687846511.us-central1.run.app';
       testClient = A2AClient(baseUrl);
       await Future.delayed(Duration(seconds: 1));
-      expect(testClient.agentBaseUrl, 'http://localhost:8080');
+      expect(testClient.agentBaseUrl, 'https://sample-a2a-agent-908687846511.us-central1.run.app');
       expect(await testClient.serviceEndpoint, 'http://localhost:8080');
     });
   });
