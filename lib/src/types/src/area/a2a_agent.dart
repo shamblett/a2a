@@ -14,7 +14,7 @@ sealed class A2AAgent {}
 @JsonSerializable(explicitToJson: true)
 final class A2AAgentCapabilities {
   /// Extensions supported by this agent.
-  List<A2AAgentExtension> extensions = [];
+  List<A2AAgentExtension>? extensions;
 
   /// True if the agent can notify updates to client.
   bool? pushNotifications;
@@ -87,7 +87,7 @@ final class A2AAgentCard extends A2AAgent {
   A2AAgentProvider? agentProvider;
 
   /// Security requirements for contacting the agent.
-  Map<String, List<String>> security = {};
+  Map<String, List<String>>? security;
 
   /// Security requirements for contacting the agent.
   Map<String, A2ASecurityScheme>? securitySchemes;

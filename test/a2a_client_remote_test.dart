@@ -15,7 +15,7 @@ import 'package:test/test.dart';
 import 'package:a2a/a2a.dart';
 
 /// Tests the client against the remote agent located at
-/// https://sample-a2a-agent-908687846511.us-central1.run.app`
+/// https://sample-a2a-agent-908687846511.us-central1.run.app
 /// See the README file in test/support/hosts/cli for more details.
 Future<int> main() async {
   late A2AClient testClient;
@@ -33,7 +33,7 @@ Future<int> main() async {
         testClient.agentBaseUrl,
         'https://sample-a2a-agent-908687846511.us-central1.run.app',
       );
-      expect(await testClient.serviceEndpoint, 'http://localhost:8080');
+      expect(await testClient.serviceEndpoint, 'https://sample-a2a-agent-908687846511.us-central1.run.app/');
     });
   });
   test('Get Agent Card', () async {

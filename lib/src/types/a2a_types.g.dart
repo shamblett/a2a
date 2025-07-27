@@ -13,9 +13,7 @@ A2AMessage _$A2AMessageFromJson(Map<String, dynamic> json) => A2AMessage()
       .toList()
   ..kind = json['kind'] as String
   ..messageId = json['messageId'] as String
-  ..metadata = (json['metadata'] as Map<String, dynamic>?)?.map(
-    (k, e) => MapEntry(k, e as Object),
-  )
+  ..metadata = json['metadata'] as Map<String, dynamic>?
   ..parts = (json['parts'] as List<dynamic>?)
       ?.map((e) => A2APart.fromJson(e as Map<String, dynamic>))
       .toList()
@@ -44,9 +42,7 @@ A2AArtifact _$A2AArtifactFromJson(Map<String, dynamic> json) => A2AArtifact()
   ..extensions = (json['extensions'] as List<dynamic>)
       .map((e) => e as String)
       .toList()
-  ..metadata = (json['metadata'] as Map<String, dynamic>?)?.map(
-    (k, e) => MapEntry(k, e as Object),
-  )
+  ..metadata = json['metadata'] as Map<String, dynamic>?
   ..name = json['name'] as String?
   ..parts = (json['parts'] as List<dynamic>)
       .map((e) => A2APart.fromJson(e as Map<String, dynamic>))
@@ -72,9 +68,7 @@ A2ATask _$A2ATaskFromJson(Map<String, dynamic> json) => A2ATask()
       .toList()
   ..id = json['id'] as String
   ..kind = json['kind'] as String
-  ..metadata = (json['metadata'] as Map<String, dynamic>?)?.map(
-    (k, e) => MapEntry(k, e as Object),
-  )
+  ..metadata = json['metadata'] as Map<String, dynamic>?
   ..status = json['status'] == null
       ? null
       : A2ATaskStatus.fromJson(json['status'] as Map<String, dynamic>);
@@ -121,9 +115,7 @@ A2AJsonRpcRequest _$A2AJsonRpcRequestFromJson(Map<String, dynamic> json) =>
       ..id = json['id']
       ..jsonrpc = json['jsonrpc'] as String
       ..method = json['method'] as String
-      ..params = (json['params'] as Map<String, dynamic>?)?.map(
-        (k, e) => MapEntry(k, e as Object),
-      );
+      ..params = json['params'] as Map<String, dynamic>?;
 
 Map<String, dynamic> _$A2AJsonRpcRequestToJson(A2AJsonRpcRequest instance) =>
     <String, dynamic>{
@@ -136,9 +128,7 @@ Map<String, dynamic> _$A2AJsonRpcRequestToJson(A2AJsonRpcRequest instance) =>
 A2AJSONRPCError _$A2AJSONRPCErrorFromJson(Map<String, dynamic> json) =>
     A2AJSONRPCError()
       ..code = (json['code'] as num).toInt()
-      ..data = (json['data'] as Map<String, dynamic>?)?.map(
-        (k, e) => MapEntry(k, e as Object),
-      )
+      ..data = json['data'] as Map<String, dynamic>?
       ..message = json['message'] as String;
 
 Map<String, dynamic> _$A2AJSONRPCErrorToJson(A2AJSONRPCError instance) =>
@@ -151,9 +141,7 @@ Map<String, dynamic> _$A2AJSONRPCErrorToJson(A2AJSONRPCError instance) =>
 A2AJSONParseError _$A2AJSONParseErrorFromJson(Map<String, dynamic> json) =>
     A2AJSONParseError()
       ..code = (json['code'] as num).toInt()
-      ..data = (json['data'] as Map<String, dynamic>?)?.map(
-        (k, e) => MapEntry(k, e as Object),
-      )
+      ..data = json['data'] as Map<String, dynamic>?
       ..message = json['message'] as String;
 
 Map<String, dynamic> _$A2AJSONParseErrorToJson(A2AJSONParseError instance) =>
@@ -167,9 +155,7 @@ A2AInvalidRequestError _$A2AInvalidRequestErrorFromJson(
   Map<String, dynamic> json,
 ) => A2AInvalidRequestError()
   ..code = (json['code'] as num).toInt()
-  ..data = (json['data'] as Map<String, dynamic>?)?.map(
-    (k, e) => MapEntry(k, e as Object),
-  )
+  ..data = json['data'] as Map<String, dynamic>?
   ..message = json['message'] as String;
 
 Map<String, dynamic> _$A2AInvalidRequestErrorToJson(
@@ -184,9 +170,7 @@ A2AMethodNotFoundError _$A2AMethodNotFoundErrorFromJson(
   Map<String, dynamic> json,
 ) => A2AMethodNotFoundError()
   ..code = (json['code'] as num).toInt()
-  ..data = (json['data'] as Map<String, dynamic>?)?.map(
-    (k, e) => MapEntry(k, e as Object),
-  )
+  ..data = json['data'] as Map<String, dynamic>?
   ..message = json['message'] as String;
 
 Map<String, dynamic> _$A2AMethodNotFoundErrorToJson(
@@ -201,9 +185,7 @@ A2AInvalidParamsError _$A2AInvalidParamsErrorFromJson(
   Map<String, dynamic> json,
 ) => A2AInvalidParamsError()
   ..code = (json['code'] as num).toInt()
-  ..data = (json['data'] as Map<String, dynamic>?)?.map(
-    (k, e) => MapEntry(k, e as Object),
-  )
+  ..data = json['data'] as Map<String, dynamic>?
   ..message = json['message'] as String;
 
 Map<String, dynamic> _$A2AInvalidParamsErrorToJson(
@@ -217,9 +199,7 @@ Map<String, dynamic> _$A2AInvalidParamsErrorToJson(
 A2AInternalError _$A2AInternalErrorFromJson(Map<String, dynamic> json) =>
     A2AInternalError()
       ..code = (json['code'] as num).toInt()
-      ..data = (json['data'] as Map<String, dynamic>?)?.map(
-        (k, e) => MapEntry(k, e as Object),
-      )
+      ..data = json['data'] as Map<String, dynamic>?
       ..message = json['message'] as String;
 
 Map<String, dynamic> _$A2AInternalErrorToJson(A2AInternalError instance) =>
@@ -233,9 +213,7 @@ A2ATaskNotFoundError _$A2ATaskNotFoundErrorFromJson(
   Map<String, dynamic> json,
 ) => A2ATaskNotFoundError()
   ..code = (json['code'] as num).toInt()
-  ..data = (json['data'] as Map<String, dynamic>?)?.map(
-    (k, e) => MapEntry(k, e as Object),
-  )
+  ..data = json['data'] as Map<String, dynamic>?
   ..message = json['message'] as String;
 
 Map<String, dynamic> _$A2ATaskNotFoundErrorToJson(
@@ -250,9 +228,7 @@ A2ATaskNotCancelableError _$A2ATaskNotCancelableErrorFromJson(
   Map<String, dynamic> json,
 ) => A2ATaskNotCancelableError()
   ..code = (json['code'] as num).toInt()
-  ..data = (json['data'] as Map<String, dynamic>?)?.map(
-    (k, e) => MapEntry(k, e as Object),
-  )
+  ..data = json['data'] as Map<String, dynamic>?
   ..message = json['message'] as String;
 
 Map<String, dynamic> _$A2ATaskNotCancelableErrorToJson(
@@ -267,9 +243,7 @@ A2APushNotificationNotSupportedError
 _$A2APushNotificationNotSupportedErrorFromJson(Map<String, dynamic> json) =>
     A2APushNotificationNotSupportedError()
       ..code = (json['code'] as num).toInt()
-      ..data = (json['data'] as Map<String, dynamic>?)?.map(
-        (k, e) => MapEntry(k, e as Object),
-      )
+      ..data = json['data'] as Map<String, dynamic>?
       ..message = json['message'] as String;
 
 Map<String, dynamic> _$A2APushNotificationNotSupportedErrorToJson(
@@ -284,9 +258,7 @@ A2AUnsupportedOperationError _$A2AUnsupportedOperationErrorFromJson(
   Map<String, dynamic> json,
 ) => A2AUnsupportedOperationError()
   ..code = (json['code'] as num).toInt()
-  ..data = (json['data'] as Map<String, dynamic>?)?.map(
-    (k, e) => MapEntry(k, e as Object),
-  )
+  ..data = json['data'] as Map<String, dynamic>?
   ..message = json['message'] as String;
 
 Map<String, dynamic> _$A2AUnsupportedOperationErrorToJson(
@@ -301,9 +273,7 @@ A2AContentTypeNotSupportedError _$A2AContentTypeNotSupportedErrorFromJson(
   Map<String, dynamic> json,
 ) => A2AContentTypeNotSupportedError()
   ..code = (json['code'] as num).toInt()
-  ..data = (json['data'] as Map<String, dynamic>?)?.map(
-    (k, e) => MapEntry(k, e as Object),
-  )
+  ..data = json['data'] as Map<String, dynamic>?
   ..message = json['message'] as String;
 
 Map<String, dynamic> _$A2AContentTypeNotSupportedErrorToJson(
@@ -318,9 +288,7 @@ A2AInvalidAgentResponseError _$A2AInvalidAgentResponseErrorFromJson(
   Map<String, dynamic> json,
 ) => A2AInvalidAgentResponseError()
   ..code = (json['code'] as num).toInt()
-  ..data = (json['data'] as Map<String, dynamic>?)?.map(
-    (k, e) => MapEntry(k, e as Object),
-  )
+  ..data = json['data'] as Map<String, dynamic>?
   ..message = json['message'] as String;
 
 Map<String, dynamic> _$A2AInvalidAgentResponseErrorToJson(
@@ -501,9 +469,7 @@ Map<String, dynamic> _$A2ATaskPushNotificationConfigToJson(
 A2ATaskIdParams _$A2ATaskIdParamsFromJson(Map<String, dynamic> json) =>
     A2ATaskIdParams()
       ..id = json['id'] as String
-      ..metadata = (json['metadata'] as Map<String, dynamic>?)?.map(
-        (k, e) => MapEntry(k, e as Object),
-      );
+      ..metadata = json['metadata'] as Map<String, dynamic>?;
 
 Map<String, dynamic> _$A2ATaskIdParamsToJson(A2ATaskIdParams instance) =>
     <String, dynamic>{'id': instance.id, 'metadata': instance.metadata};
@@ -512,9 +478,7 @@ A2ATaskQueryParams _$A2ATaskQueryParamsFromJson(Map<String, dynamic> json) =>
     A2ATaskQueryParams()
       ..historyLength = (json['historyLength'] as num?)?.toInt()
       ..id = json['id'] as String
-      ..metadata = (json['metadata'] as Map<String, dynamic>?)?.map(
-        (k, e) => MapEntry(k, e as Object),
-      );
+      ..metadata = json['metadata'] as Map<String, dynamic>?;
 
 Map<String, dynamic> _$A2ATaskQueryParamsToJson(A2ATaskQueryParams instance) =>
     <String, dynamic>{
@@ -532,9 +496,7 @@ A2AMessageSendParams _$A2AMessageSendParamsFromJson(
           json['configuration'] as Map<String, dynamic>,
         )
   ..message = A2AMessage.fromJson(json['message'] as Map<String, dynamic>)
-  ..metadata = (json['metadata'] as Map<String, dynamic>?)?.map(
-    (k, e) => MapEntry(k, e as Object),
-  );
+  ..metadata = json['metadata'] as Map<String, dynamic>?;
 
 Map<String, dynamic> _$A2AMessageSendParamsToJson(
   A2AMessageSendParams instance,
@@ -605,9 +567,7 @@ Map<String, dynamic> _$A2APushNotificationAuthenticationInfoToJson(
 
 A2ATextPart _$A2ATextPartFromJson(Map<String, dynamic> json) => A2ATextPart()
   ..kind = json['kind'] as String
-  ..metadata = (json['metadata'] as Map<String, dynamic>?)?.map(
-    (k, e) => MapEntry(k, e as Object),
-  )
+  ..metadata = json['metadata'] as Map<String, dynamic>?
   ..text = json['text'] as String;
 
 Map<String, dynamic> _$A2ATextPartToJson(A2ATextPart instance) =>
@@ -619,9 +579,7 @@ Map<String, dynamic> _$A2ATextPartToJson(A2ATextPart instance) =>
 
 A2AFilePart _$A2AFilePartFromJson(Map<String, dynamic> json) => A2AFilePart()
   ..kind = json['kind'] as String
-  ..metadata = (json['metadata'] as Map<String, dynamic>?)?.map(
-    (k, e) => MapEntry(k, e as Object),
-  )
+  ..metadata = json['metadata'] as Map<String, dynamic>?
   ..file = json['file'] == null
       ? null
       : A2AFilePartVariant.fromJson(json['file'] as Map<String, dynamic>);
@@ -634,13 +592,9 @@ Map<String, dynamic> _$A2AFilePartToJson(A2AFilePart instance) =>
     };
 
 A2ADataPart _$A2ADataPartFromJson(Map<String, dynamic> json) => A2ADataPart()
-  ..data = (json['data'] as Map<String, dynamic>).map(
-    (k, e) => MapEntry(k, e as Object),
-  )
+  ..data = json['data'] as Map<String, dynamic>
   ..kind = json['kind'] as String
-  ..metadata = (json['metadata'] as Map<String, dynamic>?)?.map(
-    (k, e) => MapEntry(k, e as Object),
-  );
+  ..metadata = json['metadata'] as Map<String, dynamic>?;
 
 Map<String, dynamic> _$A2ADataPartToJson(A2ADataPart instance) =>
     <String, dynamic>{
@@ -1145,9 +1099,7 @@ A2ATaskStatusUpdateEvent _$A2ATaskStatusUpdateEventFromJson(
   ..contextId = json['contextId'] as String
   ..end = json['end'] as bool
   ..kind = json['kind'] as String
-  ..metadata = (json['metadata'] as Map<String, dynamic>?)?.map(
-    (k, e) => MapEntry(k, e as Object),
-  )
+  ..metadata = json['metadata'] as Map<String, dynamic>?
   ..status = json['status'] == null
       ? null
       : A2ATaskStatus.fromJson(json['status'] as Map<String, dynamic>)
@@ -1174,9 +1126,7 @@ A2ATaskArtifactUpdateEvent _$A2ATaskArtifactUpdateEventFromJson(
   ..contextId = json['contextId'] as String
   ..kind = json['kind'] as String
   ..lastChunk = json['lastChunk'] as bool?
-  ..metadata = (json['metadata'] as Map<String, dynamic>?)?.map(
-    (k, e) => MapEntry(k, e as Object),
-  )
+  ..metadata = json['metadata'] as Map<String, dynamic>?
   ..taskId = json['taskId'] as String;
 
 Map<String, dynamic> _$A2ATaskArtifactUpdateEventToJson(
@@ -1194,8 +1144,8 @@ Map<String, dynamic> _$A2ATaskArtifactUpdateEventToJson(
 A2AAgentCapabilities _$A2AAgentCapabilitiesFromJson(
   Map<String, dynamic> json,
 ) => A2AAgentCapabilities()
-  ..extensions = (json['extensions'] as List<dynamic>)
-      .map((e) => A2AAgentExtension.fromJson(e as Map<String, dynamic>))
+  ..extensions = (json['extensions'] as List<dynamic>?)
+      ?.map((e) => A2AAgentExtension.fromJson(e as Map<String, dynamic>))
       .toList()
   ..pushNotifications = json['pushNotifications'] as bool?
   ..stateTransitionHistory = json['stateTransitionHistory'] as bool?
@@ -1204,7 +1154,7 @@ A2AAgentCapabilities _$A2AAgentCapabilitiesFromJson(
 Map<String, dynamic> _$A2AAgentCapabilitiesToJson(
   A2AAgentCapabilities instance,
 ) => <String, dynamic>{
-  'extensions': instance.extensions.map((e) => e.toJson()).toList(),
+  'extensions': instance.extensions?.map((e) => e.toJson()).toList(),
   'pushNotifications': instance.pushNotifications,
   'stateTransitionHistory': instance.stateTransitionHistory,
   'streaming': instance.streaming,
@@ -1213,9 +1163,7 @@ Map<String, dynamic> _$A2AAgentCapabilitiesToJson(
 A2AAgentExtension _$A2AAgentExtensionFromJson(Map<String, dynamic> json) =>
     A2AAgentExtension()
       ..description = json['description'] as String?
-      ..params = (json['params'] as Map<String, dynamic>?)?.map(
-        (k, e) => MapEntry(k, e as Object),
-      )
+      ..params = json['params'] as Map<String, dynamic>?
       ..required = json['required'] as bool?
       ..uri = json['uri'] as String;
 
@@ -1244,7 +1192,7 @@ A2AAgentCard _$A2AAgentCardFromJson(Map<String, dynamic> json) => A2AAgentCard()
   ..agentProvider = json['agentProvider'] == null
       ? null
       : A2AAgentProvider.fromJson(json['agentProvider'] as Map<String, dynamic>)
-  ..security = (json['security'] as Map<String, dynamic>).map(
+  ..security = (json['security'] as Map<String, dynamic>?)?.map(
     (k, e) =>
         MapEntry(k, (e as List<dynamic>).map((e) => e as String).toList()),
   )
