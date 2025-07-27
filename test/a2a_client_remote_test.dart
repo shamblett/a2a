@@ -33,13 +33,27 @@ Future<int> main() async {
         testClient.agentBaseUrl,
         'https://sample-a2a-agent-908687846511.us-central1.run.app',
       );
-      expect(await testClient.serviceEndpoint, 'https://sample-a2a-agent-908687846511.us-central1.run.app/');
+      expect(
+        await testClient.serviceEndpoint,
+        'https://sample-a2a-agent-908687846511.us-central1.run.app/',
+      );
     });
   });
   test('Get Agent Card', () async {
-    final dynamic agentCard = {}; // TODO
-    expect(testClient.agentBaseUrl, 'http://localhost:8080');
-    expect(await testClient.serviceEndpoint, 'http://localhost:8080');
+    const baseUrl = 'https://sample-a2a-agent-908687846511.us-central1.run.app';
+    testClient = A2AClient(baseUrl);
+    await Future.delayed(Duration(seconds: 1));
+    final dynamic agentCard = testClient.getAgentCard(
+      agentBaseUrl: 'https://sample-a2a-agent-908687846511.us-central1.run.app',
+    );
+    expect(
+      testClient.agentBaseUrl,
+      'https://sample-a2a-agent-908687846511.us-central1.run.app',
+    );
+    expect(
+      await testClient.serviceEndpoint,
+      'https://sample-a2a-agent-908687846511.us-central1.run.app/',
+    );
     expect(agentCard.agentProvider, isNull);
     expect(agentCard.description, 'The Description');
     expect(agentCard.name, 'The Name');
