@@ -43,7 +43,7 @@ Future<int> main() async {
     const baseUrl = 'https://sample-a2a-agent-908687846511.us-central1.run.app';
     testClient = A2AClient(baseUrl);
     await Future.delayed(Duration(seconds: 1));
-    final dynamic agentCard = testClient.getAgentCard(
+    final agentCard = await testClient.getAgentCard(
       agentBaseUrl: 'https://sample-a2a-agent-908687846511.us-central1.run.app',
     );
     expect(
