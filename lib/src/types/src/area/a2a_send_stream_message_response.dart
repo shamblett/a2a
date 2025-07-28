@@ -10,6 +10,7 @@ part of '../../a2a_types.dart';
 /// JSON-RPC response model for the 'message/send' method.
 class A2ASendStreamMessageResponse {
   /// True if the response is an error
+  @JsonKey(includeFromJson: false)
   bool isError = false;
 
   A2ASendStreamMessageResponse();

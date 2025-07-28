@@ -10,6 +10,7 @@ part of '../../a2a_types.dart';
 /// JSON-RPC response for the 'tasks/cancel' method.
 class A2ACancelTaskResponse {
   /// True if the response is an error
+  @JsonKey(includeFromJson: false)
   bool isError = false;
 
   A2ACancelTaskResponse();

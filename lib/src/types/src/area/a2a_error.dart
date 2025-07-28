@@ -21,6 +21,13 @@ class A2AError {
   static const unsupportedOperation = -32004;
   static const contentTypeNotSupported = -32005;
   static const invalidAgentResponse = -32006;
+  static const unknown = -1;
+
+  /// The error code as received from the RPC call.
+  /// Can be used to ascertain the type of the error received to allow
+  /// correct type casting.
+  @JsonKey(includeFromJson: false)
+  int rpcErrorCode = unknown;
 
   A2AError();
 
@@ -30,29 +37,38 @@ class A2AError {
     } else {
       switch (json['code']) {
         case jsonRpc:
-          return A2AJSONRPCError.fromJson(json);
+          return A2AJSONRPCError.fromJson(json)..rpcErrorCode = jsonRpc;
         case jsonParse:
-          return A2AJSONParseError.fromJson(json);
+          return A2AJSONParseError.fromJson(json)..rpcErrorCode = jsonParse;
         case invalidRequest:
-          return A2AInvalidRequestError.fromJson(json);
+          return A2AInvalidRequestError.fromJson(json)
+            ..rpcErrorCode = invalidRequest;
         case methodNotFound:
-          return A2AMethodNotFoundError.fromJson(json);
+          return A2AMethodNotFoundError.fromJson(json)
+            ..rpcErrorCode = methodNotFound;
         case invalidParams:
-          return A2AInvalidParamsError.fromJson(json);
+          return A2AInvalidParamsError.fromJson(json)
+            ..rpcErrorCode = invalidParams;
         case internal:
-          return A2AInternalError.fromJson(json);
+          return A2AInternalError.fromJson(json)..rpcErrorCode = internal;
         case taskNotFound:
-          return A2ATaskNotFoundError.fromJson(json);
+          return A2ATaskNotFoundError.fromJson(json)
+            ..rpcErrorCode = taskNotFound;
         case taskNotCancellable:
-          return A2ATaskNotCancelableError.fromJson(json);
+          return A2ATaskNotCancelableError.fromJson(json)
+            ..rpcErrorCode = taskNotCancellable;
         case pushNotificationNotSupported:
-          return A2APushNotificationNotSupportedError.fromJson(json);
+          return A2APushNotificationNotSupportedError.fromJson(json)
+            ..rpcErrorCode = pushNotificationNotSupported;
         case unsupportedOperation:
-          return A2AUnsupportedOperationError.fromJson(json);
+          return A2AUnsupportedOperationError.fromJson(json)
+            ..rpcErrorCode = unsupportedOperation;
         case contentTypeNotSupported:
-          return A2AContentTypeNotSupportedError.fromJson(json);
+          return A2AContentTypeNotSupportedError.fromJson(json)
+            ..rpcErrorCode = contentTypeNotSupported;
         case invalidAgentResponse:
-          return A2AInvalidAgentResponseError.fromJson(json);
+          return A2AInvalidAgentResponseError.fromJson(json)
+            ..rpcErrorCode = invalidAgentResponse;
         default:
           return A2AError();
       }

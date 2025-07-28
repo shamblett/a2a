@@ -143,14 +143,34 @@ Future<int> main() async {
         ..pushNotificationConfig = taskConfig;
 
       try {
-        await testClient!.setTaskPushNotificationConfig(
-          config,
-        );
+        await testClient!.setTaskPushNotificationConfig(config);
       } on Exception catch (e) {
         expect(
           e.toString(),
           'Exception: setTaskPushNotificationConfig:: Agent does not support push notifications(AgentCard.capabilities.pushnotifications is null).',
         );
+      }
+    });
+    test('Get Task Push Notification Config', () async {
+      if (testClient == null) {
+        testClient ??= A2AClient(baseUrl);
+        await Future.delayed(Duration(seconds: 5));
+      }
+      final taskParams = A2ATaskIdParams()..id = '1';
+
+      try {
+        final response = await testClient!.getTaskPushNotificationConfig(
+          taskParams,
+        );
+        expect(response.isError, isTrue);
+        final errorResponse =
+            response as A2AJSONRPCErrorResponseGTPR;
+        expect(errorResponse.id, 1);
+        expect(errorResponse.error?.rpcErrorCode, A2AError.unsupportedOperation);
+        expect((errorResponse as dynamic).error?.code, A2AError.unsupportedOperation);
+        expect((errorResponse as dynamic).error.message, 'This operation is not supported');
+      } catch(e) {
+        rethrow;
       }
     });
   });
