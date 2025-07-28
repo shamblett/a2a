@@ -17,8 +17,8 @@ A2AMessage _$A2AMessageFromJson(Map<String, dynamic> json) => A2AMessage()
   ..parts = (json['parts'] as List<dynamic>?)
       ?.map((e) => A2APart.fromJson(e as Map<String, dynamic>))
       .toList()
-  ..referenceTaskIds = (json['referenceTaskIds'] as List<dynamic>)
-      .map((e) => e as String)
+  ..referenceTaskIds = (json['referenceTaskIds'] as List<dynamic>?)
+      ?.map((e) => e as String)
       .toList()
   ..role = json['role'] as String
   ..taskId = json['taskId'] as String?;
@@ -39,8 +39,8 @@ Map<String, dynamic> _$A2AMessageToJson(A2AMessage instance) =>
 A2AArtifact _$A2AArtifactFromJson(Map<String, dynamic> json) => A2AArtifact()
   ..artifactId = json['artifactId'] as String
   ..description = json['description'] as String?
-  ..extensions = (json['extensions'] as List<dynamic>)
-      .map((e) => e as String)
+  ..extensions = (json['extensions'] as List<dynamic>?)
+      ?.map((e) => e as String)
       .toList()
   ..metadata = json['metadata'] as Map<String, dynamic>?
   ..name = json['name'] as String?
@@ -947,7 +947,6 @@ Map<String, dynamic> _$A2AGetTaskSuccessResponseToJson(
 A2AJSONRPCErrorResponseS _$A2AJSONRPCErrorResponseSFromJson(
   Map<String, dynamic> json,
 ) => A2AJSONRPCErrorResponseS()
-  ..isError = json['isError'] as bool
   ..error = json['error'] == null
       ? null
       : A2AError.fromJson(json['error'] as Map<String, dynamic>)
@@ -957,7 +956,6 @@ A2AJSONRPCErrorResponseS _$A2AJSONRPCErrorResponseSFromJson(
 Map<String, dynamic> _$A2AJSONRPCErrorResponseSToJson(
   A2AJSONRPCErrorResponseS instance,
 ) => <String, dynamic>{
-  'isError': instance.isError,
   'error': instance.error?.toJson(),
   'id': instance.id,
   'jsonrpc': instance.jsonrpc,
@@ -966,7 +964,6 @@ Map<String, dynamic> _$A2AJSONRPCErrorResponseSToJson(
 A2AJSONRPCErrorResponseSS _$A2AJSONRPCErrorResponseSSFromJson(
   Map<String, dynamic> json,
 ) => A2AJSONRPCErrorResponseSS()
-  ..isError = json['isError'] as bool
   ..error = json['error'] == null
       ? null
       : A2AError.fromJson(json['error'] as Map<String, dynamic>)
@@ -976,7 +973,6 @@ A2AJSONRPCErrorResponseSS _$A2AJSONRPCErrorResponseSSFromJson(
 Map<String, dynamic> _$A2AJSONRPCErrorResponseSSToJson(
   A2AJSONRPCErrorResponseSS instance,
 ) => <String, dynamic>{
-  'isError': instance.isError,
   'error': instance.error?.toJson(),
   'id': instance.id,
   'jsonrpc': instance.jsonrpc,
@@ -985,7 +981,6 @@ Map<String, dynamic> _$A2AJSONRPCErrorResponseSSToJson(
 A2AJSONRPCErrorResponsePNCR _$A2AJSONRPCErrorResponsePNCRFromJson(
   Map<String, dynamic> json,
 ) => A2AJSONRPCErrorResponsePNCR()
-  ..isError = json['isError'] as bool
   ..error = json['error'] == null
       ? null
       : A2AError.fromJson(json['error'] as Map<String, dynamic>)
@@ -995,7 +990,6 @@ A2AJSONRPCErrorResponsePNCR _$A2AJSONRPCErrorResponsePNCRFromJson(
 Map<String, dynamic> _$A2AJSONRPCErrorResponsePNCRToJson(
   A2AJSONRPCErrorResponsePNCR instance,
 ) => <String, dynamic>{
-  'isError': instance.isError,
   'error': instance.error?.toJson(),
   'id': instance.id,
   'jsonrpc': instance.jsonrpc,
@@ -1004,7 +998,6 @@ Map<String, dynamic> _$A2AJSONRPCErrorResponsePNCRToJson(
 A2ASendMessageSuccessResponse _$A2ASendMessageSuccessResponseFromJson(
   Map<String, dynamic> json,
 ) => A2ASendMessageSuccessResponse()
-  ..isError = json['isError'] as bool
   ..id = json['id']
   ..jsonrpc = json['jsonrpc'] as String
   ..result = json['result'];
@@ -1012,7 +1005,6 @@ A2ASendMessageSuccessResponse _$A2ASendMessageSuccessResponseFromJson(
 Map<String, dynamic> _$A2ASendMessageSuccessResponseToJson(
   A2ASendMessageSuccessResponse instance,
 ) => <String, dynamic>{
-  'isError': instance.isError,
   'id': instance.id,
   'jsonrpc': instance.jsonrpc,
   'result': instance.result,
@@ -1021,7 +1013,6 @@ Map<String, dynamic> _$A2ASendMessageSuccessResponseToJson(
 A2ASendStreamingMessageSuccessResponse
 _$A2ASendStreamingMessageSuccessResponseFromJson(Map<String, dynamic> json) =>
     A2ASendStreamingMessageSuccessResponse()
-      ..isError = json['isError'] as bool
       ..id = json['id']
       ..jsonrpc = json['jsonrpc'] as String
       ..result = json['result'];
@@ -1029,7 +1020,6 @@ _$A2ASendStreamingMessageSuccessResponseFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$A2ASendStreamingMessageSuccessResponseToJson(
   A2ASendStreamingMessageSuccessResponse instance,
 ) => <String, dynamic>{
-  'isError': instance.isError,
   'id': instance.id,
   'jsonrpc': instance.jsonrpc,
   'result': instance.result,
@@ -1039,7 +1029,6 @@ A2ASetTaskPushNotificationConfigSuccessResponse
 _$A2ASetTaskPushNotificationConfigSuccessResponseFromJson(
   Map<String, dynamic> json,
 ) => A2ASetTaskPushNotificationConfigSuccessResponse()
-  ..isError = json['isError'] as bool
   ..id = json['id']
   ..jsonrpc = json['jsonrpc'] as String
   ..result = json['result'] == null
@@ -1051,7 +1040,6 @@ _$A2ASetTaskPushNotificationConfigSuccessResponseFromJson(
 Map<String, dynamic> _$A2ASetTaskPushNotificationConfigSuccessResponseToJson(
   A2ASetTaskPushNotificationConfigSuccessResponse instance,
 ) => <String, dynamic>{
-  'isError': instance.isError,
   'id': instance.id,
   'jsonrpc': instance.jsonrpc,
   'result': instance.result?.toJson(),

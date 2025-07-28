@@ -12,6 +12,7 @@ part of '../../a2a_types.dart';
 /// Represents a JSON-RPC 2.0 Response object.
 class A2AJsonRpcResponse {
   /// True if the response is an error
+  @JsonKey(includeFromJson: false)
   bool isError = false;
 
   A2AJsonRpcResponse();

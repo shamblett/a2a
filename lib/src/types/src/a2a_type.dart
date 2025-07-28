@@ -66,7 +66,7 @@ class A2AMessage {
   List<A2APart>? parts = [];
 
   /// List of tasks referenced as context by this message.
-  List<String> referenceTaskIds = [];
+  List<String>? referenceTaskIds;
 
   /// Message sender's role, agent or user
   String role = 'agent';
@@ -92,7 +92,7 @@ class A2AArtifact {
   String? description;
 
   /// The URIs of extensions that are present or contributed to this Artifact.
-  List<String> extensions = [];
+  List<String>? extensions;
 
   /// Extension metadata.
   A2ASV? metadata;

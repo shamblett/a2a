@@ -109,8 +109,20 @@ Future<int> main() async {
       ..configuration = configuration;
 
     try {
-      final response = await testClient!.sendMessage(payload);
-      expect(response.isError, isFalse);
+      final rpcResponse = await testClient!.sendMessage(payload);
+      expect(rpcResponse.isError, isFalse);
+      final response = rpcResponse as A2ASendMessageSuccessResponse;
+      expect(response.id, 1);
+      expect(response.result, isNotNull);
+      expect(response.result is A2ATask, isTrue);
+      final result = response.result as A2ATask;
+      expect(result.artifacts.isNotEmpty, isTrue);
+      expect(result.contextId, '456');
+      expect(result.id, '123');
+      expect(result.metadata, isNull);
+      expect(result.status, isNotNull);
+      expect(result.status?.message, isNull);
+      expect(result.status?.state, A2ATaskState.completed);
     } catch (e) {
       rethrow;
     }

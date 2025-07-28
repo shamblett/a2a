@@ -87,11 +87,14 @@ class A2AClient {
   /// @returns A Promise resolving to SendMessageResponse, which can be a Message, Task, or an error.
   Future<A2ASendMessageResponse> sendMessage(
     A2AMessageSendParams params,
-  ) async =>
-      await _postRpcRequest<A2AMessageSendParams, A2ASendMessageResponse>(
-        'message/send',
-        params,
-      );
+  ) async {
+    final result =
+        await _postRpcRequest<A2AMessageSendParams, A2ASendMessageResponse>(
+          'message/send',
+          params,
+        );
+    return A2ASendMessageResponse.fromJson(result);
+  }
 
   /// Sends a message to the agent and streams back responses using Server-Sent Events (SSE).
   /// Push notification configuration can be specified in `params.configuration`.
@@ -202,10 +205,13 @@ class A2AClient {
     }
 
     // The 'params' directly matches the structure expected by the RPC method.
-    return _postRpcRequest<
-      A2ATaskPushNotificationConfig,
-      A2ASetTaskPushNotificationConfigResponse
-    >('tasks/pushNotificationConfig/set', params);
+    final result =
+        await _postRpcRequest<
+          A2ATaskPushNotificationConfig,
+          A2ASetTaskPushNotificationConfigResponse
+        >('tasks/pushNotificationConfig/set', params);
+
+    return A2ASetTaskPushNotificationConfigResponse.fromJson(result);
   }
 
   /// Gets the push notification configuration for a given task.
@@ -214,29 +220,38 @@ class A2AClient {
   Future<A2AGetTaskPushNotificationConfigResponse>
   getTaskPushNotificationConfig(A2ATaskIdParams params) async {
     // The 'params' (TaskIdParams) directly matches the structure expected by the RPC method.
-    return _postRpcRequest<
-      A2ATaskIdParams,
-      A2AGetTaskPushNotificationConfigResponse
-    >('tasks/pushNotificationConfig/get', params);
+    final result =
+        await _postRpcRequest<
+          A2ATaskIdParams,
+          A2AGetTaskPushNotificationConfigResponse
+        >('tasks/pushNotificationConfig/get', params);
+
+    return A2AGetTaskPushNotificationConfigResponse.fromJson(result);
   }
 
   /// Retrieves a task by its ID.
   /// @param params Parameters containing the taskId and optional historyLength.
   /// @returns A Promise resolving to GetTaskResponse, which contains the Task object or an error.
-  Future<A2AGetTaskResponse> getTask(A2ATaskQueryParams params) async =>
-      _postRpcRequest<A2ATaskQueryParams, A2AGetTaskResponse>(
-        'tasks/get',
-        params,
-      );
+  Future<A2AGetTaskResponse> getTask(A2ATaskQueryParams params) async {
+    final result =
+        await _postRpcRequest<A2ATaskQueryParams, A2AGetTaskResponse>(
+          'tasks/get',
+          params,
+        );
+    return A2AGetTaskResponse.fromJson(result);
+  }
 
   /// Cancels a task by its ID.
   /// @param params Parameters containing the taskId.
   /// @returns A Promise resolving to CancelTaskResponse, which contains the updated Task object or an error.
-  Future<A2ACancelTaskResponse> cancelTask(A2ATaskIdParams params) async =>
-      _postRpcRequest<A2ATaskIdParams, A2ACancelTaskResponse>(
-        'tasks/cancel',
-        params,
-      );
+  Future<A2ACancelTaskResponse> cancelTask(A2ATaskIdParams params) async {
+    final result =
+        await _postRpcRequest<A2ATaskIdParams, A2ACancelTaskResponse>(
+          'tasks/cancel',
+          params,
+        );
+    return A2ACancelTaskResponse.fromJson(result);
+  }
 
   /// Resubscribes to a task's event stream using Server-Sent Events (SSE).
   /// This is used if a previous SSE connection for an active task was broken.
@@ -366,8 +381,8 @@ class A2AClient {
   /// Helper method to make a generic JSON-RPC POST request.
   /// @param method The RPC method name.
   /// @param params The parameters for the RPC method.
-  /// @returns A Promise that resolves to the RPC response.
-  Future<TResponse> _postRpcRequest<TParams, TResponse>(
+  /// @returns A Future that resolves to the RPC response.
+  Future<Map<String, dynamic>> _postRpcRequest<TParams, TResponse>(
     String method,
     TParams params,
   ) async {
@@ -425,7 +440,8 @@ class A2AClient {
     }
 
     final rpcResponse = (await httpResponse.json() as Map<String, dynamic>);
-    if (rpcResponse.containsKey('id') && rpcResponse['id']! == requestId.toString()) {
+    if (rpcResponse.containsKey('id') &&
+        rpcResponse['id']! == requestId.toString()) {
       // This is a significant issue for request-response matching.
       throw Exception(
         '_postRpcRequest:: RPC response ID mismatch for method $method. Expected $requestId, got ${rpcResponse["id"]}',
@@ -433,8 +449,7 @@ class A2AClient {
     }
 
     // Return the response
-    dynamic response;
-    return (response.fromJson(rpcResponse) as TResponse);
+    return rpcResponse;
   }
 
   /// Parses an HTTP response body as an A2A Server-Sent Event stream.
