@@ -173,6 +173,29 @@ Future<int> main() async {
         rethrow;
       }
     });
+    test('Get Task', () async {
+      if (testClient == null) {
+        testClient ??= A2AClient(baseUrl);
+        await Future.delayed(Duration(seconds: 5));
+      }
+      final taskParams = A2ATaskQueryParams()
+      ..id = '1';
+
+      try {
+        final response = await testClient!.getTask(
+          taskParams,
+        );
+        expect(response.isError, isTrue);
+        final errorResponse =
+        response as A2AJSONRPCErrorResponseT;
+        expect(errorResponse.id, 2);
+        expect(errorResponse.error?.rpcErrorCode, A2AError.taskNotFound);
+        expect((errorResponse as dynamic).error?.code, A2AError.taskNotFound);
+        expect((errorResponse as dynamic).error.message, 'Task not found');
+      } catch(e) {
+        rethrow;
+      }
+    });
   });
   return 0;
 }
