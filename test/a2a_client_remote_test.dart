@@ -89,43 +89,70 @@ Future<int> main() async {
       );
     });
   });
-  test('Send Message', () async {
-    if (testClient == null) {
-      testClient ??= A2AClient(baseUrl);
-      await Future.delayed(Duration(seconds: 5));
-    }
-    final message = A2AMessage()
-      ..role = 'user'
-      ..parts = [A2ATextPart()..text = 'prompt']
-      ..messageId = '12345'
-      ..taskId = '123'
-      ..contextId = '456';
+  group('Client Methods', () {
+    test('Send Message', () async {
+      if (testClient == null) {
+        testClient ??= A2AClient(baseUrl);
+        await Future.delayed(Duration(seconds: 5));
+      }
+      final message = A2AMessage()
+        ..role = 'user'
+        ..parts = [A2ATextPart()..text = 'prompt']
+        ..messageId = '12345'
+        ..taskId = '123'
+        ..contextId = '456';
 
-    final configuration = A2AMessageSendConfiguration()
-      ..acceptedOutputModes = ['text'];
+      final configuration = A2AMessageSendConfiguration()
+        ..acceptedOutputModes = ['text'];
 
-    final payload = A2AMessageSendParams()
-      ..message = message
-      ..configuration = configuration;
+      final payload = A2AMessageSendParams()
+        ..message = message
+        ..configuration = configuration;
 
-    try {
-      final rpcResponse = await testClient!.sendMessage(payload);
-      expect(rpcResponse.isError, isFalse);
-      final response = rpcResponse as A2ASendMessageSuccessResponse;
-      expect(response.id, 1);
-      expect(response.result, isNotNull);
-      expect(response.result is A2ATask, isTrue);
-      final result = response.result as A2ATask;
-      expect(result.artifacts.isNotEmpty, isTrue);
-      expect(result.contextId, '456');
-      expect(result.id, '123');
-      expect(result.metadata, isNull);
-      expect(result.status, isNotNull);
-      expect(result.status?.message, isNull);
-      expect(result.status?.state, A2ATaskState.completed);
-    } catch (e) {
-      rethrow;
-    }
+      try {
+        final rpcResponse = await testClient!.sendMessage(payload);
+        expect(rpcResponse.isError, isFalse);
+        final response = rpcResponse as A2ASendMessageSuccessResponse;
+        expect(response.id, 1);
+        expect(response.result, isNotNull);
+        expect(response.result is A2ATask, isTrue);
+        final result = response.result as A2ATask;
+        expect(result.artifacts.isNotEmpty, isTrue);
+        expect(result.contextId, '456');
+        expect(result.id, '123');
+        expect(result.metadata, isNull);
+        expect(result.status, isNotNull);
+        expect(result.status?.message, isNull);
+        expect(result.status?.state, A2ATaskState.completed);
+      } catch (e) {
+        rethrow;
+      }
+    });
+    test('Set Task Push NotificationConfig', () async {
+      if (testClient == null) {
+        testClient ??= A2AClient(baseUrl);
+        await Future.delayed(Duration(seconds: 5));
+      }
+      final taskConfig = A2ATaskPushNotificationConfig1()
+        ..id = '2'
+        ..token = 'token'
+        ..url = 'http://localhost:5000';
+
+      final config = A2ATaskPushNotificationConfig()
+        ..id = '1'
+        ..pushNotificationConfig = taskConfig;
+
+      try {
+        await testClient!.setTaskPushNotificationConfig(
+          config,
+        );
+      } on Exception catch (e) {
+        expect(
+          e.toString(),
+          'Exception: setTaskPushNotificationConfig:: Agent does not support push notifications(AgentCard.capabilities.pushnotifications is null).',
+        );
+      }
+    });
   });
   return 0;
 }
