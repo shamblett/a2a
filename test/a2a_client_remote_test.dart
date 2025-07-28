@@ -90,15 +90,30 @@ Future<int> main() async {
     });
   });
   test('Send Message', () async {
-    testClient ??= A2AClient(baseUrl);
-    await Future.delayed(Duration(seconds: 1));
+    if (testClient == null) {
+      testClient ??= A2AClient(baseUrl);
+      await Future.delayed(Duration(seconds: 5));
+    }
+    final message = A2AMessage()
+      ..role = 'user'
+      ..parts = [A2ATextPart()..text = 'prompt']
+      ..messageId = '12345'
+      ..taskId = '123'
+      ..contextId = '456';
+
+    final configuration = A2AMessageSendConfiguration()
+      ..acceptedOutputModes = ['text'];
+
+    final payload = A2AMessageSendParams()
+      ..message = message
+      ..configuration = configuration;
+
     try {
-      final params = A2AMessageSendParams()..metadata = {'First': 1};
-      final response = await testClient!.sendMessage(params);
+      final response = await testClient!.sendMessage(payload);
       expect(response.isError, isFalse);
     } catch (e) {
       rethrow;
     }
-  }, skip: true);
+  });
   return 0;
 }

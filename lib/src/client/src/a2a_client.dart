@@ -425,7 +425,7 @@ class A2AClient {
     }
 
     final rpcResponse = (await httpResponse.json() as Map<String, dynamic>);
-    if (rpcResponse.containsKey('id') && rpcResponse['id']! == requestId) {
+    if (rpcResponse.containsKey('id') && rpcResponse['id']! == requestId.toString()) {
       // This is a significant issue for request-response matching.
       throw Exception(
         '_postRpcRequest:: RPC response ID mismatch for method $method. Expected $requestId, got ${rpcResponse["id"]}',
