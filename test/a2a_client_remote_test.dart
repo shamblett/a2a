@@ -32,7 +32,7 @@ Future<int> main() async {
   group('Client Base', () {
     test('Construction', () async {
       testClient = A2AClient(baseUrl);
-      await Future.delayed(Duration(seconds: 5));
+      await Future.delayed(Duration(seconds: 10));
       expect(
         testClient!.agentBaseUrl,
         'https://sample-a2a-agent-908687846511.us-central1.run.app',
@@ -45,7 +45,7 @@ Future<int> main() async {
     test('Get Agent Card', () async {
       if (testClient == null) {
         testClient ??= A2AClient(baseUrl);
-        await Future.delayed(Duration(seconds: 5));
+        await Future.delayed(Duration(seconds: 10));
       }
       final agentCard = await testClient!.getAgentCard(
         agentBaseUrl:
@@ -80,7 +80,7 @@ Future<int> main() async {
     test('Get Service Endpoint', () async {
       if (testClient == null) {
         testClient = A2AClient(baseUrl);
-        await Future.delayed(Duration(seconds: 5));
+        await Future.delayed(Duration(seconds: 10));
       }
       final endpoint = await testClient!.serviceEndpoint;
       expect(
@@ -93,7 +93,7 @@ Future<int> main() async {
     test('Send Message', () async {
       if (testClient == null) {
         testClient ??= A2AClient(baseUrl);
-        await Future.delayed(Duration(seconds: 5));
+        await Future.delayed(Duration(seconds: 10));
       }
       final message = A2AMessage()
         ..role = 'user'
@@ -131,7 +131,7 @@ Future<int> main() async {
     test('Set Task Push NotificationConfig', () async {
       if (testClient == null) {
         testClient ??= A2AClient(baseUrl);
-        await Future.delayed(Duration(seconds: 5));
+        await Future.delayed(Duration(seconds: 10));
       }
       final taskConfig = A2ATaskPushNotificationConfig1()
         ..id = '2'
@@ -154,7 +154,7 @@ Future<int> main() async {
     test('Get Task Push Notification Config', () async {
       if (testClient == null) {
         testClient ??= A2AClient(baseUrl);
-        await Future.delayed(Duration(seconds: 5));
+        await Future.delayed(Duration(seconds: 10));
       }
       final taskParams = A2ATaskIdParams()..id = '1';
 
@@ -163,36 +163,59 @@ Future<int> main() async {
           taskParams,
         );
         expect(response.isError, isTrue);
-        final errorResponse =
-            response as A2AJSONRPCErrorResponseGTPR;
+        final errorResponse = response as A2AJSONRPCErrorResponseGTPR;
         expect(errorResponse.id, 1);
-        expect(errorResponse.error?.rpcErrorCode, A2AError.unsupportedOperation);
-        expect((errorResponse as dynamic).error?.code, A2AError.unsupportedOperation);
-        expect((errorResponse as dynamic).error.message, 'This operation is not supported');
-      } catch(e) {
+        expect(
+          errorResponse.error?.rpcErrorCode,
+          A2AError.unsupportedOperation,
+        );
+        expect(
+          (errorResponse as dynamic).error?.code,
+          A2AError.unsupportedOperation,
+        );
+        expect(
+          (errorResponse as dynamic).error.message,
+          'This operation is not supported',
+        );
+      } catch (e) {
         rethrow;
       }
     });
     test('Get Task', () async {
       if (testClient == null) {
         testClient ??= A2AClient(baseUrl);
-        await Future.delayed(Duration(seconds: 5));
+        await Future.delayed(Duration(seconds: 10));
       }
-      final taskParams = A2ATaskQueryParams()
-      ..id = '1';
+      final taskParams = A2ATaskQueryParams()..id = '1';
 
       try {
-        final response = await testClient!.getTask(
-          taskParams,
-        );
+        final response = await testClient!.getTask(taskParams);
         expect(response.isError, isTrue);
-        final errorResponse =
-        response as A2AJSONRPCErrorResponseT;
+        final errorResponse = response as A2AJSONRPCErrorResponseT;
         expect(errorResponse.id, 2);
         expect(errorResponse.error?.rpcErrorCode, A2AError.taskNotFound);
         expect((errorResponse as dynamic).error?.code, A2AError.taskNotFound);
         expect((errorResponse as dynamic).error.message, 'Task not found');
-      } catch(e) {
+      } catch (e) {
+        rethrow;
+      }
+    });
+    test('Cancel Task', () async {
+      if (testClient == null) {
+        testClient ??= A2AClient(baseUrl);
+        await Future.delayed(Duration(seconds: 10));
+      }
+      final taskParams = A2ATaskIdParams()..id = '1';
+
+      try {
+        final response = await testClient!.cancelTask(taskParams);
+        expect(response.isError, isTrue);
+        final errorResponse = response as A2AJSONRPCErrorResponse;
+        expect(errorResponse.id, 1);
+        expect(errorResponse.error?.rpcErrorCode, A2AError.taskNotFound);
+        expect((errorResponse as dynamic).error?.code, A2AError.taskNotFound);
+        expect((errorResponse as dynamic).error.message, 'Task not found');
+      } catch (e) {
         rethrow;
       }
     });
