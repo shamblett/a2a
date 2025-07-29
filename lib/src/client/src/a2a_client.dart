@@ -13,7 +13,7 @@ import 'dart:convert';
 import 'package:oxy/oxy.dart' as http;
 import '/src/types/a2a_types.dart';
 
-/// A2AClient is a TypeScript HTTP client for interacting
+/// A2AClient is a HTTP client for interacting
 /// with A2A-compliant agents.
 ///
 class A2AClient {
@@ -26,7 +26,7 @@ class A2AClient {
   int _requestIdCounter = 1;
 
   /// Gets the RPC service endpoint URL. Ensures the agent card has been fetched first.
-  /// @returns a future that resolves to the service endpoint URL string.
+  /// @returns a [Future] that resolves to the service endpoint URL string.
   Future<String> get serviceEndpoint async {
     if (_serviceEndpointUrl.isNotEmpty) {
       return _serviceEndpointUrl;
@@ -47,7 +47,7 @@ class A2AClient {
 
   /// Constructs an A2AClient instance.
   ///
-  /// It initiates fetching the agent card from the provided agent baseUrl.
+  /// The agent card is fetched from the provided agent baseUrl.
   /// The Agent Card is expected at `${agentBaseUrl}/.well-known/agent.json`.
   /// The `url` field from the Agent Card will be used as the RPC service endpoint.
   /// @param agentBaseUrl The base URL of the A2A agent (e.g., https://agent.example.com).
@@ -61,11 +61,12 @@ class A2AClient {
   }
 
   /// Retrieves the Agent Card.
+  ///
   /// If an `agentBaseUrl` is provided, it fetches the card from that specific URL.
   /// Otherwise, it returns the card fetched and cached during client construction.
   /// @param agentBaseUrl Optional. The base URL of the agent to fetch the card from.
   /// If provided, this will fetch a new card, not use the cached one from the constructor's URL.
-  /// @returns A Promise that resolves to the AgentCard.
+  /// @returns A [Future] that resolves to the [A2AAgentCard].
   Future<A2AAgentCard> getAgentCard({String? agentBaseUrl}) async {
     final completer = Completer<A2AAgentCard>();
     if (agentBaseUrl != null) {
@@ -79,11 +80,12 @@ class A2AClient {
   }
 
   /// Sends a message to the agent.
+  ///
   /// The behavior (blocking/non-blocking) and push notification configuration
   /// are specified within the `params.configuration` object.
   /// Optionally, `params.message.contextId` or `params.message.taskId` can be provided.
   /// @param params The parameters for sending the message, including the message content and configuration.
-  /// @returns A Promise resolving to SendMessageResponse, which can be a Message, Task, or an error.
+  /// @returns A [Future? resolving to an [A2ASendMessageResponse], which can be an [A2AMessage], [A2ATask], or an error.
   Future<A2ASendMessageResponse> sendMessage(
     A2AMessageSendParams params,
   ) async {
@@ -96,12 +98,14 @@ class A2AClient {
   }
 
   /// Sends a message to the agent and streams back responses using Server-Sent Events (SSE).
+  ///
   /// Push notification configuration can be specified in `params.configuration`.
   /// Optionally, `params.message.contextId` or `params.message.taskId` can be provided.
   /// Requires the agent to support streaming (`capabilities.streaming: true` in AgentCard).
   /// @param params The parameters for sending the message.
-  /// @returns yielding [A2AStreamEventData] (Message, Task, TaskStatusUpdateEvent, or TaskArtifactUpdateEvent).
-  /// The generator throws an error if streaming is not supported or if an HTTP/SSE error occurs.
+  /// @returns yielding [A2ASendStreamMessageResponse] which is one of [A2AMessage], [A2ATask],
+  /// [A2ATaskStatusUpdateEvent], or [A2ATaskArtifactUpdateEvent].
+  /// Throws an error if streaming is not supported or if an HTTP/SSE error occurs.
   Stream<A2ASendStreamMessageResponse> sendMessageStream(
     A2AMessageSendParams params,
   ) async* {
@@ -179,9 +183,10 @@ class A2AClient {
   }
 
   /// Sets or updates the push notification configuration for a given task.
+  ///
   /// Requires the agent to support push notifications (`capabilities.pushNotifications: true` in AgentCard).
-  /// @param params Parameters containing the taskId and the TaskPushNotificationConfig.
-  /// @returns A Promise resolving to SetTaskPushNotificationConfigResponse.
+  /// @param params Parameters containing the taskId and the [A2ATaskPushNotificationConfig].
+  /// @returns A [Future] resolving to [A2ASetTaskPushNotificationConfigResponse].
   Future<A2ASetTaskPushNotificationConfigResponse>
   setTaskPushNotificationConfig(A2ATaskPushNotificationConfig params) async {
     // Ensure agent card is fetched
@@ -214,8 +219,9 @@ class A2AClient {
   }
 
   /// Gets the push notification configuration for a given task.
+  ///
   /// @param params Parameters containing the taskId.
-  /// @returns A Promise resolving to GetTaskPushNotificationConfigResponse.
+  /// @returns A [Future] resolving to [A2AGetTaskPushNotificationConfigResponse].
   Future<A2AGetTaskPushNotificationConfigResponse>
   getTaskPushNotificationConfig(A2ATaskIdParams params) async {
     // The 'params' (TaskIdParams) directly matches the structure expected by the RPC method.
@@ -229,8 +235,9 @@ class A2AClient {
   }
 
   /// Retrieves a task by its ID.
+  ///
   /// @param params Parameters containing the taskId and optional historyLength.
-  /// @returns A Promise resolving to GetTaskResponse, which contains the Task object or an error.
+  /// @returns A [Future] resolving to [A2AGetTaskResponse], which contains the Task object or an error.
   Future<A2AGetTaskResponse> getTask(A2ATaskQueryParams params) async {
     final result =
         await _postRpcRequest<A2ATaskQueryParams, A2AGetTaskResponse>(
@@ -241,8 +248,9 @@ class A2AClient {
   }
 
   /// Cancels a task by its ID.
+  ///
   /// @param params Parameters containing the taskId.
-  /// @returns A Promise resolving to CancelTaskResponse, which contains the updated Task object or an error.
+  /// @returns A [Future] resolving to [A2ACancelTaskResponse], which contains the updated Task object or an error.
   Future<A2ACancelTaskResponse> cancelTask(A2ATaskIdParams params) async {
     final result =
         await _postRpcRequest<A2ATaskIdParams, A2ACancelTaskResponse>(
@@ -253,11 +261,12 @@ class A2AClient {
   }
 
   /// Resubscribes to a task's event stream using Server-Sent Events (SSE).
+  ///
   /// This is used if a previous SSE connection for an active task was broken.
   /// Requires the agent to support streaming (`capabilities.streaming: true` in AgentCard).
   /// @param params Parameters containing the taskId.
-  /// @returns An AsyncGenerator yielding A2AStreamEventData ([A2AMessage], [A2ATask],
-  /// [A2ATaskStatusUpdateEvent], or [A2ATaskArtifactUpdateEvent]).
+  /// @returns Yields [A2ASendStreamingMessageResponse], one of [A2AMessage], [A2ATask],
+  /// [A2ATaskStatusUpdateEvent] or [A2ATaskArtifactUpdateEvent]).
   Stream<A2ASendStreamMessageResponse> resubscribeTask(
     A2ATaskIdParams params,
   ) async* {
@@ -334,11 +343,12 @@ class A2AClient {
     yield* _parseA2ASseStream(response, requestId);
   }
 
-  /// Fetches the Agent Card from the agent's well-known URI and caches its service endpoint URL.
-  /// If a [baseUrl] parameter is supplied this will be used instead of the agent base url and
-  /// the card details will not be cached, just returned.
-  /// This method is called by the constructor.
-  /// @returns A Future that eventually resolves to the AgentCard.
+  // Fetches the Agent Card from the agent's well-known URI and caches its service endpoint URL.
+  //
+  // If a [baseUrl] parameter is supplied this will be used instead of the agent base url and
+  // the card details will not be cached, just returned.
+  // This method is called by the constructor.
+  // @returns A Future that eventually resolves to the AgentCard.
   Future<A2AAgentCard> _fetchAndCacheAgentCard({String baseUrl = ''}) async {
     var fetchUrl = agentBaseUrl;
     bool cache = true;
@@ -379,10 +389,11 @@ class A2AClient {
     }
   }
 
-  /// Helper method to make a generic JSON-RPC POST request.
-  /// @param method The RPC method name.
-  /// @param params The parameters for the RPC method.
-  /// @returns A Future that resolves to the RPC response.
+  // Helper method to make a generic JSON-RPC POST request.
+  //
+  // @param method The RPC method name.
+  // @param params The parameters for the RPC method.
+  // @returns A Future that resolves to the RPC response.
   Future<Map<String, dynamic>> _postRpcRequest<TParams, TResponse>(
     String method,
     TParams params,
@@ -453,13 +464,15 @@ class A2AClient {
     return rpcResponse;
   }
 
-  /// Parses an HTTP response body as an A2A Server-Sent Event stream.
-  /// Each 'data' field of an SSE event is expected to be a JSON-RPC 2.0 Response object,
-  /// specifically a SendStreamingMessageResponse (or similar structure for resubscribe).
-  /// @param response The HTTP Response object whose body is the SSE stream.
-  /// @param originalRequestId The ID of the client's JSON-RPC request that initiated this stream.
-  /// Used to validate the `id` in the streamed JSON-RPC responses.
-  /// @returns An AsyncGenerator yielding the `result` field of each valid JSON-RPC success response from the stream.
+  // Parses an HTTP response body as an A2A Server-Sent Event stream.
+  //
+  // Each 'data' field of an SSE event is expected to be a JSON-RPC 2.0 Response object,
+  // specifically a SendStreamingMessageResponse.
+  // @param response The HTTP Response object whose body is the SSE stream.
+  // @param originalRequestId The ID of the client's JSON-RPC request that initiated this stream.
+  // Used to validate the `id` in the streamed JSON-RPC responses.
+  // @returns Yields the `result` field of each valid JSON-RPC success response from the stream
+  // or an RPC Error response if an error is returned as a A2ASendStreamMessageResponse.
   Stream<A2ASendStreamMessageResponse> _parseA2ASseStream(
     http.Response response,
     A2AId originalRequestId,
