@@ -9,7 +9,6 @@ library;
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:oxy/oxy.dart' as http;
 import '/src/types/a2a_types.dart';
@@ -130,7 +129,7 @@ class A2AClient {
     final rpcRequest = A2AJsonRpcRequest()
       ..method = 'message/stream'
       ..id = requestId
-      ..params = params as A2ASV;
+      ..params = (params as dynamic).toJson();
 
     final headers = http.Headers()
       ..append('Accept', 'application/json')
@@ -463,124 +462,22 @@ class A2AClient {
     http.Response response,
     A2AId originalRequestId,
   ) async* {
-    if (await response.body.isEmpty) {
-      throw Exception(
-        '_parseA2ASseStream:: SSE response body is undefined. Cannot read stream.',
-      );
-    }
-
-    final transformer = StreamTransformer<Uint8List, String>.fromHandlers(
-      handleData: (data, sink) {
-        sink.add(Utf8Decoder().convert(data));
-      },
-    );
-    final reader = response.body.transform(transformer);
-    List<String> buffer = []; // Holds incomplete lines from the stream
-    String eventDataBuffer =
-        ''; // Holds accumulated 'data:' lines for the current event
-
     try {
-      while (true) {
-        final value = await reader.first;
-        if (await reader.isEmpty) {
-          if (eventDataBuffer.isNotEmpty) {
-            final result = _processSseEventData<TStreamItem>(
-              eventDataBuffer,
-              originalRequestId,
-            );
-            yield result;
-          }
-          break;
-        }
-        buffer.add(value);
-        for (String line in buffer) {
-          if (line.contains('\n')) {
-            line = line.trim();
-            if (line.isEmpty) {
-              // Empty line: signifies the end of an event
-              if (eventDataBuffer.isNotEmpty) {
-                // If we have accumulated data for an event
-                //const result = this._processSseEventData<TStreamItem>(eventDataBuffer, originalRequestId);
-                //yield result;
-                eventDataBuffer = ''; // Reset buffer for the next event
-              }
-            } else if (line.startsWith('data:')) {
-              // Append data (multi-line data is possible)
-              eventDataBuffer += line.substring(5);
-              // Comment lines starting with : in SSE are ignored
-              // Other SSE fields like 'event:', 'id:', 'retry:'.
-              // The A2A spec primarily focuses on the 'data' field for JSON-RPC payloads.
-              // For now, we don't specifically handle these other SSE fields unless required by spec.
-            }
-          }
-        }
-        buffer.clear();
+      final body = http.Body(response.body);
+      final text = await body.text();
+      if (text.isEmpty) {
+        throw Exception(
+          '_parseA2ASseStream:: SSE response body is undefined. Cannot read stream.',
+        );
+      }
+      LineSplitter ls = LineSplitter();
+      final lines = ls.convert(text);
+      for (final line in lines) {
+        final j = json.decode(line.substring(6));
+        yield A2ASendStreamMessageSuccessResponseR.fromJson(j) as TStreamItem;
       }
     } catch (e, s) {
       Error.throwWithStackTrace(e, s);
-    }
-  }
-
-  /// Processes a single SSE event's data string, expecting it to be a JSON-RPC response.
-  /// @param jsonData The string content from one or more 'data:' lines of an SSE event.
-  /// @param originalRequestId The ID of the client's request that initiated the stream.
-  /// @returns The `result` field of the parsed JSON-RPC success response.
-  /// @throws Error if data is not valid JSON, not a valid JSON-RPC response, an error response,
-  /// or ID mismatch.
-  TStreamItem _processSseEventData<TStreamItem>(
-    String jsonData,
-    A2AId? originalRequestId,
-  ) {
-    if (jsonData.isEmpty) {
-      throw Exception(
-        '_processSseEventData:: Attempted to process empty SSE event data.',
-      );
-    }
-
-    try {
-      final sseJsonResponse = json.decode(jsonData);
-      final a2aStreamResponse =
-          (A2ASendStreamingMessageResponse.fromJson(sseJsonResponse)
-              as A2ASendStreamingMessageSuccessResponse);
-
-      // According to JSON-RPC spec, notifications (which SSE events can be seen as) might not have an ID,
-      // or if they do, it should match. A2A spec implies streamed events are tied to the initial request.
-      if (a2aStreamResponse.id != originalRequestId) {
-        throw Exception(
-          '_processSseEventData:: SSE Event'
-          's JSON-RPC response ID mismatch. '
-          'Client request ID: $originalRequestId, event response ID: ${a2aStreamResponse.id}',
-        );
-      }
-
-      if (a2aStreamResponse.isError) {
-        final err = a2aStreamResponse as A2AJSONRPCErrorResponseSSM;
-        throw Exception(
-          '_processSseEventData:: SSE event contained an error: ${err.error}',
-        );
-      }
-
-      // Check if 'result' exists, as it's mandatory for successful JSON-RPC responses
-      if (a2aStreamResponse.result == null) {
-        throw Exception(
-          '_processSseEventData:: SSE event JSON-RPC response is missing "result" field. Data: $jsonData',
-        );
-      }
-
-      return a2aStreamResponse.result as TStreamItem;
-    } catch (e, s) {
-      // Catch errors from JSON.parse or if it's an error response that was thrown by this function
-      if (e.toString().contains('SSE event contained an error') ||
-          e.toString().contains(
-            'SSE event JSON-RPC response is missing "result" field',
-          )) {
-        Error.throwWithStackTrace(e, s);
-      }
-      // For other parsing errors or unexpected structures:
-      Error.throwWithStackTrace(
-        '_processSseEventData:: Failed to parse SSE event data: "${jsonData.substring(0, 100)}',
-        s,
-      );
     }
   }
 }

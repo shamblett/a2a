@@ -128,6 +128,44 @@ Future<int> main() async {
         rethrow;
       }
     });
+    test('Send Message Stream', () async {
+      if (testClient == null) {
+        testClient ??= A2AClient(baseUrl);
+        await Future.delayed(Duration(seconds: 10));
+      }
+      final message = A2AMessage()
+        ..role = 'user'
+        ..parts = [A2ATextPart()..text = 'prompt']
+        ..messageId = '12345'
+        ..taskId = '123'
+        ..contextId = '456';
+
+      final configuration = A2AMessageSendConfiguration()
+        ..acceptedOutputModes = ['text'];
+
+      final payload = A2AMessageSendParams()
+        ..message = message
+        ..configuration = configuration;
+
+      try {
+        final rpcResponse = await testClient!.sendMessageStream(payload).first;
+        expect(rpcResponse.isError, isFalse);
+        final response = rpcResponse;
+        expect(response.id, 1);
+        expect(response.result, isNotNull);
+        expect(response.result is A2ATask, isTrue);
+        final result = response.result as A2ATask;
+        expect(result.artifacts.isNotEmpty, isTrue);
+        expect(result.contextId, '456');
+        expect(result.id, '123');
+        expect(result.metadata, isNull);
+        expect(result.status, isNotNull);
+        expect(result.status?.message, isNull);
+        expect(result.status?.state, A2ATaskState.completed);
+      } catch (e) {
+        rethrow;
+      }
+    });
     test('Set Task Push NotificationConfig', () async {
       if (testClient == null) {
         testClient ??= A2AClient(baseUrl);
