@@ -150,7 +150,7 @@ Future<int> main() async {
       try {
         final rpcResponse = await testClient!.sendMessageStream(payload).first;
         expect(rpcResponse.isError, isFalse);
-        final response = rpcResponse;
+        final response = rpcResponse as A2ASendStreamMessageSuccessResponseR;
         expect(response.result, isNotNull);
         expect(response.result is A2ATask, isTrue);
         final result = response.result as A2ATask;
@@ -246,6 +246,24 @@ Future<int> main() async {
         final response = await testClient!.cancelTask(taskParams);
         expect(response.isError, isTrue);
         final errorResponse = response as A2AJSONRPCErrorResponse;
+        expect(errorResponse.error?.rpcErrorCode, A2AError.taskNotFound);
+        expect((errorResponse as dynamic).error?.code, A2AError.taskNotFound);
+        expect((errorResponse as dynamic).error.message, 'Task not found');
+      } catch (e) {
+        rethrow;
+      }
+    });
+    test('Resubscribe Task', () async {
+      if (testClient == null) {
+        testClient ??= A2AClient(baseUrl);
+        await Future.delayed(Duration(seconds: 10));
+      }
+      final taskParams = A2ATaskIdParams()..id = '1';
+
+      try {
+        final response = await testClient!.resubscribeTask(taskParams).first;
+        expect(response.isError, isTrue);
+        final errorResponse = response as A2AJSONRPCErrorResponseSSM;
         expect(errorResponse.error?.rpcErrorCode, A2AError.taskNotFound);
         expect((errorResponse as dynamic).error?.code, A2AError.taskNotFound);
         expect((errorResponse as dynamic).error.message, 'Task not found');

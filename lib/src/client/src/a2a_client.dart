@@ -102,7 +102,7 @@ class A2AClient {
   /// @param params The parameters for sending the message.
   /// @returns yielding [A2AStreamEventData] (Message, Task, TaskStatusUpdateEvent, or TaskArtifactUpdateEvent).
   /// The generator throws an error if streaming is not supported or if an HTTP/SSE error occurs.
-  Stream<A2AStreamEventData> sendMessageStream(
+  Stream<A2ASendStreamMessageResponse> sendMessageStream(
     A2AMessageSendParams params,
   ) async* {
     // Ensure agent card is fetched
@@ -175,7 +175,7 @@ class A2AClient {
     }
     // Yield events from the parsed SSE stream.
     // Each event's 'data' field is a JSON-RPC response.
-    yield* _parseA2ASseStream<A2AStreamEventData>(response, requestId);
+    yield* _parseA2ASseStream(response, requestId);
   }
 
   /// Sets or updates the push notification configuration for a given task.
@@ -258,7 +258,9 @@ class A2AClient {
   /// @param params Parameters containing the taskId.
   /// @returns An AsyncGenerator yielding A2AStreamEventData ([A2AMessage], [A2ATask],
   /// [A2ATaskStatusUpdateEvent], or [A2ATaskArtifactUpdateEvent]).
-  Stream<A2AStreamEventData> resubscribeTask(A2ATaskIdParams params) async* {
+  Stream<A2ASendStreamMessageResponse> resubscribeTask(
+    A2ATaskIdParams params,
+  ) async* {
     // Ensure agent card is fetched
     if (_agentCard != null) {
       if (_agentCard!.capabilities.streaming != null) {
@@ -283,7 +285,7 @@ class A2AClient {
     final rpcRequest = A2AJsonRpcRequest()
       ..method = 'tasks/resubscribe'
       ..id = requestId
-      ..params = params as A2ASV;
+      ..params = (params as dynamic).toJson();
 
     final headers = http.Headers()
       ..append('Accept', 'application/json')
@@ -329,7 +331,7 @@ class A2AClient {
     }
     // Yield events from the parsed SSE stream.
     // Each event's 'data' field is a JSON-RPC response.
-    yield* _parseA2ASseStream<A2AStreamEventData>(response, requestId);
+    yield* _parseA2ASseStream(response, requestId);
   }
 
   /// Fetches the Agent Card from the agent's well-known URI and caches its service endpoint URL.
@@ -458,7 +460,7 @@ class A2AClient {
   /// @param originalRequestId The ID of the client's JSON-RPC request that initiated this stream.
   /// Used to validate the `id` in the streamed JSON-RPC responses.
   /// @returns An AsyncGenerator yielding the `result` field of each valid JSON-RPC success response from the stream.
-  Stream<TStreamItem> _parseA2ASseStream<TStreamItem>(
+  Stream<A2ASendStreamMessageResponse> _parseA2ASseStream(
     http.Response response,
     A2AId originalRequestId,
   ) async* {
@@ -474,7 +476,17 @@ class A2AClient {
       final lines = ls.convert(text);
       for (final line in lines) {
         final j = json.decode(line.substring(6));
-        yield A2ASendStreamMessageSuccessResponseR.fromJson(j) as TStreamItem;
+        final item = A2ASendStreamMessageResponse.fromJson(j);
+        if (item.isError) {
+          yield item;
+        }
+        final typedItem = item as A2ASendStreamMessageSuccessResponseR;
+        if (typedItem.id != null && typedItem.id != originalRequestId) {
+          throw Exception(
+            '_parseA2ASseStream:: Request/Response id mismatch. Rx : ${item.id}, Tx : $originalRequestId',
+          );
+        }
+        yield item;
       }
     } catch (e, s) {
       Error.throwWithStackTrace(e, s);

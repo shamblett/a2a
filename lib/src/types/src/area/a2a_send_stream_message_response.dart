@@ -17,9 +17,8 @@ class A2ASendStreamMessageResponse {
 
   factory A2ASendStreamMessageResponse.fromJson(Map<String, dynamic> json) {
     return json.containsKey('result')
-          ? A2ASendStreamMessageSuccessResponseR.fromJson(json)
-          : A2AJSONRPCErrorResponseSSM.fromJson(json)
-      ..isError = true;
+        ? A2ASendStreamMessageSuccessResponseR.fromJson(json)
+        : (A2AJSONRPCErrorResponseSSM.fromJson(json)..isError = true);
   }
 
   Map<String, dynamic> toJson() {
