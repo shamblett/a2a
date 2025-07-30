@@ -7,6 +7,9 @@ homepage: https://github.com/shamblett/a2a
 funding:
   - https://www.darticulate.com/#funding
 
+executables:
+  a2a_cli_client:
+
 environment:
   sdk: '>=3.8.0 <4.0.0'
 
@@ -15,6 +18,9 @@ dependencies:
     oxy: '^0.0.3'
     web: '^1.1.1'
     json_annotation: '^4.9.0'
+    colorize: '^3.0.0'
+    args: '^2.7.0'
+    uuid: '^4.5.1'
    
 
 dev_dependencies:
