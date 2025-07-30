@@ -68,5 +68,38 @@ Future<int> main() async {
       expect(endpoint, 'http://localhost:9999/');
     });
   });
+  group('Client Methods', () {
+    test('Send Message', () async {
+      if (testClient == null) {
+        testClient ??= A2AClient(baseUrl);
+        await Future.delayed(Duration(seconds: 10));
+      }
+      final part = A2ATextPart()
+        ..text = 'how much is 10 USD in INR?'
+        ..kind = 'text';
+
+      final message = A2AMessage()
+        ..role = 'user'
+        ..parts = [part];
+
+      final payload = A2AMessageSendParams()..message = message;
+
+      try {
+        final rpcResponse = await testClient!.sendMessage(payload);
+        expect(rpcResponse.isError, isFalse);
+        final response = rpcResponse as A2ASendMessageSuccessResponse;
+        expect(response.result, isNotNull);
+        expect(response.result is A2AMessage, isTrue);
+        final result = response.result as A2AMessage;
+        expect(result.role, 'agent');
+        expect(result.parts?.isNotEmpty, isTrue);
+        final tPartList = result.parts as List<A2APart>;
+        final tPart = tPartList.first as A2ATextPart;
+        expect(tPart.text, 'Hello World');
+      } catch (e) {
+        rethrow;
+      }
+    });
+  });
   return 0;
 }
