@@ -2,7 +2,7 @@ name: Pana Analysis
 on: 
   push:
     branches:
-      - master
+      - main
       - development
 
 
