@@ -36,5 +36,5 @@ topics:
   - web
 
 screenshots:
-    - description: 'A2A'
+    - description: 'Agent 2 Agent(A2A)'
       path: example/screenshots/a2a.jpg
