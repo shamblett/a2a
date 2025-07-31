@@ -136,7 +136,7 @@ Future<int> main(List<String> argv) async {
   print('${Colorize('Enter messages, "/exit" to quit.')..green()}');
 
   // Read the prompt input
-  if ('/exit' != stdin.readLineSync()) {}
+  while ('/exit' != stdin.readLineSync()) {}
 
   print('');
   print('A2A CLI Client exiting');
