@@ -54,6 +54,19 @@ Future<void> fetchAnDisplayAgentCard() async {
     print('${Colorize('✓ Agent Card Found')..green()}');
     agentName = card.name;
     print('  Agent Name : $agentName');
+    if (card.description.isNotEmpty) {
+      print('  Description : ${card.description}');
+    }
+    if (card.version.isNotEmpty) {
+      print('  Version : ${card.version}');
+    }
+    if (card.capabilities.streaming == true) {
+      print('${Colorize('  Streaming supported')..green()}');
+    } else {
+      print(
+        '${Colorize('  ❌ Streaming not supported or not specified')..yellow()}',
+      );
+    }
   } catch (e) {
     print('${Colorize('Error fetching or parsing the agent card')..yellow()}');
     rethrow;
