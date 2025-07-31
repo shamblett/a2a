@@ -22,6 +22,16 @@ String baseUrl = '';
 // Agent name
 String agentName = 'Agent'; // Default, try to get from agent card later
 
+// Streaming support
+bool agentSupportsStreaming = false;
+
+// State
+String currentTaskId = '';
+String currentContextId = '';
+
+// Uuid
+final uuid = Uuid();
+
 // Utility function to check if the base URL is
 // remote or on local host. Note remote means not localhost
 // or 127.0.0.1
@@ -60,11 +70,15 @@ Future<void> fetchAnDisplayAgentCard() async {
     if (card.version.isNotEmpty) {
       print('  Version : ${card.version}');
     }
-    if (card.capabilities.streaming == true) {
+    if (card.capabilities.streaming == false) {
       print('${Colorize('  Streaming supported')..green()}');
+      agentSupportsStreaming = true;
     } else {
       print(
         '${Colorize('  ❌ Streaming not supported or not specified')..yellow()}',
+      );
+      print(
+        '${Colorize('  Client will fallback to using non streaming API calls')..dark()}',
       );
     }
   } catch (e) {
@@ -86,6 +100,15 @@ String readLine() {
   }
   return input.trim();
   ;
+}
+
+// Id generator
+String generateId() => uuid.v4();
+
+// Query the agent
+void queryAgent(String query) {
+  // Construct the parameters
+  final messageId = generateId(); // Generate a unique message ID
 }
 
 /// Simple CLI client application for the A2AClient.
@@ -119,10 +142,6 @@ Future<int> main(List<String> argv) async {
       ? results.rest.join('')
       : 'https://sample-a2a-agent-908687846511.us-central1.run.app';
 
-  // State
-  String currentTaskId = '';
-  String currentContextId = '';
-
   // Announce
   print('');
   print('A2A CLI Client');
@@ -149,7 +168,8 @@ Future<int> main(List<String> argv) async {
         print('Starting new session. Task and Context IDs are cleared.');
       }
 
-      //TODO call send message function here
+      // Send to the agent
+      queryAgent(line);
     }
   }
 
