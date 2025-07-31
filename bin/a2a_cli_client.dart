@@ -15,6 +15,51 @@ import 'package:uuid/uuid.dart';
 
 import 'package:a2a/a2a.dart';
 
+// The client and its base URL
+A2AClient? client;
+String baseUrl = '';
+
+// Agent name
+String agentName = 'Agent'; // Default, try to get from agent card later
+
+// Utility function to check if the base URL is
+// remote or on local host. Note remote means not localhost
+// or 127.0.0.1
+bool isBaseUrlRemote() {
+  if (baseUrl.contains('localhost') || baseUrl.contains('127.0.0.1')) {
+    return false;
+  }
+  return true;
+}
+
+// Fetch and display the agent card
+Future<void> fetchAnDisplayAgentCard() async {
+  // Construct the client, this will fetch the agent card
+  try {
+    client = A2AClient(baseUrl);
+    if (isBaseUrlRemote()) {
+      // Delay a little
+      await Future.delayed(Duration(seconds: 5));
+    }
+  } catch (e) {
+    print(
+      '${Colorize('Fatal error constructing client...please try again')..red()}',
+    );
+    exit(-1);
+  }
+
+  // Get the cached agent card
+  try {
+    final card = await client!.getAgentCard();
+    print('${Colorize('✓ Agent Card Found')..green()}');
+    agentName = card.name;
+    print('  Agent Name : $agentName');
+  } catch (e) {
+    print('${Colorize('Error fetching or parsing the agent card')..yellow()}');
+    rethrow;
+  }
+}
+
 // Read a line from the terminal
 // Returns an empty string if no line is entered
 String readLine() {
@@ -33,12 +78,9 @@ String readLine() {
 /// If no baseUrl is supplied then https://sample-a2a-agent-908687846511.us-central1.run.app
 /// will be used,
 Future<int> main(List<String> argv) async {
-  // Parameters
-  String baseUrl;
-
   ArgResults results;
 
-  // Initialize the argument parser and pars ethe arguments
+  // Initialize the argument parser and parse the arguments
   final argParser = ArgParser();
   argParser.addFlag('help', abbr: 'h', negatable: false);
 
@@ -64,8 +106,6 @@ Future<int> main(List<String> argv) async {
   // State
   String currentTaskId = '';
   String currentContextId = '';
-  final A2AClient client;
-  String agentName = 'Agent'; // Default, try to get from agent card later
 
   // Announce
   print('');
