@@ -5,7 +5,6 @@
 * Copyright :  S.Hamblett
 */
 
-@TestOn('vm')
 library;
 
 import 'package:test/test.dart';
