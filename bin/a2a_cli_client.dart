@@ -15,6 +15,18 @@ import 'package:uuid/uuid.dart';
 
 import 'package:a2a/a2a.dart';
 
+// Read a line from the terminal
+// Returns an empty string if no line is entered
+String readLine() {
+  final prompt = Colorize('You : ')..cyan();
+  print(prompt);
+  final input = stdin.readLineSync();
+  if (input == null) {
+    return '';
+  }
+  return input;
+}
+
 /// Simple CLI client application for the A2AClient.
 ///
 /// Usage : a2a_client_cli `<baseUrl>`
@@ -26,7 +38,7 @@ Future<int> main(List<String> argv) async {
 
   ArgResults results;
 
-  // Initialize the argument parser
+  // Initialize the argument parser and pars ethe arguments
   final argParser = ArgParser();
   argParser.addFlag('help', abbr: 'h', negatable: false);
 
@@ -45,15 +57,20 @@ Future<int> main(List<String> argv) async {
     return 0;
   }
 
-  if (results.rest.isNotEmpty) {
-    baseUrl = results.rest.join('');
-  } else {
-    print(
-      'A2A CLI Client : Using base URL "https://sample-a2a-agent-908687846511.us-central1.run.app"',
-    );
-    baseUrl = 'https://sample-a2a-agent-908687846511.us-central1.run.app';
-    return 0;
-  }
+  baseUrl = results.rest.isNotEmpty
+      ? results.rest.join('')
+      : 'https://sample-a2a-agent-908687846511.us-central1.run.app';
+
+  // State
+  String currentTaskId = '';
+  String currentContextId = '';
+  final A2AClient client;
+  String agentName = 'Agent'; // Default, try to get from agent card later
+
+  // Announce
+  print('');
+  print('A2A CLI Client');
+  print('${Colorize('Agent Base URL: $baseUrl')..dark()}');
 
   return 0;
 }
