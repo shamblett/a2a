@@ -76,7 +76,7 @@ Future<void> fetchAnDisplayAgentCard() async {
 // Read a line from the terminal
 // Returns an empty string if no line is entered
 String readLine() {
-  final prompt = Colorize('You : ')..cyan();
+  final prompt = Colorize('$agentName > You : ')..cyan();
   print(prompt);
   final input = stdin.readLineSync();
   if (input == null) {
@@ -128,5 +128,17 @@ Future<int> main(List<String> argv) async {
   // Get the agent card
   await fetchAnDisplayAgentCard();
 
+  print('');
+  print(
+    '${Colorize('No active task or context initially. Use "/new" '
+    'to start a fresh session or send a message.')..dark()}',
+  );
+  print('${Colorize('Enter messages, "/exit" to quit.')..green()}');
+
+  // Read the prompt input
+  if ('/exit' != stdin.readLineSync()) {}
+
+  print('');
+  print('A2A CLI Client exiting');
   return 0;
 }

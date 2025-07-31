@@ -74,6 +74,10 @@ class A2AClient {
       completer.complete(agentCard);
     } else {
       // If no specific URL is given, return the initially configured agent's card.
+      // or throw if null
+      if (_agentCard == null) {
+        throw Exception('getAgentCard :: No cached agent card');
+      }
       completer.complete(_agentCard);
     }
     return completer.future;
