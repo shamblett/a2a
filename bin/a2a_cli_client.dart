@@ -77,12 +77,15 @@ Future<void> fetchAnDisplayAgentCard() async {
 // Returns an empty string if no line is entered
 String readLine() {
   final prompt = Colorize('$agentName > You : ')..cyan();
+  print('');
   print(prompt);
+  print('');
   final input = stdin.readLineSync();
   if (input == null) {
     return '';
   }
-  return input;
+  return input.trim();
+  ;
 }
 
 /// Simple CLI client application for the A2AClient.
@@ -136,7 +139,19 @@ Future<int> main(List<String> argv) async {
   print('${Colorize('Enter messages, "/exit" to quit.')..green()}');
 
   // Read the prompt input
-  while ('/exit' != stdin.readLineSync()) {}
+  var line = '';
+  while (line != '/exit') {
+    line = readLine();
+    if (line.isNotEmpty) {
+      if (line == '/new') {
+        currentTaskId = '';
+        currentContextId = '';
+        print('Starting new session. Task and Context IDs are cleared.');
+      }
+
+      //TODO call send message function here
+    }
+  }
 
   print('');
   print('A2A CLI Client exiting');
