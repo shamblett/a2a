@@ -15,7 +15,7 @@ import 'package:uuid/uuid.dart';
 
 import 'package:a2a/a2a.dart';
 
-/// Simple cli client program for the A2AClient.
+/// Simple CLI client application for the A2AClient.
 ///
 /// Usage : a2a_client_cli `<baseUrl>`
 /// If no baseUrl is supplied then https://sample-a2a-agent-908687846511.us-central1.run.app
@@ -48,9 +48,10 @@ Future<int> main(List<String> argv) async {
   if (results.rest.isNotEmpty) {
     baseUrl = results.rest.join('');
   } else {
-    print('Usage:  a2a_cli_client <baseUrl> of the agent');
-    print('');
-    print(argParser.usage);
+    print(
+      'A2A CLI Client : Using base URL "https://sample-a2a-agent-908687846511.us-central1.run.app"',
+    );
+    baseUrl = 'https://sample-a2a-agent-908687846511.us-central1.run.app';
     return 0;
   }
 
