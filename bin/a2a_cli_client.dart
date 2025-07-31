@@ -112,5 +112,8 @@ Future<int> main(List<String> argv) async {
   print('A2A CLI Client');
   print('${Colorize('Agent Base URL: $baseUrl')..dark()}');
 
+  // Get the agent card
+  await fetchAnDisplayAgentCard();
+
   return 0;
 }
