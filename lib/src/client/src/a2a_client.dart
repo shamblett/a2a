@@ -147,6 +147,7 @@ class A2AClient {
       method: 'POST',
       headers: headers,
       body: http.Body.json(rpcRequest.toJson()),
+      keepalive: true
     );
 
     if (!response.ok) {
