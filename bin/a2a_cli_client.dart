@@ -7,7 +7,6 @@
 
 import 'dart:io';
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:colorize/colorize.dart';
 import 'package:args/args.dart';
@@ -104,9 +103,62 @@ String readLine() {
 // Id generator
 String generateId() => uuid.v4();
 
+void printAgentEvent(A2ASendStreamMessageSuccessResponseR event) {
+  final timestamp = DateTime.now()
+    ..toLocal(); // Get fresh timestamp for each event
+  final prefix = Colorize('$agentName $timestamp :')
+    ..magenta()
+    ..toString();
+
+  if (event.result is A2ATask) {
+    final update = event.result as A2ATask;
+    final state = update.status?.state;
+    String output = '';
+    switch (state) {
+      case A2ATaskState.working:
+        final stateString = Colorize(state!.name)..blue();
+        output = '$prefix ⏳ Status : $stateString ';
+      case A2ATaskState.inputRequired:
+        final stateString = Colorize(state!.name)..yellow();
+        output = '$prefix 🤔 Status : $stateString ';
+      case A2ATaskState.completed:
+        final stateString = Colorize(state!.name)..green();
+        output = '$prefix ✅ Status : $stateString ';
+      case A2ATaskState.canceled:
+        final stateString = Colorize(state!.name)..darkGray();
+        output = '$prefix ⏹️ Status : $stateString ';
+      case A2ATaskState.failed:
+        final stateString = Colorize(state!.name)..red();
+        output = '$prefix x Status : $stateString ';
+      default:
+        final stateString = Colorize(state!.name)..dark();
+        output = '$prefix ℹ️ Status : $stateString ';
+    }
+    output += '(  Task: ${update.id}, Context: ${update.contextId}';
+    //String finalString = '';
+    //if (update == true) {
+    //finalString = ' [FINAL]';
+    //}
+    print(output);
+  }
+}
+
 // Streaming event processor
 void processAgentStreamingResponse(A2ASendStreamMessageResponse response) {
-  print('Streaming response received, : $response');
+  final timestamp = DateTime.now()
+    ..toLocal(); // Get fresh timestamp for each event
+  final prefix = Colorize('$agentName $timestamp :')
+    ..magenta()
+    ..toString();
+
+  if (response.isError) {
+    final error = response as A2AJSONRPCError;
+    print(
+      '${Colorize('Streaming response form the agent is an RPC error, code is ${error.code}}')..red()}',
+    );
+  }
+  final event = response as A2ASendStreamMessageSuccessResponseR;
+  printAgentEvent(event);
 }
 
 // Single message processor
