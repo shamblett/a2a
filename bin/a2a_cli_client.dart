@@ -70,7 +70,7 @@ Future<void> fetchAnDisplayAgentCard() async {
     if (card.version.isNotEmpty) {
       print('  Version : ${card.version}');
     }
-    if (card.capabilities.streaming == false) {
+    if (card.capabilities.streaming == true) {
       print('${Colorize('  Streaming supported')..green()}');
       agentSupportsStreaming = true;
     } else {
@@ -99,16 +99,66 @@ String readLine() {
     return '';
   }
   return input.trim();
-  ;
 }
 
 // Id generator
 String generateId() => uuid.v4();
 
+// Streaming event processor
+void processAgentStreamingResponse(A2ASendStreamMessageResponse response) {
+  print('Streaming response received, : $response');
+}
+
+// Single message processor
+void processAgentResponse(A2ASendStreamingMessageResponse response) {
+  print('TODO');
+}
+
 // Query the agent
-void queryAgent(String query) {
+Future<void> queryAgent(String query) async {
   // Construct the parameters
   final messageId = generateId(); // Generate a unique message ID
+
+  // Parameters
+  final part = A2ATextPart()..text = query;
+
+  final messagePayload = A2AMessage()
+    ..messageId = messageId
+    ..role = 'user'
+    ..parts = [part];
+
+  // Conditionally add taskId to the message payload
+  if (currentTaskId.isNotEmpty) {
+    messagePayload.taskId = currentTaskId;
+  }
+
+  // Conditionally add contextId to the message payload
+  if (currentContextId.isNotEmpty) {
+    messagePayload.contextId = currentContextId;
+  }
+
+  // Params
+  // Optional: configuration for streaming, blocking, etc.
+  // configuration: {
+  //   acceptedOutputModes: ['text/plain', 'application/json'], // Example
+  //   blocking: false // Default for streaming is usually non-blocking
+  // }
+  final params = A2AMessageSendParams()..message = messagePayload;
+
+  // Send the message, streaming if supported
+  try {
+    if (agentSupportsStreaming) {
+      final events = client?.sendMessageStream(params);
+      await for (final event in events!) {
+        processAgentStreamingResponse(event);
+      }
+    } else {
+      print('TODO');
+    }
+  } catch (e) {
+    print('Exception received in send message');
+    rethrow;
+  }
 }
 
 /// Simple CLI client application for the A2AClient.
@@ -169,7 +219,9 @@ Future<int> main(List<String> argv) async {
       }
 
       // Send to the agent
-      queryAgent(line);
+      if (line != '/exit') {
+        await queryAgent(line);
+      }
     }
   }
 

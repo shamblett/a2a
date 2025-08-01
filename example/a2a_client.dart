@@ -92,7 +92,7 @@ Future<int> main() async {
   final result = response.result as A2ATask;
 
   /// Get the artifacts
-  final artifact = result.artifacts.first;
+  final artifact = result.artifacts!.first;
 
   /// Get the part, we know its a text part
   final part = artifact.parts.first as A2ATextPart;

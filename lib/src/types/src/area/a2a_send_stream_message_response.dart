@@ -130,7 +130,7 @@ final class A2ATaskStatusUpdateEvent {
 
   /// Indicates the end of the event stream.
   /// Note, this is called 'final' in the TS code.
-  bool end = false;
+  bool? end;
 
   /// Event type
   String kind = 'status-update';

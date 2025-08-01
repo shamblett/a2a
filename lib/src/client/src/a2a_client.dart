@@ -492,6 +492,9 @@ class A2AClient {
       LineSplitter ls = LineSplitter();
       final lines = ls.convert(text);
       for (final line in lines) {
+        if (line.isEmpty) {
+          continue;
+        }
         final j = json.decode(line.substring(6));
         final item = A2ASendStreamMessageResponse.fromJson(j);
         if (item.isError) {
