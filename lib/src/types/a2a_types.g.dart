@@ -616,17 +616,17 @@ Map<String, dynamic> _$A2AFileWithBytesToJson(A2AFileWithBytes instance) =>
       'name': instance.name,
     };
 
-A2AFileWithUrl _$A2AFileWithUrlFromJson(Map<String, dynamic> json) =>
-    A2AFileWithUrl()
+A2AFileWithUri _$A2AFileWithUriFromJson(Map<String, dynamic> json) =>
+    A2AFileWithUri()
       ..mimeTYpe = json['mimeTYpe'] as String
       ..name = json['name'] as String
-      ..url = json['url'] as String;
+      ..uri = json['uri'] as String;
 
-Map<String, dynamic> _$A2AFileWithUrlToJson(A2AFileWithUrl instance) =>
+Map<String, dynamic> _$A2AFileWithUriToJson(A2AFileWithUri instance) =>
     <String, dynamic>{
       'mimeTYpe': instance.mimeTYpe,
       'name': instance.name,
-      'url': instance.url,
+      'uri': instance.uri,
     };
 
 A2AAPIKeySecurityScheme _$A2AAPIKeySecuritySchemeFromJson(
