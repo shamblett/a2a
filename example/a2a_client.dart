@@ -92,7 +92,16 @@ Future<int> main() async {
   final result = response.result as A2ATask;
 
   /// Get the artifacts
-  final artifact = result.artifacts!.first;
+  A2AArtifact artifact;
+  if (result.artifacts != null) {
+    artifact = result.artifacts!.first;
+  } else {
+    print('');
+    print('No artifacts have been returned by the agent');
+    print('');
+    print('A2AClient Example Complete with no response');
+    return -1;
+  }
 
   /// Get the part, we know its a text part
   final part = artifact.parts.first as A2ATextPart;
