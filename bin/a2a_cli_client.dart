@@ -180,6 +180,7 @@ void commonPrintHandling(Object event) {
   if (event is A2ATask) {
     final update = event;
     final state = update.status?.state;
+    print('');
     print('${prefix.toString()} ${Colorize('Task Stream Event').blue()}');
     if (update.id != currentTaskId) {
       print(
@@ -324,13 +325,14 @@ Future<void> queryAgent(String query) async {
     messagePayload.contextId = currentContextId;
   }
 
-  // Params
-  // Optional: configuration for streaming, blocking, etc.
-  // configuration: {
-  //   acceptedOutputModes: ['text/plain', 'application/json'], // Example
-  //   blocking: false // Default for streaming is usually non-blocking
-  // }
-  final params = A2AMessageSendParams()..message = messagePayload;
+  final configuration = A2AMessageSendConfiguration()
+    ..acceptedOutputModes = ['text']
+    ..blocking = false
+    ..acceptedOutputModes = ['text', 'text/plain', 'text/json'];
+
+  final params = A2AMessageSendParams()
+    ..message = messagePayload
+    ..configuration = configuration;
 
   // Send the message, streaming if supported
   try {
@@ -341,6 +343,7 @@ Future<void> queryAgent(String query) async {
       }
     } else {
       // Fallback to send message
+      params.configuration?.blocking = true;
       final response = await client?.sendMessage(params);
       if (response != null) {
         processAgentResponse(response);

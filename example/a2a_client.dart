@@ -5,6 +5,7 @@
 * Copyright :  S.Hamblett
 */
 
+import 'package:colorize/colorize.dart';
 import 'package:a2a/a2a.dart';
 
 /// An example of using the client with the remote agent located at
@@ -66,8 +67,11 @@ Future<int> main() async {
   final message = A2AMessage()
     ..role = 'user'
     ..parts = [A2ATextPart()..text = prompt];
+
   final configuration = A2AMessageSendConfiguration()
-    ..acceptedOutputModes = ['text'];
+    ..acceptedOutputModes = ['text']
+    ..blocking = true;
+
   final payload = A2AMessageSendParams()
     ..message = message
     ..configuration = configuration;
@@ -76,10 +80,12 @@ Future<int> main() async {
 
   /// Check for an error
   if (rpcResponse.isError) {
-    final errorResponse = rpcResponse as A2AJSONRPCErrorResponse;
+    final errorResponse = rpcResponse as A2AJSONRPCErrorResponseS;
     final code = errorResponse.error?.rpcErrorCode;
     print('');
-    print('An error as occurred, the RPC error code is $code');
+    print(
+      '${Colorize('An error as occurred, the RPC error code is $code, ${A2AError.asString(code!)}')..red()}',
+    );
     print('');
     print('A2AClient Example Complete with error');
     return -1;
