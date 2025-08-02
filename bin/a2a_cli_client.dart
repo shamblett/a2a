@@ -171,15 +171,14 @@ void printMessageContent(A2AMessage? message) {
   }
 }
 
-void commonPrintHandling(Object response) {
+void commonPrintHandling(Object event) {
   final timestamp = DateTime.now()
     ..toLocal(); // Get fresh timestamp for each event
   final prefix = Colorize('$agentName $timestamp :')..magenta();
   String output = '';
 
-  final event = response as dynamic;
-  if (event.result is A2ATask) {
-    final update = event.result as A2ATask;
+  if (event is A2ATask) {
+    final update = event;
     final state = update.status?.state;
     print('${prefix.toString()} ${Colorize('Task Stream Event').blue()}');
     if (update.id != currentTaskId) {
@@ -204,8 +203,8 @@ void commonPrintHandling(Object response) {
     output = generateTaskProgress(prefix.toString(), state!);
     output += '(  Task: ${update.id}, Context: ${update.contextId}';
     print(output);
-  } else if (event.result is A2ATaskStatusUpdateEvent) {
-    final update = event.result as A2ATaskStatusUpdateEvent;
+  } else if (event is A2ATaskStatusUpdateEvent) {
+    final update = event;
     final state = update.status?.state;
 
     // If the event is a TaskStatusUpdateEvent and it's final, reset currentTaskId and
@@ -220,13 +219,13 @@ void commonPrintHandling(Object response) {
     output = generateTaskProgress(prefix.toString(), state!);
     output += '(  Task: ${update.taskId}, Context: ${update.contextId}';
     print(output);
-  } else if (event.result is A2ATaskArtifactUpdateEvent) {
-    final update = event.result as A2ATaskArtifactUpdateEvent;
+  } else if (event is A2ATaskArtifactUpdateEvent) {
+    final update = event;
     print(
       '${Colorize('Task artifact update event received for task $update.taskId')..yellow()}',
     );
-  } else if (event.result is A2AMessage) {
-    final update = event.result as A2AMessage;
+  } else if (event is A2AMessage) {
+    final update = event;
     print(
       '${prefix.toString()} ${Colorize('✉️ Message Stream Event:')..green()}',
     );
@@ -286,9 +285,9 @@ void processAgentStreamingResponse(A2ASendStreamMessageResponse response) {
 void processAgentResponse(A2ASendMessageResponse response) {
   // Check for an error
   if (response.isError) {
-    final error = response as A2AJSONRPCError;
+    final error = response as A2AJSONRPCErrorResponseS;
     print(
-      '${Colorize('RPC error returned from send message, code is ${error.code}')..red()}',
+      '${Colorize('RPC error returned from send message, code is ${error.error?.rpcErrorCode}')..red()}',
     );
     return;
   }
@@ -331,7 +330,7 @@ Future<void> queryAgent(String query) async {
 
   // Send the message, streaming if supported
   try {
-    if (agentSupportsStreaming) {
+    if (!agentSupportsStreaming) {
       final events = client?.sendMessageStream(params);
       await for (final event in events!) {
         processAgentStreamingResponse(event);
