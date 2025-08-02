@@ -180,7 +180,7 @@ void printAgentEvent(A2ASendStreamMessageSuccessResponseR event) {
   if (event.result is A2ATask) {
     final update = event.result as A2ATask;
     final state = update.status?.state;
-    print('$prefix ${Colorize('Task Stream Event').blue()}');
+    print('${prefix.toString()} ${Colorize('Task Stream Event').blue()}');
     if (update.id != currentTaskId) {
       print(
         '${Colorize('Task ID updated from $currentTaskId to ${update.id}')..dark()}',
@@ -191,7 +191,7 @@ void printAgentEvent(A2ASendStreamMessageSuccessResponseR event) {
       print(
         '${Colorize('Context ID updated from $currentContextId to ${update.contextId}')..dark()}',
       );
-      currentTaskId = update.id;
+      currentContextId = update.contextId;
     }
     if (update.status?.message != null) {
       print('${Colorize('   Task includes message:')..darkGray()}');
@@ -225,6 +225,23 @@ void printAgentEvent(A2ASendStreamMessageSuccessResponseR event) {
       '${Colorize('Task artifact update event received for task $update.taskId')..yellow()}',
     );
   } else if (event.result is A2AMessage) {
+    final update = event.result as A2AMessage;
+    print(
+      '${prefix.toString()} ${Colorize('✉️ Message Stream Event:')..green()}',
+    );
+    printMessageContent(update);
+    if (update.taskId != currentTaskId) {
+      print(
+        '${Colorize('Task ID updated from $currentTaskId to ${update.taskId} from message event')..dark()}',
+      );
+      currentTaskId = update.taskId!;
+    }
+    if (update.contextId != currentContextId) {
+      print(
+        '${Colorize('Context ID updated from $currentContextId to ${update.contextId} from message event')..dark()}',
+      );
+      currentContextId = update.contextId!;
+    }
   } else {
     print(
       '${Colorize('Received unknown event structure from stream: $event')..yellow()}',
