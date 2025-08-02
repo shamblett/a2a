@@ -134,21 +134,43 @@ String generateTaskProgress(String prefix, A2ATaskState state) {
 void printAgentEvent(A2ASendStreamMessageSuccessResponseR event) {
   final timestamp = DateTime.now()
     ..toLocal(); // Get fresh timestamp for each event
-  final prefix = Colorize('$agentName $timestamp :')
-    ..magenta();
+  final prefix = Colorize('$agentName $timestamp :')..magenta();
   String output = '';
 
   if (event.result is A2ATask) {
     final update = event.result as A2ATask;
     final state = update.status?.state;
+    print('$prefix ${Colorize('Task Stream Event').blue()}');
+    if (update.id != currentTaskId) {
+      print(
+        '${Colorize('Task ID updated from $currentTaskId to ${update.id}')..dark()}',
+      );
+      currentTaskId = update.id;
+    }
+    if (update.contextId != currentContextId) {
+      print(
+        '${Colorize('Context ID updated from $currentContextId to ${update.contextId}')..dark()}',
+      );
+      currentTaskId = update.id;
+    }
+    if (update.status?.message != null) {
+      print('${Colorize('   Task includes message:')..darkGray()}');
+      // TODO printMessageContent(task.status.message);
+    }
+    if (update.artifacts != null && update.artifacts?.isNotEmpty == true) {
+      print('${Colorize('   Task includes artifacts:')..darkGray()}');
+    }
     output = generateTaskProgress(prefix.toString(), state!);
     output += '(  Task: ${update.id}, Context: ${update.contextId}';
-    //String finalString = '';
-    //if (update == true) {
-    //finalString = ' [FINAL]';
-    //}
     print(output);
-  } //else if (
+  } else if (event.result is A2ATaskStatusUpdateEvent) {
+  } else if (event.result is A2ATaskArtifactUpdateEvent) {
+  } else if (event.result is A2AMessage) {
+  } else {
+    print(
+      '${Colorize('Received unknown event structure from stream: $event')..yellow()}',
+    );
+  }
 }
 
 // Streaming event processor
