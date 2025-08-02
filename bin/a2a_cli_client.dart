@@ -204,8 +204,26 @@ void printAgentEvent(A2ASendStreamMessageSuccessResponseR event) {
     output += '(  Task: ${update.id}, Context: ${update.contextId}';
     print(output);
   } else if (event.result is A2ATaskStatusUpdateEvent) {
+    final update = event.result as A2ATaskStatusUpdateEvent;
+    final state = update.status?.state;
 
+    // If the event is a TaskStatusUpdateEvent and it's final, reset currentTaskId and
+    // context id
+    if (update.end == true) {
+      currentContextId = '';
+      currentTaskId = '';
+      print(
+        '${Colorize('Task ${update.taskId} is FINAL. Clearing current task ID.')..yellow()}',
+      );
+    }
+    output = generateTaskProgress(prefix.toString(), state!);
+    output += '(  Task: ${update.taskId}, Context: ${update.contextId}';
+    print(output);
   } else if (event.result is A2ATaskArtifactUpdateEvent) {
+    final update = event.result as A2ATaskArtifactUpdateEvent;
+    print(
+      '${Colorize('Task artifact update event received for task $update.taskId')..yellow()}',
+    );
   } else if (event.result is A2AMessage) {
   } else {
     print(
