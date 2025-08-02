@@ -5,7 +5,6 @@
 * Copyright :  S.Hamblett
 */
 
-import 'dart:convert';
 import 'dart:io';
 import 'dart:async';
 
@@ -205,6 +204,7 @@ void printAgentEvent(A2ASendStreamMessageSuccessResponseR event) {
     output += '(  Task: ${update.id}, Context: ${update.contextId}';
     print(output);
   } else if (event.result is A2ATaskStatusUpdateEvent) {
+
   } else if (event.result is A2ATaskArtifactUpdateEvent) {
   } else if (event.result is A2AMessage) {
   } else {
