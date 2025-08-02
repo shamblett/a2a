@@ -171,12 +171,13 @@ void printMessageContent(A2AMessage? message) {
   }
 }
 
-void printAgentEvent(A2ASendStreamMessageSuccessResponseR event) {
+void commonPrintHandling(Object response) {
   final timestamp = DateTime.now()
     ..toLocal(); // Get fresh timestamp for each event
   final prefix = Colorize('$agentName $timestamp :')..magenta();
   String output = '';
 
+  final event = response as dynamic;
   if (event.result is A2ATask) {
     final update = event.result as A2ATask;
     final state = update.status?.state;
@@ -249,27 +250,52 @@ void printAgentEvent(A2ASendStreamMessageSuccessResponseR event) {
   }
 }
 
+void printAgentEventStreaming(A2ASendStreamMessageSuccessResponseR event) {
+  if (event.result != null) {
+    commonPrintHandling(event.result!);
+  } else {
+    print('${Colorize('Null result returned by agent')..red()}');
+  }
+}
+
+void printAgentEvent(A2ASendMessageSuccessResponse event) {
+  if (event.result != null) {
+    commonPrintHandling(event.result!);
+  } else {
+    print('${Colorize('Null result returned by agent')..red()}');
+  }
+}
+
 // Streaming event processor
 void processAgentStreamingResponse(A2ASendStreamMessageResponse response) {
-  final timestamp = DateTime.now()
-    ..toLocal(); // Get fresh timestamp for each event
-  final prefix = Colorize('$agentName $timestamp :')
-    ..magenta()
-    ..toString();
-
+  // Check for error
   if (response.isError) {
     final error = response as A2AJSONRPCError;
     print(
       '${Colorize('Streaming response from the agent is an RPC error, code is ${error.code}}')..red()}',
     );
+    return;
   }
+
+  // Process the response
   final event = response as A2ASendStreamMessageSuccessResponseR;
-  printAgentEvent(event);
+  printAgentEventStreaming(event);
 }
 
 // Single message processor
-void processAgentResponse(A2ASendStreamingMessageResponse response) {
-  print('TODO');
+void processAgentResponse(A2ASendMessageResponse response) {
+  // Check for an error
+  if (response.isError) {
+    final error = response as A2AJSONRPCError;
+    print(
+      '${Colorize('RPC error returned from send message, code is ${error.code}')..red()}',
+    );
+    return;
+  }
+
+  // Process the response
+  final event = response as A2ASendMessageSuccessResponse;
+  printAgentEvent(event);
 }
 
 // Query the agent
@@ -311,7 +337,13 @@ Future<void> queryAgent(String query) async {
         processAgentStreamingResponse(event);
       }
     } else {
-      print('TODO');
+      // Fallback to send message
+      final response = await client?.sendMessage(params);
+      if (response != null) {
+        processAgentResponse(response);
+      } else {
+        print('${Colorize('Response from send message is null')..red()}');
+      }
     }
   } catch (e) {
     print('Exception received in send message');
