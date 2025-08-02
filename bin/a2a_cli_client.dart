@@ -334,7 +334,7 @@ Future<void> queryAgent(String query) async {
 
   // Send the message, streaming if supported
   try {
-    if (!agentSupportsStreaming) {
+    if (agentSupportsStreaming) {
       final events = client?.sendMessageStream(params);
       await for (final event in events!) {
         processAgentStreamingResponse(event);
