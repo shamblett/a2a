@@ -270,8 +270,10 @@ void processAgentStreamingResponse(A2ASendStreamMessageResponse response) {
   // Check for error
   if (response.isError) {
     final error = response as A2AJSONRPCError;
+    final code = error.code;
     print(
-      '${Colorize('Streaming response from the agent is an RPC error, code is ${error.code}}')..red()}',
+      '${Colorize('Streaming response from the agent is an RPC error, code is $code, '
+      '${A2AError.asString(code)}')..red()}',
     );
     return;
   }
@@ -286,8 +288,10 @@ void processAgentResponse(A2ASendMessageResponse response) {
   // Check for an error
   if (response.isError) {
     final error = response as A2AJSONRPCErrorResponseS;
+    final code = error.error?.rpcErrorCode;
     print(
-      '${Colorize('RPC error returned from send message, code is ${error.error?.rpcErrorCode}')..red()}',
+      '${Colorize('Send message response from the agent is an RPC error, code is $code, '
+      '${A2AError.asString(code!)}')..red()}',
     );
     return;
   }

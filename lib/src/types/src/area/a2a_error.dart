@@ -114,6 +114,38 @@ class A2AError {
     }
     return {};
   }
+
+  /// Convert the RPC code to a string
+  static String asString(int code) {
+    switch (code) {
+      case jsonRpc:
+        return 'JSON RPC';
+      case jsonParse:
+        return 'JSON Parse';
+      case invalidRequest:
+        return 'Invalid Request';
+      case methodNotFound:
+        return 'Method Not Found';
+      case invalidParams:
+        return 'Invalid Parameters';
+      case internal:
+        return 'Internal Server Error';
+      case taskNotFound:
+        return 'Task Not Found';
+      case taskNotCancellable:
+        return 'Task Not Cancellable';
+      case pushNotificationNotSupported:
+        return 'Push Notification Not Supported';
+      case unsupportedOperation:
+        return 'Unsupported Operation';
+      case contentTypeNotSupported:
+        return 'Content Type Not Supported';
+      case invalidAgentResponse:
+        return 'Invalid Agent Response';
+      default:
+        return 'Unknown Error Code';
+    }
+  }
 }
 
 /// Represents a JSON-RPC 2.0 Error object.
