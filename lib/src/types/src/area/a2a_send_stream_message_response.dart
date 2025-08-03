@@ -7,7 +7,8 @@
 
 part of '../../a2a_types.dart';
 
-/// JSON-RPC response model for the 'message/send' method.
+/// JSON-RPC response model for the 'message/stream' method.
+@JsonSerializable(explicitToJson: true)
 class A2ASendStreamMessageResponse {
   /// True if the response is an error
   @JsonKey(includeFromJson: false)
@@ -27,15 +28,7 @@ class A2ASendStreamMessageResponse {
       ..error = A2AError.fromJson(json));
   }
 
-  Map<String, dynamic> toJson() {
-    final response = A2ASendStreamingMessageSuccessResponse()
-    ..isError = this.isError
-    ..result = this.result
-    ..
-    final response = _$A2ASendStreamMessageSuccessResponseToJson()
-    ..;
-
-  }
+  Map<String, dynamic> toJson() => _$A2ASendStreamMessageResponseToJson(this);
 }
 
 /// JSON-RPC success response model for the 'message/stream' method.
@@ -79,6 +72,11 @@ final class A2ASendStreamMessageSuccessResponse
         response.result = _$A2ATaskArtifactUpdateEventFromJson(json['result']);
         return response;
       }
+
+      if ( json.containsKey('error') && json['error'] != null ) {
+        response.isError = true;
+        response.error = A2AError.fromJson(json['error']);
+      }
     }
 
     return A2ASendStreamMessageSuccessResponse();
@@ -110,6 +108,9 @@ final class A2ASendStreamMessageSuccessResponse
         json['result'] = _$A2ATaskArtifactUpdateEventToJson(
           result as A2ATaskArtifactUpdateEvent,
         );
+        if ( error != null ) {
+          json['error'] = error?.toJson();
+        }
         return json;
       }
     }

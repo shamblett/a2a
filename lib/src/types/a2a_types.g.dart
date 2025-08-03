@@ -1029,6 +1029,14 @@ Map<String, dynamic> _$A2ASetTaskPushNotificationConfigSuccessResponseToJson(
   'result': instance.result?.toJson(),
 };
 
+A2ASendStreamMessageResponse _$A2ASendStreamMessageResponseFromJson(
+  Map<String, dynamic> json,
+) => A2ASendStreamMessageResponse();
+
+Map<String, dynamic> _$A2ASendStreamMessageResponseToJson(
+  A2ASendStreamMessageResponse instance,
+) => <String, dynamic>{};
+
 A2ASendStreamMessageSuccessResponse
 _$A2ASendStreamMessageSuccessResponseFromJson(Map<String, dynamic> json) =>
     A2ASendStreamMessageSuccessResponse()
