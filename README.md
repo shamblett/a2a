@@ -39,8 +39,11 @@ The client supports the following commands that can be entered at the prompt :-
 
 THh client is installed in the usual manner i.e. 
 ```
-dart pub global activate a2a_client
+dart pub global activate a2a
 ```
+
+This wiil give you command line access to the a2a_cli_client.
+
 ## The A2A Server
 
 _Not yet implemented - will be in a subsequent version_
