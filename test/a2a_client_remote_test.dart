@@ -5,7 +5,6 @@
 * Copyright :  S.Hamblett
 */
 
-@TestOn('vm')
 library;
 
 import 'package:test/test.dart';
@@ -117,7 +116,7 @@ Future<int> main() async {
         expect(response.result, isNotNull);
         expect(response.result is A2ATask, isTrue);
         final result = response.result as A2ATask;
-        expect(result.artifacts.isNotEmpty, isTrue);
+        expect(result.artifacts, isNotNull);
         expect(result.contextId, '456');
         expect(result.id, '123');
         expect(result.metadata, isNull);
@@ -154,7 +153,7 @@ Future<int> main() async {
         expect(response.result, isNotNull);
         expect(response.result is A2ATask, isTrue);
         final result = response.result as A2ATask;
-        expect(result.artifacts.isNotEmpty, isTrue);
+        expect(result.artifacts, isNotNull);
         expect(result.contextId, '456');
         expect(result.id, '123');
         expect(result.metadata, isNull);

@@ -72,7 +72,7 @@ final class A2AFilePart extends A2APart {
   /// Optional metadata associated with the part.
   A2ASV? metadata;
 
-  /// File content either as url or bytes
+  /// File content either as uri or bytes
   A2AFilePartVariant? file;
 
   A2AFilePart();
@@ -114,7 +114,7 @@ class A2AFilePartVariant {
       return A2AFileWithBytes.fromJson(json);
     }
     if (json.containsKey('url')) {
-      return A2AFileWithBytes.fromJson(json);
+      return A2AFileWithUri.fromJson(json);
     }
 
     return A2AFilePartVariant();
@@ -124,8 +124,8 @@ class A2AFilePartVariant {
     if (this is A2AFileWithBytes) {
       return (this as A2AFileWithBytes).toJson();
     }
-    if (this is A2AFileWithUrl) {
-      return (this as A2AFileWithUrl).toJson();
+    if (this is A2AFileWithUri) {
+      return (this as A2AFileWithUri).toJson();
     }
 
     return {};
@@ -155,7 +155,7 @@ final class A2AFileWithBytes extends A2AFilePartVariant {
 
 /// Define the variant where 'uri' is present and 'bytes' is absent
 @JsonSerializable(explicitToJson: true)
-final class A2AFileWithUrl extends A2AFilePartVariant {
+final class A2AFileWithUri extends A2AFilePartVariant {
   /// Optional mimeType for the file
   String mimeTYpe = '';
 
@@ -163,13 +163,13 @@ final class A2AFileWithUrl extends A2AFilePartVariant {
   String name = '';
 
   /// URL for the File content
-  String url = '';
+  String uri = '';
 
-  A2AFileWithUrl();
+  A2AFileWithUri();
 
-  factory A2AFileWithUrl.fromJson(Map<String, dynamic> json) =>
-      _$A2AFileWithUrlFromJson(json);
+  factory A2AFileWithUri.fromJson(Map<String, dynamic> json) =>
+      _$A2AFileWithUriFromJson(json);
 
   @override
-  Map<String, dynamic> toJson() => _$A2AFileWithUrlToJson(this);
+  Map<String, dynamic> toJson() => _$A2AFileWithUriToJson(this);
 }

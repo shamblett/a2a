@@ -112,7 +112,7 @@ class A2AArtifact {
 @JsonSerializable(explicitToJson: true)
 class A2ATask {
   /// Collection of artifacts created by the agent.
-  List<A2AArtifact> artifacts = [];
+  List<A2AArtifact>? artifacts;
 
   /// Server-generated id for contextual alignment across interactions
   String contextId = '';

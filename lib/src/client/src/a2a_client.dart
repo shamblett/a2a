@@ -74,6 +74,10 @@ class A2AClient {
       completer.complete(agentCard);
     } else {
       // If no specific URL is given, return the initially configured agent's card.
+      // or throw if null
+      if (_agentCard == null) {
+        throw Exception('getAgentCard :: No cached agent card');
+      }
       completer.complete(_agentCard);
     }
     return completer.future;
@@ -488,6 +492,9 @@ class A2AClient {
       LineSplitter ls = LineSplitter();
       final lines = ls.convert(text);
       for (final line in lines) {
+        if (line.isEmpty) {
+          continue;
+        }
         final j = json.decode(line.substring(6));
         final item = A2ASendStreamMessageResponse.fromJson(j);
         if (item.isError) {
