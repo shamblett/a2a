@@ -363,6 +363,35 @@ Future<void> queryAgent(String query) async {
   }
 }
 
+// Resubscribe a task
+Future<void> queryAgentResub() async {
+  if (!agentSupportsStreaming) {
+    print(
+      '${Colorize('Agent does not support streaming, cannot resubscribe')..yellow()}',
+    );
+    return;
+  }
+
+  if (currentTaskId.isEmpty) {
+    print('${Colorize('No current task Id, cannot resubscribe')..yellow()}');
+    return;
+  }
+
+  // Parameters
+  final params = A2ATaskIdParams()..id = currentTaskId;
+
+  // Resubscribe the task
+  try {
+    final events = client?.resubscribeTask(params);
+    await for (final event in events!) {
+      processAgentStreamingResponse(event);
+    }
+  } catch (e) {
+    print('Exception received in resubscribe task');
+    rethrow;
+  }
+}
+
 /// Simple CLI client application for the A2AClient.
 ///
 /// Usage : a2a_client_cli `<baseUrl>`
@@ -405,7 +434,8 @@ Future<int> main(List<String> argv) async {
   print('');
   print(
     '${Colorize('No active task or context initially. Use "/new" '
-    'to start a fresh session or send a message.')..dark()}',
+    'to start a fresh session, /resub to resubscribe to an interrupted'
+    'streaming request or send a message at the prompt.')..dark()}',
   );
   print('${Colorize('Enter messages, "/exit" to quit.')..green()}');
 
@@ -418,6 +448,11 @@ Future<int> main(List<String> argv) async {
         currentTaskId = '';
         currentContextId = '';
         print('Starting new session. Task and Context IDs are cleared.');
+        continue;
+      }
+
+      if (line == '/resub') {
+        await queryAgentResub();
         continue;
       }
 
