@@ -500,7 +500,7 @@ class A2AClient {
         if (item.isError) {
           yield item;
         }
-        final typedItem = item as A2ASendStreamMessageSuccessResponseR;
+        final typedItem = item as A2ASendStreamMessageSuccessResponse;
         if (typedItem.id != null && typedItem.id != originalRequestId) {
           throw Exception(
             '_parseA2ASseStream:: Request/Response id mismatch. Rx : ${item.id}, Tx : $originalRequestId',

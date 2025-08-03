@@ -149,7 +149,7 @@ Future<int> main() async {
       try {
         final rpcResponse = await testClient!.sendMessageStream(payload).first;
         expect(rpcResponse.isError, isFalse);
-        final response = rpcResponse as A2ASendStreamMessageSuccessResponseR;
+        final response = rpcResponse as A2ASendStreamMessageSuccessResponse;
         expect(response.result, isNotNull);
         expect(response.result is A2ATask, isTrue);
         final result = response.result as A2ATask;
@@ -262,8 +262,8 @@ Future<int> main() async {
       try {
         final response = await testClient!.resubscribeTask(taskParams).first;
         expect(response.isError, isTrue);
-        final errorResponse = response as A2AJSONRPCErrorResponseSSM;
-        expect(errorResponse.error?.rpcErrorCode, A2AError.taskNotFound);
+        final errorResponse = response.error;
+        expect(errorResponse?.rpcErrorCode, A2AError.taskNotFound);
         expect((errorResponse as dynamic).error?.code, A2AError.taskNotFound);
         expect((errorResponse as dynamic).error.message, 'Task not found');
       } catch (e) {

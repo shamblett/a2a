@@ -700,22 +700,16 @@ void main() {
   });
   group('Send Stream Message Response', () {
     test('A2ASendMessageRequest - Error', () {
-      var messageResponse = A2ASendStreamMessageResponse();
+      var messageResponse = A2ASendStreamMessageResponse()
+      ..isError = true
+      ..error = A2AJSONRPCError();
       var json = <String, dynamic>{};
-
-      var testResponse = A2AJSONRPCErrorResponseSSM()
-        ..error = A2AError()
-        ..id = 1;
-      messageResponse = testResponse;
       json = messageResponse.toJson();
 
-      messageResponse = A2ASendStreamMessageResponse();
       messageResponse = A2ASendStreamMessageResponse.fromJson(json);
       expect(messageResponse.isError, true);
-      expect(messageResponse is A2AJSONRPCErrorResponseSSM, isTrue);
-      final testResponse1 = messageResponse as A2AJSONRPCErrorResponseSSM;
-      expect(testResponse1.error is A2AError, isTrue);
-      expect(testResponse1.id, 1);
+      final testResponse1 = messageResponse.error as A2AJSONRPCError;
+      expect(testResponse1.rpcErrorCode, 0);
     });
     test('Send Stream Message Response - Success', () {
       var messageResponse = A2ASendStreamMessageResponse();
@@ -725,17 +719,17 @@ void main() {
         ..id = '3'
         ..status = A2ATaskStatus()
         ..contextId = 'Context id';
-      var testResponse = A2ASendStreamMessageSuccessResponseR()
+      var testResponse = A2ASendStreamMessageSuccessResponse()
         ..id = 2
         ..result = task;
 
       messageResponse = testResponse;
       json = messageResponse.toJson();
       messageResponse = A2ASendStreamMessageResponse();
-      messageResponse = A2ASendStreamMessageSuccessResponseR.fromJson(json);
-      expect(messageResponse is A2ASendStreamMessageSuccessResponseR, isTrue);
+      messageResponse = A2ASendStreamMessageSuccessResponse.fromJson(json);
+      expect(messageResponse is A2ASendStreamMessageSuccessResponse, isTrue);
       final testResponse1 =
-          messageResponse as A2ASendStreamMessageSuccessResponseR;
+          messageResponse as A2ASendStreamMessageSuccessResponse;
       expect(testResponse1.result is A2ATask, isTrue);
       final taskResponse = testResponse1.result as A2ATask;
       expect(taskResponse.contextId, 'Context id');
