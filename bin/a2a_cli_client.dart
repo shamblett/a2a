@@ -46,9 +46,11 @@ Future<void> fetchAnDisplayAgentCard() async {
   // Construct the client, this will fetch the agent card
   try {
     client = A2AClient(baseUrl);
+    // Delay a little longer if the agent is remote
     if (isBaseUrlRemote()) {
-      // Delay a little
       await Future.delayed(Duration(seconds: 5));
+    } else {
+      await Future.delayed(Duration(seconds: 1));
     }
   } catch (e) {
     print(
@@ -231,17 +233,21 @@ void commonPrintHandling(Object event) {
       '${prefix.toString()} ${Colorize('✉️ Message Stream Event:')..green()}',
     );
     printMessageContent(update);
-    if (update.taskId != currentTaskId) {
-      print(
-        '${Colorize('Task ID updated from $currentTaskId to ${update.taskId} from message event')..dark()}',
-      );
-      currentTaskId = update.taskId!;
+    if (update.taskId != null) {
+      if (update.taskId != currentTaskId) {
+        print(
+          '${Colorize('Task ID updated from $currentTaskId to ${update.taskId} from message event')..dark()}',
+        );
+        currentTaskId = update.taskId!;
+      }
     }
-    if (update.contextId != currentContextId) {
-      print(
-        '${Colorize('Context ID updated from $currentContextId to ${update.contextId} from message event')..dark()}',
-      );
-      currentContextId = update.contextId!;
+    if (update.contextId != null) {
+      if (update.contextId != currentContextId) {
+        print(
+          '${Colorize('Context ID updated from $currentContextId to ${update.contextId} from message event')..dark()}',
+        );
+        currentContextId = update.contextId!;
+      }
     }
   } else {
     print(
@@ -412,11 +418,13 @@ Future<int> main(List<String> argv) async {
         currentTaskId = '';
         currentContextId = '';
         print('Starting new session. Task and Context IDs are cleared.');
+        continue;
       }
 
       // Send to the agent
       if (line != '/exit') {
         await queryAgent(line);
+        continue;
       }
     }
   }
