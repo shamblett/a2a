@@ -149,7 +149,7 @@ Future<int> main() async {
       try {
         final rpcResponse = await testClient!.sendMessageStream(payload).first;
         expect(rpcResponse.isError, isFalse);
-        final response = rpcResponse as A2ASendStreamMessageSuccessResponseR;
+        final response = rpcResponse as A2ASendStreamMessageSuccessResponse;
         expect(response.result, isNotNull);
         expect(response.result is A2ATask, isTrue);
         final result = response.result as A2ATask;

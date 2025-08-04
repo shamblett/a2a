@@ -1046,15 +1046,15 @@ Map<String, dynamic> _$A2AJSONRPCErrorResponseSSMToJson(
   'jsonrpc': instance.jsonrpc,
 };
 
-A2ASendStreamMessageSuccessResponseR
-_$A2ASendStreamMessageSuccessResponseRFromJson(Map<String, dynamic> json) =>
-    A2ASendStreamMessageSuccessResponseR()
+A2ASendStreamMessageSuccessResponse
+_$A2ASendStreamMessageSuccessResponseFromJson(Map<String, dynamic> json) =>
+    A2ASendStreamMessageSuccessResponse()
       ..id = json['id']
       ..jsonrpc = json['jsonrpc'] as String
       ..result = json['result'];
 
-Map<String, dynamic> _$A2ASendStreamMessageSuccessResponseRToJson(
-  A2ASendStreamMessageSuccessResponseR instance,
+Map<String, dynamic> _$A2ASendStreamMessageSuccessResponseToJson(
+  A2ASendStreamMessageSuccessResponse instance,
 ) => <String, dynamic>{
   'id': instance.id,
   'jsonrpc': instance.jsonrpc,
