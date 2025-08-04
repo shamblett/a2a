@@ -256,7 +256,7 @@ void commonPrintHandling(Object event) {
   }
 }
 
-void printAgentEventStreaming(A2ASendStreamMessageSuccessResponseR event) {
+void printAgentEventStreaming(A2ASendStreamMessageSuccessResponse event) {
   if (event.result != null) {
     commonPrintHandling(event.result!);
   } else {
@@ -286,7 +286,7 @@ void processAgentStreamingResponse(A2ASendStreamMessageResponse response) {
   }
 
   // Process the response
-  final event = response as A2ASendStreamMessageSuccessResponseR;
+  final event = response as A2ASendStreamMessageSuccessResponse;
   printAgentEventStreaming(event);
 }
 

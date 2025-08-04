@@ -725,17 +725,17 @@ void main() {
         ..id = '3'
         ..status = A2ATaskStatus()
         ..contextId = 'Context id';
-      var testResponse = A2ASendStreamMessageSuccessResponseR()
+      var testResponse = A2ASendStreamMessageSuccessResponse()
         ..id = 2
         ..result = task;
 
       messageResponse = testResponse;
       json = messageResponse.toJson();
       messageResponse = A2ASendStreamMessageResponse();
-      messageResponse = A2ASendStreamMessageSuccessResponseR.fromJson(json);
-      expect(messageResponse is A2ASendStreamMessageSuccessResponseR, isTrue);
+      messageResponse = A2ASendStreamMessageSuccessResponse.fromJson(json);
+      expect(messageResponse is A2ASendStreamMessageSuccessResponse, isTrue);
       final testResponse1 =
-          messageResponse as A2ASendStreamMessageSuccessResponseR;
+          messageResponse as A2ASendStreamMessageSuccessResponse;
       expect(testResponse1.result is A2ATask, isTrue);
       final taskResponse = testResponse1.result as A2ATask;
       expect(taskResponse.contextId, 'Context id');

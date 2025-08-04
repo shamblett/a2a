@@ -17,13 +17,13 @@ class A2ASendStreamMessageResponse {
 
   factory A2ASendStreamMessageResponse.fromJson(Map<String, dynamic> json) {
     return json.containsKey('result')
-        ? A2ASendStreamMessageSuccessResponseR.fromJson(json)
+        ? A2ASendStreamMessageSuccessResponse.fromJson(json)
         : (A2AJSONRPCErrorResponseSSM.fromJson(json)..isError = true);
   }
 
   Map<String, dynamic> toJson() {
-    if (this is A2ASendStreamMessageSuccessResponseR) {
-      return (this as A2ASendStreamMessageSuccessResponseR).toJson();
+    if (this is A2ASendStreamMessageSuccessResponse) {
+      return (this as A2ASendStreamMessageSuccessResponse).toJson();
     }
 
     return {};
@@ -47,7 +47,7 @@ final class A2AJSONRPCErrorResponseSSM extends A2ASendStreamMessageResponse
 /// This response is also used to carry streaming responses from the server(SSE)
 /// in its [result] parameter.
 @JsonSerializable(explicitToJson: true)
-final class A2ASendStreamMessageSuccessResponseR
+final class A2ASendStreamMessageSuccessResponse
     extends A2ASendStreamMessageResponse {
   /// An identifier established by the Client that MUST contain a String, Number.
   /// Numbers SHOULD NOT contain fractional parts.
@@ -60,12 +60,12 @@ final class A2ASendStreamMessageSuccessResponseR
   /// [A2ATaskArtifactUpdateEvent]
   Object? result;
 
-  A2ASendStreamMessageSuccessResponseR();
+  A2ASendStreamMessageSuccessResponse();
 
-  factory A2ASendStreamMessageSuccessResponseR.fromJson(
+  factory A2ASendStreamMessageSuccessResponse.fromJson(
     Map<String, dynamic> json,
   ) {
-    final response = _$A2ASendStreamMessageSuccessResponseRFromJson(json);
+    final response = _$A2ASendStreamMessageSuccessResponseFromJson(json);
 
     if (json.containsKey('result')) {
       if (json['result']['kind'] == 'task') {
@@ -86,12 +86,12 @@ final class A2ASendStreamMessageSuccessResponseR
       }
     }
 
-    return A2ASendStreamMessageSuccessResponseR();
+    return A2ASendStreamMessageSuccessResponse();
   }
 
   @override
   Map<String, dynamic> toJson() {
-    final json = _$A2ASendStreamMessageSuccessResponseRToJson(this);
+    final json = _$A2ASendStreamMessageSuccessResponseToJson(this);
     if (result != null) {
       if (result is A2ATask) {
         json['result'] = _$A2ATaskToJson(result as A2ATask);
