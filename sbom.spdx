@@ -5,18 +5,18 @@ DocumentName: a2a
 DocumentNamespace: https://pub.dev/packages/a2a
 LicenseListVersion: 3.8
 Creator: Tool: https://pub.dev/packages/sbom
-Created: 2025-08-03T11:32:52Z
+Created: 2025-08-06T14:48:14Z
 
 
 PackageName: a2a
 SPDXID: SPDXRef-Package-a2a
-PackageVersion: 1.1.0
+PackageVersion: 1.1.1
 PackageFileName: a2a
 PackageSupplier: NOASSERTION
 PackageOriginator: NOASSERTION
 PackageDownloadLocation: https://pub.dev/packages/a2a
 FilesAnalyzed: true
-PackageVerificationCode: 835e8199d245b9ccdba4ffe19cbc19010bd9fc1d
+PackageVerificationCode: ebc71602549060c1f88005fb6948c6a1ace1bff8
 PackageHomePage: https://pub.dev/packages/a2a
 PackageLicenseConcluded: MIT
 PackageLicenseInfoFromFiles: NOASSERTION
@@ -28,7 +28,7 @@ PackageSummary: <text>An implementation of the Google A2A protocol and SDK for c
 FileName: bin/a2a_cli_client.dart
 SPDXID: SPDXRef-a2a-cli-client-0
 FileType: SOURCE
-FileChecksum: SHA1: 43446f809c7054c71c0a48b14625be878d8fddd1
+FileChecksum: SHA1: 18bf6a3ede192e64f0b725a089892be694fcde2e
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -46,7 +46,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/client/a2a_client.dart
 SPDXID: SPDXRef-a2a-client-2
 FileType: SOURCE
-FileChecksum: SHA1: 62a5a4eade13bba10720ebe1f8145f7b778526be
+FileChecksum: SHA1: 77709b41528d44f9c1a434b424e64065a1cb7906
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -55,23 +55,14 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/client/src/a2a_client.dart
 SPDXID: SPDXRef-a2a-client-3
 FileType: SOURCE
-FileChecksum: SHA1: 18bf6a3ede192e64f0b725a089892be694fcde2e
+FileChecksum: SHA1: fe71b2451d87b79b2212e773de9637cbb82b8b40
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
 
 
-FileName: lib/src/types/a2a_types.dart
-SPDXID: SPDXRef-a2a-types-4
-FileType: SOURCE
-FileChecksum: SHA1: 77709b41528d44f9c1a434b424e64065a1cb7906
-LicenseConcluded: NOASSERTION
-LicenseInfoInFile: NOASSERTION
-FileCopyrightText: NOASSERTION
-
-
-FileName: lib/src/types/a2a_types.g.dart
-SPDXID: SPDXRef-a2a-types.g-5
+FileName: lib/src/server/a2a_error.dart
+SPDXID: SPDXRef-a2a-error-4
 FileType: SOURCE
 FileChecksum: SHA1: dc345fc4e81583e4e68c2e63f7d0c7cea2025945
 LicenseConcluded: NOASSERTION
@@ -79,17 +70,17 @@ LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
 
 
-FileName: lib/src/types/src/a2a_type.dart
-SPDXID: SPDXRef-a2a-type-6
+FileName: lib/src/server/a2a_express_app.dart
+SPDXID: SPDXRef-a2a-express-app-5
 FileType: SOURCE
-FileChecksum: SHA1: fe71b2451d87b79b2212e773de9637cbb82b8b40
+FileChecksum: SHA1: 43446f809c7054c71c0a48b14625be878d8fddd1
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
 
 
-FileName: lib/src/types/src/area/a2a_agent.dart
-SPDXID: SPDXRef-a2a-agent-7
+FileName: lib/src/server/a2a_result_manager.dart
+SPDXID: SPDXRef-a2a-result-manager-6
 FileType: SOURCE
 FileChecksum: SHA1: ad6bb305fd45aa19e4d2fbd24aec922bc71ed244
 LicenseConcluded: NOASSERTION
@@ -97,8 +88,17 @@ LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
 
 
-FileName: lib/src/types/src/area/a2a_cancel_task_response.dart
-SPDXID: SPDXRef-a2a-cancel-task-response-8
+FileName: lib/src/server/a2a_store.dart
+SPDXID: SPDXRef-a2a-store-7
+FileType: SOURCE
+FileChecksum: SHA1: 62a5a4eade13bba10720ebe1f8145f7b778526be
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NOASSERTION
+
+
+FileName: lib/src/server/a2a_utils.dart
+SPDXID: SPDXRef-a2a-utils-8
 FileType: SOURCE
 FileChecksum: SHA1: fab07f8856580c0e53b12154a7031772c0c2ae21
 LicenseConcluded: NOASSERTION
@@ -106,8 +106,8 @@ LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
 
 
-FileName: lib/src/types/src/area/a2a_error.dart
-SPDXID: SPDXRef-a2a-error-9
+FileName: lib/src/server/agent_execution/a2a_agent_executor.dart
+SPDXID: SPDXRef-a2a-agent-executor-9
 FileType: SOURCE
 FileChecksum: SHA1: 4fcdacccf26aed064c5860a82be35f3e5b083aa3
 LicenseConcluded: NOASSERTION
@@ -115,17 +115,17 @@ LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
 
 
-FileName: lib/src/types/src/area/a2a_get_task_push_notification_config_response.dart
-SPDXID: SPDXRef-a2a-get-task-push-notification-config-response-10
+FileName: lib/src/server/events/a2a_execution_event_bus.dart
+SPDXID: SPDXRef-a2a-execution-event-bus-10
 FileType: SOURCE
-FileChecksum: SHA1: 5bb46cbd5bc264b87d4cedb99a6cf71860e171e9
+FileChecksum: SHA1: 6d6dcffb9b6f0ed6ce09527c5ba8132aa4c32d9e
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
 
 
-FileName: lib/src/types/src/area/a2a_get_task_response.dart
-SPDXID: SPDXRef-a2a-get-task-response-11
+FileName: lib/src/server/events/a2a_execution_event_bus_manager.dart
+SPDXID: SPDXRef-a2a-execution-event-bus-manager-11
 FileType: SOURCE
 FileChecksum: SHA1: e1750599435a2ac63db3606dad421fa74d9746e9
 LicenseConcluded: NOASSERTION
@@ -133,8 +133,8 @@ LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
 
 
-FileName: lib/src/types/src/area/a2a_json_rpc_response.dart
-SPDXID: SPDXRef-a2a-json-rpc-response-12
+FileName: lib/src/server/events/a2a_execution_event_queue.dart
+SPDXID: SPDXRef-a2a-execution-event-queue-12
 FileType: SOURCE
 FileChecksum: SHA1: 0c50564f85eef4e2524238e5872265adb5eb51b2
 LicenseConcluded: NOASSERTION
@@ -142,26 +142,26 @@ LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
 
 
-FileName: lib/src/types/src/area/a2a_part.dart
-SPDXID: SPDXRef-a2a-part-13
+FileName: lib/src/server/request_handler/a2a_default_request_handler.dart
+SPDXID: SPDXRef-a2a-default-request-handler-13
 FileType: SOURCE
-FileChecksum: SHA1: a586e9e70979ec398b23a7d495eb5e85c066c32d
+FileChecksum: SHA1: 474cdc89bdc5aa5c6fb0b5904f7827f49eadd2f1
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
 
 
-FileName: lib/src/types/src/area/a2a_request.dart
-SPDXID: SPDXRef-a2a-request-14
+FileName: lib/src/server/request_handler/a2a_request_handler.dart
+SPDXID: SPDXRef-a2a-request-handler-14
 FileType: SOURCE
-FileChecksum: SHA1: 7075b6bfa5d8c0c3f46615e0b193e62f9ddf61ca
+FileChecksum: SHA1: 35bbc1439887e38b89ca0a9368db22533abb400c
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
 
 
-FileName: lib/src/types/src/area/a2a_security_scheme.dart
-SPDXID: SPDXRef-a2a-security-scheme-15
+FileName: lib/src/server/transports/a2a_jsonrpc_transport_handler.dart
+SPDXID: SPDXRef-a2a-jsonrpc-transport-handler-15
 FileType: SOURCE
 FileChecksum: SHA1: ad6445b95f6018d614cb9fd6eebbe8b7e6437763
 LicenseConcluded: NOASSERTION
@@ -169,8 +169,116 @@ LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
 
 
+FileName: lib/src/types/a2a_types.dart
+SPDXID: SPDXRef-a2a-types-16
+FileType: SOURCE
+FileChecksum: SHA1: adc83b19e793491b1c6ea0fd8b46cd9f32e592fc
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NOASSERTION
+
+
+FileName: lib/src/types/a2a_types.g.dart
+SPDXID: SPDXRef-a2a-types.g-17
+FileType: SOURCE
+FileChecksum: SHA1: adc83b19e793491b1c6ea0fd8b46cd9f32e592fc
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NOASSERTION
+
+
+FileName: lib/src/types/src/a2a_type.dart
+SPDXID: SPDXRef-a2a-type-18
+FileType: SOURCE
+FileChecksum: SHA1: adc83b19e793491b1c6ea0fd8b46cd9f32e592fc
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NOASSERTION
+
+
+FileName: lib/src/types/src/area/a2a_agent.dart
+SPDXID: SPDXRef-a2a-agent-19
+FileType: SOURCE
+FileChecksum: SHA1: adc83b19e793491b1c6ea0fd8b46cd9f32e592fc
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NOASSERTION
+
+
+FileName: lib/src/types/src/area/a2a_cancel_task_response.dart
+SPDXID: SPDXRef-a2a-cancel-task-response-20
+FileType: SOURCE
+FileChecksum: SHA1: adc83b19e793491b1c6ea0fd8b46cd9f32e592fc
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NOASSERTION
+
+
+FileName: lib/src/types/src/area/a2a_error.dart
+SPDXID: SPDXRef-a2a-error-21
+FileType: SOURCE
+FileChecksum: SHA1: adc83b19e793491b1c6ea0fd8b46cd9f32e592fc
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NOASSERTION
+
+
+FileName: lib/src/types/src/area/a2a_get_task_push_notification_config_response.dart
+SPDXID: SPDXRef-a2a-get-task-push-notification-config-response-22
+FileType: SOURCE
+FileChecksum: SHA1: adc83b19e793491b1c6ea0fd8b46cd9f32e592fc
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NOASSERTION
+
+
+FileName: lib/src/types/src/area/a2a_get_task_response.dart
+SPDXID: SPDXRef-a2a-get-task-response-23
+FileType: SOURCE
+FileChecksum: SHA1: adc83b19e793491b1c6ea0fd8b46cd9f32e592fc
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NOASSERTION
+
+
+FileName: lib/src/types/src/area/a2a_json_rpc_response.dart
+SPDXID: SPDXRef-a2a-json-rpc-response-24
+FileType: SOURCE
+FileChecksum: SHA1: adc83b19e793491b1c6ea0fd8b46cd9f32e592fc
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NOASSERTION
+
+
+FileName: lib/src/types/src/area/a2a_part.dart
+SPDXID: SPDXRef-a2a-part-25
+FileType: SOURCE
+FileChecksum: SHA1: adc83b19e793491b1c6ea0fd8b46cd9f32e592fc
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NOASSERTION
+
+
+FileName: lib/src/types/src/area/a2a_request.dart
+SPDXID: SPDXRef-a2a-request-26
+FileType: SOURCE
+FileChecksum: SHA1: adc83b19e793491b1c6ea0fd8b46cd9f32e592fc
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NOASSERTION
+
+
+FileName: lib/src/types/src/area/a2a_security_scheme.dart
+SPDXID: SPDXRef-a2a-security-scheme-27
+FileType: SOURCE
+FileChecksum: SHA1: adc83b19e793491b1c6ea0fd8b46cd9f32e592fc
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NOASSERTION
+
+
 FileName: lib/src/types/src/area/a2a_send_stream_message_response.dart
-SPDXID: SPDXRef-a2a-send-stream-message-response-16
+SPDXID: SPDXRef-a2a-send-stream-message-response-28
 FileType: SOURCE
 FileChecksum: SHA1: f96ceddac68bd5e15f1fe41a880d5e9f9df206cc
 LicenseConcluded: NOASSERTION
@@ -179,23 +287,23 @@ FileCopyrightText: NOASSERTION
 
 
 FileName: lib/src/types/src/area/a2a_set_task_push_notification_config_response.dart
-SPDXID: SPDXRef-a2a-set-task-push-notification-config-response-17
+SPDXID: SPDXRef-a2a-set-task-push-notification-config-response-29
 FileType: SOURCE
-FileChecksum: SHA1: 3b00d49a284cce925ecedc2bbaa4b66b9af00d27
+FileChecksum: SHA1: c6bc572d6ba0d6cd1d74dd52d1f5673f457bd486
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
 
 
 FileName: pubspec.yaml
-SPDXID: SPDXRef-pubspec-18
+SPDXID: SPDXRef-pubspec-30
 FileType: TEXT
-FileChecksum: SHA1: fc55578ceeeca7451b526f5f0f9c5dc1e719c4c1
+FileChecksum: SHA1: afa934843f9e16faa3000bc3008d22919f17f279
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
 
 
-Relationship: SPDXRef-pubspec-18 DEPENDENCY_MANIFEST_OF SPDXRef-Package-a2a
+Relationship: SPDXRef-pubspec-30 DEPENDENCY_MANIFEST_OF SPDXRef-Package-a2a
 
 
