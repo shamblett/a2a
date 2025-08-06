@@ -9,4 +9,4 @@ library;
 
 import '/src/types/a2a_types.dart';
 
-part 'src/a2a_utils.dart';
+part 'src/a2a_utilities.dart';
