@@ -15,12 +15,13 @@ import 'package:a2a/a2a.dart';
 ///
 /// Note some familiarity with the A2A protocol is assumed, what an artifact is, what a task is etc.
 ///
+/// This example uses the event streaming API.
 
 Future<int> main() async {
   const baseUrl = 'https://sample-a2a-agent-908687846511.us-central1.run.app';
 
   print('');
-  print('A2AClient Example');
+  print('A2AClient Streaming Example');
 
   /// Construct the client, needs the base URL of the agent.
   /// This will also prefetch and cache the agents agent card.
@@ -76,52 +77,90 @@ Future<int> main() async {
     ..message = message
     ..configuration = configuration;
 
-  final rpcResponse = await client.sendMessage(payload);
+  final events = client.sendMessageStream(payload);
 
-  /// Check for an error
-  if (rpcResponse.isError) {
-    final errorResponse = rpcResponse as A2AJSONRPCErrorResponseS;
-    final code = errorResponse.error?.rpcErrorCode;
-    print('');
-    print(
-      '${Colorize('An error has occurred, the RPC error code is $code, ${A2AError.asString(code!)}')..red()}',
-    );
-    print('');
-    print('A2AClient Example Complete with error');
-    return -1;
+  /// process the events
+  await for (final event in events) {
+    /// Check for an error
+    if (event.isError) {
+      final errorResponse = event as A2AJSONRPCErrorResponseS;
+      final code = errorResponse.error?.rpcErrorCode;
+      print('');
+      print(
+        '${Colorize('An error has occurred in event processing, the RPC error code is $code, ${A2AError.asString(code!)}')..red()}',
+      );
+      print('');
+      print('A2AClient Example Complete with error');
+      return -1;
+    }
+
+    /// No error so we have a success response
+    final response = event as A2ASendStreamMessageSuccessResponse;
+
+    /// Check for a tak update
+    if (event.result is A2ATask) {
+      final result = response.result as A2ATask;
+
+      /// Check if the task has completed
+      A2AArtifact artifact;
+      if (result.status?.state == A2ATaskState.completed) {
+        print('${Colorize('Task has completed')..blue()}');
+
+        /// Get the artifacts
+        if (result.artifacts != null) {
+          artifact = result.artifacts!.first;
+
+          /// Get the part, we know its a text part
+          final part = artifact.parts.first as A2ATextPart;
+
+          /// Get the textual response
+          final text = part.text;
+
+          print('');
+          print('The agent has returned the following response ....');
+          print('');
+          print('--------------->');
+          print(text);
+
+          /// End of stream
+          break;
+        } else {
+          print('');
+          print('No artifacts have been returned by the agent');
+          print('');
+          print('A2AClient Example Complete with no response');
+          return -1;
+        }
+      } else {
+        print('');
+        print(
+          'Task is not yet complete, state is ${Colorize('${result.status?.state}').green()}',
+        );
+        continue;
+      }
+    } else {
+      /// Assume this will now be a message update as far as this example is concerned
+      final result = response.result as A2AMessage;
+
+      /// Get the part, we know its a text part
+      final part = result.parts?.first as A2ATextPart;
+
+      /// Get the textual response
+      final text = part.text;
+
+      print('');
+      print('The agent has returned the following response ....');
+      print('');
+      print('--------------->');
+      print(text);
+
+      /// End of stream
+      break;
+    }
   }
-
-  /// No error so we have a success response
-  final response = rpcResponse as A2ASendMessageSuccessResponse;
-
-  /// The result is an A2ATask
-  final result = response.result as A2ATask;
-
-  /// Get the artifacts
-  A2AArtifact artifact;
-  if (result.artifacts != null) {
-    artifact = result.artifacts!.first;
-  } else {
-    print('');
-    print('No artifacts have been returned by the agent');
-    print('');
-    print('A2AClient Example Complete with no response');
-    return -1;
-  }
-
-  /// Get the part, we know its a text part
-  final part = artifact.parts.first as A2ATextPart;
-
-  /// Get the textual response
-  final text = part.text;
-
-  print('');
-  print('The agent has returned the following response ....');
-  print('');
-  print('--------------->');
-  print(text);
 
   /// Complete
+  print('');
   print('A2AClient Example Complete');
 
   return 0;

@@ -19,8 +19,21 @@ The A2A client(A2AClient) provides the client API for an agent. This allows user
 using SSE responses, fetching of an agents agent card and other management functions such as
 agent configuration and task resubscription.
 
-An example using the A2AClient to communicate with a test agent can be found in the examples directory, 
-[here](https://github.com/shamblett/a2a/blob/main/example/a2a_client.dart).
+##### Key Features :-
+
+* JSON-RPC Communication: Handles sending requests and receiving responses (both standard and streaming via Server-Sent Events) according to the JSON-RPC 2.0 specification.
+
+
+* A2A Methods: Implements standard A2A methods like sendMessage, sendMessageStream, getTask, cancelTask, setTaskPushNotificationConfig, getTaskPushNotificationConfig, and resubscribeTask.
+
+
+* Error Handling: Provides basic error handling for network issues and JSON-RPC errors.
+
+
+* Streaming Support: Manages Server-Sent Events (SSE) for real-time task updates (sendMessageStream, resubscribeTask).
+
+Annotated examples of use for the A2AClient to communicate with a test agent can be found in the examples directory, 
+[here](https://github.com/shamblett/a2a/blob/main/example).
 
 ## The A2A CLI Client
 
