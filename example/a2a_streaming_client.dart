@@ -15,7 +15,7 @@ import 'package:a2a/a2a.dart';
 ///
 /// Note some familiarity with the A2A protocol is assumed, what an artifact is, what a task is etc.
 ///
-/// Thsi example uses the event streaming API.
+/// This example uses the event streaming API.
 
 Future<int> main() async {
   const baseUrl = 'https://sample-a2a-agent-908687846511.us-central1.run.app';
@@ -79,6 +79,7 @@ Future<int> main() async {
 
   final events = client.sendMessageStream(payload);
 
+  /// process the events
   await for (final event in events) {
     /// Check for an error
     if (event.isError) {
@@ -86,7 +87,7 @@ Future<int> main() async {
       final code = errorResponse.error?.rpcErrorCode;
       print('');
       print(
-        '${Colorize('An error as occurred, the RPC error code is $code, ${A2AError.asString(code!)}')..red()}',
+        '${Colorize('An error has occurred in event processing, the RPC error code is $code, ${A2AError.asString(code!)}')..red()}',
       );
       print('');
       print('A2AClient Example Complete with error');
@@ -96,14 +97,14 @@ Future<int> main() async {
     /// No error so we have a success response
     final response = event as A2ASendStreamMessageSuccessResponse;
 
+    /// Check for a tak update
     if (event.result is A2ATask) {
-      /// The result is an A2ATask
       final result = response.result as A2ATask;
 
       /// Check if the task has completed
       A2AArtifact artifact;
       if (result.status?.state == A2ATaskState.completed) {
-        print('task has completed');
+        print('${Colorize('Task has completed')..blue()}');
 
         /// Get the artifacts
         if (result.artifacts != null) {
@@ -133,12 +134,12 @@ Future<int> main() async {
       } else {
         print('');
         print(
-          'Task is not yet complete, state is ${Colorize('${result.status?.state}').yellow()}',
+          'Task is not yet complete, state is ${Colorize('${result.status?.state}').green()}',
         );
         continue;
       }
     } else {
-      /// Assume this will now be a message
+      /// Assume this will now be a message update as far as this example is concerned
       final result = response.result as A2AMessage;
 
       /// Get the part, we know its a text part

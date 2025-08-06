@@ -84,7 +84,7 @@ Future<int> main() async {
     final code = errorResponse.error?.rpcErrorCode;
     print('');
     print(
-      '${Colorize('An error as occurred, the RPC error code is $code, ${A2AError.asString(code!)}')..red()}',
+      '${Colorize('An error has occurred, the RPC error code is $code, ${A2AError.asString(code!)}')..red()}',
     );
     print('');
     print('A2AClient Example Complete with error');
