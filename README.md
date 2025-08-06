@@ -32,8 +32,8 @@ agent configuration and task resubscription.
 
 * Streaming Support: Manages Server-Sent Events (SSE) for real-time task updates (sendMessageStream, resubscribeTask).
 
-An example using the A2AClient to communicate with a test agent can be found in the examples directory, 
-[here](https://github.com/shamblett/a2a/blob/main/example/a2a_client.dart).
+Annotated examples of use for the A2AClient to communicate with a test agent can be found in the examples directory, 
+[here](https://github.com/shamblett/a2a/blob/main/example).
 
 ## The A2A CLI Client
 
