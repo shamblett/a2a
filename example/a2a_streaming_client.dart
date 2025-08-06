@@ -96,25 +96,53 @@ Future<int> main() async {
     /// No error so we have a success response
     final response = event as A2ASendStreamMessageSuccessResponse;
 
-    /// The result is an A2ATask
-    final result = response.result as A2ATask;
+    if (event.result is A2ATask) {
+      /// The result is an A2ATask
+      final result = response.result as A2ATask;
 
-    /// Check if the task has completed
-    A2AArtifact artifact;
-    if (result.status?.state == A2ATaskState.completed) {
-      /// Get the artifacts
-      if (result.artifacts != null) {
-        artifact = result.artifacts!.first;
+      /// Check if the task has completed
+      A2AArtifact artifact;
+      if (result.status?.state == A2ATaskState.completed) {
+        print('task has completed');
+
+        /// Get the artifacts
+        if (result.artifacts != null) {
+          artifact = result.artifacts!.first;
+
+          /// Get the part, we know its a text part
+          final part = artifact.parts.first as A2ATextPart;
+
+          /// Get the textual response
+          final text = part.text;
+
+          print('');
+          print('The agent has returned the following response ....');
+          print('');
+          print('--------------->');
+          print(text);
+
+          /// End of stream
+          break;
+        } else {
+          print('');
+          print('No artifacts have been returned by the agent');
+          print('');
+          print('A2AClient Example Complete with no response');
+          return -1;
+        }
       } else {
         print('');
-        print('No artifacts have been returned by the agent');
-        print('');
-        print('A2AClient Example Complete with no response');
-        return -1;
+        print(
+          'Task is not yet complete, state is ${Colorize('${result.status?.state}').yellow()}',
+        );
+        continue;
       }
+    } else {
+      /// Assume this will now be a message
+      final result = response.result as A2AMessage;
 
       /// Get the part, we know its a text part
-      final part = artifact.parts.first as A2ATextPart;
+      final part = result.parts?.first as A2ATextPart;
 
       /// Get the textual response
       final text = part.text;
@@ -124,11 +152,9 @@ Future<int> main() async {
       print('');
       print('--------------->');
       print(text);
-    } else {
-      print('');
-      print(
-        'Task is not yet complete, state is ${Colorize('${result.status?.state}').yellow()}',
-      );
+
+      /// End of stream
+      break;
     }
   }
 
