@@ -44,6 +44,31 @@ class A2AResultManager {
 
       await _saveCurrentTask();
     } else if (event is A2ATaskStatusUpdateEvent) {
+      if (_currentTask != null && _currentTask?.id == event.taskId) {
+        _currentTask?.status ??= event.status;
+        if (event.status?.message != null) {
+          if (_currentTask?.history?.contains(event.status?.message) == false) {
+            _currentTask?.history?.add(event.status!.message!);
+          }
+        }
+        await _saveCurrentTask();
+      } else if (_currentTask != null) {
+        // Potentially an update for a task we haven't seen the 'task' event for yet,
+        // or we are rehydrating. Attempt to load.
+        final loaded = await _taskStore.load(event.taskId);
+        if (loaded != null) {
+          _currentTask = loaded;
+          _currentTask?.status ??= event.status;
+          if (_currentTask?.history?.contains(event.status?.message) == false) {
+            _currentTask?.history?.add(event.status!.message!);
+          }
+          await _saveCurrentTask();
+        } else {
+          print(
+            'A2AResultManager :: Received status update for unknown task ${event.taskId}',
+          );
+        }
+      }
     } else if (event is A2ATaskArtifactUpdateEvent) {}
   }
 
