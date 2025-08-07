@@ -15,6 +15,12 @@ typedef A2AId = Object;
 /// Structured value type
 typedef A2ASV = Map<String, dynamic>;
 
+/// Result type
+typedef A2AResult = Object;
+
+/// Agent Execution Event
+typedef A2AAgentExecutionEvent = Object;
+
 /// Represents the possible states of a Task.
 enum A2ATaskState {
   @JsonValue('submitted')

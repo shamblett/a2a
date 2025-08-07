@@ -185,7 +185,7 @@ final class A2ASendMessageSuccessResponse extends A2ASendMessageResponse {
   String jsonrpc = '2.0';
 
   /// The result object on success, [A2ATask] or [A2AMessage]
-  Object? result;
+  A2AResult? result;
 
   A2ASendMessageSuccessResponse();
 
@@ -236,7 +236,7 @@ final class A2ASendStreamingMessageSuccessResponse
 
   /// The result object on success, [A2ATask], [A2AMessage], [A2ATaskStatusUpdateEvent] or
   /// [A2ATaskArtifactUpdateEvent]
-  Object? result;
+  A2AResult? result;
 
   A2ASendStreamingMessageSuccessResponse();
 

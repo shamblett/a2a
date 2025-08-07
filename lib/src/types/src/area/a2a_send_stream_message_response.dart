@@ -58,7 +58,7 @@ final class A2ASendStreamMessageSuccessResponse
 
   /// The result object on success, [A2ATask], [A2AMessage], [A2ATaskStatusUpdateEvent]
   /// [A2ATaskArtifactUpdateEvent]
-  Object? result;
+  A2AResult? result;
 
   A2ASendStreamMessageSuccessResponse();
 

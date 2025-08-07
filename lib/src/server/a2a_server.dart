@@ -16,3 +16,4 @@ import '/src/types/a2a_types.dart';
 part 'src/a2a_utilities.dart';
 part 'src/a2a_task_store.dart';
 part 'src/a2a_server_error.dart';
+part 'src/a2a_result_manager.dart';
