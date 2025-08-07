@@ -77,12 +77,23 @@ class A2AMessage {
   /// Identifier of task the message is related to
   String? taskId;
 
+  @override
+  int get hashCode => messageId.hashCode;
+
   A2AMessage();
 
   factory A2AMessage.fromJson(Map<String, dynamic> json) =>
       _$A2AMessageFromJson(json);
 
   Map<String, dynamic> toJson() => _$A2AMessageToJson(this);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is A2AMessage &&
+              runtimeType == other.runtimeType &&
+              messageId == other.messageId;
+
 }
 
 /// Represents an artifact generated for a task.
