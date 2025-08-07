@@ -50,9 +50,46 @@ void main() {
   });
   group('Error', () {
     test('Construction', () {
-      final error = A2AServerError(A2AError.unknown, 'Unknown Error', {
+      final error = A2AServerError(A2AError.internal, 'Unknown Error', {
         'd1': 1,
       }, '10');
+      final jsonError = error.toJSONRPCError();
+      expect(jsonError.message, 'Unknown Error');
+      expect(jsonError.code, A2AError.internal);
+      expect(jsonError.data, {'d1': 1});
+      dynamic testError = A2AServerError.parseError('The message', {'d1': 1});
+      expect(testError is A2AJSONParseError, isTrue);
+      expect(testError.message, 'The message');
+      expect(testError.data, {'d1': 1});
+      testError = A2AServerError.invalidRequest('The message', {'d1': 1});
+      expect(testError is A2AInvalidRequestError, isTrue);
+      expect(testError.message, 'The message');
+      expect(testError.data, {'d1': 1});
+      testError = A2AServerError.invalidParams('The message', {'d1': 1});
+      expect(testError is A2AInvalidParamsError, isTrue);
+      expect(testError.message, 'The message');
+      expect(testError.data, {'d1': 1});
+      testError = A2AServerError.internalError('The message', {'d1': 1});
+      expect(testError is A2AInternalError, isTrue);
+      expect(testError.message, 'The message');
+      expect(testError.data, {'d1': 1});
+      testError = A2AServerError.methodNotFound('post');
+      expect(testError is A2AMethodNotFoundError, isTrue);
+      expect(testError.message, 'Method not found: post');
+      testError = A2AServerError.taskNotFound('10');
+      expect(testError is A2ATaskNotFoundError, isTrue);
+      expect(testError.message, 'Task not found: 10');
+      expect(testError.data, {'taskId': '10'});
+      testError = A2AServerError.taskNotCancelable('10');
+      expect(testError is A2ATaskNotCancelableError, isTrue);
+      expect(testError.message, 'Task not cancelable: 10');
+      expect(testError.data, {'taskId': '10'});
+      testError = A2AServerError.pushNotificationNotSupported();
+      expect(testError is A2APushNotificationNotSupportedError, isTrue);
+      expect(testError.message, 'Push Notification is not supported');
+      testError = A2AServerError.unsupportedOperation('operation');
+      expect(testError is A2AUnsupportedOperationError, isTrue);
+      expect(testError.message, 'Unsupported operation: operation');
     });
   });
 }
