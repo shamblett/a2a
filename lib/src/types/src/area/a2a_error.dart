@@ -277,6 +277,7 @@ final class A2ATaskNotFoundError extends A2AError {
   int code = A2AError.taskNotFound;
 
   /// A Primitive or Structured value that contains additional information about the error.
+  /// In this case 'taskId' will contain the Task Id
   A2ASV? data;
 
   /// A String providing a short description of the error.
@@ -297,6 +298,7 @@ final class A2ATaskNotCancelableError extends A2AError {
   int code = A2AError.taskNotCancellable;
 
   /// A Primitive or Structured value that contains additional information about the error.
+  /// In this case 'taskId' will contain the Task Id
   A2ASV? data;
 
   /// A String providing a short description of the error.

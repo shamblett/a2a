@@ -33,51 +33,42 @@ class A2AServerError {
     ..message = message
     ..data = data;
 
-  factory A2AServerError.methodNotFound(String method) => A2AServerError(
-    A2AError.invalidRequest,
-    'Method not found: $method',
-    null,
-    null,
-  );
+  static A2AMethodNotFoundError methodNotFound(String method) =>
+      A2AMethodNotFoundError()..message = 'Method not found: $method';
 
-  factory A2AServerError.invalidParams(
+  static A2AInvalidParamsError invalidParams(
     String message,
     Map<String, dynamic>? data,
-  ) => A2AServerError(A2AError.invalidParams, message, data, null);
+  ) => A2AInvalidParamsError()
+    ..message = message
+    ..data = data;
 
-  factory A2AServerError.internalError(
+  static A2AInternalError internalError(
     String message,
     Map<String, dynamic>? data,
-  ) => A2AServerError(A2AError.internal, message, data, null);
+  ) => A2AInternalError()
+    ..message = message
+    ..data = data;
 
-  factory A2AServerError.taskNotFound(String taskId) => A2AServerError(
-    A2AError.taskNotFound,
-    'Task not found: $taskId',
-    null,
-    taskId,
-  );
+  static A2ATaskNotFoundError taskNotFound(String taskId) =>
+      A2ATaskNotFoundError()
+        ..message = 'Task not found: $taskId'
+        ..data = {}
+        ..data!['taskId'] = taskId;
 
-  factory A2AServerError.taskNotCancelable(String taskId) => A2AServerError(
-    A2AError.taskNotCancellable,
-    'Task not cancelable: $taskId',
-    null,
-    taskId,
-  );
+  static A2ATaskNotCancelableError taskNotCancelable(String taskId) =>
+      A2ATaskNotCancelableError()
+        ..message = 'Task not cancelable: $taskId'
+        ..data = {}
+        ..data!['taskId'] = taskId;
 
-  factory A2AServerError.pushNotificationNotSupported() => A2AServerError(
-    A2AError.pushNotificationNotSupported,
-    'Push Notification is not supported',
-    null,
-    null,
-  );
+  static A2APushNotificationNotSupportedError pushNotificationNotSupported() =>
+      A2APushNotificationNotSupportedError()
+        ..message = 'Push Notification is not supported';
 
-  factory A2AServerError.unsupportedOperation(String operation) =>
-      A2AServerError(
-        A2AError.unsupportedOperation,
-        'Unsupported operation: $operation',
-        null,
-        null,
-      );
+  static A2AUnsupportedOperationError unsupportedOperation(String operation) =>
+      A2AUnsupportedOperationError()
+        ..message = 'Unsupported operation: $operation';
 
   /// Formats the error into a standard JSON-RPC error object structure.
   A2AJSONRPCError toJSONRPCError() {
