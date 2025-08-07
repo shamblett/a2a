@@ -8,7 +8,7 @@
 part of '../a2a_server.dart';
 
 class A2AResultManager {
-  A2ATaskStore _taskStore;
+  final A2ATaskStore _taskStore;
 
   A2ATask? _currentTask;
 
