@@ -48,4 +48,7 @@ void main() {
       expect(nullTask, isNull);
     });
   });
+  group('Error', () {
+    test('In Memory Task Store', () async {});
+  });
 }
