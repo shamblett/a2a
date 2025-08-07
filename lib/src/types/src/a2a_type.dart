@@ -134,6 +134,13 @@ class A2ATask {
       _$A2ATaskFromJson(json);
 
   Map<String, dynamic> toJson() => _$A2ATaskToJson(this);
+
+  /// Deep clone.
+  A2ATask clone() {
+    // Take advantage of the fact we can serialize these classes
+    final thisJson = toJson();
+    return A2ATask.fromJson(thisJson);
+  }
 }
 
 /// Current status of the task

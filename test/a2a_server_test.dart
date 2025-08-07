@@ -28,4 +28,24 @@ void main() {
       expect(A2AUtilities.isTaskArtifactUpdate(A2AMessage()), isFalse);
     });
   });
+
+  group('Store', () {
+    test('In Memory Task Store', () async {
+      final store = A2AInMemoryTaskStore();
+      A2ATask task = A2ATask()
+        ..id = 'Task Id'
+        ..status = A2ATaskStatus()
+        ..metadata = {'First': 1};
+      await store.save(task);
+      expect(store.count, 1);
+      task.metadata = {'Second': 2};
+      task.id = 'New Task Id';
+      final retTask = await store.load('Task Id');
+      expect(retTask, isNotNull);
+      expect(retTask?.metadata?['First'], 1);
+      expect(retTask?.id, 'Task Id');
+      final nullTask = await store.load('Test');
+      expect(nullTask, isNull);
+    });
+  });
 }
