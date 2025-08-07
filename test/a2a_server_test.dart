@@ -49,6 +49,10 @@ void main() {
     });
   });
   group('Error', () {
-    test('In Memory Task Store', () async {});
+    test('Construction', () {
+      final error = A2AServerError(A2AError.unknown, 'Unknown Error', {
+        'd1': 1,
+      }, '10');
+    });
   });
 }

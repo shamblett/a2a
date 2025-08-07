@@ -19,15 +19,19 @@ class A2AServerError {
 
   A2AServerError(this.code, this.message, this.data, this.taskId);
 
-  factory A2AServerError.parseError(
+  static A2AJSONParseError parseError(
     String message,
     Map<String, dynamic>? data,
-  ) => A2AServerError(A2AError.jsonParse, message, data, null);
+  ) => A2AJSONParseError()
+    ..data = data
+    ..message = message;
 
-  factory A2AServerError.invalidRequest(
+  static A2AInvalidRequestError invalidRequest(
     String message,
     Map<String, dynamic>? data,
-  ) => A2AServerError(A2AError.invalidRequest, message, data, null);
+  ) => A2AInvalidRequestError()
+    ..message = message
+    ..data = data;
 
   factory A2AServerError.methodNotFound(String method) => A2AServerError(
     A2AError.invalidRequest,
