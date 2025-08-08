@@ -92,4 +92,21 @@ void main() {
       expect(testError.message, 'Unsupported operation: operation');
     });
   });
+  group('Result Manager', () {
+    test('Construction', () {
+      final store = A2AInMemoryTaskStore();
+      final rm = A2AResultManager(store);
+      expect(rm.finalResult is A2ATask?, isTrue);
+      expect(rm.finalResult, isNull);
+      expect(rm.currentTask, isNull);
+    });
+    test('Process Event - Message Update', () {
+      final store = A2AInMemoryTaskStore();
+      final rm = A2AResultManager(store);
+      final message = A2AMessage();
+      rm.processEvent(message);
+      expect(rm.finalResult is A2AMessage?, isTrue);
+      expect(rm.finalResult, isNotNull);
+    });
+  });
 }
