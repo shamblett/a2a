@@ -109,7 +109,7 @@ class A2AResultManager {
             existingArtifact.name = eventArtifact?.name;
             existingArtifact.metadata = eventArtifact?.metadata;
           } else {
-            _currentTask?.artifacts?[index!] = eventArtifact!;
+            _currentTask?.artifacts?[index] = eventArtifact!;
           }
         } else {
           _currentTask?.artifacts?.add(eventArtifact!);
@@ -134,7 +134,7 @@ class A2AResultManager {
               existingArtifact.name = eventArtifact?.name;
               existingArtifact.metadata = eventArtifact?.metadata;
             } else {
-              _currentTask?.artifacts?[index!] = eventArtifact!;
+              _currentTask?.artifacts?[index] = eventArtifact!;
             }
           } else {
             _currentTask?.artifacts?.add(eventArtifact!);
