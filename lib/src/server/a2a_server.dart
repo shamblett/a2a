@@ -9,6 +9,7 @@ library;
 
 import 'dart:async';
 
+import 'package:colorize/colorize.dart';
 import 'package:oxy/oxy.dart' as http;
 
 import '/src/types/a2a_types.dart';

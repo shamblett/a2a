@@ -34,7 +34,6 @@ class A2AResultManager {
     } else if (event is A2ATask) {
       // Make a copy
       _currentTask = event.clone();
-
       // Ensure the latest user message is in history if not already present
       _currentTask?.history ??= [];
       if (_latestUserMessage != null) {
@@ -45,9 +44,15 @@ class A2AResultManager {
 
       await _saveCurrentTask();
     } else if (event is A2ATaskStatusUpdateEvent) {
+      if (event.status == null) {
+        print(
+          '${Colorize('A2AResultManager::processEvent - No status supplied in task status update event, task id is ${event.taskId}')..red()}',
+        );
+        return;
+      }
       if (_currentTask != null && _currentTask?.id == event.taskId) {
-        _currentTask ??= A2ATask();
         _currentTask?.status = event.status;
+        _currentTask?.history ??= [];
         if (event.status?.message != null) {
           if (_currentTask?.history?.contains(event.status?.message) == false) {
             _currentTask?.history?.add(event.status!.message!);
@@ -60,39 +65,45 @@ class A2AResultManager {
         final loaded = await _taskStore.load(event.taskId);
         if (loaded != null) {
           _currentTask = loaded;
-          _currentTask ??= A2ATask();
           _currentTask?.status = event.status;
+          _currentTask?.history ??= [];
           if (_currentTask?.history?.contains(event.status?.message) == false) {
             _currentTask?.history?.add(event.status!.message!);
           }
           await _saveCurrentTask();
         } else {
           print(
-            'A2AResultManager :: Received status update for unknown task ${event.taskId}',
+            '${Colorize('A2AResultManager::processEvent - Received status update for unknown task ${event.taskId}')..yellow()}',
           );
         }
       }
     } else if (event is A2ATaskArtifactUpdateEvent) {
       if (_currentTask?.id == event.taskId) {
-        final eventArtifact = event.artifact ?? A2AArtifact();
+        if (event.artifact == null) {
+          print(
+            '${Colorize('A2AResultManager::processEvent - Received artifact update has no artifact for task ${event.taskId}')..red()}',
+          );
+          return;
+        }
+        final eventArtifact = event.artifact;
         final currentArtifacts = _currentTask?.artifacts ??= [];
-        final index = currentArtifacts?.indexOf(eventArtifact) ?? -1;
+        final index = currentArtifacts?.indexOf(eventArtifact!) ?? -1;
         if (index != -1) {
           if (event.append == true) {
             // Basic append logic, assuming parts are compatible
             // More sophisticated merging might be needed for specific part types
             final existingArtifact = currentArtifacts?[index];
-            final partList = eventArtifact.parts.toList();
-            existingArtifact!.parts.addAll(partList);
-            existingArtifact.description = eventArtifact.description;
-            existingArtifact.name = eventArtifact.name;
-            existingArtifact.metadata = eventArtifact.metadata;
+            final partList = eventArtifact?.parts.toList();
+            existingArtifact!.parts.addAll(partList!);
+            existingArtifact.description = eventArtifact?.description;
+            existingArtifact.name = eventArtifact?.name;
+            existingArtifact.metadata = eventArtifact?.metadata;
             await _saveCurrentTask();
           } else {
-            _currentTask?.artifacts?[index!] = eventArtifact;
+            _currentTask?.artifacts?[index!] = eventArtifact!;
           }
         } else {
-          _currentTask?.artifacts?.add(eventArtifact);
+          _currentTask?.artifacts?.add(eventArtifact!);
         }
       }
     } else {}
