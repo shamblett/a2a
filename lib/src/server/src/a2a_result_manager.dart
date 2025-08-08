@@ -18,6 +18,16 @@ class A2AResultManager {
   // Stores the message if it's the final result
   A2AMessage? _finalMessageResult;
 
+  /// Gets the final result, which could be a Message or a Task.
+  /// This should be called after the event stream has been fully processed.
+  /// @returns The final Message or the current Task.
+  A2AResult? get finalResult => _finalMessageResult ?? _currentTask;
+
+  /// Gets the task currently being managed by this ResultManager instance.
+  /// This task could be one that was started with or one created during agent execution.
+  /// @returns The current Task or undefined if no task is active.
+  A2ATask? get currentTask => _currentTask;
+
   set context(A2AMessage latestUserMessage) =>
       _latestUserMessage = latestUserMessage;
 
@@ -98,15 +108,45 @@ class A2AResultManager {
             existingArtifact.description = eventArtifact?.description;
             existingArtifact.name = eventArtifact?.name;
             existingArtifact.metadata = eventArtifact?.metadata;
-            await _saveCurrentTask();
           } else {
             _currentTask?.artifacts?[index!] = eventArtifact!;
           }
         } else {
           _currentTask?.artifacts?.add(eventArtifact!);
         }
+        await _saveCurrentTask();
+      } else if (_currentTask == null) {
+        // Similar to status update, try to load if task not in memory
+        final loaded = await _taskStore.load(event.taskId);
+        if (loaded != null) {
+          _currentTask = loaded;
+          final eventArtifact = event.artifact;
+          final currentArtifacts = _currentTask?.artifacts ??= [];
+          final index = currentArtifacts?.indexOf(eventArtifact!) ?? -1;
+          if (index != -1) {
+            if (event.append == true) {
+              // Basic append logic, assuming parts are compatible
+              // More sophisticated merging might be needed for specific part types
+              final existingArtifact = currentArtifacts?[index];
+              final partList = eventArtifact?.parts.toList();
+              existingArtifact!.parts.addAll(partList!);
+              existingArtifact.description = eventArtifact?.description;
+              existingArtifact.name = eventArtifact?.name;
+              existingArtifact.metadata = eventArtifact?.metadata;
+            } else {
+              _currentTask?.artifacts?[index!] = eventArtifact!;
+            }
+          } else {
+            _currentTask?.artifacts?.add(eventArtifact!);
+          }
+          await _saveCurrentTask();
+        }
+      } else {
+        print(
+          '${Colorize('A2AResultManager::processEvent - Received status update for unknown task ${event.taskId}')..yellow()}',
+        );
       }
-    } else {}
+    }
   }
 
   Future<void> _saveCurrentTask() async {
