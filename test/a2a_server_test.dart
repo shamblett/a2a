@@ -8,6 +8,8 @@
 @TestOn('vm')
 library;
 
+import 'dart:async';
+
 import 'package:a2a/a2a.dart';
 import 'package:test/test.dart';
 
@@ -107,6 +109,57 @@ void main() {
       rm.processEvent(message);
       expect(rm.finalResult is A2AMessage?, isTrue);
       expect(rm.finalResult, isNotNull);
+    });
+    test('Process Event - Task Update - First No Context', () async {
+      final store = A2AInMemoryTaskStore();
+      final rm = A2AResultManager(store);
+      final task = A2ATask()
+      ..id = '10';
+      unawaited(rm.processEvent(task));
+      expect(store.count, 1);
+      final storeTask = await store.load('10');
+      expect(storeTask?.id, '10');
+      expect(rm.currentTask?.id, '10');
+      task.id = '11';
+      expect(rm.currentTask?.id, '10');
+      expect(rm.currentTask?.history, []);
+    });
+    test('Process Event - Task Update - First With Context', () async {
+      final store = A2AInMemoryTaskStore();
+      final rm = A2AResultManager(store);
+      final task = A2ATask()
+        ..id = '10';
+      final message = A2AMessage()
+      ..taskId = '10'
+      ..messageId ='100';
+      rm.context = message;
+      unawaited(rm.processEvent(task));
+      expect(store.count, 1);
+      final storeTask = await store.load('10');
+      expect(storeTask?.id, '10');
+      expect(rm.currentTask?.id, '10');
+      expect(rm.currentTask?.history?.length, 1);
+      expect(rm.currentTask?.history?.first.messageId, '100');
+    });
+    test('Process Event - Task Update - Subsequent With Context', () async {
+      final store = A2AInMemoryTaskStore();
+      final rm = A2AResultManager(store);
+      final task = A2ATask()
+        ..id = '10';
+      final message = A2AMessage()
+        ..taskId = '10'
+        ..messageId ='100';
+      rm.context = message;
+      unawaited(rm.processEvent(task));
+      expect(store.count, 1);
+      expect(rm.currentTask?.id, '10');
+      expect(rm.currentTask?.history?.length, 1);
+      expect(rm.currentTask?.history?.first.messageId, '100');
+      unawaited(rm.processEvent(task));
+      expect(store.count, 1);
+      expect(rm.currentTask?.id, '10');
+      expect(rm.currentTask?.history?.length, 1);
+      expect(rm.currentTask?.history?.first.messageId, '100');
     });
   });
 }
