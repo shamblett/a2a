@@ -14,6 +14,14 @@ import 'package:test/test.dart';
 import 'package:a2a/src/server/a2a_server.dart';
 
 void main() {
+  group('Null check', () {
+    test('Operators', () {
+      final message = A2AMessage();
+      //expect(message.parts, isNull);
+      print(message.parts);
+    });
+  });
+
   group('Utilities', () {
     test('getCurrentTimestamp', () {
       final dt = A2AUtilities.getCurrentTimestamp();

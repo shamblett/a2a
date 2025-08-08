@@ -74,23 +74,19 @@ class A2AResultManager {
       }
     } else if (event is A2ATaskArtifactUpdateEvent) {
       if (_currentTask?.id == event.taskId) {
-        _currentTask?.artifacts ??= [];
         final eventArtifact = event.artifact ?? A2AArtifact();
-        final index = _currentTask?.artifacts?.indexOf(eventArtifact);
+        final currentArtifacts = _currentTask?.artifacts ??= [];
+        final index = currentArtifacts?.indexOf(eventArtifact) ?? -1;
         if (index != -1) {
           if (event.append == true) {
             // Basic append logic, assuming parts are compatible
             // More sophisticated merging might be needed for specific part types
-            final existingArtifact = _currentTask?.artifacts![index!];
-            existingArtifact?.parts ??= [];
+            final existingArtifact = currentArtifacts?[index];
             final partList = eventArtifact.parts.toList();
-            existingArtifact?.parts.addAll(partList);
-            existingArtifact?.description = eventArtifact.description;
-            existingArtifact?.description ??= eventArtifact.description;
-            existingArtifact?.name = eventArtifact.name;
-            existingArtifact?.name ??= eventArtifact.name;
-            existingArtifact?.metadata = eventArtifact.metadata;
-            existingArtifact?.metadata ??= eventArtifact.metadata;
+            existingArtifact!.parts.addAll(partList);
+            existingArtifact.description = eventArtifact.description;
+            existingArtifact.name = eventArtifact.name;
+            existingArtifact.metadata = eventArtifact.metadata;
             await _saveCurrentTask();
           } else {
             _currentTask?.artifacts?[index!] = eventArtifact;
@@ -99,9 +95,7 @@ class A2AResultManager {
           _currentTask?.artifacts?.add(eventArtifact);
         }
       }
-    } else {
-
-    }
+    } else {}
   }
 
   Future<void> _saveCurrentTask() async {
