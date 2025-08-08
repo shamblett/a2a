@@ -117,12 +117,23 @@ class A2AArtifact {
   /// Artifact parts
   List<A2APart> parts = [];
 
+  @override
+  int get hashCode => artifactId.hashCode;
+
   A2AArtifact();
 
   factory A2AArtifact.fromJson(Map<String, dynamic> json) =>
       _$A2AArtifactFromJson(json);
 
   Map<String, dynamic> toJson() => _$A2AArtifactToJson(this);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is A2AArtifact &&
+              runtimeType == other.runtimeType &&
+              artifactId == other.artifactId;
+
 }
 
 /// The result object on success.

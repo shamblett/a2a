@@ -72,7 +72,25 @@ class A2AResultManager {
           );
         }
       }
-    } else if (event is A2ATaskArtifactUpdateEvent) {}
+    } else if (event is A2ATaskArtifactUpdateEvent) {
+      if (_currentTask?.id == event.taskId) {
+        _currentTask?.artifacts ??= [];
+        final eventArtifact = event.artifact ?? A2AArtifact();
+        final index = _currentTask?.artifacts?.indexOf(eventArtifact);
+        if (index != -1) {
+          if (event.append == true) {
+            // Basic append logic, assuming parts are compatible
+            // More sophisticated merging might be needed for specific part types
+            final existingArtifact = _currentTask?.artifacts![index!];
+
+          } else {
+            _currentTask?.artifacts?[index!] = eventArtifact;
+          }
+        } else {
+          _currentTask?.artifacts?.add(eventArtifact);
+        }
+      }
+    }
   }
 
   Future<void> _saveCurrentTask() async {
