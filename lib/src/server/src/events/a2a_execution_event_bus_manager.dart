@@ -28,4 +28,11 @@ class A2ADefaultExecutionEventBusManager
     }
     return _taskIdToBus[taskId]!;
   }
+
+  /// Retrieves an existing ExecutionEventBus based on the taskId.
+  /// @param taskId The ID of the task.
+  /// @returns An instance of IExecutionEventBus or undefined if not found.
+  A2AExecutionEventBus? getByTaskId(String taskId) => return _taskIdToBus[taskId];
+
+  }
 }
