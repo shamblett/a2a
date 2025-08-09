@@ -374,4 +374,7 @@ void main() {
       expect(textPart.text, 'Part Text');
     });
   });
+  group('Events', () {
+    test('Default Execution Event Bus', () {});
+  });
 }
