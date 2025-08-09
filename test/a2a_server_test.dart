@@ -253,7 +253,6 @@ void main() {
       final artifactUpdate = A2ATaskArtifactUpdateEvent()
         ..taskId = '12'
         ..artifact = artifact;
-      ;
       unawaited(rm.processEvent(artifactUpdate));
       expect(store.count, 1);
     });
