@@ -177,42 +177,77 @@ void main() {
         unawaited(rm.processEvent(taskStatusUpdate));
         expect(store.count, 0);
       });
+      test('First With Current task', () async {
+        final store = A2AInMemoryTaskStore();
+        final rm = A2AResultManager(store);
+        final taskStatusUpdate = A2ATaskStatusUpdateEvent()
+          ..taskId = '10'
+          ..status = (A2ATaskStatus()..state = A2ATaskState.completed);
+        final task = A2ATask()..id = '10';
+        unawaited(rm.processEvent(task));
+        expect(store.count, 1);
+        expect(rm.currentTask?.id, '10');
+        unawaited(rm.processEvent(taskStatusUpdate));
+        expect(rm.currentTask?.status?.state, A2ATaskState.completed);
+        expect(rm.currentTask?.history, []);
+        expect(store.count, 1);
+        final taskStatusUpdateMessage = A2ATaskStatusUpdateEvent()
+          ..taskId = '10'
+          ..status = (A2ATaskStatus()..state = A2ATaskState.authRequired)
+          ..status?.message = (A2AMessage()..messageId = '100');
+        unawaited(rm.processEvent(taskStatusUpdateMessage));
+        expect(rm.currentTask?.status?.state, A2ATaskState.authRequired);
+        expect(rm.currentTask?.history?.first.messageId, '100');
+        expect(store.count, 1);
+      });
+      test('First With Current task - Wrong task id', () async {
+        final store = A2AInMemoryTaskStore();
+        final rm = A2AResultManager(store);
+        final task = A2ATask()..id = '10';
+        await store.save(task);
+        final taskStatusUpdate = A2ATaskStatusUpdateEvent()
+          ..taskId = '10'
+          ..status = (A2ATaskStatus()..state = A2ATaskState.completed);
+        await rm.processEvent(taskStatusUpdate);
+        expect(store.count, 1);
+        expect(rm.currentTask?.id, '10');
+        expect(rm.currentTask?.history, []);
+      });
+      test('First With Current task - Wrong task id with message', () async {
+        final store = A2AInMemoryTaskStore();
+        final rm = A2AResultManager(store);
+        final task = A2ATask()..id = '10';
+        final message = A2AMessage()
+          ..taskId = '10'
+          ..messageId = '100';
+        await store.save(task);
+        final taskStatusUpdate = A2ATaskStatusUpdateEvent()
+          ..taskId = '10'
+          ..status = (A2ATaskStatus()
+            ..state = A2ATaskState.completed
+            ..message = message);
+        await rm.processEvent(taskStatusUpdate);
+        expect(store.count, 1);
+        expect(rm.currentTask?.id, '10');
+        expect(rm.currentTask?.history?.length, 1);
+        expect(rm.currentTask?.history?.first.messageId, '100');
+      });
     });
-    test('First With Current task', () async {
+  });
+  group('Process Event - Artifact Update', () {
+    test('First No Status', () async {
       final store = A2AInMemoryTaskStore();
       final rm = A2AResultManager(store);
-      final taskStatusUpdate = A2ATaskStatusUpdateEvent()
-        ..taskId = '10'
-        ..status = (A2ATaskStatus()..state = A2ATaskState.completed);
-      final task = A2ATask()..id = '10';
-      unawaited(rm.processEvent(task));
-      expect(store.count, 1);
-      expect(rm.currentTask?.id, '10');
-      unawaited(rm.processEvent(taskStatusUpdate));
-      expect(rm.currentTask?.status?.state, A2ATaskState.completed);
-      expect(rm.currentTask?.history, []);
-      expect(store.count, 1);
-      final taskStatusUpdateMessage = A2ATaskStatusUpdateEvent()
-        ..taskId = '10'
-        ..status = (A2ATaskStatus()..state = A2ATaskState.authRequired)
-        ..status?.message = (A2AMessage()..messageId = '100');
-      unawaited(rm.processEvent(taskStatusUpdateMessage));
-      expect(rm.currentTask?.status?.state, A2ATaskState.authRequired);
-      expect(rm.currentTask?.history?.first.messageId, '100');
-      expect(store.count, 1);
+      final artifactUpdate = A2ATaskArtifactUpdateEvent()..taskId = '10';
+      unawaited(rm.processEvent(artifactUpdate));
+      expect(store.count, 0);
     });
-    test('First With Current task - Wrong task id', () async {
+    test('First No Current task', () async {
       final store = A2AInMemoryTaskStore();
       final rm = A2AResultManager(store);
-      final task = A2ATask()..id = '10';
-      await store.save(task);
-      final taskStatusUpdate = A2ATaskStatusUpdateEvent()
-        ..taskId = '10'
-        ..status = (A2ATaskStatus()..state = A2ATaskState.completed);
-      await rm.processEvent(taskStatusUpdate);
-      expect(store.count, 1);
-      expect(rm.currentTask?.id, '10');
-      expect(rm.currentTask?.history, []);
+      final artifactUpdate = A2ATaskArtifactUpdateEvent()..taskId = '10';
+      unawaited(rm.processEvent(artifactUpdate));
+      expect(store.count, 0);
     });
   });
 }
