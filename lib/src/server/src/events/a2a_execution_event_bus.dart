@@ -15,7 +15,9 @@ abstract interface class A2AExecutionEventBus {
 
 class A2ADefaultExecutionEventBus extends EventEmitter
     implements A2AExecutionEventBus {
-  void publish(A2AAgentExecutionEvent event) => this.emit('event', event);
+  @override
+  void publish(A2AAgentExecutionEvent event) => emit('event', event);
 
-  void finished() => this.emit('finished');
+  @override
+  void finished() => emit('finished');
 }
