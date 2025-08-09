@@ -249,5 +249,60 @@ void main() {
       unawaited(rm.processEvent(artifactUpdate));
       expect(store.count, 0);
     });
+    test('First with current task', () async {
+      final store = A2AInMemoryTaskStore();
+      final rm = A2AResultManager(store);
+      final artifact = A2AArtifact()..artifactId = '200';
+      final task = A2ATask()..id = '10';
+      final artifactUpdate = A2ATaskArtifactUpdateEvent()
+        ..taskId = '10'
+        ..artifact = artifact;
+      unawaited(rm.processEvent(task));
+      expect(store.count, 1);
+      expect(rm.currentTask?.id, '10');
+      unawaited(rm.processEvent(artifactUpdate));
+      expect(rm.currentTask?.artifacts?.first.artifactId, '200');
+      expect(rm.currentTask?.artifacts?.first.description, isNull);
+      artifact.description = 'The description';
+      unawaited(rm.processEvent(artifactUpdate));
+      expect(store.count, 1);
+      artifact.description = 'The description';
+    });
+    test('Subsequent with append', () async {
+      final store = A2AInMemoryTaskStore();
+      final rm = A2AResultManager(store);
+      final artifact = A2AArtifact()..artifactId = '200';
+      final task = A2ATask()..id = '10';
+      final artifactUpdate = A2ATaskArtifactUpdateEvent()
+        ..taskId = '10'
+        ..artifact = artifact;
+      unawaited(rm.processEvent(task));
+      expect(store.count, 1);
+      expect(rm.currentTask?.id, '10');
+      unawaited(rm.processEvent(artifactUpdate));
+      expect(rm.currentTask?.artifacts?.first.artifactId, '200');
+      expect(rm.currentTask?.artifacts?.first.description, isNull);
+      artifact.description = 'The description';
+      unawaited(rm.processEvent(artifactUpdate));
+      expect(store.count, 1);
+      expect(rm.currentTask?.artifacts?.first.description, 'The description');
+      artifactUpdate.append = true;
+      artifact.description = 'The new description';
+      artifact.name = 'Artifact name';
+      artifact.metadata = {'First': 1};
+      artifact.parts = [];
+      artifact.parts.add(A2ATextPart()..text = 'Part Text');
+      unawaited(rm.processEvent(artifactUpdate));
+      expect(store.count, 1);
+      expect(
+        rm.currentTask?.artifacts?.first.description,
+        'The new description',
+      );
+      expect(rm.currentTask?.artifacts?.first.name, 'Artifact name');
+      expect(rm.currentTask?.artifacts?.first.metadata, {'First': 1});
+      final textPart =
+          rm.currentTask?.artifacts?.first.parts.first as A2ATextPart;
+      expect(textPart.text, 'Part Text');
+    });
   });
 }
