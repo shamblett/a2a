@@ -235,12 +235,27 @@ void main() {
     });
   });
   group('Process Event - Artifact Update', () {
-    test('First No Status', () async {
+    test('First No Artifact', () async {
       final store = A2AInMemoryTaskStore();
       final rm = A2AResultManager(store);
+      final task = A2ATask()..id = '10';
+      unawaited(rm.processEvent(task));
       final artifactUpdate = A2ATaskArtifactUpdateEvent()..taskId = '10';
       unawaited(rm.processEvent(artifactUpdate));
-      expect(store.count, 0);
+      expect(store.count, 1);
+    });
+    test('First Unknown task', () async {
+      final store = A2AInMemoryTaskStore();
+      final rm = A2AResultManager(store);
+      final task = A2ATask()..id = '11';
+      unawaited(rm.processEvent(task));
+      final artifact = A2AArtifact()..artifactId = '300';
+      final artifactUpdate = A2ATaskArtifactUpdateEvent()
+        ..taskId = '12'
+        ..artifact = artifact;
+      ;
+      unawaited(rm.processEvent(artifactUpdate));
+      expect(store.count, 1);
     });
     test('First No Current task', () async {
       final store = A2AInMemoryTaskStore();
@@ -266,9 +281,9 @@ void main() {
       artifact.description = 'The description';
       unawaited(rm.processEvent(artifactUpdate));
       expect(store.count, 1);
-      artifact.description = 'The description';
+      expect(rm.currentTask?.artifacts?.first.description, 'The description');
     });
-    test('Subsequent with append', () async {
+    test('Subsequent current task with append', () async {
       final store = A2AInMemoryTaskStore();
       final rm = A2AResultManager(store);
       final artifact = A2AArtifact()..artifactId = '200';
@@ -284,6 +299,61 @@ void main() {
       expect(rm.currentTask?.artifacts?.first.description, isNull);
       artifact.description = 'The description';
       unawaited(rm.processEvent(artifactUpdate));
+      expect(store.count, 1);
+      expect(rm.currentTask?.artifacts?.first.description, 'The description');
+      artifactUpdate.append = true;
+      artifact.description = 'The new description';
+      artifact.name = 'Artifact name';
+      artifact.metadata = {'First': 1};
+      artifact.parts = [];
+      artifact.parts.add(A2ATextPart()..text = 'Part Text');
+      unawaited(rm.processEvent(artifactUpdate));
+      expect(store.count, 1);
+      expect(
+        rm.currentTask?.artifacts?.first.description,
+        'The new description',
+      );
+      expect(rm.currentTask?.artifacts?.first.name, 'Artifact name');
+      expect(rm.currentTask?.artifacts?.first.metadata, {'First': 1});
+      final textPart =
+          rm.currentTask?.artifacts?.first.parts.first as A2ATextPart;
+      expect(textPart.text, 'Part Text');
+    });
+    test('First no current task', () async {
+      final store = A2AInMemoryTaskStore();
+      final rm = A2AResultManager(store);
+      final artifact = A2AArtifact()..artifactId = '200';
+      final artifactUpdate = A2ATaskArtifactUpdateEvent()
+        ..taskId = '10'
+        ..artifact = artifact;
+      final task = A2ATask()..id = '10';
+      await store.save(task);
+      expect(store.count, 1);
+      expect(rm.currentTask?.id, isNull);
+      await rm.processEvent(artifactUpdate);
+      expect(rm.currentTask?.artifacts?.first.artifactId, '200');
+      expect(rm.currentTask?.artifacts?.first.description, isNull);
+      artifact.description = 'The description';
+      await rm.processEvent(artifactUpdate);
+      expect(store.count, 1);
+      artifact.description = 'The description';
+    });
+    test('Subsequent no current task with append', () async {
+      final store = A2AInMemoryTaskStore();
+      final rm = A2AResultManager(store);
+      final artifact = A2AArtifact()..artifactId = '200';
+      final artifactUpdate = A2ATaskArtifactUpdateEvent()
+        ..taskId = '10'
+        ..artifact = artifact;
+      final task = A2ATask()..id = '10';
+      await store.save(task);
+      expect(store.count, 1);
+      expect(rm.currentTask?.id, isNull);
+      await rm.processEvent(artifactUpdate);
+      expect(rm.currentTask?.artifacts?.first.artifactId, '200');
+      expect(rm.currentTask?.artifacts?.first.description, isNull);
+      artifact.description = 'The description';
+      await rm.processEvent(artifactUpdate);
       expect(store.count, 1);
       expect(rm.currentTask?.artifacts?.first.description, 'The description');
       artifactUpdate.append = true;

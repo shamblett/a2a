@@ -146,7 +146,7 @@ class A2AResultManager {
         }
       } else {
         print(
-          '${Colorize('A2AResultManager::processEvent - Received status update for unknown task ${event.taskId}')..yellow()}',
+          '${Colorize('A2AResultManager::processEvent - Received artifact update for unknown task ${event.taskId}')..yellow()}',
         );
       }
     }
