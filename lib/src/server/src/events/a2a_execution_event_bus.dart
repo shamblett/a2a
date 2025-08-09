@@ -6,3 +6,16 @@
 */
 
 part of '../../a2a_server.dart';
+
+abstract interface class A2AExecutionEventBus {
+  void publish(A2AAgentExecutionEvent event);
+
+  void finished();
+}
+
+class A2ADefaultExecutionEventBus extends EventEmitter
+    implements A2AExecutionEventBus {
+  void publish(A2AAgentExecutionEvent event) => this.emit('event', event);
+
+  void finished() => this.emit('finished');
+}
