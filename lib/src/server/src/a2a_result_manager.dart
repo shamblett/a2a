@@ -77,8 +77,11 @@ class A2AResultManager {
           _currentTask = loaded;
           _currentTask?.status = event.status;
           _currentTask?.history ??= [];
-          if (_currentTask?.history?.contains(event.status?.message) == false) {
-            _currentTask?.history?.add(event.status!.message!);
+          if (event.status?.message != null) {
+            if (_currentTask?.history?.contains(event.status?.message) ==
+                false) {
+              _currentTask?.history?.add(event.status!.message!);
+            }
           }
           await _saveCurrentTask();
         } else {
