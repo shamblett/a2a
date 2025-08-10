@@ -346,7 +346,7 @@ void main() {
         ..artifact = artifact;
       final task = A2ATask()
         ..id = '10'
-      ..artifacts = [];
+        ..artifacts = [];
       task.artifacts?.add(artifact);
       await store.save(task);
       expect(store.count, 1);
@@ -397,7 +397,7 @@ void main() {
       expect(rm.currentTask?.artifacts?.first.name, 'The new Artifact name');
       expect(rm.currentTask?.artifacts?.first.metadata, {'Second': 2});
       final textPart =
-      rm.currentTask?.artifacts?.first.parts.first as A2ATextPart;
+          rm.currentTask?.artifacts?.first.parts.first as A2ATextPart;
       expect(textPart.text, 'New Part Text');
     });
   });
@@ -440,6 +440,65 @@ void main() {
       deHm.cleanupByTaskId('11');
       expect(deHm.getByTaskId('10'), isNotNull);
       expect(deHm.getByTaskId('11'), isNull);
+    });
+    test('Execution Event Queue Finish', () async {
+      final deh = A2ADefaultExecutionEventBus();
+      final eq = A2AExecutionEventQueue(deh);
+      final task = A2ATask()..id = '100';
+      final taskUpdate = A2ATaskStatusUpdateEvent()..taskId = '100';
+      final artifactUpdate = A2ATaskArtifactUpdateEvent()..taskId = '100';
+      deh.publish(task);
+      deh.publish(taskUpdate);
+      deh.publish(artifactUpdate);
+      expect(eq.count, 3);
+      final events = eq.events();
+      await for (final event in events) {
+        if (event is A2ATask) {
+          expect(event.id, '100');
+        }
+        if (event is A2ATaskArtifactUpdateEvent) {
+          expect(event.taskId, '100');
+        }
+        if (event is A2ATaskStatusUpdateEvent) {
+          expect(event.taskId, '100');
+        }
+        if (eq.count == 0) {
+          deh.finished();
+        }
+      }
+      expect(eq.count, 0);
+    });
+    test('Execution Event Queue Message ends', () async {
+      final deh = A2ADefaultExecutionEventBus();
+      final eq = A2AExecutionEventQueue(deh);
+      final message = A2AMessage()..messageId = '10';
+      final task = A2ATask()..id = '100';
+      final taskUpdate = A2ATaskStatusUpdateEvent()..taskId = '100';
+      final artifactUpdate = A2ATaskArtifactUpdateEvent()..taskId = '100';
+      deh.publish(task);
+      deh.publish(taskUpdate);
+      deh.publish(artifactUpdate);
+      expect(eq.count, 3);
+      var messagePublished = false;
+      final events = eq.events();
+      await for (final event in events) {
+        if (event is A2ATask) {
+          expect(event.id, '100');
+        }
+        if (event is A2ATaskArtifactUpdateEvent) {
+          expect(event.taskId, '100');
+        }
+        if (event is A2ATaskStatusUpdateEvent) {
+          expect(event.taskId, '100');
+        }
+        if (eq.count == 0) {
+          if (!messagePublished) {
+            deh.publish(A2AMessage);
+            messagePublished = true;
+          }
+        }
+      }
+      expect(eq.count, 0);
     });
   });
 }
