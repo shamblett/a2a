@@ -26,21 +26,19 @@ class A2AExecutionEventQueue {
   /// Provides an async generator that yields events from the event bus.
   /// Stops when a Message event is received or a TaskStatusUpdateEvent with final=true is received.
   Stream<A2AAgentExecutionEvent> events() async* {
-    while (!_stopped || count > 0) {
+    while (!_stopped && count > 0) {
       final event = _eventQueue.removeFirst();
       if (event is A2AMessage) {
         _stopped = true;
-        break;
-      } else if (event is A2ATaskStatusUpdateEvent) {
+      }
+      if (event is A2ATaskStatusUpdateEvent) {
         if (event.end != null) {
           if (event.end == true) {
             _stopped = true;
-            break;
           }
         }
-      } else {
-        yield event;
       }
+      yield event;
     }
   }
 
