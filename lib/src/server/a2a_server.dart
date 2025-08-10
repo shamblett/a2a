@@ -8,6 +8,7 @@
 library;
 
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:colorize/colorize.dart';
 import 'package:events_emitter/events_emitter.dart';
@@ -21,3 +22,4 @@ part 'src/a2a_server_error.dart';
 part 'src/a2a_result_manager.dart';
 part 'src/events/a2a_execution_event_bus.dart';
 part 'src/events/a2a_execution_event_bus_manager.dart';
+part 'src/events/a2a_execution_event_queue.dart';
