@@ -32,3 +32,4 @@ doc/api/
 
 
 /test/support/hosts/cli/uv.lock
+/coverage/
