@@ -36,11 +36,5 @@ class A2ADefaultExecutionEventBus extends EventEmitter
   void finished() => emit(A2AExecutionEventBus.a2aEBFinished);
 
   @override
-  void removeAllListeners(String type) {
-    for (final listener in listeners) {
-      if (listener.type == type) {
-        removeEventListener(listener);
-      }
-    }
-  }
+  void removeAllListeners(String type) => off();
 }

@@ -375,6 +375,31 @@ void main() {
     });
   });
   group('Events', () {
-    test('Default Execution Event Bus', () {});
+    test('Default Execution Event Bus', () {
+      bool eventHandlerCalled = false;
+      bool finishHandlerCalled = false;
+      void eventHandler(A2ATaskStatusUpdateEvent data) {
+        expect(data.taskId, '10');
+        eventHandlerCalled = true;
+      }
+      void finishHandler(_) {
+        finishHandlerCalled = true;
+      }
+      final deh = A2ADefaultExecutionEventBus();
+      final event = A2ATaskStatusUpdateEvent()..taskId = '10';
+      deh.on(A2AExecutionEventBus.a2aEBEvent, eventHandler);
+      deh.on(A2AExecutionEventBus.a2aEBFinished, finishHandler);
+      deh.publish(event);
+      expect(eventHandlerCalled, isTrue);
+      deh.finished();
+      expect(finishHandlerCalled, isTrue);
+      eventHandlerCalled = false;
+      finishHandlerCalled = false;
+      deh.removeAllListeners(A2AExecutionEventBus.a2aEBEvent);
+      deh.publish(event);
+      expect(eventHandlerCalled, isFalse);
+      deh.finished();
+      expect(finishHandlerCalled, isFalse);
+    });
   });
 }
