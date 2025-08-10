@@ -382,9 +382,11 @@ void main() {
         expect(data.taskId, '10');
         eventHandlerCalled = true;
       }
+
       void finishHandler(_) {
         finishHandlerCalled = true;
       }
+
       final deh = A2ADefaultExecutionEventBus();
       final event = A2ATaskStatusUpdateEvent()..taskId = '10';
       deh.on(A2AExecutionEventBus.a2aEBEvent, eventHandler);
@@ -400,6 +402,17 @@ void main() {
       expect(eventHandlerCalled, isFalse);
       deh.finished();
       expect(finishHandlerCalled, isFalse);
+    });
+    test('DefaultExecution Event Bus Manager', () {
+      final deHm = A2ADefaultExecutionEventBusManager();
+      expect(deHm.getByTaskId('10'), isNull);
+      deHm.createOrGetByTaskId('10');
+      deHm.createOrGetByTaskId('11');
+      expect(deHm.getByTaskId('10'), isNotNull);
+      expect(deHm.getByTaskId('11'), isNotNull);
+      deHm.cleanupByTaskId('11');
+      expect(deHm.getByTaskId('10'), isNotNull);
+      expect(deHm.getByTaskId('11'), isNull);
     });
   });
 }

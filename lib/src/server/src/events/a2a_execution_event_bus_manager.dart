@@ -24,7 +24,7 @@ class A2ADefaultExecutionEventBusManager
   /// @returns An instance of [A2AExecutionEventBus].
   @override
   A2AExecutionEventBus createOrGetByTaskId(String taskId) {
-    if (_taskIdToBus.keys.contains(taskId)) {
+    if (!_taskIdToBus.keys.contains(taskId)) {
       _taskIdToBus[taskId] = A2ADefaultExecutionEventBus();
     }
     return _taskIdToBus[taskId]!;
@@ -45,5 +45,6 @@ class A2ADefaultExecutionEventBusManager
     if (bus != null) {
       bus.removeAllListeners(taskId);
     }
+    _taskIdToBus.remove(taskId);
   }
 }
