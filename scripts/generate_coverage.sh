@@ -2,5 +2,5 @@
 #
 # Generate test coverage
 #
-cd ../coverage || exit
+cd coverage || exit
 genhtml lcov.info -o coverage --no-function-coverage -s -p "$(pwd)"
