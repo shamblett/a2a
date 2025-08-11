@@ -735,10 +735,48 @@ void main() {
       part = A2APart.fromJson(json);
       expect(part.toJson(), {});
     });
+    test('A2AFilePartVariant - with bytes', () {
+      var pVar = A2AFilePartVariant();
+      expect(pVar.toJson(), {});
+      var json = <String, dynamic>{};
+
+      final bytesPart = A2AFileWithBytes()
+        ..name = 'The name'
+        ..bytes = 'The bytes'
+        ..mimeType = 'image/png';
+      pVar = bytesPart;
+      json = pVar.toJson();
+      pVar = A2AFilePartVariant();
+      final bytes = A2AFilePartVariant.fromJson(json);
+      expect(bytes is A2AFileWithBytes, isTrue);
+      final bytes1 = bytes as A2AFileWithBytes;
+      expect(bytes1.mimeType, 'image/png');
+      expect(bytes1.bytes, 'The bytes');
+      expect(bytes1.name, 'The name');
+    });
+    test('A2AFilePartVariant - with URI', () {
+      var pVar = A2AFilePartVariant();
+      var json = <String, dynamic>{};
+
+      final urlPart = A2AFileWithUri()
+        ..name = 'The name'
+        ..uri = 'The uri'
+        ..mimeType = 'image/png';
+      pVar = urlPart;
+      json = pVar.toJson();
+      pVar = A2AFilePartVariant();
+      final bytes = A2AFilePartVariant.fromJson(json);
+      expect(bytes is A2AFileWithUri, isTrue);
+      final bytes1 = bytes as A2AFileWithUri;
+      expect(bytes1.mimeType, 'image/png');
+      expect(bytes1.uri, 'The uri');
+      expect(bytes1.name, 'The name');
+    });
   });
   group('Request', () {
     test('A2ASendMessageRequest', () {
       var request = A2ARequest();
+      expect(request.toJson(), {});
       var json = <String, dynamic>{};
 
       var testRequest = A2ASendMessageRequest()..id = 1;
@@ -754,7 +792,22 @@ void main() {
       var request = A2ARequest();
       var json = <String, dynamic>{};
 
-      var testRequest = A2ASendStreamingMessageRequest()..id = 1;
+      var testRequest = A2ASendStreamingMessageRequest()
+        ..id = 1
+        ..params = (A2AMessageSendParams()
+          ..metadata = {'First': 1}
+          ..message = A2AMessage()
+          ..configuration = (A2AMessageSendConfiguration()
+            ..acceptedOutputModes = ['text']
+            ..blocking = true
+            ..historyLength = 1
+            ..pushNotificationConfig = (A2APushNotificationConfig()
+              ..id = 'id'
+              ..url = 'url'
+              ..token = 'token'
+              ..authentication = (A2APushNotificationAuthenticationInfo()
+                ..credentials = 'credentials'
+                ..schemes = ['scheme1']))));
       request = testRequest;
       json = request.toJson();
       request = A2ARequest();
@@ -762,6 +815,37 @@ void main() {
       expect(request is A2ASendStreamingMessageRequest, isTrue);
       final request1 = request as A2ASendStreamingMessageRequest;
       expect(request1.id, 1);
+      expect(request1.params?.metadata, {'First': 1});
+      expect(request1.params?.configuration?.historyLength, 1);
+      expect(request1.params?.configuration?.acceptedOutputModes, ['text']);
+      expect(request1.params?.configuration?.blocking, isTrue);
+      expect(
+        request1.params?.configuration?.pushNotificationConfig?.token,
+        'token',
+      );
+      expect(
+        request1.params?.configuration?.pushNotificationConfig?.url,
+        'url',
+      );
+      expect(request1.params?.configuration?.pushNotificationConfig?.id, 'id');
+      expect(
+        request1
+            .params
+            ?.configuration
+            ?.pushNotificationConfig
+            ?.authentication
+            ?.schemes,
+        ['scheme1'],
+      );
+      expect(
+        request1
+            .params
+            ?.configuration
+            ?.pushNotificationConfig
+            ?.authentication
+            ?.credentials,
+        'credentials',
+      );
     });
     test('A2AGetTaskRequest', () {
       var request = A2ARequest();

@@ -618,13 +618,13 @@ Map<String, dynamic> _$A2AFileWithBytesToJson(A2AFileWithBytes instance) =>
 
 A2AFileWithUri _$A2AFileWithUriFromJson(Map<String, dynamic> json) =>
     A2AFileWithUri()
-      ..mimeTYpe = json['mimeTYpe'] as String
+      ..mimeType = json['mimeType'] as String
       ..name = json['name'] as String
       ..uri = json['uri'] as String;
 
 Map<String, dynamic> _$A2AFileWithUriToJson(A2AFileWithUri instance) =>
     <String, dynamic>{
-      'mimeTYpe': instance.mimeTYpe,
+      'mimeType': instance.mimeType,
       'name': instance.name,
       'uri': instance.uri,
     };

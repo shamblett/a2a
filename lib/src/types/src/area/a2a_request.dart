@@ -44,30 +44,7 @@ class A2ARequest {
 
   A2ARequest();
 
-  Map<String, dynamic> toJson() {
-    if (this is A2ASendMessageRequest) {
-      return (this as A2ASendMessageRequest).toJson();
-    }
-    if (this is A2ASendStreamingMessageRequest) {
-      return (this as A2ASendStreamingMessageRequest).toJson();
-    }
-    if (this is A2AGetTaskRequest) {
-      return (this as A2AGetTaskRequest).toJson();
-    }
-    if (this is A2ACancelTaskRequest) {
-      return (this as A2ACancelTaskRequest).toJson();
-    }
-    if (this is A2ASetTaskPushNotificationConfigRequest) {
-      return (this as A2ASetTaskPushNotificationConfigRequest).toJson();
-    }
-    if (this is A2AGetTaskPushNotificationConfigRequest) {
-      return (this as A2AGetTaskPushNotificationConfigRequest).toJson();
-    }
-    if (this is A2ATaskResubscriptionRequest) {
-      return (this as A2ATaskResubscriptionRequest).toJson();
-    }
-    return {};
-  }
+  Map<String, dynamic> toJson() => {};
 }
 
 /// JSON-RPC request model for the 'message/send' method.
