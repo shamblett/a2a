@@ -25,16 +25,7 @@ class A2ACancelTaskResponse {
     }
   }
 
-  Map<String, dynamic> toJson() {
-    if (this is A2AJSONRPCErrorResponse) {
-      return (this as A2AJSONRPCErrorResponse).toJson();
-    }
-    if (this is A2ACancelTaskSuccessResponse) {
-      return (this as A2ACancelTaskSuccessResponse).toJson();
-    }
-
-    return {};
-  }
+  Map<String, dynamic> toJson() => {};
 }
 
 /// JSON-RPC response for the 'tasks/cancel' method.

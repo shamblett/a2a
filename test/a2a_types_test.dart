@@ -200,6 +200,7 @@ void main() {
   group('Cancel Task Response', () {
     test('A2AJSONRPCErrorResponse', () {
       var cancelTaskResponse = A2ACancelTaskResponse();
+      expect(cancelTaskResponse.toJson(), {});
       var json = <String, dynamic>{};
 
       var testResponse = A2AJSONRPCErrorResponse()
@@ -233,7 +234,7 @@ void main() {
     });
   });
   group('Error', () {
-    test('A2AJSONRPCError', () {
+    test('A2AJSONRPCError - supported error', () {
       var error = A2AError();
       var json = <String, dynamic>{};
 
@@ -249,6 +250,19 @@ void main() {
       expect(testError1.data, {'First': 1});
       expect(testError1.message, 'The message');
       expect(testError1.code, A2AError.jsonRpc);
+    });
+    test('A2AJSONRPCError - unsupported error', () {
+      var error = A2AError();
+      var json = <String, dynamic>{};
+
+      var testError = A2AJSONRPCError()
+        ..message = 'The message'
+        ..data = {'First': 1}
+        ..code = 500;
+      error = testError;
+      json = error.toJson();
+      final newError = A2AError.fromJson(json);
+      expect(newError.rpcErrorCode, 500);
     });
     test('A2AJSONParseError', () {
       var error = A2AError();
