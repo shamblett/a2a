@@ -47,7 +47,9 @@ Future<int> main() async {
       '${Colorize('Fatal - agent service is not running - exiting')..red()}',
     );
     await Future.delayed(Duration(seconds: 1));
-    exit(-1);
+  }
+  if ( !isRunning ) {
+    return -1;
   }
 
   A2AClient? testClient;
