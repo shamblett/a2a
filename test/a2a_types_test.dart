@@ -13,6 +13,67 @@ import 'package:test/test.dart';
 import 'package:a2a/a2a.dart';
 
 void main() {
+  group('Agent', () {
+    test('A2AAgent', () {
+      A2AAgent();
+      final cap = A2AAgentCapabilities();
+      final json = cap.toJson();
+      final newCap = A2AAgentCapabilities.fromJson(json);
+    });
+    test('A2AAgentCapabilities', () {
+      final cap = A2AAgentCapabilities();
+      final ext = A2AAgentExtension()
+        ..description = 'Ext description'
+        ..params = {'First': 1}
+        ..required = true
+        ..uri = 'Ext URI';
+      cap.extensions =[ext];
+      cap.pushNotifications = true;
+      cap.stateTransitionHistory = true;
+      cap.streaming = true;
+      final json = cap.toJson();
+      final newCap = A2AAgentCapabilities.fromJson(json);
+      expect(newCap.streaming, isTrue);
+      expect(newCap.stateTransitionHistory, isTrue);
+      expect(newCap.pushNotifications, isTrue);
+      expect(newCap.extensions?.length, 1);
+      final newExt = newCap.extensions?[0];
+      expect(newExt?.uri, 'Ext URI');
+      expect(newExt?.required, isTrue);
+      expect(newExt?.params, {'First' : 1 });
+      expect(newExt?.description, 'Ext description');
+    });
+    test('A2AAgentCard', () {
+      final cap = A2AAgentCapabilities();
+      final ext = A2AAgentExtension()
+        ..description = 'Ext description'
+        ..params = {'First': 1}
+        ..required = true
+        ..uri = 'Ext URI';
+      cap.extensions = [ext];
+      cap.pushNotifications = true;
+      cap.stateTransitionHistory = true;
+      cap.streaming = true;
+      final card = A2AAgentCard();
+      card.description = 'Card description';
+      card.capabilities = cap;
+      card.defaultInputModes = ['text'];
+      card.defaultOutputModes = ['text'];
+      card.documentationUrl = 'Card doc url';
+      card.iconUrl = 'Card icon url';
+      card.name = 'Card name';
+      card.security = {'security': ['1', '2']};
+      card.securitySchemes = {'First': A2ASecurityScheme()};
+      card.skills = [A2AAgentSkill()];
+      card.supportsAuthenticatedExtendedCard = true;
+      card.url = 'Card.uri';
+      card.version = '1.0.0';
+      card.agentProvider = A2AAgentProvider();
+      final json = card.toJson();
+      final newCard = A2AAgentCard.fromJson(json);
+    });
+  });
+
   group('Security Schemes', () {
     test('A2AAPIKeySecurityScheme', () {
       var securityScheme = A2ASecurityScheme();
