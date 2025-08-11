@@ -8,13 +8,19 @@
 @TestOn('vm')
 library;
 
+import 'dart:io';
+
+import 'package:colorize/colorize.dart';
 import 'package:test/test.dart';
 
 import 'package:a2a/a2a.dart';
 
 /// Tests the client against the local 'helloworld' agent located at
-/// http://localhost:9999
-/// Please start this before running this test.
+/// http://localhost:9999.
+///
+/// Please start this before running this test otherwise the test will exit
+/// with an error message.
+///
 /// See the README file in test/support/agents/helloworld for more details
 /// on how to build and run the agent.
 ///
@@ -26,7 +32,24 @@ import 'package:a2a/a2a.dart';
 /// 'name': 'Returns hello world', 'tags': ['hello world']}], 'supportsAuthenticatedExtendedCard': True, 'url':
 /// 'http://localhost:9999/', 'version': '1.0.0'}
 
+Future<bool> isAgentRunning() async {
+  var result = await Process.run('sudo', ['fuser', '-v', '9999/tcp']);
+  if (result.exitCode == 0) {
+    return true;
+  }
+  return false;
+}
+
 Future<int> main() async {
+  final isRunning = await isAgentRunning();
+  if (!isRunning) {
+    print(
+      '${Colorize('Fatal - agent service is not running - exiting')..red()}',
+    );
+    await Future.delayed(Duration(seconds: 1));
+    exit(-1);
+  }
+
   A2AClient? testClient;
   const baseUrl = 'http://localhost:9999';
 
