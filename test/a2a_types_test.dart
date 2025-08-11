@@ -17,8 +17,17 @@ void main() {
     test('A2AAgent', () {
       A2AAgent();
       final cap = A2AAgentCapabilities();
-      final json = cap.toJson();
-      final newCap = A2AAgentCapabilities.fromJson(json);
+      var json = cap.toJson();
+      A2AAgentCapabilities.fromJson(json);
+      final pro = A2AAgentProvider();
+      json = pro.toJson();
+      A2AAgentProvider.fromJson(json);
+      final skill = A2AAgentSkill();
+      json = skill.toJson();
+      A2AAgentSkill.fromJson(json);
+      final card = A2AAgentCard();
+      json = card.toJson();
+      A2AAgentCard.fromJson(json);
     });
     test('A2AAgentCapabilities', () {
       final cap = A2AAgentCapabilities();
@@ -27,7 +36,7 @@ void main() {
         ..params = {'First': 1}
         ..required = true
         ..uri = 'Ext URI';
-      cap.extensions =[ext];
+      cap.extensions = [ext];
       cap.pushNotifications = true;
       cap.stateTransitionHistory = true;
       cap.streaming = true;
@@ -40,7 +49,7 @@ void main() {
       final newExt = newCap.extensions?[0];
       expect(newExt?.uri, 'Ext URI');
       expect(newExt?.required, isTrue);
-      expect(newExt?.params, {'First' : 1 });
+      expect(newExt?.params, {'First': 1});
       expect(newExt?.description, 'Ext description');
     });
     test('A2AAgentCard', () {
@@ -62,7 +71,9 @@ void main() {
       card.documentationUrl = 'Card doc url';
       card.iconUrl = 'Card icon url';
       card.name = 'Card name';
-      card.security = {'security': ['1', '2']};
+      card.security = {
+        'security': ['1', '2'],
+      };
       card.securitySchemes = {'First': A2ASecurityScheme()};
       card.skills = [A2AAgentSkill()];
       card.supportsAuthenticatedExtendedCard = true;
@@ -84,6 +95,34 @@ void main() {
       expect(newCard.defaultOutputModes, ['text']);
       expect(newCard.defaultInputModes, ['text']);
       expect(newCard.description, 'Card description');
+    });
+    test('A2AAgentProvider', () {
+      final pro = A2AAgentProvider()
+        ..url = 'The url'
+        ..organization = 'The organization';
+      final json = pro.toJson();
+      final newPro = A2AAgentProvider.fromJson(json);
+      expect(newPro.organization, 'The organization');
+      expect(newPro.url, 'The url');
+    });
+    test('A2AAgentSkill', () {
+      final skill = A2AAgentSkill()
+        ..description = 'The description'
+        ..name = 'The name'
+        ..id = 'The id'
+        ..examples = ['1', '2']
+        ..inputModes = ['text']
+        ..outputModes = ['text']
+        ..tags = ['tag'];
+      final json = skill.toJson();
+      final newSkill = A2AAgentSkill.fromJson(json);
+      expect(newSkill.tags, ['tag']);
+      expect(newSkill.outputModes, ['text']);
+      expect(newSkill.inputModes, ['text']);
+      expect(newSkill.examples, ['1', '2']);
+      expect(newSkill.id, 'The id');
+      expect(newSkill.name, 'The name');
+      expect(newSkill.description, 'The description');
     });
   });
 
