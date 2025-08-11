@@ -71,6 +71,19 @@ void main() {
       card.agentProvider = A2AAgentProvider();
       final json = card.toJson();
       final newCard = A2AAgentCard.fromJson(json);
+      expect(newCard.version, '1.0.0');
+      expect(newCard.url, 'Card.uri');
+      expect(newCard.supportsAuthenticatedExtendedCard, isTrue);
+      expect(newCard.skills.length, 1);
+      expect(newCard.securitySchemes?.length, 1);
+      expect(newCard.security?.length, 1);
+      expect(newCard.agentProvider, isNotNull);
+      expect(newCard.name, 'Card name');
+      expect(newCard.iconUrl, 'Card icon url');
+      expect(newCard.documentationUrl, 'Card doc url');
+      expect(newCard.defaultOutputModes, ['text']);
+      expect(newCard.defaultInputModes, ['text']);
+      expect(newCard.description, 'Card description');
     });
   });
 
