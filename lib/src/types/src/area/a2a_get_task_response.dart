@@ -25,16 +25,7 @@ class A2AGetTaskResponse {
     }
   }
 
-  Map<String, dynamic> toJson() {
-    if (this is A2AJSONRPCErrorResponseT) {
-      return (this as A2AJSONRPCErrorResponseT).toJson();
-    }
-    if (this is A2AGetTaskSuccessResponse) {
-      return (this as A2AGetTaskSuccessResponse).toJson();
-    }
-
-    return {};
-  }
+  Map<String, dynamic> toJson() => {};
 }
 
 /// Represents a JSON-RPC 2.0 Error Response object.

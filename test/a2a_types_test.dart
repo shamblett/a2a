@@ -455,6 +455,7 @@ void main() {
   group('Push Notification Config Response', () {
     test('A2AJSONRPCErrorResponseGTPR', () {
       var pncTaskResponse = A2AGetTaskPushNotificationConfigResponse();
+      expect(pncTaskResponse.toJson(), {});
       var json = <String, dynamic>{};
 
       var testResponse = A2AJSONRPCErrorResponseGTPR()
@@ -494,6 +495,7 @@ void main() {
   group('Task Response', () {
     test('A2AJSONRPCErrorResponseT', () {
       var taskResponse = A2AGetTaskResponse();
+      expect(taskResponse.toJson(), {});
       var json = <String, dynamic>{};
 
       var testResponse = A2AJSONRPCErrorResponseT()
@@ -701,6 +703,37 @@ void main() {
       expect(variant1.name, 'The name');
       expect(variant1.mimeType, 'image');
       expect(variant1.bytes, 'The bytes');
+    });
+    test('A2ADataPart', () {
+      var part = A2APart();
+      expect(part.toJson(), {});
+      var json = <String, dynamic>{};
+
+      final dataPart = A2ADataPart()
+        ..data = {'First': 1}
+        ..metadata = {'Second': 2};
+      part = dataPart;
+      json = part.toJson();
+      part = A2APart();
+      part = A2APart.fromJson(json);
+      expect(part is A2ADataPart, isTrue);
+      final part1 = part as A2ADataPart;
+      expect(part1.data, {'First': 1});
+      expect(part1.metadata, {'Second': 2});
+    });
+    test('A2APart unknown part kind', () {
+      var part = A2APart();
+      var json = <String, dynamic>{};
+
+      final textPart = A2ATextPart()
+        ..metadata = {'First': 1}
+        ..text = 'The text'
+        ..kind = 'unknown';
+      part = textPart;
+      json = part.toJson();
+      part = A2APart();
+      part = A2APart.fromJson(json);
+      expect(part.toJson(), {});
     });
   });
   group('Request', () {

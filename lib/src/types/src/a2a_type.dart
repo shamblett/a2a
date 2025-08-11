@@ -90,10 +90,9 @@ class A2AMessage {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is A2AMessage &&
-              runtimeType == other.runtimeType &&
-              messageId == other.messageId;
-
+      other is A2AMessage &&
+          runtimeType == other.runtimeType &&
+          messageId == other.messageId;
 }
 
 /// Represents an artifact generated for a task.
@@ -130,10 +129,9 @@ class A2AArtifact {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is A2AArtifact &&
-              runtimeType == other.runtimeType &&
-              artifactId == other.artifactId;
-
+      other is A2AArtifact &&
+          runtimeType == other.runtimeType &&
+          artifactId == other.artifactId;
 }
 
 /// The result object on success.

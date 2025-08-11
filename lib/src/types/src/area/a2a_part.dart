@@ -27,19 +27,7 @@ class A2APart {
     return A2APart();
   }
 
-  Map<String, dynamic> toJson() {
-    if (this is A2ATextPart) {
-      return A2ATextPart().toJson();
-    }
-    if (this is A2AFilePart) {
-      return A2AFilePart().toJson();
-    }
-    if (this is A2ADataPart) {
-      return A2ADataPart().toJson();
-    }
-
-    return {};
-  }
+  Map<String, dynamic> toJson() => {};
 }
 
 /// Represents a text segment within parts.
