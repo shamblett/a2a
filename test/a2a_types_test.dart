@@ -727,6 +727,53 @@ void main() {
       expect(taskResponse.end, isTrue);
       expect(testResponse1.id, 2);
     });
+    test('Send Push Notification Configuration Response Base - Error', () {
+      var messageResponse = SetTaskPushNotificationConfigResponse();
+      var json = <String, dynamic>{};
+
+      var testResponse = A2AJSONRPCErrorResponsePNCR()
+        ..error = A2AError()
+        ..id = 1;
+      messageResponse = testResponse;
+      json = messageResponse.toJson();
+
+      messageResponse = SetTaskPushNotificationConfigResponse();
+      messageResponse = SetTaskPushNotificationConfigResponse.fromJson(json);
+      expect(messageResponse.isError, true);
+      expect(messageResponse is A2AJSONRPCErrorResponsePNCR, isTrue);
+      final testResponse1 = messageResponse as A2AJSONRPCErrorResponsePNCR;
+      expect(testResponse1.error is A2AError, isTrue);
+      expect(testResponse1.id, 1);
+    });
+    test('Send Push Notification Configuration Response Base - Success', () {
+      var messageResponse = SetTaskPushNotificationConfigResponse();
+      expect(messageResponse.toJson(), {});
+      var json = <String, dynamic>{};
+
+      final config = A2ATaskPushNotificationConfig1()
+        ..id = '2'
+        ..token = 'Token';
+      var testResponse = A2ASetTaskPushNotificationConfigSuccessResponse()
+        ..id = 2
+        ..result = config;
+
+      messageResponse = testResponse;
+      json = messageResponse.toJson();
+      messageResponse = SetTaskPushNotificationConfigResponse();
+      messageResponse = SetTaskPushNotificationConfigResponse.fromJson(json);
+      expect(
+        messageResponse is A2ASetTaskPushNotificationConfigSuccessResponse,
+        isTrue,
+      );
+      final testResponse1 =
+          messageResponse as A2ASetTaskPushNotificationConfigSuccessResponse;
+      expect(testResponse1.result is A2ATaskPushNotificationConfig1, isTrue);
+      final taskResponse =
+          testResponse1.result as A2ATaskPushNotificationConfig1;
+      expect(taskResponse.id, '2');
+      expect(taskResponse.token, 'Token');
+      expect(testResponse1.id, 2);
+    });
     test('Send Push Notification Configuration Response - Error', () {
       var messageResponse = A2AJsonRpcResponse();
       var json = <String, dynamic>{};
