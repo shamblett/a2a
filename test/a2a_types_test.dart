@@ -129,6 +129,7 @@ void main() {
   group('Security Schemes', () {
     test('A2AAPIKeySecurityScheme', () {
       var securityScheme = A2ASecurityScheme();
+      expect(securityScheme.toJson(), {});
       var json = <String, dynamic>{};
 
       var testScheme = A2AAPIKeySecurityScheme()
@@ -168,14 +169,23 @@ void main() {
       var json = <String, dynamic>{};
 
       var testScheme = A2AOAuth2SecurityScheme()
-        ..description = 'The Description';
+        ..description = 'The Description'
+        ..flows = (A2AOAuthFlows()
+          ..authorizationCode = A2AAuthorizationCodeOAuthFlow()
+          ..clientCredentials = A2AClientCredentialsOAuthFlow()
+          ..implicit = A2AImplicitOAuthFlow()
+          ..password = A2APasswordOAuthFlow());
       securityScheme = testScheme;
       json = securityScheme.toJson();
       securityScheme = A2ASecurityScheme();
       securityScheme = A2ASecurityScheme.fromJson(json);
       expect(securityScheme is A2AOAuth2SecurityScheme, isTrue);
       final testScheme1 = securityScheme as A2AOAuth2SecurityScheme;
-      expect(testScheme1.flows, isNull);
+      expect(testScheme1.flows, isNotNull);
+      expect(testScheme1.flows?.password, isNotNull);
+      expect(testScheme1.flows?.implicit, isNotNull);
+      expect(testScheme1.flows?.clientCredentials, isNotNull);
+      expect(testScheme1.flows?..authorizationCode, isNotNull);
       expect(testScheme1.description, 'The Description');
       expect(testScheme1.type, 'oauth2');
     });
@@ -1111,6 +1121,7 @@ void main() {
   group('Task Push Notification Config Message Response', () {
     test('A2ASetTaskPushNotificationConfigResponse - Error', () {
       var messageResponse = A2ASetTaskPushNotificationConfigResponse();
+      expect(messageResponse.toJson(), {});
       var json = <String, dynamic>{};
 
       var testResponse = A2AJSONRPCErrorResponseSTPR()

@@ -24,14 +24,7 @@ class A2ASetTaskPushNotificationConfigResponse {
       ..isError = true;
   }
 
-  Map<String, dynamic> toJson() {
-    if (this is A2ASetTaskPushNotificationConfigSuccessResponseSTPR) {
-      return (this as A2ASetTaskPushNotificationConfigSuccessResponseSTPR)
-          .toJson();
-    }
-
-    return {};
-  }
+  Map<String, dynamic> toJson() => {};
 }
 
 /// /// JSON RPC error response object
