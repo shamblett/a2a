@@ -540,8 +540,47 @@ void main() {
     });
   });
   group('JSON RPC Response', () {
+    test('Send Message Response - Success', () {
+      var messageResponse = A2ASendMessageResponse();
+      expect(messageResponse.toJson(), {});
+      var json = <String, dynamic>{};
+
+      var testResponse = A2ASendMessageSuccessResponse()
+        ..id = 1
+        ..result = A2ATask();
+      messageResponse = testResponse;
+      json = messageResponse.toJson();
+
+      messageResponse = A2ASendMessageResponse();
+      messageResponse = A2ASendMessageResponse.fromJson(json);
+      expect(messageResponse.isError, isFalse);
+      expect(messageResponse is A2ASendMessageSuccessResponse, isTrue);
+      final testResponse1 = messageResponse as A2ASendMessageSuccessResponse;
+      expect(testResponse1.result is A2ATask, isTrue);
+      expect(testResponse1.id, 1);
+    });
     test('Send Message Response - Error', () {
+      var messageResponse = A2ASendMessageResponse();
+      expect(messageResponse.toJson(), {});
+      var json = <String, dynamic>{};
+
+      var testResponse = A2AJSONRPCErrorResponseS()
+        ..id = 1
+        ..error = A2AError();
+      messageResponse = testResponse;
+      json = messageResponse.toJson();
+
+      messageResponse = A2ASendMessageResponse();
+      messageResponse = A2ASendMessageResponse.fromJson(json);
+      expect(messageResponse.isError, true);
+      expect(messageResponse is A2AJSONRPCErrorResponseS, isTrue);
+      final testResponse1 = messageResponse as A2AJSONRPCErrorResponseS;
+      expect(testResponse1.error is A2AError, isTrue);
+      expect(testResponse1.id, 1);
+    });
+    test('Send Message Response - Error JSON', () {
       var messageResponse = A2AJsonRpcResponse();
+      expect(messageResponse.toJson(), {});
       var json = <String, dynamic>{};
 
       var testResponse = A2AJSONRPCErrorResponseS()
@@ -558,7 +597,7 @@ void main() {
       expect(testResponse1.error is A2AError, isTrue);
       expect(testResponse1.id, 1);
     });
-    test('Send Message Response - Success', () {
+    test('Send Message Response - Success - Task', () {
       var messageResponse = A2AJsonRpcResponse();
       var json = <String, dynamic>{};
 
@@ -569,8 +608,7 @@ void main() {
       var testResponse = A2ASendMessageSuccessResponse()
         ..id = 2
         ..result = task;
-
-      messageResponse = testResponse;
+      messageResponse = testResponse as A2ASendMessageResponse;
       json = messageResponse.toJson();
       messageResponse = A2AJsonRpcResponse();
       messageResponse = A2AJsonRpcResponse.fromJson(json);
@@ -583,7 +621,69 @@ void main() {
       expect(taskResponse.status is A2ATaskStatus, isTrue);
       expect(testResponse1.id, 2);
     });
-    test('Send Streaming Message Response - Error', () {
+    test('Send Message Response - Success - Message', () {
+      var messageResponse = A2AJsonRpcResponse();
+      var json = <String, dynamic>{};
+
+      final message = A2AMessage()
+        ..taskId = '1'
+        ..contextId = 'Context id';
+      var testResponse = A2ASendMessageSuccessResponse()
+        ..id = 2
+        ..result = message;
+
+      messageResponse = testResponse as A2ASendMessageResponse;
+      json = messageResponse.toJson();
+      messageResponse = A2AJsonRpcResponse();
+      messageResponse = A2AJsonRpcResponse.fromJson(json);
+      expect(messageResponse is A2ASendMessageSuccessResponse, isTrue);
+      final testResponse1 = messageResponse as A2ASendMessageSuccessResponse;
+      expect(testResponse1.result is A2AMessage, isTrue);
+      final taskResponse = testResponse1.result as A2AMessage;
+      expect(taskResponse.contextId, 'Context id');
+      expect(taskResponse.taskId, '1');
+      expect(testResponse1.id, 2);
+    });
+    test('Send Streaming Message Response - Success', () {
+      var messageResponse = A2ASendStreamingMessageResponse();
+      expect(messageResponse.toJson(), {});
+      var json = <String, dynamic>{};
+
+      var testResponse = A2ASendStreamingMessageSuccessResponse()
+        ..id = 1
+        ..result = A2ATask();
+      messageResponse = testResponse;
+      json = messageResponse.toJson();
+
+      messageResponse = A2ASendStreamingMessageResponse();
+      messageResponse = A2ASendStreamingMessageResponse.fromJson(json);
+      expect(messageResponse.isError, isFalse);
+      expect(messageResponse is A2ASendStreamingMessageSuccessResponse, isTrue);
+      final testResponse1 =
+          messageResponse as A2ASendStreamingMessageSuccessResponse;
+      expect(testResponse1.result is A2ATask, isTrue);
+      expect(testResponse1.id, 1);
+    });
+    test('Send Message Response - Error', () {
+      var messageResponse = A2ASendStreamingMessageResponse();
+      expect(messageResponse.toJson(), {});
+      var json = <String, dynamic>{};
+
+      var testResponse = A2AJSONRPCErrorResponseSS()
+        ..id = 1
+        ..error = A2AError();
+      messageResponse = testResponse;
+      json = messageResponse.toJson();
+
+      messageResponse = A2ASendStreamingMessageResponse();
+      messageResponse = A2ASendStreamingMessageResponse.fromJson(json);
+      expect(messageResponse.isError, true);
+      expect(messageResponse is A2AJSONRPCErrorResponseSS, isTrue);
+      final testResponse1 = messageResponse as A2AJSONRPCErrorResponseSS;
+      expect(testResponse1.error is A2AError, isTrue);
+      expect(testResponse1.id, 1);
+    });
+    test('Send Streaming Message Response - Error JSON', () {
       var messageResponse = A2AJsonRpcResponse();
       var json = <String, dynamic>{};
 
