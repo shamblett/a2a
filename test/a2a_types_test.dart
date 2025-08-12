@@ -945,6 +945,7 @@ void main() {
   group('Send Stream Message Response', () {
     test('A2ASendMessageRequest - Error', () {
       var messageResponse = A2ASendStreamMessageResponse();
+      expect(messageResponse.toJson(), {});
       var json = <String, dynamic>{};
 
       var testResponse = A2AJSONRPCErrorResponseSSM()
@@ -961,7 +962,7 @@ void main() {
       expect(testResponse1.error is A2AError, isTrue);
       expect(testResponse1.id, 1);
     });
-    test('Send Stream Message Response - Success', () {
+    test('Send Stream Message Response - Success - Task', () {
       var messageResponse = A2ASendStreamMessageResponse();
       var json = <String, dynamic>{};
 
@@ -976,16 +977,135 @@ void main() {
       messageResponse = testResponse;
       json = messageResponse.toJson();
       messageResponse = A2ASendStreamMessageResponse();
-      messageResponse = A2ASendStreamMessageSuccessResponse.fromJson(json);
+      messageResponse = A2ASendStreamMessageResponse.fromJson(json);
       expect(messageResponse is A2ASendStreamMessageSuccessResponse, isTrue);
       final testResponse1 =
           messageResponse as A2ASendStreamMessageSuccessResponse;
       expect(testResponse1.result is A2ATask, isTrue);
+      expect(testResponse1.id, 2);
       final taskResponse = testResponse1.result as A2ATask;
       expect(taskResponse.contextId, 'Context id');
       expect(taskResponse.id, '3');
       expect(taskResponse.status is A2ATaskStatus, isTrue);
       expect(testResponse1.id, 2);
+    });
+    test('Send Stream Message Response - Success - Message', () {
+      var messageResponse = A2ASendStreamMessageResponse();
+      var json = <String, dynamic>{};
+
+      final message = A2AMessage()
+        ..metadata = {'First': 1}
+        ..extensions = ['text']
+        ..taskId = '2'
+        ..messageId = '100'
+        ..contextId = '300'
+        ..parts = [A2ATextPart()];
+      var testResponse = A2ASendStreamMessageSuccessResponse()
+        ..id = 2
+        ..result = message;
+
+      messageResponse = testResponse;
+      json = messageResponse.toJson();
+      messageResponse = A2ASendStreamMessageResponse();
+      messageResponse = A2ASendStreamMessageResponse.fromJson(json);
+      expect(messageResponse is A2ASendStreamMessageSuccessResponse, isTrue);
+      final testResponse1 =
+          messageResponse as A2ASendStreamMessageSuccessResponse;
+      expect(testResponse1.result is A2AMessage, isTrue);
+      expect(testResponse1.id, 2);
+      final taskResponse = testResponse1.result as A2AMessage;
+      expect(taskResponse.contextId, '300');
+      expect(taskResponse.taskId, '2');
+      expect(taskResponse.parts?.length, 1);
+      expect(taskResponse.messageId, '100');
+      expect(taskResponse.extensions, ['text']);
+      expect(taskResponse.metadata, {'First': 1});
+    });
+    test(
+      'Send Stream Message Response - Success = Task Status Update Event',
+      () {
+        var updateResponse = A2ASendStreamMessageResponse();
+        var json = <String, dynamic>{};
+
+        final update = A2ATaskStatusUpdateEvent()
+          ..metadata = {'First': 1}
+          ..contextId = '300'
+          ..taskId = '2'
+          ..end = true
+          ..status = A2ATaskStatus();
+        var testResponse = A2ASendStreamMessageSuccessResponse()
+          ..id = 2
+          ..result = update;
+
+        updateResponse = testResponse;
+        json = updateResponse.toJson();
+        updateResponse = A2ASendStreamMessageResponse();
+        updateResponse = A2ASendStreamMessageResponse.fromJson(json);
+        expect(updateResponse is A2ASendStreamMessageSuccessResponse, isTrue);
+        final testResponse1 =
+            updateResponse as A2ASendStreamMessageSuccessResponse;
+        expect(testResponse1.result is A2ATaskStatusUpdateEvent, isTrue);
+        expect(testResponse1.id, 2);
+        final taskResponse = testResponse1.result as A2ATaskStatusUpdateEvent;
+        expect(taskResponse.contextId, '300');
+        expect(taskResponse.taskId, '2');
+        expect(taskResponse.end, isTrue);
+        expect(taskResponse.metadata, {'First': 1});
+      },
+    );
+    test(
+      'Send Stream Message Response - Success = Task Artifact Update Event',
+      () {
+        var updateResponse = A2ASendStreamMessageResponse();
+        var json = <String, dynamic>{};
+
+        final update = A2ATaskArtifactUpdateEvent()
+          ..metadata = {'First': 1}
+          ..contextId = '300'
+          ..taskId = '2'
+          ..append = false
+          ..artifact = A2AArtifact();
+        var testResponse = A2ASendStreamMessageSuccessResponse()
+          ..id = 2
+          ..result = update;
+
+        updateResponse = testResponse;
+        json = updateResponse.toJson();
+        updateResponse = A2ASendStreamMessageResponse();
+        updateResponse = A2ASendStreamMessageResponse.fromJson(json);
+        expect(updateResponse is A2ASendStreamMessageSuccessResponse, isTrue);
+        final testResponse1 =
+            updateResponse as A2ASendStreamMessageSuccessResponse;
+        expect(testResponse1.result is A2ATaskArtifactUpdateEvent, isTrue);
+        expect(testResponse1.id, 2);
+        final taskResponse = testResponse1.result as A2ATaskArtifactUpdateEvent;
+        expect(taskResponse.contextId, '300');
+        expect(taskResponse.taskId, '2');
+        expect(taskResponse.append, isFalse);
+        expect(taskResponse.metadata, {'First': 1});
+        expect(taskResponse.artifact, isNotNull);
+      },
+    );
+    test('Send Stream Message Response - Success - Unknown kind', () {
+      var updateResponse = A2ASendStreamMessageResponse();
+      var json = <String, dynamic>{};
+
+      final update = A2ATaskArtifactUpdateEvent()
+        ..metadata = {'First': 1}
+        ..contextId = '300'
+        ..taskId = '2'
+        ..append = false
+        ..artifact = A2AArtifact()
+        ..kind = 'unknown';
+      var testResponse = A2ASendStreamMessageSuccessResponse()
+        ..id = 2
+        ..result = update;
+
+      updateResponse = testResponse;
+      json = updateResponse.toJson();
+      updateResponse = A2ASendStreamMessageResponse();
+      updateResponse = A2ASendStreamMessageResponse.fromJson(json);
+      expect(updateResponse is A2ASendStreamMessageSuccessResponse, isTrue);
     });
   });
   group('Task Push Notification Config Message Response', () {
