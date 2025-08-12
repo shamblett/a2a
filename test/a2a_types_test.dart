@@ -664,7 +664,7 @@ void main() {
       expect(testResponse1.result is A2ATask, isTrue);
       expect(testResponse1.id, 1);
     });
-    test('Send Message Response - Error', () {
+    test('Send Streaming Message Response - Error', () {
       var messageResponse = A2ASendStreamingMessageResponse();
       expect(messageResponse.toJson(), {});
       var json = <String, dynamic>{};
@@ -701,7 +701,7 @@ void main() {
       expect(testResponse1.error is A2AError, isTrue);
       expect(testResponse1.id, 1);
     });
-    test('Send Streaming Message Response - Success', () {
+    test('Send Streaming Message Response - Success - Task', () {
       var messageResponse = A2AJsonRpcResponse();
       var json = <String, dynamic>{};
 
@@ -725,6 +725,66 @@ void main() {
       expect(taskResponse.contextId, 'Context id');
       expect(taskResponse.taskId, '4');
       expect(taskResponse.end, isTrue);
+      expect(testResponse1.id, 2);
+    });
+    test('Send Streaming Message Response - Success - Message', () {
+      var messageResponse = A2AJsonRpcResponse();
+      var json = <String, dynamic>{};
+
+      final updateEvent = A2AMessage()
+        ..metadata = {'First': 1}
+        ..taskId = '1'
+        ..messageId = '100'
+        ..contextId = '200'
+        ..extensions = ['text'];
+
+      var testResponse = A2ASendStreamingMessageSuccessResponse()
+        ..id = 2
+        ..result = updateEvent;
+
+      messageResponse = testResponse;
+      json = messageResponse.toJson();
+      messageResponse = A2AJsonRpcResponse();
+      messageResponse = A2AJsonRpcResponse.fromJson(json);
+      expect(messageResponse is A2ASendMessageSuccessResponse, isTrue);
+      final testResponse1 = messageResponse as A2ASendMessageSuccessResponse;
+      expect(testResponse1.result is A2AMessage, isTrue);
+      final taskResponse = testResponse1.result as A2AMessage;
+      expect(taskResponse.contextId, '200');
+      expect(taskResponse.taskId, '1');
+      expect(taskResponse.messageId, '100');
+      expect(taskResponse.metadata, {'First': 1});
+      expect(taskResponse.extensions, ['text']);
+      expect(testResponse1.id, 2);
+    });
+    test('Send Streaming Message Response - Success - Artifact Update', () {
+      var messageResponse = A2AJsonRpcResponse();
+      var json = <String, dynamic>{};
+
+      final updateEvent = A2ATaskArtifactUpdateEvent()
+        ..taskId = '100'
+        ..metadata = {'First': 1}
+        ..append = true
+        ..artifact = A2AArtifact();
+
+      var testResponse = A2ASendStreamingMessageSuccessResponse()
+        ..id = 2
+        ..result = updateEvent;
+
+      messageResponse = testResponse;
+      json = messageResponse.toJson();
+      messageResponse = A2AJsonRpcResponse();
+      messageResponse = A2AJsonRpcResponse.fromJson(json);
+      expect(messageResponse is A2ASendStreamingMessageSuccessResponse, isTrue);
+      final testResponse1 =
+          messageResponse as A2ASendStreamingMessageSuccessResponse;
+      expect(testResponse1.result is A2ATaskArtifactUpdateEvent, isTrue);
+      final taskResponse = testResponse1.result as A2ATaskArtifactUpdateEvent;
+
+      expect(taskResponse.taskId, '100');
+      expect(taskResponse.metadata, {'First': 1});
+      expect(taskResponse.append, isTrue);
+      expect(taskResponse.artifact, isNotNull);
       expect(testResponse1.id, 2);
     });
     test('Send Push Notification Configuration Response Base - Error', () {
@@ -819,6 +879,19 @@ void main() {
       expect(taskResponse.id, '2');
       expect(taskResponse.token, 'Token');
       expect(testResponse1.id, 2);
+    });
+  });
+  group('JSON RPC Request', () {
+    test('Request To/From', () {
+      final request = A2AJsonRpcRequest()
+        ..id = '100'
+        ..method = 'post'
+        ..params = {'First': 1};
+      final json = request.toJson();
+      final request1 = A2AJsonRpcRequest.fromJson(json);
+      expect(request1.params, {'First': 1});
+      expect(request1.id, '100');
+      expect(request1.method, 'post');
     });
   });
   group('Parts', () {

@@ -59,12 +59,9 @@ class A2ASendStreamingMessageResponse extends A2AJsonRpcResponse {
   A2ASendStreamingMessageResponse();
 
   factory A2ASendStreamingMessageResponse.fromJson(Map<String, dynamic> json) {
-    if (json.containsKey('error')) {
-      return A2AJSONRPCErrorResponseSS.fromJson(json)..isError = true;
-      ;
-    } else {
-      return A2ASendStreamingMessageSuccessResponse().fromJson((json));
-    }
+    return json.containsKey('error')
+        ? (A2AJSONRPCErrorResponseSS.fromJson(json)..isError = true)
+        : A2ASendStreamingMessageSuccessResponse().fromJson((json));
   }
 
   @override
