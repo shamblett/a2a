@@ -23,3 +23,4 @@ part 'src/a2a_result_manager.dart';
 part 'src/events/a2a_execution_event_bus.dart';
 part 'src/events/a2a_execution_event_bus_manager.dart';
 part 'src/events/a2a_execution_event_queue.dart';
+part 'src/request_handler/a2a_request_handler.dart';
