@@ -18,6 +18,8 @@ typedef A2ASV = Map<String, dynamic>;
 /// Result type
 typedef A2AResult = Object;
 
+typedef A2ATaskOrMessage = Object;
+
 /// Agent Execution Event
 typedef A2AAgentExecutionEvent = Object;
 
