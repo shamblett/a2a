@@ -14,15 +14,18 @@ abstract interface class A2ARequestHandler {
 
   Stream<A2AResult> sendMessageStream(A2AMessageSendParams params);
 
-  Future<A2ATask> getTask(A2ATaskQueryParams);
+  Future<A2ATask> getTask(A2ATaskQueryParams params);
 
-  Future<A2ATask> cancelTask(A2ATaskQueryParams);
+  Future<A2ATask> cancelTask(A2ATaskQueryParams params);
 
-  Future<A2ATaskPushNotificationConfig>? setTaskPushNotificationConfig (A2ATaskPushNotificationConfig);
+  Future<A2ATaskPushNotificationConfig>? setTaskPushNotificationConfig(
+    A2ATaskPushNotificationConfig params,
+  );
 
-  Future<A2ATaskPushNotificationConfig>? getTaskPushNotificationConfig (A2ATaskIdParams);
+  Future<A2ATaskPushNotificationConfig>? getTaskPushNotificationConfig(
+    A2ATaskIdParams params,
+  );
 
   /// Does not return A2AMessage
-  Stream<A2AResult> resubscribe(A2ATaskIdParams);
+  Stream<A2AResult> resubscribe(A2ATaskIdParams params);
 }
-
