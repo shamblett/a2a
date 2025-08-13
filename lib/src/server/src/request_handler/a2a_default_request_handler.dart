@@ -14,6 +14,25 @@ const terminalStates = [
   A2ATaskState.rejected,
 ];
 
-//class A2ADefaultRequestHandler implements A2ARequestHandler {
+class A2ADefaultRequestHandler implements A2ARequestHandler {
+  final A2AAgentCard _agentCard;
 
-//}
+  final A2ATaskStore _taskStore;
+
+  final A2AAgentExecutor _agentExecutor;
+
+  final A2AExecutionEventBusManager _eventBusManager;
+
+  // Store for push notification configurations (could be part of TaskStore or separate)
+  final Map<String, A2APushNotificationConfig> _pushNotificationConfigs = {};
+
+  @override
+  Future<A2AAgentCard> get agentCard async => _agentCard;
+
+  A2ADefaultRequestHandler(
+    this._agentCard,
+    this._taskStore,
+    this._agentExecutor,
+    this._eventBusManager,
+  );
+}
