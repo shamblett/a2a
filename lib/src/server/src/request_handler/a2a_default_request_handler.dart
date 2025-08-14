@@ -41,6 +41,7 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
     this._eventBusManager,
   );
 
+  @override
   Future<A2ATaskOrMessage> sendMessage(A2AMessageSendParams params) async {
     final incomingMessage = params.message;
     if (incomingMessage.messageId.isEmpty) {
@@ -58,7 +59,11 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
     final resultManager = A2AResultManager(_taskStore);
     resultManager.context = incomingMessage;
 
-    final requestContext = await _createRequestContext(incomingMessage, taskId, false);
+    final requestContext = await _createRequestContext(
+      incomingMessage,
+      taskId,
+      false,
+    );
     // Use the (potentially updated) contextId from requestContext
     final finalMessageForAgent = requestContext.userMessage;
 
@@ -68,6 +73,42 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
 
     // Start agent execution (non-blocking).
     // It runs in the background and publishes events to the eventBus.
+    unawaited(
+      _agentExecutor.execute(requestContext, eventBus).catchError((err) {
+        print(
+          '${Colorize('A2ADefaultRequestHandler::sendMessage '
+          'Agent execution failed for message ${finalMessageForAgent.messageId}, error is $err').red()}',
+        );
+        // Publish a synthetic error event, which will be handled by the ResultManager
+        // and will also settle the firstResultPromise for non-blocking calls.
+        final errorTask = A2ATask()
+          ..id = requestContext.task?.id ?? _uuid.v4()
+          ..contextId = finalMessageForAgent.contextId!
+          ..status = (A2ATaskStatus()
+            ..state = A2ATaskState.failed
+            ..message = (A2AMessage()
+              ..messageId = _uuid.v4()
+              ..parts = ([A2ATextPart()..text = 'Agent execution error: $err'])
+              ..taskId = requestContext.task?.id
+              ..contextId = finalMessageForAgent.contextId)
+            ..timestamp = A2AUtilities.getCurrentTimestamp())
+          ..history = requestContext.task?.history ?? [];
+
+        // Add incoming message to history
+        if (!errorTask.history!.contains(finalMessageForAgent)) {
+          errorTask.history?.add(finalMessageForAgent);
+        }
+        eventBus.publish(errorTask);
+        // And publish a final status update
+        eventBus.publish(
+          A2ATaskStatusUpdateEvent()
+            ..taskId = errorTask.id
+            ..contextId = errorTask.contextId
+            ..status = errorTask.status
+            ..end = true,
+        );
+      }),
+    );
   }
 
   Future<A2ARequestContext> _createRequestContext(
