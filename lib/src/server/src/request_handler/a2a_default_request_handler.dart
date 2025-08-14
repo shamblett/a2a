@@ -7,9 +7,6 @@
 
 part of '../../a2a_server.dart';
 
-typedef ResultResolver = void Function(Object value);
-typedef ResultRejector = void Function(Object? reason);
-
 const terminalStates = [
   A2ATaskState.completed,
   A2ATaskState.failed,
@@ -43,6 +40,7 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
 
   @override
   Future<A2ATaskOrMessage> sendMessage(A2AMessageSendParams params) async {
+    final completer = Completer<A2ATaskOrMessage>();
     final incomingMessage = params.message;
     if (incomingMessage.messageId.isEmpty) {
       throw A2AServerError.invalidParams(
@@ -109,6 +107,34 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
         );
       }),
     );
+
+    if (isBlocking) {
+      // In blocking mode, wait for the full processing to complete.
+      await _processEvents(taskId, resultManager, eventQueue, A2AResolver());
+      final finalResult = resultManager.finalResult;
+      if (finalResult == null) {
+        throw A2AServerError.internalError(
+          'A2ADefaultRequestHandler::sendMessage '
+          'Agent execution finished without a result, and no task context found.',
+        null);
+      }
+      completer.complete(finalResult);
+    } else {
+      // In non-blocking mode, return a Future that will be settled by fullProcessing.
+      final resolver = A2AResolver();
+      await _processEvents(taskId, resultManager, eventQueue, resolver);
+      if ( resolver.result != null ) {
+        completer.complete(resolver.result);
+      } else if (resolver.error != null ) {
+        completer.completeError(resolver.error!);
+      } else {
+        final internalError = A2AServerError.internalError('A2ADefaultRequestHandler::sendMessage no result or error '
+            ' returned from _processEvents', null);
+        completer.completeError(internalError);
+      }
+    }
+
+    return completer.future;
   }
 
   Future<A2ARequestContext> _createRequestContext(
@@ -172,40 +198,44 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
     String taskId,
     A2AResultManager resultManager,
     A2AExecutionEventQueue eventQueue,
-    ResultResolver? firstResultResolver,
-    ResultRejector? firstResultRejector,
+    A2AResolver resolver,
   ) async {
     bool firstResultSent = false;
 
     try {
       await for (final event in eventQueue.events()) {
-        if (firstResultResolver != null && !firstResultSent) {
+        if (!firstResultSent) {
           if (event is A2AMessage || event is A2ATask) {
-            firstResultResolver(event);
+            resolver.result = event;
             firstResultSent = true;
           }
         }
       }
 
-      if (firstResultRejector != null && !firstResultSent) {
+      if (!firstResultSent) {
         final error = A2AServerError.internalError(
           'A2ADefaultRequestHandler::_processEvents '
           'Execution finished before a message or task was produced.',
           null,
         );
-        firstResultRejector(error);
+        resolver.error = error ;
       }
     } catch (e) {
       print(
         '${Colorize('A2ADefaultRequestHandler::_processEvents '
         'Event processing loop failed for task $taskId.').red()}',
       );
-      if (firstResultRejector != null && !firstResultSent) {
-        firstResultRejector(e);
+      if (!firstResultSent) {
+        resolver.error = e;
       }
       rethrow;
     } finally {
       _eventBusManager.cleanupByTaskId(taskId);
     }
   }
+}
+
+class A2AResolver {
+  A2ATaskOrMessage? result;
+  Object? error;
 }
