@@ -7,6 +7,9 @@
 
 part of '../../a2a_server.dart';
 
+typedef ResultResolver = void Function(Object value);
+typedef ResultRejector = void Function(Object? reason);
+
 const terminalStates = [
   A2ATaskState.completed,
   A2ATaskState.failed,
@@ -93,5 +96,46 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
       taskId,
       messageForContext.contextId!,
     );
+  }
+
+  Future<void> _processEvents(
+    String taskId,
+    A2AResultManager resultManager,
+    A2AExecutionEventQueue eventQueue,
+    ResultResolver? firstResultResolver,
+    ResultRejector? firstResultRejector,
+  ) async {
+    bool firstResultSent = false;
+
+    try {
+      await for (final event in eventQueue.events()) {
+        if (firstResultResolver != null && !firstResultSent) {
+          if (event is A2AMessage || event is A2ATask) {
+            firstResultResolver(event);
+            firstResultSent = true;
+          }
+        }
+      }
+
+      if (firstResultRejector != null && !firstResultSent) {
+        final error = A2AServerError.internalError(
+          'A2ADefaultRequestHandler::_processEvents '
+          'Execution finished before a message or task was produced.',
+          null,
+        );
+        firstResultRejector(error);
+      }
+    } catch (e) {
+      print(
+        '${Colorize('A2ADefaultRequestHandler::_processEvents '
+        'Event processing loop failed for task $taskId.').red()}',
+      );
+      if (firstResultRejector != null && !firstResultSent) {
+        firstResultRejector(e);
+      }
+      rethrow;
+    } finally {
+      _eventBusManager.cleanupByTaskId(taskId);
+    }
   }
 }
