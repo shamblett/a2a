@@ -290,6 +290,32 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
     return params;
   }
 
+  @override
+  Future<A2ATaskPushNotificationConfig>? getTaskPushNotificationConfig(
+    A2ATaskIdParams params,
+  ) async {
+    if (_agentCard.capabilities.pushNotifications == false) {
+      throw A2AServerError.pushNotificationNotSupported();
+    }
+
+    final taskAndHistory = await _taskStore.load(params.id);
+    if (taskAndHistory == null) {
+      throw A2AServerError.taskNotFound(params.id);
+    }
+
+    final config = _pushNotificationConfigs[params.id];
+    if (config == null) {
+      throw A2AServerError.internalError(
+        ''
+        'Push notification config not found for task ${params.id}.',
+        null,
+      );
+    }
+    return A2ATaskPushNotificationConfig()
+      ..pushNotificationConfig = config
+      ..taskId = params.id;
+  }
+
   Future<A2ARequestContext> _createRequestContext(
     A2AMessage incomingMessage,
     String taskId,
