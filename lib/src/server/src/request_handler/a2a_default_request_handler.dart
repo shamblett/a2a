@@ -116,25 +116,98 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
         throw A2AServerError.internalError(
           'A2ADefaultRequestHandler::sendMessage '
           'Agent execution finished without a result, and no task context found.',
-        null);
+          null,
+        );
       }
       completer.complete(finalResult);
     } else {
       // In non-blocking mode, return a Future that will be settled by fullProcessing.
       final resolver = A2AResolver();
       await _processEvents(taskId, resultManager, eventQueue, resolver);
-      if ( resolver.result != null ) {
+      if (resolver.result != null) {
         completer.complete(resolver.result);
-      } else if (resolver.error != null ) {
+      } else if (resolver.error != null) {
         completer.completeError(resolver.error!);
       } else {
-        final internalError = A2AServerError.internalError('A2ADefaultRequestHandler::sendMessage no result or error '
-            ' returned from _processEvents', null);
+        final internalError = A2AServerError.internalError(
+          'A2ADefaultRequestHandler::sendMessage no result or error '
+          ' returned from _processEvents',
+          null,
+        );
         completer.completeError(internalError);
       }
     }
 
     return completer.future;
+  }
+
+  @override
+  Stream<A2AResult> sendMessageStream(A2AMessageSendParams params) async* {
+    final completer = Completer<A2AResult>();
+    final incomingMessage = params.message;
+    if (incomingMessage.messageId.isEmpty) {
+      throw A2AServerError.invalidParams(
+        'A2ADefaultRequestHandler::sendMessageStream message.messageId is required.',
+        null,
+      );
+    }
+
+    // Default to blocking behavior if 'blocking' is not explicitly false.
+    final isBlocking = params.configuration?.blocking != false;
+    final taskId = incomingMessage.taskId ?? _uuid.v4();
+
+    // Instantiate ResultManager before creating RequestContext
+    final resultManager = A2AResultManager(_taskStore);
+    resultManager.context = incomingMessage;
+
+    final requestContext = await _createRequestContext(
+      incomingMessage,
+      taskId,
+      false,
+    );
+    // Use the (potentially updated) contextId from requestContext
+    final finalMessageForAgent = requestContext.userMessage;
+
+    final eventBus = _eventBusManager.createOrGetByTaskId(taskId);
+    // EventQueue should be attached to the bus, before the agent execution begins.
+    final eventQueue = A2AExecutionEventQueue(eventBus!);
+
+    // Start agent execution (non-blocking).
+    // It runs in the background and publishes events to the eventBus.
+    unawaited(
+      _agentExecutor.execute(requestContext, eventBus).catchError((err) {
+        print(
+          '${Colorize('A2ADefaultRequestHandler::sendMessageStream '
+          'Agent execution failed for stream message ${finalMessageForAgent.messageId}, error is $err').red()}',
+        );
+        // Publish a synthetic error event, which will be handled by the ResultManager
+        // TODO task-status
+        final errorTask = A2ATask()
+          ..id = requestContext.task?.id ?? _uuid.v4()
+          ..contextId = finalMessageForAgent.contextId!
+          ..status = (A2ATaskStatus()
+            ..state = A2ATaskState.failed
+            ..message = (A2AMessage()
+              ..messageId = _uuid.v4()
+              ..parts = ([A2ATextPart()..text = 'Agent execution error: $err'])
+              ..taskId = requestContext.task?.id
+              ..contextId = finalMessageForAgent.contextId)
+            ..timestamp = A2AUtilities.getCurrentTimestamp())
+          ..history = requestContext.task?.history ?? [];
+
+        eventBus.publish(errorTask);
+      }),
+    );
+
+    try {
+      await for (final event in eventQueue.events()) {
+        await resultManager.processEvent(event); // Update store in background
+        yield event; // Stream the event to the client
+      }
+    } finally {
+      // Cleanup when the stream is fully consumed or breaks
+      _eventBusManager.cleanupByTaskId(taskId);
+    }
   }
 
   Future<A2ARequestContext> _createRequestContext(
@@ -218,7 +291,7 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
           'Execution finished before a message or task was produced.',
           null,
         );
-        resolver.error = error ;
+        resolver.error = error;
       }
     } catch (e) {
       print(
