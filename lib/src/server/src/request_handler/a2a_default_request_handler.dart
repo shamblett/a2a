@@ -21,6 +21,13 @@ const nonCancelableStates = [
   A2ATaskState.rejected,
 ];
 
+const finalStates = [
+  A2ATaskState.completed,
+  A2ATaskState.failed,
+  A2ATaskState.canceled,
+  A2ATaskState.rejected,
+];
+
 class A2ADefaultRequestHandler implements A2ARequestHandler {
   final A2AAgentCard _agentCard;
 
@@ -314,6 +321,65 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
     return A2ATaskPushNotificationConfig()
       ..pushNotificationConfig = config
       ..taskId = params.id;
+  }
+
+  @override
+  Stream<A2AResult> resubscribe(A2ATaskIdParams params) async* {
+    if (_agentCard.capabilities.streaming == false) {
+      throw A2AServerError.unsupportedOperation(
+        'Streaming (and thus resubscription) '
+        'is not supported.',
+      );
+    }
+
+    final task = await _taskStore.load(params.id);
+    if (task == null) {
+      throw A2AServerError.taskNotFound(params.id);
+    }
+
+    // Yield the current task state first
+    yield task;
+
+    // If task is already in a final state, no more events will come.
+    if (finalStates.contains(task.status?.state)) {
+      return;
+    }
+
+    final eventBus = _eventBusManager.getByTaskId(params.id);
+    if (eventBus == null) {
+      // No active execution for this task, so no live events.
+      print(
+        '${Colorize('Resubscribe: No active event bus for task ${params.id}.').yellow()}',
+      );
+      return;
+    }
+
+    // Attach a new queue to the existing bus for this resubscription
+    final eventQueue = A2AExecutionEventQueue(eventBus);
+    // Note: The ResultManager part is already handled by the original execution flow.
+    // Resubscribe just listens for new events.
+
+    try {
+      await for (final event in eventQueue.events()) {
+        // We only care about updates related to *this* task.
+        // The event bus might be shared if messageId was reused, though
+        // ExecutionEventBusManager tries to give one bus per original message.
+        if (event is A2ATaskStatusUpdateEvent && event.taskId == params.id) {
+          yield event;
+        } else if (event is A2ATaskArtifactUpdateEvent &&
+            event.taskId == params.id) {
+          yield event;
+        } else if (event is A2ATask && event.id == params.id) {
+          // This implies the task was re-emitted, yield it.
+          yield event;
+        }
+        // We don't yield 'message' events on resubscribe typically,
+        // as those signal the end of an interaction for the *original* request.
+        // If a 'message' event for the original request terminates the bus, this loop will also end.
+      }
+    } finally {
+      eventQueue.stop();
+    }
   }
 
   Future<A2ARequestContext> _createRequestContext(
