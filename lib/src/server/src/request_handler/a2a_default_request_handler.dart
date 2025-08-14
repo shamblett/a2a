@@ -203,6 +203,24 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
     }
   }
 
+  Future<A2ATask> getTask(A2ATaskQueryParams params) async {
+    final task = await _taskStore.load(params.id);
+    if (task == null) {
+      throw A2AServerError.taskNotFound(params.id);
+    }
+
+    if (params.historyLength != null && params.historyLength! >= 0) {
+      if (task.history != null) {
+        task.history = task.history?.sublist(-params.historyLength!);
+      }
+    } else {
+      // Negative or invalid historyLength means no history
+      task.history = [];
+    }
+
+    return task;
+  }
+
   Future<A2ARequestContext> _createRequestContext(
     A2AMessage incomingMessage,
     String taskId,
