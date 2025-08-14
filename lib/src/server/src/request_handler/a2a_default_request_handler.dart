@@ -14,6 +14,13 @@ const terminalStates = [
   A2ATaskState.rejected,
 ];
 
+const nonCancelableStates = [
+  A2ATaskState.completed,
+  A2ATaskState.failed,
+  A2ATaskState.canceled,
+  A2ATaskState.rejected,
+];
+
 class A2ADefaultRequestHandler implements A2ARequestHandler {
   final A2AAgentCard _agentCard;
 
@@ -203,6 +210,7 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
     }
   }
 
+  @override
   Future<A2ATask> getTask(A2ATaskQueryParams params) async {
     final task = await _taskStore.load(params.id);
     if (task == null) {
@@ -220,6 +228,50 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
 
     return task;
   }
+
+  @override
+  Future<A2ATask> cancelTask(A2ATaskQueryParams params) async {
+    final task = await _taskStore.load(params.id);
+    if (task == null) {
+      throw A2AServerError.taskNotFound(params.id);
+    }
+
+    // Check if task is in a cancelable state
+    if (nonCancelableStates.contains(task.status?.state)) {
+      throw A2AServerError.taskNotCancelable(params.id);
+    }
+
+    final eventBus = _eventBusManager.getByTaskId(params.id);
+
+    if (eventBus != null) {
+      await _agentExecutor.cancelTask(params.id, eventBus);
+    } else {
+      // Here we are marking task as cancelled.
+      // We are not waiting for the executor to actually cancel processing.
+
+      // Add a system message indicating cancellation
+      final message = A2AMessage()
+        ..messageId = _uuid.v4()
+        ..parts = [A2ATextPart()..text = 'Task cancellation requested by user.']
+        ..taskId = task.id
+        ..contextId = task.contextId;
+
+      task.status
+        ?..state = A2ATaskState.canceled
+        ..message = message
+        ..timestamp = A2AUtilities.getCurrentTimestamp();
+
+      // Add cancellation message to history
+      task.history ??= [];
+      task.history?.add(message);
+
+      await _taskStore.save(task);
+    }
+
+    return (await _taskStore.load(params.id))!;
+  }
+
+
 
   Future<A2ARequestContext> _createRequestContext(
     A2AMessage incomingMessage,
