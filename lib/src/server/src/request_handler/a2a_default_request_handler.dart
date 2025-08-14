@@ -41,6 +41,35 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
     this._eventBusManager,
   );
 
+  Future<A2ATaskOrMessage> sendMessage(A2AMessageSendParams params) async {
+    final incomingMessage = params.message;
+    if (incomingMessage.messageId.isEmpty) {
+      throw A2AServerError.invalidParams(
+        'A2ADefaultRequestHandler::sendMessage message.messageId is required.',
+        null,
+      );
+    }
+
+    // Default to blocking behavior if 'blocking' is not explicitly false.
+    final isBlocking = params.configuration?.blocking != false;
+    final taskId = incomingMessage.taskId ?? _uuid.v4();
+
+    // Instantiate ResultManager before creating RequestContext
+    final resultManager = A2AResultManager(_taskStore);
+    resultManager.context = incomingMessage;
+
+    final requestContext = await _createRequestContext(incomingMessage, taskId, false);
+    // Use the (potentially updated) contextId from requestContext
+    final finalMessageForAgent = requestContext.userMessage;
+
+    final eventBus = _eventBusManager.createOrGetByTaskId(taskId);
+    // EventQueue should be attached to the bus, before the agent execution begins.
+    final eventQueue = A2AExecutionEventQueue(eventBus!);
+
+    // Start agent execution (non-blocking).
+    // It runs in the background and publishes events to the eventBus.
+  }
+
   Future<A2ARequestContext> _createRequestContext(
     A2AMessage incomingMessage,
     String taskId,
