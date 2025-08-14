@@ -152,8 +152,6 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
       );
     }
 
-    // Default to blocking behavior if 'blocking' is not explicitly false.
-    final isBlocking = params.configuration?.blocking != false;
     final taskId = incomingMessage.taskId ?? _uuid.v4();
 
     // Instantiate ResultManager before creating RequestContext
@@ -165,15 +163,12 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
       taskId,
       false,
     );
-    // Use the (potentially updated) contextId from requestContext
     final finalMessageForAgent = requestContext.userMessage;
 
     final eventBus = _eventBusManager.createOrGetByTaskId(taskId);
-    // EventQueue should be attached to the bus, before the agent execution begins.
     final eventQueue = A2AExecutionEventQueue(eventBus!);
 
     // Start agent execution (non-blocking).
-    // It runs in the background and publishes events to the eventBus.
     unawaited(
       _agentExecutor.execute(requestContext, eventBus).catchError((err) {
         print(
@@ -181,9 +176,8 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
           'Agent execution failed for stream message ${finalMessageForAgent.messageId}, error is $err').red()}',
         );
         // Publish a synthetic error event, which will be handled by the ResultManager
-        // TODO task-status
-        final errorTask = A2ATask()
-          ..id = requestContext.task?.id ?? _uuid.v4()
+        final errorTaskStatus = A2ATaskStatusUpdateEvent()
+          ..taskId = requestContext.task?.id ?? _uuid.v4()
           ..contextId = finalMessageForAgent.contextId!
           ..status = (A2ATaskStatus()
             ..state = A2ATaskState.failed
@@ -192,10 +186,9 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
               ..parts = ([A2ATextPart()..text = 'Agent execution error: $err'])
               ..taskId = requestContext.task?.id
               ..contextId = finalMessageForAgent.contextId)
-            ..timestamp = A2AUtilities.getCurrentTimestamp())
-          ..history = requestContext.task?.history ?? [];
+            ..timestamp = A2AUtilities.getCurrentTimestamp());
 
-        eventBus.publish(errorTask);
+        eventBus.publish(errorTaskStatus);
       }),
     );
 
