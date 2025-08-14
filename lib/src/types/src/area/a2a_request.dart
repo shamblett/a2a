@@ -240,7 +240,7 @@ class A2ATaskPushNotificationConfig {
   A2ATaskPushNotificationConfig1? pushNotificationConfig;
 
   /// Task Id
-  String id = '';
+  String taskId = '';
 
   A2ATaskPushNotificationConfig();
 

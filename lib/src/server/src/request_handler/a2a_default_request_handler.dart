@@ -33,7 +33,8 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
   final _uuid = Uuid();
 
   // Store for push notification configurations (could be part of TaskStore or separate)
-  final Map<String, A2APushNotificationConfig> _pushNotificationConfigs = {};
+  final Map<String, A2ATaskPushNotificationConfig1> _pushNotificationConfigs =
+      {};
 
   @override
   Future<A2AAgentCard> get agentCard async => _agentCard;
@@ -150,7 +151,6 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
 
   @override
   Stream<A2AResult> sendMessageStream(A2AMessageSendParams params) async* {
-    final completer = Completer<A2AResult>();
     final incomingMessage = params.message;
     if (incomingMessage.messageId.isEmpty) {
       throw A2AServerError.invalidParams(
@@ -271,7 +271,24 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
     return (await _taskStore.load(params.id))!;
   }
 
+  @override
+  Future<A2ATaskPushNotificationConfig>? setTaskPushNotificationConfig(
+    A2ATaskPushNotificationConfig params,
+  ) async {
+    if (_agentCard.capabilities.pushNotifications == false) {
+      throw A2AServerError.pushNotificationNotSupported();
+    }
 
+    final taskAndHistory = await _taskStore.load(params.taskId);
+    if (taskAndHistory == null) {
+      throw A2AServerError.taskNotFound(params.taskId);
+    }
+
+    // Store the config. In a real app, this might be stored in the TaskStore
+    // or a dedicated push notification service.
+    _pushNotificationConfigs[params.taskId] = params.pushNotificationConfig!;
+    return params;
+  }
 
   Future<A2ARequestContext> _createRequestContext(
     A2AMessage incomingMessage,

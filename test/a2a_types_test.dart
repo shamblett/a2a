@@ -1120,7 +1120,7 @@ void main() {
     test('A2ASetTaskPushNotificationConfigRequest', () {
       var request = A2ARequest();
       var json = <String, dynamic>{};
-      final params = A2ATaskPushNotificationConfig()..id = '2';
+      final params = A2ATaskPushNotificationConfig()..taskId = '2';
       var testRequest = A2ASetTaskPushNotificationConfigRequest()
         ..id = 1
         ..params = params;
@@ -1131,7 +1131,7 @@ void main() {
       expect(request is A2ASetTaskPushNotificationConfigRequest, isTrue);
       final request1 = request as A2ASetTaskPushNotificationConfigRequest;
       expect(request1.id, 1);
-      expect(request.params?.id, '2');
+      expect(request.params?.taskId, '2');
     });
     test('A2AGetTaskPushNotificationConfigRequest', () {
       var request = A2ARequest();
@@ -1362,7 +1362,7 @@ void main() {
       var messageResponse = A2ASetTaskPushNotificationConfigResponse();
       var json = <String, dynamic>{};
 
-      final config = A2ATaskPushNotificationConfig()..id = '3';
+      final config = A2ATaskPushNotificationConfig()..taskId = '3';
       var testResponse = A2ASetTaskPushNotificationConfigSuccessResponseSTPR()
         ..id = 2
         ..result = config;
@@ -1381,7 +1381,7 @@ void main() {
       expect(testResponse1.result is A2ATaskPushNotificationConfig, isTrue);
       final taskResponse =
           testResponse1.result as A2ATaskPushNotificationConfig;
-      expect(taskResponse.id, '3');
+      expect(taskResponse.taskId, '3');
       expect(testResponse1.id, 2);
     });
   });

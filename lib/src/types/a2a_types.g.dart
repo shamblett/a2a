@@ -457,13 +457,13 @@ A2ATaskPushNotificationConfig _$A2ATaskPushNotificationConfigFromJson(
       : A2ATaskPushNotificationConfig1.fromJson(
           json['pushNotificationConfig'] as Map<String, dynamic>,
         )
-  ..id = json['id'] as String;
+  ..taskId = json['taskId'] as String;
 
 Map<String, dynamic> _$A2ATaskPushNotificationConfigToJson(
   A2ATaskPushNotificationConfig instance,
 ) => <String, dynamic>{
   'pushNotificationConfig': instance.pushNotificationConfig?.toJson(),
-  'id': instance.id,
+  'taskId': instance.taskId,
 };
 
 A2ATaskIdParams _$A2ATaskIdParamsFromJson(Map<String, dynamic> json) =>

@@ -48,7 +48,7 @@ Future<int> main() async {
     );
     await Future.delayed(Duration(seconds: 1));
   }
-  if ( !isRunning ) {
+  if (!isRunning) {
     return -1;
   }
 
@@ -170,7 +170,7 @@ Future<int> main() async {
         ..url = 'http://localhost:5000';
 
       final config = A2ATaskPushNotificationConfig()
-        ..id = '1'
+        ..taskId = '1'
         ..pushNotificationConfig = taskConfig;
 
       try {
