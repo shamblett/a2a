@@ -742,5 +742,40 @@ void main() {
         taskRet.status?.message?.messageId,
       );
     });
+    test('Get Task', () async {
+      final agentCard = A2AAgentCard();
+      final store = A2AInMemoryTaskStore();
+      final drq = A2ADefaultRequestHandler(
+        agentCard,
+        store,
+        A2ATestAgentExecutor(),
+        A2ADefaultExecutionEventBusManager(),
+      );
+      final params = A2ATaskQueryParams()..id = '1';
+      final task = A2ATask()
+        ..id = '1'
+        ..status = A2ATaskStatus();
+      final message1 = A2AMessage()
+        ..messageId = '100'
+        ..taskId = '1';
+      final message2 = A2AMessage()
+        ..messageId = '200'
+        ..taskId = '2';
+      await expectLater(
+        drq.getTask(params),
+        throwsA(isA<A2ATaskNotFoundError>()),
+      );
+      await store.save(task);
+      var taskRet = await drq.getTask(params);
+      expect(taskRet.history, isNotNull);
+      expect(taskRet.history?.isEmpty, isTrue);
+      taskRet.history?.addAll([message1, message2]);
+      await store.save(taskRet);
+      params.historyLength = 1;
+      taskRet = await drq.getTask(params);
+      expect(taskRet.history?.isEmpty, isFalse);
+      expect(taskRet.history?.length, 1);
+      expect((taskRet.history?.first as A2AMessage).messageId, '100');
+    });
   });
 }

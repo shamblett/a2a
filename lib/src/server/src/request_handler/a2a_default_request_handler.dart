@@ -226,7 +226,7 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
 
     if (params.historyLength != null && params.historyLength! >= 0) {
       if (task.history != null) {
-        task.history = task.history?.sublist(-params.historyLength!);
+        task.history = task.history?.sublist(0, params.historyLength!);
       }
     } else {
       // Negative or invalid historyLength means no history
