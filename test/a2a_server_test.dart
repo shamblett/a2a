@@ -777,5 +777,22 @@ void main() {
       expect(taskRet.history?.length, 1);
       expect((taskRet.history?.first as A2AMessage).messageId, '100');
     });
+    test('Send Message Stream', () async {
+      final agentCard = A2AAgentCard();
+      final store = A2AInMemoryTaskStore();
+      final drq = A2ADefaultRequestHandler(
+        agentCard,
+        store,
+        A2ATestAgentExecutor(),
+        A2ADefaultExecutionEventBusManager(),
+      );
+      final params = A2AMessageSendParams();
+      final message = A2AMessage();
+      params.message = message;
+      await expectLater(
+        drq.sendMessageStream(params).first,
+        throwsA(isA<A2AInvalidParamsError>()),
+      );
+    });
   });
 }
