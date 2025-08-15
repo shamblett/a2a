@@ -631,5 +631,64 @@ void main() {
       }
       expect(eventCount, 2);
     });
+    test('Set Task Push Notification Config', () async {
+      final agentCard = A2AAgentCard()
+        ..capabilities = (A2AAgentCapabilities()..pushNotifications = false);
+      final store = A2AInMemoryTaskStore();
+      final drq = A2ADefaultRequestHandler(
+        agentCard,
+        store,
+        A2ATestAgentExecutor(),
+        A2ADefaultExecutionEventBusManager(),
+      );
+      final params = A2ATaskPushNotificationConfig();
+      await expectLater(
+        drq.setTaskPushNotificationConfig(params),
+        throwsA(isA<A2APushNotificationNotSupportedError>()),
+      );
+      agentCard.capabilities.pushNotifications = true;
+      await expectLater(
+        drq.setTaskPushNotificationConfig(params),
+        throwsA(isA<A2ATaskNotFoundError>()),
+      );
+    });
+    test('Get Task Push Notification Config', () async {
+      final agentCard = A2AAgentCard()
+        ..capabilities = (A2AAgentCapabilities()..pushNotifications = false);
+      final store = A2AInMemoryTaskStore();
+      final drq = A2ADefaultRequestHandler(
+        agentCard,
+        store,
+        A2ATestAgentExecutor(),
+        A2ADefaultExecutionEventBusManager(),
+      );
+      final params = A2ATaskIdParams()..id = '1';
+      final task = A2ATask()
+        ..id = '1'
+        ..status = A2ATaskStatus();
+      final configParams = A2ATaskPushNotificationConfig()
+        ..taskId = '1'
+        ..pushNotificationConfig = A2ATaskPushNotificationConfig1();
+      await expectLater(
+        drq.getTaskPushNotificationConfig(params),
+        throwsA(isA<A2APushNotificationNotSupportedError>()),
+      );
+      agentCard.capabilities.pushNotifications = true;
+      await expectLater(
+        drq.getTaskPushNotificationConfig(params),
+        throwsA(isA<A2ATaskNotFoundError>()),
+      );
+      await store.save(task);
+      await expectLater(
+        drq.getTaskPushNotificationConfig(params),
+        throwsA(isA<A2AInternalError>()),
+      );
+      final setConfig = await drq.setTaskPushNotificationConfig(configParams);
+      final getConfig = await drq.getTaskPushNotificationConfig(params);
+      expect(
+        setConfig?.pushNotificationConfig == getConfig?.pushNotificationConfig,
+        isTrue,
+      );
+    });
   });
 }
