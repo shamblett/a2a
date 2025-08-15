@@ -783,7 +783,7 @@ void main() {
       final drq = A2ADefaultRequestHandler(
         agentCard,
         store,
-        A2ATestAgentExecutor(),
+        A2ATestAgentExecutorThrows(),
         A2ADefaultExecutionEventBusManager(),
       );
       final params = A2AMessageSendParams();
@@ -793,6 +793,8 @@ void main() {
         drq.sendMessageStream(params).first,
         throwsA(isA<A2AInvalidParamsError>()),
       );
+      message.messageId = '100';
+      await drq.sendMessageStream((params)).first;
     });
   });
 }
