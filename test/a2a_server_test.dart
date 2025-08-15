@@ -590,5 +590,46 @@ void main() {
       );
       expect(await drq.agentCard, agentCard);
     });
+    test('Resubscribe', () async {
+      final agentCard = A2AAgentCard()
+        ..capabilities = (A2AAgentCapabilities()..streaming = false);
+      final store = A2AInMemoryTaskStore();
+      final drq = A2ADefaultRequestHandler(
+        agentCard,
+        store,
+        A2ATestAgentExecutor(),
+        A2ADefaultExecutionEventBusManager(),
+      );
+      final params = A2ATaskIdParams()..id = '1';
+      final task = A2ATask()
+        ..id = '1'
+        ..status = A2ATaskStatus();
+      await expectLater(
+        drq.resubscribe(params).first,
+        throwsA(isA<A2AUnsupportedOperationError>()),
+      );
+      agentCard.capabilities.streaming = true;
+      await expectLater(
+        drq.resubscribe(params).first,
+        throwsA(isA<A2ATaskNotFoundError>()),
+      );
+      await store.save(task);
+      expect((await drq.resubscribe(params).first as A2ATask).id, '1');
+      task.status?.state = A2ATaskState.canceled;
+      await store.save(task);
+      int eventCount = 0;
+      await for (final event in drq.resubscribe(params)) {
+        expect((event as A2ATask).id, '1');
+        eventCount++;
+      }
+      expect(eventCount, 1);
+      task.status?.state = A2ATaskState.submitted;
+      await store.save(task);
+      await for (final event in drq.resubscribe(params)) {
+        expect((event as A2ATask).id, '1');
+        eventCount++;
+      }
+      expect(eventCount, 2);
+    });
   });
 }

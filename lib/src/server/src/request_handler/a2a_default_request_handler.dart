@@ -480,7 +480,12 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
   }
 }
 
+/// Use to pass success or fail values back to the caller of a function.
+/// Only one value should be set.
 class A2AResolver {
+  /// Success
   A2ATaskOrMessage? result;
+
+  /// Error
   Object? error;
 }
