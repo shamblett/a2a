@@ -580,13 +580,15 @@ void main() {
   });
 
   group('Default Request Handler', () {
-    test('Construction', () {
+    test('Construction', () async {
+      final agentCard = A2AAgentCard();
       final drq = A2ADefaultRequestHandler(
-        A2AAgentCard(),
+        agentCard,
         A2AInMemoryTaskStore(),
         A2ATestAgentExecutor(),
         A2ADefaultExecutionEventBusManager(),
       );
+      expect(await drq.agentCard, agentCard);
     });
   });
 }
