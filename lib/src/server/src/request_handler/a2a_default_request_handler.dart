@@ -244,7 +244,7 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
     }
 
     // Check if task is in a cancelable state
-    if (nonCancelableStates.contains(task.status?.state)) {
+    if (task.status?.state == null || nonCancelableStates.contains(task.status?.state)) {
       throw A2AServerError.taskNotCancelable(params.id);
     }
 

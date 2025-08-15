@@ -690,5 +690,57 @@ void main() {
         isTrue,
       );
     });
+    test('Cancel Task', () async {
+      final agentCard = A2AAgentCard();
+      final store = A2AInMemoryTaskStore();
+      final drq = A2ADefaultRequestHandler(
+        agentCard,
+        store,
+        A2ATestAgentExecutor(),
+        A2ADefaultExecutionEventBusManager(),
+      );
+      final params = A2ATaskQueryParams()..id = '1';
+      final task = A2ATask()
+        ..id = '1'
+        ..status = A2ATaskStatus();
+      await expectLater(
+        drq.cancelTask(params),
+        throwsA(isA<A2ATaskNotFoundError>()),
+      );
+      await store.save(task);
+      await expectLater(
+        drq.cancelTask(params),
+        throwsA(isA<A2ATaskNotCancelableError>()),
+      );
+      task.status?.state = A2ATaskState.completed;
+      await store.save(task);
+      await expectLater(
+        drq.cancelTask(params),
+        throwsA(isA<A2ATaskNotCancelableError>()),
+      );
+      task.status?.state = A2ATaskState.submitted;
+      task.contextId = '2';
+      await store.save(task);
+      final taskRet = await drq.cancelTask((params));
+      expect(taskRet.status?.state, A2ATaskState.canceled);
+      expect(taskRet.status?.message?.messageId, isNotNull);
+      expect(taskRet.status?.message?.messageId.length, 36);
+      expect(taskRet.status?.message?.parts?.length, 1);
+      expect(
+        (taskRet.status?.message?.parts?.first as A2ATextPart).text,
+        'Task cancellation requested by user.',
+      );
+      expect(taskRet.status?.message?.contextId, isNotNull);
+      expect(taskRet.status?.message?.contextId, '2');
+      expect(taskRet.status?.timestamp, isNotNull);
+      expect(taskRet.status?.timestamp?.length, 23);
+      expect(taskRet.history, isNotNull);
+      expect(taskRet.history?.length, 1);
+      expect(taskRet.history?.first is A2AMessage, isTrue);
+      expect(
+        (taskRet.history?.first)?.messageId,
+        taskRet.status?.message?.messageId,
+      );
+    });
   });
 }
