@@ -15,6 +15,8 @@ import 'package:test/test.dart';
 
 import 'package:a2a/src/server/a2a_server.dart';
 
+import 'support/a2a_test_agent_executor.dart';
+
 void main() {
   group('Utilities', () {
     test('getCurrentTimestamp', () {
@@ -574,6 +576,17 @@ void main() {
         }
       }
       expect(eq.count, 0);
+    });
+  });
+
+  group('Default Request Handler', () {
+    test('Construction', () {
+      final drq = A2ADefaultRequestHandler(
+        A2AAgentCard(),
+        A2AInMemoryTaskStore(),
+        A2ATestAgentExecutor(),
+        A2ADefaultExecutionEventBusManager(),
+      );
     });
   });
 }
