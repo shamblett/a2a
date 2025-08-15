@@ -780,14 +780,17 @@ void main() {
     test('Send Message Stream', () async {
       final agentCard = A2AAgentCard();
       final store = A2AInMemoryTaskStore();
+      final busManager = A2ADefaultExecutionEventBusManager();
       final drq = A2ADefaultRequestHandler(
         agentCard,
         store,
         A2ATestAgentExecutorThrows(),
-        A2ADefaultExecutionEventBusManager(),
+        busManager,
       );
       final params = A2AMessageSendParams();
-      final message = A2AMessage();
+      final task = A2ATask()..id = '1';
+      await store.save(task);
+      final message = A2AMessage()..taskId = '1';
       params.message = message;
       await expectLater(
         drq.sendMessageStream(params).first,
@@ -795,6 +798,8 @@ void main() {
       );
       message.messageId = '100';
       await drq.sendMessageStream((params)).first;
+      final eventBus = busManager.getByTaskId('1');
+      expect(eventBus, isNull);
     });
   });
 }

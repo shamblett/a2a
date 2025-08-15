@@ -19,13 +19,13 @@ class A2ATestAgentExecutor implements A2AAgentExecutor {
     A2ARequestContext requestContext,
     A2AExecutionEventBus eventBus,
   ) async {
-    print('${Colorize('A2ATestAgentExecutor EXECUTE invoked')..bgBlue()}');
+    print('${Colorize('A2ATestAgentExecutor EXECUTE invoked')..blue()}');
     await Future.delayed(Duration(seconds: 1));
   }
 
   @override
   Future<void> cancelTask(String taskId, A2AExecutionEventBus eventBus) async {
-    print('${Colorize('A2ATestAgentExecutor Cancel Task invoked')..bgBlue()}');
+    print('${Colorize('A2ATestAgentExecutor Cancel Task invoked')..blue()}');
     await Future.delayed(Duration(seconds: 1));
   }
 }
@@ -38,9 +38,7 @@ class A2ATestAgentExecutorThrows implements A2AAgentExecutor {
     A2AExecutionEventBus eventBus,
   ) async {
     final completer = Completer<void>();
-    print(
-      '${Colorize('A2ATestAgentExecutorThrows EXECUTE invoked')..bgBlue()}',
-    );
+    print('${Colorize('A2ATestAgentExecutorThrows EXECUTE invoked')..blue()}');
     Future.delayed(Duration(seconds: 1)).then((_) {
       completer.completeError(ArgumentError('Argument Error from execute'));
     });
@@ -50,7 +48,7 @@ class A2ATestAgentExecutorThrows implements A2AAgentExecutor {
   @override
   Future<void> cancelTask(String taskId, A2AExecutionEventBus eventBus) async {
     print(
-      '${Colorize('A2ATestAgentExecutorThrows Cancel Task invoked')..bgBlue()}',
+      '${Colorize('A2ATestAgentExecutorThrows Cancel Task invoked')..blue()}',
     );
     await Future.delayed(Duration(seconds: 1));
   }

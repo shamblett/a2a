@@ -183,28 +183,27 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
     final eventQueue = A2AExecutionEventQueue(eventBus!);
 
     // Start agent execution (non-blocking).
-    unawaited(
-      _agentExecutor.execute(requestContext, eventBus).catchError((err) {
-        print(
-          '${Colorize('A2ADefaultRequestHandler::sendMessageStream '
-          'Agent execution failed for stream message ${finalMessageForAgent.messageId}, error is $err').red()}',
-        );
-        // Publish a synthetic error event, which will be handled by the ResultManager
-        final errorTaskStatus = A2ATaskStatusUpdateEvent()
-          ..taskId = requestContext.task?.id ?? _uuid.v4()
-          ..contextId = finalMessageForAgent.contextId!
-          ..status = (A2ATaskStatus()
-            ..state = A2ATaskState.failed
-            ..message = (A2AMessage()
-              ..messageId = _uuid.v4()
-              ..parts = ([A2ATextPart()..text = 'Agent execution error: $err'])
-              ..taskId = requestContext.task?.id
-              ..contextId = finalMessageForAgent.contextId)
-            ..timestamp = A2AUtilities.getCurrentTimestamp());
+    await _agentExecutor.execute(requestContext, eventBus).catchError((err) {
+      print(
+        '${Colorize('A2ADefaultRequestHandler::sendMessageStream '
+        'Agent execution failed for stream message ${finalMessageForAgent.messageId}, error is $err').red()}',
+      );
+      // Publish a synthetic error event, which will be handled by the ResultManager
+      final errorTaskStatus = A2ATaskStatusUpdateEvent()
+        ..taskId = requestContext.task?.id ?? _uuid.v4()
+        ..contextId = finalMessageForAgent.contextId!
+        ..status = (A2ATaskStatus()
+          ..state = A2ATaskState.failed
+          ..message = (A2AMessage()
+            ..messageId = _uuid.v4()
+            ..parts = ([A2ATextPart()..text = 'Agent execution error: $err'])
+            ..taskId = requestContext.task?.id
+            ..contextId = finalMessageForAgent.contextId)
+          ..timestamp = A2AUtilities.getCurrentTimestamp())
+        ..end = true;
 
-        eventBus.publish(errorTaskStatus);
-      }),
-    );
+      eventBus.publish(errorTaskStatus);
+    });
 
     try {
       await for (final event in eventQueue.events()) {
@@ -244,7 +243,8 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
     }
 
     // Check if task is in a cancelable state
-    if (task.status?.state == null || nonCancelableStates.contains(task.status?.state)) {
+    if (task.status?.state == null ||
+        nonCancelableStates.contains(task.status?.state)) {
       throw A2AServerError.taskNotCancelable(params.id);
     }
 
@@ -426,16 +426,16 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
 
     // Ensure contextId is present
     final messageForContext = incomingMessage;
-    if (messageForContext.contextId != null) {
-      messageForContext.contextId = task?.contextId ?? _uuid.v4();
-    }
+    messageForContext.contextId ??= task?.contextId ?? _uuid.v4();
+
+    final contextId = incomingMessage.contextId ?? _uuid.v4();
 
     return A2ARequestContext(
       messageForContext,
       task,
       referenceTasks,
       taskId,
-      messageForContext.contextId!,
+      contextId,
     );
   }
 
