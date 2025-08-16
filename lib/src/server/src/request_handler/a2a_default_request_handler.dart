@@ -53,6 +53,14 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
     this._eventBusManager,
   );
 
+  /// This method can be blocking or non blocking as selected b the blocking flag
+  /// in [params.configuration].
+  ///
+  /// If blocking is selected the method can simply be awaited to return the
+  /// final result.
+  ///
+  /// In non-blocking mode you must allow time for the returned future to complete,
+  /// i.e. use 'then' on the method rather than awaiting it.
   @override
   Future<A2ATaskOrMessage> sendMessage(A2AMessageSendParams params) async {
     final completer = Completer<A2ATaskOrMessage>();
@@ -89,13 +97,11 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
     // Start agent execution (non-blocking).
     // It runs in the background and publishes events to the eventBus.
     bool errorThrown = false;
-    String errorText = '';
     await _agentExecutor.execute(requestContext, eventBus).catchError((err) {
       print(
         '${Colorize('A2ADefaultRequestHandler::sendMessage '
         'Agent execution failed for message ${finalMessageForAgent.messageId}, error is $err').red()}',
       );
-      errorText = err;
       // Publish a synthetic error event, which will be handled by the ResultManager
       // and will also settle the firstResultPromise for non-blocking calls.
       final errorTask = A2ATask()
@@ -124,46 +130,29 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
           ..status = errorTask.status
           ..end = true,
       );
-      eventBus.finished();
       errorThrown = true;
     });
 
     final resolver = A2AResolver();
     if (isBlocking!) {
       // In blocking mode, wait for the full processing to complete.
-      if (!errorThrown) {
-        await _processEvents(taskId, resultManager, eventQueue, resolver);
-        final finalResult = resultManager.finalResult;
-        if (finalResult == null) {
-          throw A2AServerError.internalError(
-            'A2ADefaultRequestHandler::sendMessage '
-            'Agent execution finished without a result, and no task context found.',
-            null,
-          );
-        }
-        completer.complete(finalResult);
-      } else {
-        final internalError = A2AServerError.internalError(
-          'A2ADefaultRequestHandler::sendMessage no result, error '
-          ' returned from executor is $errorText',
+      await _processEvents(taskId, resultManager, eventQueue, resolver);
+      final finalResult = resultManager.finalResult;
+      if (finalResult == null) {
+        throw A2AServerError.internalError(
+          'A2ADefaultRequestHandler::sendMessage '
+          'Agent execution finished without a result, and no task context found.',
           null,
         );
-        completer.completeError(internalError);
       }
+      completer.complete(finalResult);
     } else {
       // In non-blocking mode, return a Future that will be settled by fullProcessing.
-      await _processEvents(taskId, resultManager, eventQueue, resolver);
-      if (resolver.result != null) {
-        completer.complete(resolver.result);
-      } else if (resolver.error != null) {
+      unawaited(_processEvents(taskId, resultManager, eventQueue, resolver));
+      if (resolver.error != null) {
         completer.completeError(resolver.error!);
       } else {
-        final internalError = A2AServerError.internalError(
-          'A2ADefaultRequestHandler::sendMessage no result or error '
-          ' returned from _processEvents',
-          null,
-        );
-        completer.completeError(internalError);
+        completer.complete(resultManager.finalResult);
       }
     }
 
