@@ -777,7 +777,7 @@ void main() {
       expect(taskRet.history?.length, 1);
       expect((taskRet.history?.first as A2AMessage).messageId, '100');
     });
-    test('Send Message Stream', () async {
+    test('Send Message Stream - Error in Executor', () async {
       final agentCard = A2AAgentCard();
       final store = A2AInMemoryTaskStore();
       final busManager = A2ADefaultExecutionEventBusManager();
@@ -790,16 +790,34 @@ void main() {
       final params = A2AMessageSendParams();
       final task = A2ATask()..id = '1';
       await store.save(task);
-      final message = A2AMessage()..taskId = '1';
+      final message = A2AMessage()
+        ..taskId = '1'
+        ..contextId = '100';
       params.message = message;
       await expectLater(
         drq.sendMessageStream(params).first,
         throwsA(isA<A2AInvalidParamsError>()),
       );
       message.messageId = '100';
-      await drq.sendMessageStream((params)).first;
+      final event = await drq.sendMessageStream((params)).first;
       final eventBus = busManager.getByTaskId('1');
       expect(eventBus, isNull);
+      expect(event is A2ATaskStatusUpdateEvent, isTrue);
+      final update = event as A2ATaskStatusUpdateEvent;
+      expect(event.contextId, '100');
+      expect(update.end, isTrue);
+      expect(update.taskId, '1');
+      expect(update.status?.state, A2ATaskState.failed);
+      expect(update.status?.timestamp?.length, 23);
+      final updateMessage = update.status?.message;
+      expect(updateMessage, isNotNull);
+      expect(updateMessage?.messageId.isNotEmpty, isTrue);
+      expect(updateMessage?.taskId, '1');
+      expect(updateMessage?.contextId, '100');
+      expect(
+        (updateMessage?.parts?.first as A2ATextPart).text,
+        'Agent execution error: Invalid argument(s): Argument Error from execute',
+      );
     });
   });
 }
