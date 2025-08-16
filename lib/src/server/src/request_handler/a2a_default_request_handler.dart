@@ -96,7 +96,6 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
 
     // Start agent execution (non-blocking).
     // It runs in the background and publishes events to the eventBus.
-    bool errorThrown = false;
     await _agentExecutor.execute(requestContext, eventBus).catchError((err) {
       print(
         '${Colorize('A2ADefaultRequestHandler::sendMessage '
@@ -130,7 +129,6 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
           ..status = errorTask.status
           ..end = true,
       );
-      errorThrown = true;
     });
 
     final resolver = A2AResolver();
