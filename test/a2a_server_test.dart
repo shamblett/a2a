@@ -879,7 +879,7 @@ void main() {
       expect(eventCount, 3);
       expect(eventBus, isNotNull);
     });
-    test('Send Message - Error in Executor', () async {
+    test('Send Message - Error in Executor - Non Blocking', () async {
       final agentCard = A2AAgentCard();
       final store = A2AInMemoryTaskStore();
       final busManager = A2ADefaultExecutionEventBusManager();
@@ -890,6 +890,50 @@ void main() {
         busManager,
       );
       final params = A2AMessageSendParams();
+      final task = A2ATask()..id = '1';
+      await store.save(task);
+      final message = A2AMessage()
+        ..taskId = '1'
+        ..contextId = '100';
+      params.message = message;
+      await expectLater(
+        drq.sendMessageStream(params).first,
+        throwsA(isA<A2AInvalidParamsError>()),
+      );
+      message.messageId = '100';
+      final event = await drq.sendMessage((params));
+      expect(event is A2ATask, isTrue);
+      final update = event as A2ATask;
+      expect(event.contextId, '100');
+      expect(update.id, '1');
+      expect(update.status?.state, A2ATaskState.failed);
+      expect(update.status?.timestamp?.length, 23);
+      expect(update.history, isNotNull);
+      expect(update.history?.length, 1);
+      expect(update.history?.first.messageId, '100');
+      final updateMessage = update.status?.message;
+      expect(updateMessage, isNotNull);
+      expect(updateMessage?.messageId.isNotEmpty, isTrue);
+      expect(updateMessage?.taskId, '1');
+      expect(updateMessage?.contextId, '100');
+      expect(
+        (updateMessage?.parts?.first as A2ATextPart).text,
+        'Agent execution error: Invalid argument(s): Argument Error from execute',
+      );
+    });
+    test('Send Message - Error in Executor - Blocking', () async {
+      final agentCard = A2AAgentCard();
+      final store = A2AInMemoryTaskStore();
+      final busManager = A2ADefaultExecutionEventBusManager();
+      final drq = A2ADefaultRequestHandler(
+        agentCard,
+        store,
+        A2ATestAgentExecutorThrows(),
+        busManager,
+      );
+      final params = A2AMessageSendParams()
+      ..configuration = (A2AMessageSendConfiguration()
+          ..blocking = true);
       final task = A2ATask()..id = '1';
       await store.save(task);
       final message = A2AMessage()

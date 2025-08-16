@@ -121,6 +121,7 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
           ..status = errorTask.status
           ..end = true,
       );
+      eventBus.finished();
     });
 
     if (isBlocking!) {
