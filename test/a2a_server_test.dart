@@ -842,5 +842,43 @@ void main() {
         'Agent execution error: Invalid argument(s): Argument Error from execute',
       );
     });
+    test('Send Message Stream - Normal Executor', () async {
+      final agentCard = A2AAgentCard();
+      final store = A2AInMemoryTaskStore();
+      final eventBus = A2ATestAgentExecutor();
+      final busManager = A2ADefaultExecutionEventBusManager();
+      final drq = A2ADefaultRequestHandler(
+        agentCard,
+        store,
+        eventBus,
+        busManager,
+      );
+      final params = A2AMessageSendParams();
+      final task = A2ATask()..id = '1';
+      await store.save(task);
+      final message = A2AMessage()
+        ..taskId = '1'
+        ..contextId = '100';
+      params.message = message;
+      message.messageId = '100';
+      int eventCount = 0;
+      await for (final event in drq.sendMessageStream((params))) {
+        if (event is A2ATask) {
+          expect(event.contextId, '100');
+          expect(event.id, '1');
+          expect(event.status?.state, A2ATaskState.submitted);
+        }
+        if (event is A2ATaskStatusUpdateEvent) {
+          if (event.end != null && event.end!) {
+            expect(event.status?.state, A2ATaskState.completed);
+          } else {
+            expect(event.status?.state, A2ATaskState.working);
+          }
+        }
+        eventCount++;
+      }
+      expect(eventCount, 3);
+      expect(eventBus, isNotNull);
+    });
   });
 }

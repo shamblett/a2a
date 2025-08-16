@@ -20,12 +20,39 @@ class A2ATestAgentExecutor implements A2AAgentExecutor {
     A2AExecutionEventBus eventBus,
   ) async {
     print('${Colorize('A2ATestAgentExecutor EXECUTE invoked')..blue()}');
+
+    final task = A2ATask()
+      ..id = requestContext.taskId
+      ..contextId = requestContext.contextId
+      ..status = (A2ATaskStatus()
+        ..state = A2ATaskState.submitted
+        ..timestamp = A2AUtilities.getCurrentTimestamp());
+
+    final taskUpdate = A2ATaskStatusUpdateEvent()
+      ..contextId = requestContext.contextId
+      ..taskId = requestContext.taskId
+      ..end = false
+      ..status = (A2ATaskStatus()..state = (A2ATaskState.working));
+
+    eventBus.publish(task);
+    eventBus.publish(taskUpdate);
+
+    // Simulate work
     await Future.delayed(Duration(seconds: 1));
+
+    final taskUpdateComplete = A2ATaskStatusUpdateEvent()
+      ..contextId = requestContext.contextId
+      ..taskId = requestContext.taskId
+      ..end = true
+      ..status = (A2ATaskStatus()..state = (A2ATaskState.completed));
+    eventBus.publish(taskUpdateComplete);
   }
 
   @override
   Future<void> cancelTask(String taskId, A2AExecutionEventBus eventBus) async {
-    print('${Colorize('A2ATestAgentExecutor Cancel Task invoked for task $taskId')..blue()}');
+    print(
+      '${Colorize('A2ATestAgentExecutor Cancel Task invoked for task $taskId')..blue()}',
+    );
     await Future.delayed(Duration(seconds: 1));
   }
 }
