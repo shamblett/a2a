@@ -146,14 +146,8 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
       completer.complete(finalResult);
     } else {
       // In non-blocking mode, return a Future that will be settled by fullProcessing.
-      unawaited(_processEvents(taskId, resultManager, eventQueue, resolver));
-      if (resolver.error != null) {
-        completer.completeError(resolver.error!);
-      } else {
-        completer.complete(resultManager.finalResult);
-      }
+      completer.complete(Future<A2ATaskOrMessage>.value(_processEvents(taskId, resultManager, eventQueue, resolver)));
     }
-
     return completer.future;
   }
 
