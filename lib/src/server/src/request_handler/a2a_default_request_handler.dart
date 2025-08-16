@@ -53,17 +53,20 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
     this._eventBusManager,
   );
 
-  /// This method can be blocking or non blocking as selected b the blocking flag
+  /// This method can be blocking or non blocking as selected by the blocking flag
   /// in [params.configuration].
   ///
   /// If blocking is selected the method can simply be awaited to return the
-  /// final result.
+  /// final resolved result in the success property of the [A2AResultResolver]
   ///
-  /// In non-blocking mode you must allow time for the returned future to complete,
-  /// i.e. use 'then' on the method rather than awaiting it.
+  /// In non-blocking mode the success property holds a Future that you must
+  /// resolve to get the result.
+  ///
+  /// For both blocking or non blocking calls if an error occurs the resolved
+  /// error value will be in the error property.
   @override
-  Future<A2ATaskOrMessage> sendMessage(A2AMessageSendParams params) async {
-    final completer = Completer<A2ATaskOrMessage>();
+  Future<A2AResultResolver> sendMessage(A2AMessageSendParams params) async {
+    final completer = Completer<A2AResultResolver>();
     final incomingMessage = params.message;
     if (incomingMessage.messageId.isEmpty) {
       throw A2AServerError.invalidParams(
@@ -131,10 +134,10 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
       );
     });
 
-    final resolver = A2AResolver();
+    final resolver = A2AResultResolver();
     if (isBlocking!) {
       // In blocking mode, wait for the full processing to complete.
-      await _processEvents(taskId, resultManager, eventQueue, resolver);
+      await _processEvents(taskId, resultManager, eventQueue);
       final finalResult = resultManager.finalResult;
       if (finalResult == null) {
         throw A2AServerError.internalError(
@@ -143,10 +146,12 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
           null,
         );
       }
-      completer.complete(finalResult);
+      resolver.result = finalResult;
+      completer.complete(resolver);
     } else {
       // In non-blocking mode, return a Future that will be settled by fullProcessing.
-      completer.complete(Future<A2ATaskOrMessage>.value(_processEvents(taskId, resultManager, eventQueue, resolver)));
+      resolver.result = _processEvents(taskId, resultManager, eventQueue);
+      completer.complete(resolver);
     }
     return completer.future;
   }
@@ -434,18 +439,18 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
     );
   }
 
-  Future<void> _processEvents(
+  Future<A2AResultResolver> _processEvents(
     String taskId,
     A2AResultManager resultManager,
     A2AExecutionEventQueue eventQueue,
-    A2AResolver resolver,
   ) async {
     bool firstResultSent = false;
-
+    final resolver = A2AResultResolver();
+    final completer = Completer<A2AResultResolver>();
     try {
       await for (final event in eventQueue.events()) {
         await resultManager.processEvent(event);
-        if (resolver.result != null && !firstResultSent) {
+        if (resolver.result == null && !firstResultSent) {
           if (event is A2AMessage || event is A2ATask) {
             resolver.result = event;
             firstResultSent = true;
@@ -461,6 +466,7 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
         );
         resolver.error = error;
       }
+      completer.complete(resolver);
     } catch (e) {
       print(
         '${Colorize('A2ADefaultRequestHandler::_processEvents '
@@ -473,14 +479,16 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
     } finally {
       _eventBusManager.cleanupByTaskId(taskId);
     }
+
+    return completer.future;
   }
 }
 
 /// Use to pass success or fail values back to the caller of a function.
 /// Only one value should be set.
-class A2AResolver {
+class A2AResultResolver {
   /// Success
-  A2ATaskOrMessage? result;
+  Object? result;
 
   /// Error
   Object? error;

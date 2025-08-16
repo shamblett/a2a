@@ -901,16 +901,15 @@ void main() {
         throwsA(isA<A2AInvalidParamsError>()),
       );
       message.messageId = '100';
-      Future<A2ATaskOrMessage> eventFuture = drq.sendMessage(params);
-      final event = await eventFuture;
-      expect(event is A2ATask, isTrue);
-      final update = event as A2ATask;
-      expect(event.contextId, '100');
+      final eventFuture = await drq.sendMessage(params);
+      final event = await (eventFuture.result as Future<A2AResultResolver>);
+      final update = event.result as A2ATask;
+      expect(update.contextId, '100');
       expect(update.id, '1');
       expect(update.status?.state, A2ATaskState.failed);
       expect(update.status?.timestamp?.length, 23);
       expect(update.history, isNotNull);
-      expect(update.history?.length, 2);
+      expect(update.history?.length, 1);
       expect(update.history?.first.messageId, '100');
       final updateMessage = update.status?.message;
       expect(updateMessage, isNotNull);
@@ -921,8 +920,7 @@ void main() {
         (updateMessage?.parts?.first as A2ATextPart).text,
         'Agent execution error: Invalid argument(s): Argument Error from execute',
       );
-      await Future.delayed(Duration(seconds: 1));
-    }, skip: true);
+    });
     test('Send Message - Error in Executor - Blocking', () async {
       final agentCard = A2AAgentCard();
       final store = A2AInMemoryTaskStore();
@@ -947,9 +945,9 @@ void main() {
       );
       message.messageId = '100';
       final event = await drq.sendMessage((params));
-      expect(event is A2ATask, isTrue);
-      final update = event as A2ATask;
-      expect(event.contextId, '100');
+      expect(event.result is A2ATask, isTrue);
+      final update = event.result as A2ATask;
+      expect(update.contextId, '100');
       expect(update.id, '1');
       expect(update.status?.state, A2ATaskState.failed);
       expect(update.status?.timestamp?.length, 23);
@@ -990,9 +988,9 @@ void main() {
       message.messageId = '100';
       unawaited(
         drq.sendMessage(params).then((event) {
-          expect(event is A2ATask, isTrue);
-          final update = event as A2ATask;
-          expect(event.contextId, '100');
+          expect(event.result is A2ATask, isTrue);
+          final update = event.result as A2ATask;
+          expect(update.contextId, '100');
           expect(update.id, '1');
           expect(update.status?.state, A2ATaskState.failed);
           expect(update.status?.timestamp?.length, 23);
