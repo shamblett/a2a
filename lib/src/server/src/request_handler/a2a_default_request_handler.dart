@@ -450,11 +450,12 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
     try {
       await for (final event in eventQueue.events()) {
         await resultManager.processEvent(event);
-        if (resolver.result == null && !firstResultSent) {
-          if (event is A2AMessage || event is A2ATask) {
-            resolver.result = event;
-            firstResultSent = true;
-          }
+      }
+      final result = resultManager.finalResult;
+      if (resolver.result == null && !firstResultSent) {
+        if (result is A2AMessage || result is A2ATask) {
+          resolver.result = result;
+          firstResultSent = true;
         }
       }
 
