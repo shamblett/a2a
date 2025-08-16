@@ -690,7 +690,7 @@ void main() {
         isTrue,
       );
     });
-    test('Cancel Task', () async {
+    test('Cancel Task - No event Bus', () async {
       final agentCard = A2AAgentCard();
       final store = A2AInMemoryTaskStore();
       final drq = A2ADefaultRequestHandler(
@@ -741,6 +741,29 @@ void main() {
         (taskRet.history?.first)?.messageId,
         taskRet.status?.message?.messageId,
       );
+    });
+    test('Cancel Task - Event Bus', () async {
+      final agentCard = A2AAgentCard();
+      final store = A2AInMemoryTaskStore();
+      final eventBus = A2ADefaultExecutionEventBusManager();
+      final drq = A2ADefaultRequestHandler(
+        agentCard,
+        store,
+        A2ATestAgentExecutor(),
+        eventBus,
+      );
+      final params = A2ATaskQueryParams()..id = '1';
+      final task = A2ATask()
+        ..id = '1'
+        ..status = A2ATaskStatus();
+      task.status?.state = A2ATaskState.submitted;
+      task.contextId = '2';
+      await store.save(task);
+      eventBus.createOrGetByTaskId('1');
+      final taskRet = await drq.cancelTask((params));
+      expect(taskRet.status?.state, A2ATaskState.submitted);
+      expect(taskRet.contextId, '2');
+      expect(taskRet.id, '1');
     });
     test('Get Task', () async {
       final agentCard = A2AAgentCard();

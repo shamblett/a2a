@@ -25,7 +25,7 @@ class A2ATestAgentExecutor implements A2AAgentExecutor {
 
   @override
   Future<void> cancelTask(String taskId, A2AExecutionEventBus eventBus) async {
-    print('${Colorize('A2ATestAgentExecutor Cancel Task invoked')..blue()}');
+    print('${Colorize('A2ATestAgentExecutor Cancel Task invoked for task $taskId')..blue()}');
     await Future.delayed(Duration(seconds: 1));
   }
 }
