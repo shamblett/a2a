@@ -953,7 +953,7 @@ void main() {
       expect(update.status?.state, A2ATaskState.failed);
       expect(update.status?.timestamp?.length, 23);
       expect(update.history, isNotNull);
-      expect(update.history?.length, 1);
+      expect(update.history?.length, 2);
       expect(update.history?.first.messageId, '100');
       final updateMessage = update.status?.message;
       expect(updateMessage, isNotNull);
