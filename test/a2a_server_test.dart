@@ -1013,6 +1013,10 @@ void main() {
       final message = A2AMessage()
         ..taskId = '1'
         ..contextId = '100';
+      await expectLater(
+        drq.sendMessage(params),
+        throwsA(isA<A2AInvalidParamsError>()),
+      );
       params.message = message;
       await expectLater(
         drq.sendMessageStream(params).first,
