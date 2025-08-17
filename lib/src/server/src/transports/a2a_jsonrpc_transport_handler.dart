@@ -58,7 +58,8 @@ class A2AJsonRpcTransportHandler {
       if (rpcRequest is A2ASendStreamingMessageRequest ||
           rpcRequest is A2ATaskResubscriptionRequest) {
         final agentCard = await _requestHandler.agentCard;
-        if (agentCard.capabilities.streaming == null || (agentCard.capabilities.streaming == false)) {
+        if (agentCard.capabilities.streaming == null ||
+            (agentCard.capabilities.streaming == false)) {
           throw A2AServerError.unsupportedOperation(
             'A2AJsonRpcTransportHandler::handle '
             ' Request requires streaming capability',
@@ -133,14 +134,15 @@ class A2AJsonRpcTransportHandler {
             );
         }
       }
-    } catch (e) {
-      A2AServerError.internalError(
-        'A2AJsonRpcTransportHandler::handle '
-        ' An unexpected error occurred',
-        null,
+    } catch (e, s) {
+      Error.throwWithStackTrace(
+        A2AServerError.internalError(
+          'A2AJsonRpcTransportHandler::handle '
+          ' An unexpected error occurred',
+          null,
+        ),
+        s,
       );
     }
-
-    return null;
   }
 }

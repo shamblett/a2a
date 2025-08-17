@@ -1067,7 +1067,7 @@ void main() {
       final request = A2ASendStreamingMessageRequest();
       await expectLater(
         jrth.handle(json.encode(request.toJson())),
-        throwsA(isA<A2AUnsupportedOperationError>()),
+        throwsA(isA<A2AInternalError>()),
       );
     });
   });
