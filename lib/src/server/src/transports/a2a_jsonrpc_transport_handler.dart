@@ -57,10 +57,43 @@ class A2AJsonRpcTransportHandler {
         if (agentCard.capabilities.streaming == false) {
           throw A2AServerError.unsupportedOperation(
             'A2AJsonRpcTransportHandler::handle '
-            ' Request requires streaming capability',
+                ' Request requires streaming capability',
           );
         }
+
+        final requestId = (rpcRequest as A2ATaskResubscriptionRequest).params!
+            .id;
+        final agentEventStream = rpcRequest is A2ASendStreamingMessageRequest ?
+        _requestHandler.sendMessageStream(A2AMessageSendParams()) :
+        _requestHandler.resubscribe(A2ATaskIdParams()
+          ..id = requestId);
+
+        return (() async* {
+          try {
+            await for (final event in agentEventStream) {
+              final ret = A2ASendStreamingMessageSuccessResponse();
+              ret.id = requestId;
+              ret.result = event;
+              yield ret;
+            }
+          } catch (e, s) {
+            // If the underlying agent stream throws an error, we need to yield a JSONRPCErrorResponse.
+            // However, an AsyncGenerator is expected to yield JSONRPCResult.
+            // This indicates an issue with how errors from the agent's stream are propagated.
+            // For now, log it. The Express layer will handle the generator ending.
+            print('${Colorize(
+                'Error in agent event stream for (request $requestId}): $e')
+                .yellow()}');
+            // Ideally, the Express layer should catch this and send a final error to the client if the stream breaks.
+            // Or, the agentEventStream itself should yield a final error event that gets wrapped.
+            // For now, we re-throw so it can be caught by A2AExpressApp's stream handling.
+            Error.throwWithStackTrace(e, s);
+          }
+        });
+      } else {
+        // Handle non-streaming methods
       }
+
     } catch (e) {
       A2AServerError.internalError(
         'A2AJsonRpcTransportHandler::handle '
