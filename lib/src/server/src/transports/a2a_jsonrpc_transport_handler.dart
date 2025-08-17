@@ -7,6 +7,18 @@
 
 part of '../../a2a_server.dart';
 
+/// Supported request types
+const supportedTypes = <Type>[
+  A2ASendMessageRequest,
+  A2ASendStreamingMessageRequest,
+  A2ATaskResubscriptionRequest,
+  A2ASendMessageRequest,
+  A2AGetTaskRequest,
+  A2ACancelTaskRequest,
+  A2ASetTaskPushNotificationConfigRequest,
+  A2ASetTaskPushNotificationConfigRequest,
+];
+
 /// Handles JSON-RPC transport layer, routing requests to an [A2ARequestHandler].
 class A2AJsonRpcTransportHandler {
   final A2ARequestHandler _requestHandler;
@@ -22,17 +34,15 @@ class A2AJsonRpcTransportHandler {
     dynamic rpcRequest;
 
     try {
-      if (requestBody is String) {
-        rpcRequest = A2ARequest.fromJson(json.decode(requestBody));
-        if (rpcRequest.unknownRequest) {
-          throw A2AServerError.invalidRequest(
-            'A2AJsonRpcTransportHandler::handle '
-            'Invalid JSON-RPC request structure.',
-            null,
-          );
-        }
-      } else {
-        rpcRequest = requestBody;
+      rpcRequest = requestBody is String
+          ? A2ARequest.fromJson(json.decode(requestBody))
+          : requestBody;
+      if (!supportedTypes.contains(rpcRequest.runtimeType)) {
+        throw A2AServerError.invalidRequest(
+          'A2AJsonRpcTransportHandler::handle '
+          'Invalid JSON-RPC request structure.',
+          null,
+        );
       }
     } catch (e, s) {
       Error.throwWithStackTrace(

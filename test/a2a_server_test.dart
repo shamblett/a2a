@@ -9,6 +9,7 @@
 library;
 
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:test/test.dart';
 
@@ -1031,6 +1032,35 @@ void main() {
       expect(update.history, isNotNull);
       expect(update.history?.length, 1);
       expect(update.history?.first.messageId, '100');
+    });
+  });
+  group('JSON RPC Transport Handler', () {
+    final agentCard = A2AAgentCard();
+    final store = A2AInMemoryTaskStore();
+    final busManager = A2ADefaultExecutionEventBusManager();
+    final drq = A2ADefaultRequestHandler(
+      agentCard,
+      store,
+      A2ATestAgentExecutor(),
+      busManager,
+    );
+    test('Construction', () async {
+      expect(A2AJsonRpcTransportHandler(drq), isNotNull);
+    });
+    test('Body is corrupt JSON', () async {
+      final jrth = A2AJsonRpcTransportHandler(drq);
+      await expectLater(
+        jrth.handle('kkk'),
+        throwsA(isA<A2AUnsupportedOperationError>()),
+      );
+    });
+    test('Operation is unknown', () async {
+      final jrth = A2AJsonRpcTransportHandler(drq);
+      final request = A2ASendMessageResponse();
+      await expectLater(
+        jrth.handle(json.encode(request.toJson())),
+        throwsA(isA<A2AUnsupportedOperationError>()),
+      );
     });
   });
 }
