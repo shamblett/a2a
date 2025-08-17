@@ -53,12 +53,12 @@ class A2AJsonRpcTransportHandler {
         s,
       );
     }
-
+    // rpcRequest is a valid request now
     try {
       if (rpcRequest is A2ASendStreamingMessageRequest ||
           rpcRequest is A2ATaskResubscriptionRequest) {
         final agentCard = await _requestHandler.agentCard;
-        if (agentCard.capabilities.streaming == false) {
+        if (agentCard.capabilities.streaming == null || (agentCard.capabilities.streaming == false)) {
           throw A2AServerError.unsupportedOperation(
             'A2AJsonRpcTransportHandler::handle '
             ' Request requires streaming capability',

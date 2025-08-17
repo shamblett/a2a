@@ -1054,9 +1054,17 @@ void main() {
         throwsA(isA<A2AUnsupportedOperationError>()),
       );
     });
-    test('Operation is unknown', () async {
+    test('Request is not valid', () async {
       final jrth = A2AJsonRpcTransportHandler(drq);
       final request = A2ASendMessageResponse();
+      await expectLater(
+        jrth.handle(json.encode(request.toJson())),
+        throwsA(isA<A2AUnsupportedOperationError>()),
+      );
+    });
+    test('Streaming request but not streaming capable', () async {
+      final jrth = A2AJsonRpcTransportHandler(drq);
+      final request = A2ASendStreamingMessageRequest();
       await expectLater(
         jrth.handle(json.encode(request.toJson())),
         throwsA(isA<A2AUnsupportedOperationError>()),
