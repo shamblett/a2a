@@ -9,7 +9,6 @@
 library;
 
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:test/test.dart';
 
@@ -1058,7 +1057,7 @@ void main() {
       final jrth = A2AJsonRpcTransportHandler(drq);
       final request = A2ASendMessageResponse();
       await expectLater(
-        jrth.handle(json.encode(request.toJson())),
+        jrth.handle(request),
         throwsA(isA<A2AUnsupportedOperationError>()),
       );
     });
@@ -1066,9 +1065,32 @@ void main() {
       final jrth = A2AJsonRpcTransportHandler(drq);
       final request = A2ASendStreamingMessageRequest();
       await expectLater(
-        jrth.handle(json.encode(request.toJson())),
+        jrth.handle(request),
         throwsA(isA<A2AInternalError>()),
       );
+    });
+    test('Streaming request returns async generator - send streaming message', () async {
+      final jrth = A2AJsonRpcTransportHandler(drq);
+      final request = A2ASendStreamingMessageRequest()
+      ..params = (A2AMessageSendParams()
+          ..message = (A2AMessage()
+              ..messageId = '100'
+              ..contextId = '1000'
+              ..taskId = '1'))
+      ..id = '2000';
+      agentCard.capabilities.streaming = true;
+      final result = jrth.handle(request);
+      expect(result is Future, isTrue);
+    });
+    test('Streaming request returns async generator - resubscribe', () async {
+      final jrth = A2AJsonRpcTransportHandler(drq);
+      final request = A2ATaskResubscriptionRequest()
+      ..id = '10000'
+      ..params = (A2ATaskIdParams()
+          ..id = '1');
+      agentCard.capabilities.streaming = true;
+      final result = jrth.handle(request);
+      expect(result is Future, isTrue);
     });
   });
 }

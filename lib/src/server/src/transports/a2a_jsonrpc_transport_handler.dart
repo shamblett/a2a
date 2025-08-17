@@ -66,11 +66,10 @@ class A2AJsonRpcTransportHandler {
           );
         }
 
-        final requestId =
-            (rpcRequest as A2ATaskResubscriptionRequest).params!.id;
+        final requestId = rpcRequest.id;
         final agentEventStream = rpcRequest is A2ASendStreamingMessageRequest
-            ? _requestHandler.sendMessageStream(A2AMessageSendParams())
-            : _requestHandler.resubscribe(A2ATaskIdParams()..id = requestId);
+            ? _requestHandler.sendMessageStream(rpcRequest.params!)
+            : _requestHandler.resubscribe(rpcRequest.params);
 
         return (() async* {
           try {
