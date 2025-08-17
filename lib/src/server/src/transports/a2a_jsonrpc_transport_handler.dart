@@ -19,7 +19,7 @@ class A2AJsonRpcTransportHandler {
   /// For non-streaming methods, it returns a Future of a single JSONRPCMessage
   /// (Result or ErrorResponse).
   A2AResponseOrGenerator handle(Object requestBody) async {
-    var rpcRequest = A2ARequest();
+    dynamic rpcRequest;
 
     try {
       if (requestBody is String) {
@@ -31,14 +31,8 @@ class A2AJsonRpcTransportHandler {
             null,
           );
         }
-      } else if (requestBody is A2ARequest) {
-        rpcRequest = requestBody;
       } else {
-        throw A2AServerError.parseError(
-          'A2AJsonRpcTransportHandler::handle '
-          'Invalid request body type.',
-          null,
-        );
+        rpcRequest = requestBody;
       }
     } catch (e, s) {
       Error.throwWithStackTrace(
@@ -57,16 +51,15 @@ class A2AJsonRpcTransportHandler {
         if (agentCard.capabilities.streaming == false) {
           throw A2AServerError.unsupportedOperation(
             'A2AJsonRpcTransportHandler::handle '
-                ' Request requires streaming capability',
+            ' Request requires streaming capability',
           );
         }
 
-        final requestId = (rpcRequest as A2ATaskResubscriptionRequest).params!
-            .id;
-        final agentEventStream = rpcRequest is A2ASendStreamingMessageRequest ?
-        _requestHandler.sendMessageStream(A2AMessageSendParams()) :
-        _requestHandler.resubscribe(A2ATaskIdParams()
-          ..id = requestId);
+        final requestId =
+            (rpcRequest as A2ATaskResubscriptionRequest).params!.id;
+        final agentEventStream = rpcRequest is A2ASendStreamingMessageRequest
+            ? _requestHandler.sendMessageStream(A2AMessageSendParams())
+            : _requestHandler.resubscribe(A2ATaskIdParams()..id = requestId);
 
         return (() async* {
           try {
@@ -81,9 +74,9 @@ class A2AJsonRpcTransportHandler {
             // However, an AsyncGenerator is expected to yield JSONRPCResult.
             // This indicates an issue with how errors from the agent's stream are propagated.
             // For now, log it. The Express layer will handle the generator ending.
-            print('${Colorize(
-                'Error in agent event stream for (request $requestId}): $e')
-                .yellow()}');
+            print(
+              '${Colorize('Error in agent event stream for (request $requestId}): $e').yellow()}',
+            );
             // Ideally, the Express layer should catch this and send a final error to the client if the stream breaks.
             // Or, the agentEventStream itself should yield a final error event that gets wrapped.
             // For now, we re-throw so it can be caught by A2AExpressApp's stream handling.
@@ -92,8 +85,11 @@ class A2AJsonRpcTransportHandler {
         });
       } else {
         // Handle non-streaming methods
+        switch (rpcRequest) {
+          case A2ASendMessageRequest _:
+            return await _requestHandler.sendMessage(rpcRequest.params!);
+        }
       }
-
     } catch (e) {
       A2AServerError.internalError(
         'A2AJsonRpcTransportHandler::handle '

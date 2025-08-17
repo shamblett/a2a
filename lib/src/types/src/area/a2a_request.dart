@@ -63,6 +63,7 @@ final class A2ASendMessageRequest extends A2ARequest {
 
   /// A String containing the name of the method to be invoked.
   String method = 'message/send';
+  A2AMessageSendParams? params;
 
   A2ASendMessageRequest();
 

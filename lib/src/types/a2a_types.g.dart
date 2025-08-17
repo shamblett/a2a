@@ -304,7 +304,10 @@ A2ASendMessageRequest _$A2ASendMessageRequestFromJson(
 ) => A2ASendMessageRequest()
   ..id = json['id']
   ..jsonrpc = json['jsonrpc'] as String
-  ..method = json['method'] as String;
+  ..method = json['method'] as String
+  ..params = json['params'] == null
+      ? null
+      : A2AMessageSendParams.fromJson(json['params'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$A2ASendMessageRequestToJson(
   A2ASendMessageRequest instance,
@@ -312,6 +315,7 @@ Map<String, dynamic> _$A2ASendMessageRequestToJson(
   'id': instance.id,
   'jsonrpc': instance.jsonrpc,
   'method': instance.method,
+  'params': instance.params?.toJson(),
 };
 
 A2ASendStreamingMessageRequest _$A2ASendStreamingMessageRequestFromJson(
