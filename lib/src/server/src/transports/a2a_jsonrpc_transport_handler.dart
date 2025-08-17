@@ -49,5 +49,24 @@ class A2AJsonRpcTransportHandler {
         s,
       );
     }
+
+    try {
+      if (rpcRequest is A2ASendStreamingMessageRequest ||
+          rpcRequest is A2ATaskResubscriptionRequest) {
+        final agentCard = await _requestHandler.agentCard;
+        if (agentCard.capabilities.streaming == false) {
+          throw A2AServerError.unsupportedOperation(
+            'A2AJsonRpcTransportHandler::handle '
+            ' Request requires streaming capability',
+          );
+        }
+      }
+    } catch (e) {
+      A2AServerError.internalError(
+        'A2AJsonRpcTransportHandler::handle '
+        ' An unexpected error occurred',
+        null,
+      );
+    }
   }
 }
