@@ -17,6 +17,10 @@ class A2ARequest {
   static const tasksPncGet = 'tasks/pushNotificationConfig/get';
   static const tasksResubscribe = 'tasks/resubscribe';
 
+  /// Set if a valid request cannot be formed by [fromJson].
+  @JsonKey(includeFromJson: false)
+  bool unknownRequest = false;
+
   factory A2ARequest.fromJson(Map<String, dynamic> json) {
     if (!json.containsKey('method')) {
       return A2ARequest();
@@ -37,7 +41,7 @@ class A2ARequest {
         case tasksResubscribe:
           return A2ATaskResubscriptionRequest.fromJson(json);
         default:
-          return A2ARequest();
+          return A2ARequest()..unknownRequest = true;
       }
     }
   }

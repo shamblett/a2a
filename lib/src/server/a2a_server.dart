@@ -9,6 +9,7 @@ library;
 
 import 'dart:async';
 import 'dart:collection';
+import 'dart:convert';
 
 import 'package:colorize/colorize.dart';
 import 'package:events_emitter/events_emitter.dart';

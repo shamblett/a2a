@@ -23,6 +23,9 @@ typedef A2ATaskOrMessage = Object;
 /// Agent Execution Event
 typedef A2AAgentExecutionEvent = Object;
 
+/// Transport handler response or async* function.
+typedef A2AResponseOrGenerator = Object;
+
 /// Represents the possible states of a Task.
 enum A2ATaskState {
   @JsonValue('submitted')
