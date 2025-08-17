@@ -18,7 +18,7 @@ class A2AJsonRpcTransportHandler {
   /// For streaming methods, it returns an AsyncGenerator of JSONRPCResult.
   /// For non-streaming methods, it returns a Future of a single JSONRPCMessage
   /// (Result or ErrorResponse).
-  A2AResponseOrGenerator handle(Object requestBody) async {
+  A2AResponseOrGenerator? handle(Object requestBody) async {
     dynamic rpcRequest;
 
     try {
@@ -75,7 +75,7 @@ class A2AJsonRpcTransportHandler {
             // This indicates an issue with how errors from the agent's stream are propagated.
             // For now, log it. The Express layer will handle the generator ending.
             print(
-              '${Colorize('Error in agent event stream for (request $requestId}): $e').yellow()}',
+              '${Colorize('A2AJsonRpcTransportHandler::handle  Error in agent event stream for (request $requestId}): $e').yellow()}',
             );
             // Ideally, the Express layer should catch this and send a final error to the client if the stream breaks.
             // Or, the agentEventStream itself should yield a final error event that gets wrapped.
@@ -87,7 +87,40 @@ class A2AJsonRpcTransportHandler {
         // Handle non-streaming methods
         switch (rpcRequest) {
           case A2ASendMessageRequest _:
-            return await _requestHandler.sendMessage(rpcRequest.params!);
+            final result = await _requestHandler.sendMessage(
+              rpcRequest.params!,
+            );
+            return A2ASendMessageSuccessResponse()
+              ..id = rpcRequest.id
+              ..result = result;
+          case A2AGetTaskRequest _:
+            final result = await _requestHandler.getTask(rpcRequest.params!);
+            return A2AGetTaskSuccessResponse()
+              ..id = rpcRequest.id
+              ..result = result;
+          case A2ACancelTaskRequest _:
+            final result = await _requestHandler.cancelTask(rpcRequest.params!);
+            return A2ACancelTaskSuccessResponse()
+              ..id = rpcRequest.id
+              ..result = result;
+          case A2ASetTaskPushNotificationConfigRequest _:
+            final result = await _requestHandler.setTaskPushNotificationConfig(
+              rpcRequest.params!,
+            );
+            return A2ASetTaskPushNotificationConfigSuccessResponse()
+              ..id = rpcRequest.id
+              ..result = result?.pushNotificationConfig;
+          case A2AGetTaskPushNotificationConfigRequest _:
+            final result = await _requestHandler.getTaskPushNotificationConfig(
+              rpcRequest.params!,
+            );
+            return A2AGetTaskPushNotificationConfigSuccessResponse()
+              ..id = rpcRequest.id
+              ..result = result?.pushNotificationConfig;
+          default:
+            throw A2AServerError.methodNotFound(
+              'A2AJsonRpcTransportHandler::handle',
+            );
         }
       }
     } catch (e) {
@@ -97,5 +130,7 @@ class A2AJsonRpcTransportHandler {
         null,
       );
     }
+
+    return null;
   }
 }

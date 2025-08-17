@@ -698,7 +698,7 @@ void main() {
         A2ATestAgentExecutor(),
         A2ADefaultExecutionEventBusManager(),
       );
-      final params = A2ATaskQueryParams()..id = '1';
+      final params = A2ATaskIdParams()..id = '1';
       final task = A2ATask()
         ..id = '1'
         ..status = A2ATaskStatus();
@@ -751,7 +751,7 @@ void main() {
         A2ATestAgentExecutor(),
         eventBus,
       );
-      final params = A2ATaskQueryParams()..id = '1';
+      final params = A2ATaskIdParams()..id = '1';
       final task = A2ATask()
         ..id = '1'
         ..status = A2ATaskStatus();

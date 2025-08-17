@@ -236,7 +236,7 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
   }
 
   @override
-  Future<A2ATask> cancelTask(A2ATaskQueryParams params) async {
+  Future<A2ATask> cancelTask(A2ATaskIdParams params) async {
     final task = await _taskStore.load(params.id);
     if (task == null) {
       throw A2AServerError.taskNotFound(params.id);
