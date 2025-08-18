@@ -35,9 +35,8 @@ class A2AExpressApp {
     });
 
     app.post(baseUrl, (Request req, Response res) async {
-      final rpcResponseOrStream = await _jsonRpcTransportHandler.handle(
-        req.body,
-      );
+      final body = await req.body;
+      final rpcResponseOrStream = await _jsonRpcTransportHandler.handle(body);
 
       // Check if it's an AsyncGenerator (stream)
       if (rpcResponseOrStream is Function) {
@@ -53,7 +52,7 @@ class A2AExpressApp {
           }
         } catch (e) {
           print(
-            '${Colorize('A2AExpressApp::setupRoutes - Error during SSE streaming (request ${req.body}').red()}, '
+            '${Colorize('A2AExpressApp::setupRoutes - Error during SSE streaming (request ${body?.id}').red()}, '
             '$e',
           );
           // If the stream itself throws an error, send a final JSONRPCErrorResponse
@@ -61,10 +60,10 @@ class A2AExpressApp {
               ? e
               : A2AServerError.internalError('Streaming error.', null);
           final errorResponse = A2AJSONRPCErrorResponse()
-            ..id = req
-                .body
+            ..id = body
                 ?.id // Use original request ID if available
             ..error = (error as A2AServerError).toJSONRPCError();
+          res.status(500).json(errorResponse);
         } finally {}
       }
     });
