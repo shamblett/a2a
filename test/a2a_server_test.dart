@@ -1137,6 +1137,7 @@ void main() {
       final jrth = A2AJsonRpcTransportHandler(drq);
       task.status = A2ATaskStatus()..state = A2ATaskState.submitted;
       await store.save(task);
+      busManager.createOrGetByTaskId('1');
       final request = A2ACancelTaskRequest()
         ..params = (A2ATaskIdParams()..id = '1');
       final result = await jrth.handle(request);
