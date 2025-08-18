@@ -12,6 +12,7 @@ import 'dart:collection';
 import 'dart:convert';
 
 import 'package:colorize/colorize.dart';
+import 'package:darto/darto.dart';
 import 'package:events_emitter/events_emitter.dart';
 import 'package:uuid/uuid.dart';
 
@@ -22,6 +23,7 @@ part 'src/a2a_utilities.dart';
 part 'src/a2a_task_store.dart';
 part 'src/a2a_server_error.dart';
 part 'src/a2a_result_manager.dart';
+part 'src/a2a_express_app.dart';
 part 'src/events/a2a_execution_event_bus.dart';
 part 'src/events/a2a_execution_event_bus_manager.dart';
 part 'src/events/a2a_execution_event_queue.dart';
