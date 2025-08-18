@@ -1044,19 +1044,17 @@ void main() {
       busManager,
     );
     final task = A2ATask()..id = '1';
-    test('Construction', () async {
+    test('Construction TH', () async {
       expect(A2AJsonRpcTransportHandler(drq), isNotNull);
-      // Store the task here for the rest of the tests
-      await store.save(task);
     });
-    test('Body is corrupt JSON', () async {
+    test('Body is corrupt JSON TH', () async {
       final jrth = A2AJsonRpcTransportHandler(drq);
       await expectLater(
         jrth.handle('kkk'),
         throwsA(isA<A2AUnsupportedOperationError>()),
       );
     });
-    test('Request is not valid', () async {
+    test('Request is not valid TH', () async {
       final jrth = A2AJsonRpcTransportHandler(drq);
       final request = A2ASendMessageResponse();
       await expectLater(
@@ -1064,15 +1062,16 @@ void main() {
         throwsA(isA<A2AUnsupportedOperationError>()),
       );
     });
-    test('Streaming request but not streaming capable', () async {
+    test('Streaming request but not streaming capable TH', () async {
       final jrth = A2AJsonRpcTransportHandler(drq);
       final request = A2ASendStreamingMessageRequest();
       await expectLater(jrth.handle(request), throwsA(isA<A2AInternalError>()));
     });
     test(
-      'Streaming request returns async generator - send streaming message',
+      'Streaming request returns async generator - send streaming message TH',
       () async {
         final jrth = A2AJsonRpcTransportHandler(drq);
+        await store.save(task);
         final request = A2ASendStreamingMessageRequest()
           ..params = (A2AMessageSendParams()
             ..message = (A2AMessage()
@@ -1085,16 +1084,20 @@ void main() {
         expect(result is Function, isTrue);
       },
     );
-    test('Streaming request returns async generator - resubscribe', () async {
-      final jrth = A2AJsonRpcTransportHandler(drq);
-      final request = A2ATaskResubscriptionRequest()
-        ..id = '10000'
-        ..params = (A2ATaskIdParams()..id = '1');
-      agentCard.capabilities.streaming = true;
-      final result = await jrth.handle(request);
-      expect(result is Function, isTrue);
-    });
-    test('Send Message - non blocking', () async {
+    test(
+      'Streaming request returns async generator - resubscribe TH',
+      () async {
+        final jrth = A2AJsonRpcTransportHandler(drq);
+        await store.save(task);
+        final request = A2ATaskResubscriptionRequest()
+          ..id = '10000'
+          ..params = (A2ATaskIdParams()..id = '1');
+        agentCard.capabilities.streaming = true;
+        final result = await jrth.handle(request);
+        expect(result is Function, isTrue);
+      },
+    );
+    test('Send Message - non blocking TH', () async {
       final jrth = A2AJsonRpcTransportHandler(drq);
       await store.save(task);
       final request = A2ASendMessageRequest()
@@ -1107,7 +1110,7 @@ void main() {
       final result = await jrth.handle(request);
       expect(result is A2ASendMessageSuccessResponse, isTrue);
     });
-    test('Send Message - blocking', () async {
+    test('Send Message - blocking TH', () async {
       final jrth = A2AJsonRpcTransportHandler(drq);
       await store.save(task);
       final request = A2ASendMessageRequest()
@@ -1120,6 +1123,15 @@ void main() {
           ..configuration = (A2AMessageSendConfiguration()..blocking = true));
       final result = await jrth.handle(request);
       expect(result is A2ASendMessageSuccessResponse, isTrue);
+    });
+    test('Get Task TH', () async {
+      final jrth = A2AJsonRpcTransportHandler(drq);
+      await store.save(task);
+      final request = A2AGetTaskRequest()
+        ..params = (A2ATaskQueryParams()..id = '1');
+      final result = await jrth.handle(request);
+      expect(result is A2AGetTaskSuccessResponse, isTrue);
+      expect((result as A2AGetTaskSuccessResponse).result is A2ATask, isTrue);
     });
   });
 }
