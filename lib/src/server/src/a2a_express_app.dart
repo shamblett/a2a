@@ -33,5 +33,27 @@ class A2AExpressApp {
         res.status(500).json({'error': 'Failed to retrieve agent card'});
       }
     });
+
+    app.post(baseUrl, (Request req, Response res) async {
+      final rpcResponseOrStream = await _jsonRpcTransportHandler.handle(
+        req.body,
+      );
+
+      // Check if it's an AsyncGenerator (stream)
+      if (rpcResponseOrStream is Function) {
+        res.set('Content-Type', 'text/event-stream');
+        res.set('Cache-Control', 'no-cache');
+        res.set('Connection', 'keep-alive');
+
+        try {
+          await for (final event in rpcResponseOrStream()) {
+            // Each event from the stream is already a JSONRPCResult
+            res.set('id:', '${DateTime.now().millisecondsSinceEpoch}\n');
+            res.set('data:', '${json.encode(event)}\n\n');
+          }
+        } catch (e) {
+        } finally {}
+      }
+    });
   }
 }
