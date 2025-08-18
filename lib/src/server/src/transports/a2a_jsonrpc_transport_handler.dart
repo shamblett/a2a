@@ -30,7 +30,7 @@ class A2AJsonRpcTransportHandler {
   /// For streaming methods, it returns an AsyncGenerator of JSONRPCResult.
   /// For non-streaming methods, it returns a Future of a single JSONRPCMessage
   /// (Result or ErrorResponse).
-  A2AResponseOrGenerator? handle(Object requestBody) async {
+  Future<A2AResponseOrGenerator>? handle(Object requestBody) async {
     dynamic rpcRequest;
 
     try {
@@ -100,9 +100,20 @@ class A2AJsonRpcTransportHandler {
             final result = await _requestHandler.sendMessage(
               rpcRequest.params!,
             );
-            return A2ASendMessageSuccessResponse()
-              ..id = rpcRequest.id
-              ..result = result;
+            final ret = result as A2AResultResolver;
+            if (ret.result != null) {
+              return A2ASendMessageSuccessResponse()
+                ..id = rpcRequest.id
+                ..result = result;
+            } else {
+              // Error
+              if (ret.error != null) {
+                final jrpc = (ret.error as A2AServerError).toJSONRPCError();
+                return jrpc as A2AJSONRPCErrorResponseS;
+              } else {
+                return A2AJSONRPCErrorResponseS();
+              }
+            }
           case A2AGetTaskRequest _:
             final result = await _requestHandler.getTask(rpcRequest.params!);
             return A2AGetTaskSuccessResponse()

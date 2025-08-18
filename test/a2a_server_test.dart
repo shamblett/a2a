@@ -1043,8 +1043,11 @@ void main() {
       A2ATestAgentExecutor(),
       busManager,
     );
+    final task = A2ATask()..id = '1';
     test('Construction', () async {
       expect(A2AJsonRpcTransportHandler(drq), isNotNull);
+      // Store the task here for the rest of the tests
+      await store.save(task);
     });
     test('Body is corrupt JSON', () async {
       final jrth = A2AJsonRpcTransportHandler(drq);
@@ -1064,33 +1067,59 @@ void main() {
     test('Streaming request but not streaming capable', () async {
       final jrth = A2AJsonRpcTransportHandler(drq);
       final request = A2ASendStreamingMessageRequest();
-      await expectLater(
-        jrth.handle(request),
-        throwsA(isA<A2AInternalError>()),
-      );
+      await expectLater(jrth.handle(request), throwsA(isA<A2AInternalError>()));
     });
-    test('Streaming request returns async generator - send streaming message', () async {
-      final jrth = A2AJsonRpcTransportHandler(drq);
-      final request = A2ASendStreamingMessageRequest()
-      ..params = (A2AMessageSendParams()
-          ..message = (A2AMessage()
+    test(
+      'Streaming request returns async generator - send streaming message',
+      () async {
+        final jrth = A2AJsonRpcTransportHandler(drq);
+        final request = A2ASendStreamingMessageRequest()
+          ..params = (A2AMessageSendParams()
+            ..message = (A2AMessage()
               ..messageId = '100'
               ..contextId = '1000'
               ..taskId = '1'))
-      ..id = '2000';
-      agentCard.capabilities.streaming = true;
-      final result = jrth.handle(request);
-      expect(result is Future, isTrue);
-    });
+          ..id = '2000';
+        agentCard.capabilities.streaming = true;
+        final result = await jrth.handle(request);
+        expect(result is Function, isTrue);
+      },
+    );
     test('Streaming request returns async generator - resubscribe', () async {
       final jrth = A2AJsonRpcTransportHandler(drq);
       final request = A2ATaskResubscriptionRequest()
-      ..id = '10000'
-      ..params = (A2ATaskIdParams()
-          ..id = '1');
+        ..id = '10000'
+        ..params = (A2ATaskIdParams()..id = '1');
       agentCard.capabilities.streaming = true;
-      final result = jrth.handle(request);
-      expect(result is Future, isTrue);
+      final result = await jrth.handle(request);
+      expect(result is Function, isTrue);
+    });
+    test('Send Message - non blocking', () async {
+      final jrth = A2AJsonRpcTransportHandler(drq);
+      await store.save(task);
+      final request = A2ASendMessageRequest()
+        ..id = '10000'
+        ..params = (A2AMessageSendParams()
+          ..message = (A2AMessage()
+            ..taskId = '1'
+            ..contextId = '100'
+            ..messageId = '1000'));
+      final result = await jrth.handle(request);
+      expect(result is A2ASendMessageSuccessResponse, isTrue);
+    });
+    test('Send Message - blocking', () async {
+      final jrth = A2AJsonRpcTransportHandler(drq);
+      await store.save(task);
+      final request = A2ASendMessageRequest()
+        ..id = '10000'
+        ..params = (A2AMessageSendParams()
+          ..message = (A2AMessage()
+            ..taskId = '1'
+            ..contextId = '100'
+            ..messageId = '1000')
+          ..configuration = (A2AMessageSendConfiguration()..blocking = true));
+      final result = await jrth.handle(request);
+      expect(result is A2ASendMessageSuccessResponse, isTrue);
     });
   });
 }
