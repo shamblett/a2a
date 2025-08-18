@@ -1133,5 +1133,18 @@ void main() {
       expect(result is A2AGetTaskSuccessResponse, isTrue);
       expect((result as A2AGetTaskSuccessResponse).result is A2ATask, isTrue);
     });
+    test('Cancel Task TH', () async {
+      final jrth = A2AJsonRpcTransportHandler(drq);
+      task.status = A2ATaskStatus()..state = A2ATaskState.submitted;
+      await store.save(task);
+      final request = A2ACancelTaskRequest()
+        ..params = (A2ATaskIdParams()..id = '1');
+      final result = await jrth.handle(request);
+      expect(result is A2ACancelTaskSuccessResponse, isTrue);
+      expect(
+        (result as A2ACancelTaskSuccessResponse).result is A2ATask,
+        isTrue,
+      );
+    });
   });
 }
