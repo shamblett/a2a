@@ -1162,5 +1162,24 @@ void main() {
         isTrue,
       );
     });
+    test('Get Task Push Notification Config TH', () async {
+      final jrth = A2AJsonRpcTransportHandler(drq);
+      await store.save(task);
+      agentCard.capabilities.pushNotifications = true;
+      final requestSet = A2ASetTaskPushNotificationConfigRequest()
+        ..params = (A2ATaskPushNotificationConfig()
+          ..taskId = '1'
+          ..pushNotificationConfig = A2ATaskPushNotificationConfig1());
+      await jrth.handle(requestSet);
+      final requestGet = A2AGetTaskPushNotificationConfigRequest()
+        ..params = (A2ATaskIdParams()..id = '1');
+      final result = await jrth.handle(requestGet);
+      expect(result is A2AGetTaskPushNotificationConfigSuccessResponse, isTrue);
+      expect(
+        (result as A2AGetTaskPushNotificationConfigSuccessResponse).result
+            is A2ATaskPushNotificationConfig1,
+        isTrue,
+      );
+    });
   });
 }
