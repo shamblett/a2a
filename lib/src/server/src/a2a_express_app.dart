@@ -52,14 +52,19 @@ class A2AExpressApp {
             res.set('data:', '${json.encode(event)}\n\n');
           }
         } catch (e) {
-          print('${Colorize('A2AExpressApp::setupRoutes - Error during SSE streaming (request ${req.body}').red()}, '
-              '$e');
+          print(
+            '${Colorize('A2AExpressApp::setupRoutes - Error during SSE streaming (request ${req.body}').red()}, '
+            '$e',
+          );
           // If the stream itself throws an error, send a final JSONRPCErrorResponse
-          final error = e is A2AServerError ? e : A2AServerError.internalError('Streaming error.',null);
-      final errorResponse = A2AJSONRPCErrorResponse()
-      ..id = req.body?.id // Use original request ID if available
-      ..error = (error as A2AServerError).toJSONRPCError();
-      };
+          final error = e is A2AServerError
+              ? e
+              : A2AServerError.internalError('Streaming error.', null);
+          final errorResponse = A2AJSONRPCErrorResponse()
+            ..id = req
+                .body
+                ?.id // Use original request ID if available
+            ..error = (error as A2AServerError).toJSONRPCError();
         } finally {}
       }
     });
