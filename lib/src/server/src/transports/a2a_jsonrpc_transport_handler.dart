@@ -36,7 +36,7 @@ class A2AJsonRpcTransportHandler {
     try {
       rpcRequest = requestBody is String
           ? A2ARequest.fromJson(json.decode(requestBody))
-          : requestBody;
+          : A2ARequest.fromJson(requestBody as Map<String,dynamic>);
       if (!supportedTypes.contains(rpcRequest.runtimeType)) {
         throw A2AServerError.invalidRequest(
           'A2AJsonRpcTransportHandler::handle '
