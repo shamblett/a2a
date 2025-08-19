@@ -8,7 +8,6 @@
 part of '../a2a_server.dart';
 
 class A2AExpressApp {
-
   final A2ARequestHandler _requestHandler; // Kept for getAgentCard
   final A2AJsonRpcTransportHandler _jsonRpcTransportHandler;
 
@@ -61,7 +60,7 @@ class A2AExpressApp {
                 ? e
                 : A2AServerError.internalError('Streaming error.', null);
             final errorResponse = A2AJSONRPCErrorResponse()
-            ..id = '<error marker>'
+              ..id = '<error marker>'
               ..error = (error as A2AServerError).toJSONRPCError();
             res.status(500).json(errorResponse.toJson());
           } finally {
@@ -71,6 +70,17 @@ class A2AExpressApp {
           }
         } else {
           // Single JSON-RPC response
+
+          // Check for a result resolver
+          final rpcResult = (rpcResponseOrStream as dynamic).result;
+          if (rpcResult is A2AResultResolver) {
+            if (rpcResult.result != null) {
+              (rpcResponseOrStream as dynamic).result = rpcResult.result;
+            } else if (rpcResult.result != null) {
+              (rpcResponseOrStream as dynamic).result = rpcResult.error;
+            }
+          }
+
           res.status(200).json((rpcResponseOrStream as dynamic).toJson());
         }
       } catch (e) {

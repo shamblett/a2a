@@ -108,10 +108,10 @@ Future<int> main() async {
     });
   });
   group('Client Methods', () {
-    test('Send Message No Stream', () async {
+    test('Send Message No Stream Blocking', () async {
       if (testClient == null) {
         testClient ??= A2AClient(baseUrl);
-        await Future.delayed(Duration(seconds: 10));
+        await Future.delayed(Duration(seconds: 1));
       }
       final part = A2ATextPart()
         ..text = 'how much is 10 USD in INR?'
@@ -119,10 +119,13 @@ Future<int> main() async {
 
       final message = A2AMessage()
         ..role = 'user'
+        ..messageId = '10'
         ..parts = [part];
 
-      final payload = A2AMessageSendParams()..message = message;
-
+      final payload = A2AMessageSendParams()
+        ..message = message
+      ..configuration = (A2AMessageSendConfiguration()
+          ..blocking = true);
       try {
         final rpcResponse = await testClient!.sendMessage(payload);
         expect(rpcResponse.isError, isFalse);

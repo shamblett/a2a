@@ -10,8 +10,8 @@ library;
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:a2a/a2a.dart';
 import 'package:oxy/oxy.dart' as http;
-import '/src/types/a2a_types.dart';
 
 /// A2AClient is a HTTP client for interacting
 /// with A2A-compliant agents.
@@ -457,8 +457,7 @@ class A2AClient {
 
     final rpcResponse = (await httpResponse.json() as Map<String, dynamic>);
     if (rpcResponse.containsKey('id')) {
-      if (rpcResponse['id'] != null &&
-          rpcResponse['id'] != requestId.toString()) {
+      if (rpcResponse['id'] != null && rpcResponse['id'] != requestId) {
         // This is a significant issue for request-response matching.
         throw Exception(
           '_postRpcRequest:: RPC response ID mismatch for method $method. Expected $requestId, got ${rpcResponse["id"]}',
