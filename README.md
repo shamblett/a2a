@@ -58,7 +58,42 @@ This will give you command line access to the a2a_cli_client.
 
 ## The A2A Server
 
-_Not yet implemented - will be in a subsequent version_
+The A2AServer is a server implementation for the Agent-to-Agent (A2A) communication protocol, 
+built atop of the [Darto](https://pub.dev/packages/darto) microframework, 
+a package inspired by the Node.js [Express](https://expressjs.com/) framework for building web applications.
+
+Implementation of an A2A Agent involves 3 steps :-
+
+* Define the Agents Agent Card.
+* Implement an Executor for the Agent
+* Start the server
+
+### Agent Executor
+
+Developers are expected to implement this interface and provide two methods: execute and cancelTask.
+
+#### execute :
+This method is provided with a RequestContext and an EventBus to publish execution events.
+The executor can either respond by publishing a Message or Task.
+
+For a task, it should check if there's an existing task in the RequestContext. If not it should publish an initial Task event 
+using the taskId & contextId from the RequestContext.
+
+The executor should subsequently publish TaskStatusUpdateEvent or 
+TaskArtifactUpdateEvent(s).
+
+The executor should indicate which is the final event and also call the 
+finished() method of the event bus.
+
+The executor should also check if an ongoing task has been cancelled. 
+if it has, the execution should be cancelled and TaskStatusUpdateEvent 
+with its state set to cancelled emitted.
+
+#### cancelTask
+The executor should implement cancellation mechanism for an ongoing task.
+
+A fully annotated example of creating an A2A Agent in this manner can be found the 
+[a2a_server_agent](https://github.com/shamblett/a2a/blob/main/example/a2a_server_agent.dart) example.
 
 ## Sample agent
 
