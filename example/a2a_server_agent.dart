@@ -203,7 +203,7 @@ void main() {
       '${Colorize('[MyAgent] Server using new framework started on http://localhost:$port').blue()}',
     );
     print(
-      '${Colorize('MyAgent] Agent Card: http://localhost:$port}/.well-known/agent-card.json').blue()}',
+      '${Colorize('[MyAgent] Agent Card: http://localhost:$port}/.well-known/agent-card.json').blue()}',
     );
     print('${Colorize('[MyAgent] Press Ctrl+C to stop the server').blue()}');
   });
