@@ -75,7 +75,20 @@ class A2AExpressApp {
           res.status(200).json((rpcResponseOrStream as dynamic).toJson());
         }
       } catch (e) {
-        //TODO
+        print(
+          '${Colorize('A2AExpressApp::setupRoutes - Unhandled error in A2AExpressApp POST handler:').red()}, '
+          '$e',
+        );
+        final error = e is A2AServerError
+            ? e
+            : A2AServerError.internalError('Streaming error.', null);
+        final errorResponse = A2AJSONRPCErrorResponse()
+          ..id = body
+              ?.id // Use original request ID if available
+          ..error = (error as A2AServerError).toJSONRPCError();
+        if (!res.finished) {
+          res.status(500).json(errorResponse.toJson());
+        }
       }
     });
     return app;
