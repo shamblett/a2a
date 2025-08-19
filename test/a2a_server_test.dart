@@ -1065,7 +1065,10 @@ void main() {
     test('Streaming request but not streaming capable TH', () async {
       final jrth = A2AJsonRpcTransportHandler(drq);
       final request = A2ASendStreamingMessageRequest();
-      await expectLater(jrth.handle(request), throwsA(isA<A2AInternalError>()));
+      await expectLater(
+        jrth.handle(request.toJson()),
+        throwsA(isA<A2AInternalError>()),
+      );
     });
     test(
       'Streaming request returns async generator - send streaming message TH',
@@ -1080,7 +1083,7 @@ void main() {
               ..taskId = '1'))
           ..id = '2000';
         agentCard.capabilities.streaming = true;
-        final result = await jrth.handle(request);
+        final result = await jrth.handle(request.toJson());
         expect(result is Function, isTrue);
       },
     );
@@ -1093,7 +1096,7 @@ void main() {
           ..id = '10000'
           ..params = (A2ATaskIdParams()..id = '1');
         agentCard.capabilities.streaming = true;
-        final result = await jrth.handle(request);
+        final result = await jrth.handle(request.toJson());
         expect(result is Function, isTrue);
       },
     );
@@ -1107,7 +1110,7 @@ void main() {
             ..taskId = '1'
             ..contextId = '100'
             ..messageId = '1000'));
-      final result = await jrth.handle(request);
+      final result = await jrth.handle(request.toJson());
       expect(result is A2ASendMessageSuccessResponse, isTrue);
     });
     test('Send Message - blocking TH', () async {
@@ -1121,7 +1124,7 @@ void main() {
             ..contextId = '100'
             ..messageId = '1000')
           ..configuration = (A2AMessageSendConfiguration()..blocking = true));
-      final result = await jrth.handle(request);
+      final result = await jrth.handle(request.toJson());
       expect(result is A2ASendMessageSuccessResponse, isTrue);
     });
     test('Get Task TH', () async {
@@ -1129,7 +1132,7 @@ void main() {
       await store.save(task);
       final request = A2AGetTaskRequest()
         ..params = (A2ATaskQueryParams()..id = '1');
-      final result = await jrth.handle(request);
+      final result = await jrth.handle(request.toJson());
       expect(result is A2AGetTaskSuccessResponse, isTrue);
       expect((result as A2AGetTaskSuccessResponse).result is A2ATask, isTrue);
     });
@@ -1140,7 +1143,7 @@ void main() {
       busManager.createOrGetByTaskId('1');
       final request = A2ACancelTaskRequest()
         ..params = (A2ATaskIdParams()..id = '1');
-      final result = await jrth.handle(request);
+      final result = await jrth.handle(request.toJson());
       expect(result is A2ACancelTaskSuccessResponse, isTrue);
       expect(
         (result as A2ACancelTaskSuccessResponse).result is A2ATask,
@@ -1155,7 +1158,7 @@ void main() {
         ..params = (A2ATaskPushNotificationConfig()
           ..taskId = '1'
           ..pushNotificationConfig = A2ATaskPushNotificationConfig1());
-      final result = await jrth.handle(request);
+      final result = await jrth.handle(request.toJson());
       expect(result is A2ASetTaskPushNotificationConfigSuccessResponse, isTrue);
       expect(
         (result as A2ASetTaskPushNotificationConfigSuccessResponse).result
@@ -1171,10 +1174,10 @@ void main() {
         ..params = (A2ATaskPushNotificationConfig()
           ..taskId = '1'
           ..pushNotificationConfig = A2ATaskPushNotificationConfig1());
-      await jrth.handle(requestSet);
+      await jrth.handle(requestSet.toJson());
       final requestGet = A2AGetTaskPushNotificationConfigRequest()
         ..params = (A2ATaskIdParams()..id = '1');
-      final result = await jrth.handle(requestGet);
+      final result = await jrth.handle(requestGet.toJson());
       expect(result is A2AGetTaskPushNotificationConfigSuccessResponse, isTrue);
       expect(
         (result as A2AGetTaskPushNotificationConfigSuccessResponse).result
