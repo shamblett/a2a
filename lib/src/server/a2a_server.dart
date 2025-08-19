@@ -13,6 +13,7 @@ import 'dart:convert';
 
 import 'package:colorize/colorize.dart';
 import 'package:darto/darto.dart';
+export 'package:darto/darto.dart';
 import 'package:events_emitter/events_emitter.dart';
 import 'package:uuid/uuid.dart';
 

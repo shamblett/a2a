@@ -178,3 +178,33 @@ class MyAgentExecutor implements A2AAgentExecutor {
 ///
 /// Step 3 - Start the server
 ///
+
+void main() {
+  // Initialise the required server components for the express application
+  final taskStore = A2AInMemoryTaskStore();
+  final agentExecutor = MyAgentExecutor();
+  final eventBusManager = A2ADefaultExecutionEventBusManager();
+  final requestHandler = A2ADefaultRequestHandler(
+    movieAgentCard,
+    taskStore,
+    agentExecutor,
+    eventBusManager,
+  );
+  final transportHandler = A2AJsonRpcTransportHandler(requestHandler);
+
+  // Initialise the express app
+  final appBuilder = A2AExpressApp(requestHandler, transportHandler);
+  final expressApp = appBuilder.setupRoutes(Darto(), '');
+
+  // Start listening
+  const port = 41242;
+  expressApp.listen(port, () {
+    print(
+      '${Colorize('[MyAgent] Server using new framework started on http://localhost:$port').blue()}',
+    );
+    print(
+      '${Colorize('MyAgent] Agent Card: http://localhost:$port}/.well-known/agent-card.json').blue()}',
+    );
+    print('${Colorize('[MyAgent] Press Ctrl+C to stop the server').blue()}');
+  });
+}
