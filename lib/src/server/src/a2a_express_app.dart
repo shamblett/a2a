@@ -25,7 +25,7 @@ class A2AExpressApp {
       try {
         // getAgentCard is on A2ARequestHandler, which DefaultRequestHandler implements
         final agentCard = await _requestHandler.agentCard;
-        res.json(agentCard);
+        res.json(agentCard.toJson());
       } catch (e) {
         print(
           '${Colorize('A2AExpressApp::setupRoutes - Error fetching agent card:').red()} $e',
