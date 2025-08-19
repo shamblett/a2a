@@ -171,7 +171,6 @@ class MyAgentExecutor implements A2AAgentExecutor {
       ..end = true;
 
     eventBus.publish(finalUpdate);
-    eventBus.finished();
   }
 }
 
