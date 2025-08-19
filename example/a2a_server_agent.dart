@@ -153,8 +153,22 @@ class MyAgentExecutor implements A2AAgentExecutor {
       ..lastChunk = true;
 
     eventBus.publish(artifactUpdate);
+
+    // 4. Publish final status update
+    final finalUpdate = A2ATaskStatusUpdateEvent()
+      ..taskId = taskId
+      ..contextId = contextId
+      ..status = (A2ATaskStatus()
+        ..state = A2ATaskState.completed
+        ..message = (A2AMessage()
+          ..role = 'agent'
+          ..messageId = _uuid.v4()
+          ..taskId = taskId
+          ..contextId = contextId)
+        ..timestamp = A2AUtilities.getCurrentTimestamp())
+      ..end = true;
+
+    eventBus.publish(finalUpdate);
+    eventBus.finished();
   }
-
-  // 4. Publish final status update
-
 }
