@@ -12,6 +12,9 @@ import 'package:a2a/a2a.dart';
 
 /// A fully annotated example of how to construct an A2A Agent
 /// using the Server SDK.
+///
+/// Status information is printed to the console, blue is for information,
+/// yellow for an event that has occurred and red for failure
 
 ///
 /// Step 1 - Define the Agent Card
@@ -63,12 +66,12 @@ final movieAgentCard = A2AAgentCard()
 ///
 // 1. Define your agent's logic as an  A2AAgentExecutor
 class MyAgentExecutor implements A2AAgentExecutor {
-  final Set<String> _canceledTasks = {};
+  final Set<String> _cancelledTasks = {};
   final _uuid = Uuid();
 
   @override
   Future<void> cancelTask(String taskId, A2AExecutionEventBus eventBus) async =>
-      _canceledTasks.add(taskId);
+      _cancelledTasks.add(taskId);
   // The execute loop is responsible for publishing the final state
 
   @override
@@ -85,7 +88,7 @@ class MyAgentExecutor implements A2AAgentExecutor {
 
     print(
       '${Colorize('[MyAgentExecutor] Processing message ${userMessage.messageId} '
-      'for task $taskId (context: $contextId)').blue}',
+      'for task $taskId (context: $contextId)').blue()}',
     );
 
     // 1. Publish initial Task event if it's a new task
@@ -123,5 +126,21 @@ class MyAgentExecutor implements A2AAgentExecutor {
     await Future.delayed(Duration(seconds: 3));
 
     // Check for request cancellation
+    if (_cancelledTasks.contains(taskId)) {
+      print('${Colorize('Request cancelled for task: $taskId').yellow()}');
+      final cancelledUpdate = A2ATaskStatusUpdateEvent()
+        ..taskId = taskId
+        ..contextId = contextId
+        ..status = (A2ATaskStatus()
+          ..state = A2ATaskState.canceled
+          ..timestamp = A2AUtilities.getCurrentTimestamp())
+        ..end = true;
+
+      eventBus.publish(cancelledUpdate);
+      eventBus.finished();
+      return;
+    }
+
+    // 3. Publish artifact update
   }
 }
