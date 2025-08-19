@@ -8,6 +8,7 @@
 part of '../a2a_server.dart';
 
 class A2AExpressApp {
+
   final A2ARequestHandler _requestHandler; // Kept for getAgentCard
   final A2AJsonRpcTransportHandler _jsonRpcTransportHandler;
 
@@ -38,7 +39,6 @@ class A2AExpressApp {
       final body = await req.body;
       try {
         final rpcResponseOrStream = await _jsonRpcTransportHandler.handle(body);
-
         // Check if it's an AsyncGenerator (stream)
         if (rpcResponseOrStream is Function) {
           res.set('Content-Type', 'text/event-stream');
@@ -61,6 +61,7 @@ class A2AExpressApp {
                 ? e
                 : A2AServerError.internalError('Streaming error.', null);
             final errorResponse = A2AJSONRPCErrorResponse()
+            ..id = '<error marker>'
               ..error = (error as A2AServerError).toJSONRPCError();
             res.status(500).json(errorResponse.toJson());
           } finally {
@@ -81,7 +82,7 @@ class A2AExpressApp {
             ? e
             : A2AServerError.internalError('Streaming error.', null);
         final errorResponse = A2AJSONRPCErrorResponse()
-          ..error = (error as A2AServerError).toJSONRPCError();
+          ..error = error as A2AError;
         if (!res.finished) {
           res.status(500).json(errorResponse.toJson());
         }

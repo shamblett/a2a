@@ -108,7 +108,7 @@ Future<int> main() async {
     });
   });
   group('Client Methods', () {
-    test('Send Message', () async {
+    test('Send Message No Stream', () async {
       if (testClient == null) {
         testClient ??= A2AClient(baseUrl);
         await Future.delayed(Duration(seconds: 10));
