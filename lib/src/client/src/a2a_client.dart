@@ -422,7 +422,7 @@ class A2AClient {
     if (!httpResponse.ok) {
       var errorBodyText = '(empty or non-JSON response)';
       try {
-        errorBodyText = await httpResponse.text();
+        errorBodyText = await httpResponse.clone().text();
         final errorJson = (json.decode(errorBodyText) as Map<String, dynamic>);
         // If the body is a valid JSON-RPC error response, let it be handled by the standard parsing below.
         // However, if it's not even a JSON-RPC structure but still an error, throw based on HTTP status.

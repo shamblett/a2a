@@ -33,7 +33,7 @@ import 'package:a2a/a2a.dart';
 /// 'http://localhost:9999/', 'version': '1.0.0'}
 
 Future<bool> isAgentRunning() async {
-  var result = await Process.run('sudo', ['fuser', '-v', '9999/tcp']);
+  var result = await Process.run('sudo', ['fuser', '-v', '41242/tcp']);
   if (result.exitCode == 0) {
     return true;
   }
@@ -53,14 +53,14 @@ Future<int> main() async {
   }
 
   A2AClient? testClient;
-  const baseUrl = 'http://localhost:9999';
+  const baseUrl = 'http://localhost:41242';
 
   group('Client Base', () {
     test('Construction', () async {
       testClient = A2AClient(baseUrl);
       await Future.delayed(Duration(seconds: 1));
-      expect(testClient!.agentBaseUrl, 'http://localhost:9999');
-      expect(await testClient!.serviceEndpoint, 'http://localhost:9999/');
+      expect(testClient!.agentBaseUrl, 'http://localhost:41242');
+      expect(await testClient!.serviceEndpoint, 'http://localhost:41242/');
     });
     test('Get Agent Card', () async {
       if (testClient == null) {
@@ -95,7 +95,7 @@ Future<int> main() async {
     });
   });
   group('Client Methods', () {
-    test('Send Message', () async {
+    test('Send Message No Stream', () async {
       if (testClient == null) {
         testClient ??= A2AClient(baseUrl);
         await Future.delayed(Duration(seconds: 10));

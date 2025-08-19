@@ -25,7 +25,7 @@ final movieAgentCard = A2AAgentCard()
   ..description =
       'An agent that can answer questions about movies and actors using TMDB.'
   // Adjust the base URL and port as needed.
-  ..url = 'http://localhost:41241'
+  ..url = 'http://localhost:41242/'
   ..agentProvider = (A2AAgentProvider()
     ..organization = 'A2A Agents'
     ..url = 'https://example.com/a2a-agents')

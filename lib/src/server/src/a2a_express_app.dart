@@ -61,13 +61,11 @@ class A2AExpressApp {
                 ? e
                 : A2AServerError.internalError('Streaming error.', null);
             final errorResponse = A2AJSONRPCErrorResponse()
-              ..id = body
-                  ?.id // Use original request ID if available
               ..error = (error as A2AServerError).toJSONRPCError();
             res.status(500).json(errorResponse.toJson());
           } finally {
             if (!res.finished) {
-              res.end(streamData);
+              res.end(json.encode(streamData));
             }
           }
         } else {
@@ -83,8 +81,6 @@ class A2AExpressApp {
             ? e
             : A2AServerError.internalError('Streaming error.', null);
         final errorResponse = A2AJSONRPCErrorResponse()
-          ..id = body
-              ?.id // Use original request ID if available
           ..error = (error as A2AServerError).toJSONRPCError();
         if (!res.finished) {
           res.status(500).json(errorResponse.toJson());
