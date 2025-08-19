@@ -19,6 +19,7 @@ import 'package:a2a/a2a.dart';
 ///
 /// Step 1 - Define the Agent Card
 ///
+
 final movieAgentCard = A2AAgentCard()
   ..name = 'Movie Agent'
   ..description =
@@ -64,6 +65,7 @@ final movieAgentCard = A2AAgentCard()
 ///
 /// Step 2 - Define the Agent Executor
 ///
+
 // 1. Define your agent's logic as an  A2AAgentExecutor
 class MyAgentExecutor implements A2AAgentExecutor {
   final Set<String> _cancelledTasks = {};
@@ -172,3 +174,7 @@ class MyAgentExecutor implements A2AAgentExecutor {
     eventBus.finished();
   }
 }
+
+///
+/// Step 3 - Start the server
+///
