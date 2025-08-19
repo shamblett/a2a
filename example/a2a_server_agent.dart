@@ -73,7 +73,32 @@ class MyAgentExecutor implements A2AAgentExecutor {
     A2ARequestContext requestContext,
     A2AExecutionEventBus eventBus,
   ) async {
+    final userMessage = requestContext.userMessage;
+    final existingTask = requestContext.task;
 
+    // Determine IDs for the task and context, from requestContext.
+    final taskId = requestContext.taskId;
+    final contextId = requestContext.contextId;
 
+    print(
+      '${Colorize('[MyAgentExecutor] Processing message ${userMessage.messageId} '
+      'for task $taskId (context: $contextId)').blue}',
+    );
+
+    // 1. Publish initial Task event if it's a new task
+    if (existingTask == null) {
+      final initialTask = A2ATask()
+        ..id = taskId
+        ..contextId = contextId
+        ..status = (A2ATaskStatus()
+          ..state = A2ATaskState.submitted
+          ..timestamp = A2AUtilities.getCurrentTimestamp())
+        ..history = [userMessage]
+        ..metadata = userMessage.metadata
+        ..artifacts = []; // // Initialize artifacts array
+      eventBus.publish(initialTask);
+    }
+
+    // 2. Publish "working" status update
   }
 }
