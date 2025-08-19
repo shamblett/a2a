@@ -6,6 +6,8 @@
 */
 
 import 'package:colorize/colorize.dart';
+import 'package:uuid/uuid.dart';
+
 import 'package:a2a/a2a.dart';
 
 /// A fully annotated example of how to construct an A2A Agent
@@ -62,6 +64,7 @@ final movieAgentCard = A2AAgentCard()
 // 1. Define your agent's logic as an  A2AAgentExecutor
 class MyAgentExecutor implements A2AAgentExecutor {
   final Set<String> _canceledTasks = {};
+  final _uuid = Uuid();
 
   @override
   Future<void> cancelTask(String taskId, A2AExecutionEventBus eventBus) async =>
@@ -100,5 +103,25 @@ class MyAgentExecutor implements A2AAgentExecutor {
     }
 
     // 2. Publish "working" status update
+    final workingStatusUpdate = A2ATaskStatusUpdateEvent()
+      ..taskId = taskId
+      ..contextId = contextId
+      ..status = (A2ATaskStatus()
+        ..state = A2ATaskState.working
+        ..message = (A2AMessage()
+          ..role = 'agent'
+          ..messageId = _uuid.v4()
+          ..parts = [(A2ATextPart()..text = 'Generating code...')]
+          ..taskId = taskId
+          ..contextId = contextId)
+        ..timestamp = A2AUtilities.getCurrentTimestamp())
+      ..end = false;
+
+    eventBus.publish(workingStatusUpdate);
+
+    // Simulate work...
+    await Future.delayed(Duration(seconds: 3));
+
+    // Check for request cancellation
   }
 }
