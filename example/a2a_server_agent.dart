@@ -142,5 +142,19 @@ class MyAgentExecutor implements A2AAgentExecutor {
     }
 
     // 3. Publish artifact update
+    final artifactUpdate = A2ATaskArtifactUpdateEvent()
+      ..taskId = taskId
+      ..contextId = contextId
+      ..artifact = (A2AArtifact()
+        ..artifactId = 'artifact-1'
+        ..name = 'artifact-1'
+        ..parts = [(A2ATextPart()..text = 'Task $taskId completed.')])
+      ..append = false
+      ..lastChunk = true;
+
+    eventBus.publish(artifactUpdate);
   }
+
+  // 4. Publish final status update
+
 }
