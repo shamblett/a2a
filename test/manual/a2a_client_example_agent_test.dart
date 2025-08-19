@@ -53,7 +53,7 @@ Future<int> main() async {
   }
 
   A2AClient? testClient;
-  const baseUrl = 'http://localhost:9999';
+  const baseUrl = 'http://localhost:41242';
 
   group('Client Base', () {
     test('Construction', () async {
@@ -68,22 +68,35 @@ Future<int> main() async {
         await Future.delayed(Duration(seconds: 1));
       }
       final agentCard = await testClient!.getAgentCard(
-        agentBaseUrl: 'http://localhost:9999',
+        agentBaseUrl: 'http://localhost:41242',
       );
       expect(testClient!.agentBaseUrl, 'http://localhost:41242');
       expect(await testClient!.serviceEndpoint, 'http://localhost:41242/');
       expect(agentCard.capabilities.streaming, isTrue);
-      expect(agentCard.defaultInputModes, ['text']);
-      expect(agentCard.defaultOutputModes, ['text']);
-      expect(agentCard.description, 'Just a hello world agent');
-      expect(agentCard.name, 'Hello World Agent');
-      expect(agentCard.version, '1.0.0');
+      expect(agentCard.defaultInputModes, ['text/plain']);
+      expect(agentCard.defaultOutputModes, ['text/plain']);
+      expect(
+        agentCard.description,
+        'An agent that can answer questions about movies and actors using TMDB.',
+      );
+      expect(agentCard.name, 'Movie Agent');
+      expect(agentCard.version, '0.0.2');
       expect(agentCard.skills.isNotEmpty, isTrue);
-      expect(agentCard.skills.first.description, 'just returns hello world');
-      expect(agentCard.skills.first.examples, ['hi', 'hello world']);
-      expect(agentCard.skills.first.id, 'hello_world');
-      expect(agentCard.skills.first.name, 'Returns hello world');
-      expect(agentCard.skills.first.tags, ['hello world']);
+      expect(
+        agentCard.skills.first.description,
+        'Answer general questions or chat about movies, actors, directors.',
+      );
+      expect(agentCard.skills.first.examples, [
+        'Tell me about the plot of Inception.',
+        'Recommend a good sci-fi movie.',
+        'Who directed The Matrix?',
+        'What other movies has Scarlett Johansson been in?',
+        'Find action movies starring Keanu Reeves',
+        'Which came out first, Jurassic Park or Terminator 2?',
+      ]);
+      expect(agentCard.skills.first.id, 'general_movie_chat');
+      expect(agentCard.skills.first.name, 'General Movie Chat');
+      expect(agentCard.skills.first.tags, ['movies', 'actors', 'directors']);
     });
     test('Get Service Endpoint', () async {
       if (testClient == null) {
@@ -91,7 +104,7 @@ Future<int> main() async {
         await Future.delayed(Duration(seconds: 1));
       }
       final endpoint = await testClient!.serviceEndpoint;
-      expect(endpoint, 'http://localhost:9999/');
+      expect(endpoint, 'http://localhost:41242/');
     });
   });
   group('Client Methods', () {
