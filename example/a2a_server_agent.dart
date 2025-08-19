@@ -10,3 +10,7 @@ import 'package:a2a/a2a.dart';
 
 /// A fully annotated example of how to construct an A2A Agent
 /// using the Server SDK.
+
+///
+/// Step 1 - Define the Agent Card
+///
