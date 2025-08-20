@@ -164,21 +164,44 @@ Future<int> main() async {
         ..message = message
         ..configuration = configuration;
 
+      final events = <A2ASendStreamMessageResponse>[];
       try {
-        final rpcResponse = await testClient!.sendMessageStream(payload).first;
-        expect(rpcResponse.isError, isFalse);
-        final response = rpcResponse as A2ASendStreamMessageSuccessResponse;
-        expect(response.result, isNotNull);
-        expect(response.result is A2AMessage, isTrue);
-        final result = response.result as A2AMessage;
-        expect(result.role, 'agent');
-        expect(result.parts?.isNotEmpty, isTrue);
-        final tPartList = result.parts as List<A2APart>;
-        final tPart = tPartList.first as A2ATextPart;
-        expect(tPart.text, 'Hello World');
+        final rpcResponse = testClient!.sendMessageStream(payload);
+        await for (final event in rpcResponse) {
+          expect(event.isError, isFalse);
+          events.add(event);
+        }
       } catch (e) {
         rethrow;
       }
+      expect(events.length, 4);
+      expect(
+        (events.first as A2ASendStreamMessageSuccessResponse).result is A2ATask,
+        isTrue,
+      );
+      final firstEvent =
+          ((events.first as A2ASendStreamMessageSuccessResponse).result)
+              as A2ATask;
+      expect(firstEvent.status?.state, A2ATaskState.submitted);
+      expect(
+        (events[1] as A2ASendStreamMessageSuccessResponse).result
+            is A2ATaskStatusUpdateEvent,
+        isTrue,
+      );
+      expect(
+        (events[2] as A2ASendStreamMessageSuccessResponse).result
+            is A2ATaskArtifactUpdateEvent,
+        isTrue,
+      );
+      expect(
+        (events.last as A2ASendStreamMessageSuccessResponse).result
+            is A2ATaskStatusUpdateEvent,
+        isTrue,
+      );
+      final lastEvent =
+          ((events.last as A2ASendStreamMessageSuccessResponse).result)
+              as A2ATaskStatusUpdateEvent;
+      expect(lastEvent.status?.state, A2ATaskState.completed);
     });
     test('Set Task Push NotificationConfig', () async {
       if (testClient == null) {

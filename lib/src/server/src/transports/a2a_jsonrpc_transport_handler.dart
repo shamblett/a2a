@@ -68,20 +68,20 @@ class A2AJsonRpcTransportHandler {
 
         final requestId = rpcRequest.id;
         final agentEventStream = <A2AResult>[];
-          if (rpcRequest is A2ASendStreamingMessageRequest) {
-            await for (final event in _requestHandler.sendMessageStream(
-              rpcRequest.params!,
-            )) {
-              agentEventStream.add(event);
-            }
-          } else {
-            // Must be resubscribe
-            await for (final event in _requestHandler.resubscribe(
-              rpcRequest.params,
-            )) {
-              agentEventStream.add(event);
-            }
+        if (rpcRequest is A2ASendStreamingMessageRequest) {
+          await for (final event in _requestHandler.sendMessageStream(
+            rpcRequest.params!,
+          )) {
+            agentEventStream.add(event);
           }
+        } else {
+          // Must be resubscribe
+          await for (final event in _requestHandler.resubscribe(
+            rpcRequest.params,
+          )) {
+            agentEventStream.add(event);
+          }
+        }
         // Return an async generator for the events stream
         return (() async* {
           try {
