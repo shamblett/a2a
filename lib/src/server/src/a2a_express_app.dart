@@ -47,8 +47,8 @@ class A2AExpressApp {
           try {
             await for (final event in rpcResponseOrStream()) {
               // Each event from the stream is already a JSONRPCResult
-              streamData.add('id:${DateTime.now().millisecondsSinceEpoch}\n');
-              streamData.add('data: ${json.encode(event.toJson())}\n\n');
+              final eventMap = {'data': '${json.encode(event.toJson())}\n'};
+              streamData.add(json.encode(eventMap));
             }
           } catch (e) {
             print(

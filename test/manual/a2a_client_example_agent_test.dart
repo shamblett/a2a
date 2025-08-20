@@ -150,7 +150,7 @@ Future<int> main() async {
     test('Send Message Stream', () async {
       if (testClient == null) {
         testClient ??= A2AClient(baseUrl);
-        await Future.delayed(Duration(seconds: 10));
+        await Future.delayed(Duration(seconds: 1));
       }
       final message = A2AMessage()
         ..role = 'user'
