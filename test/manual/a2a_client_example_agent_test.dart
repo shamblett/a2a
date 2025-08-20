@@ -8,9 +8,6 @@
 @TestOn('vm')
 library;
 
-import 'dart:io';
-
-import 'package:colorize/colorize.dart';
 import 'package:test/test.dart';
 
 import 'package:a2a/a2a.dart';
@@ -21,37 +18,25 @@ import 'package:a2a/a2a.dart';
 /// Please start this before running this test otherwise the test will exit
 /// with an error message.
 ///
+/// dart example/a2a-server_agent.dart
+///
 /// See the README file in test/support/agents/helloworld for more details
 /// on how to build and run the agent.
 ///
 /// This agent returns the following JSON for its Agent Card :-
 ///
-/// {'capabilities': {'streaming': True}, 'defaultInputModes': ['text'], 'defaultOutputModes': ['text'],
-/// 'description': 'Just a hello world agent', 'name': 'Hello World Agent', 'protocolVersion': '0.2.6', 'skills':
-/// [{'description': 'just returns hello world', 'examples': ['hi', 'hello world'], 'id': 'hello_world',
-/// 'name': 'Returns hello world', 'tags': ['hello world']}], 'supportsAuthenticatedExtendedCard': True, 'url':
-/// 'http://localhost:9999/', 'version': '1.0.0'}
-
-Future<bool> isAgentRunning() async {
-  var result = await Process.run('sudo', ['fuser', '-v', '41242/tcp']);
-  if (result.exitCode == 0) {
-    return true;
-  }
-  return false;
-}
-
+/// {capabilities: {extensions: null, pushNotifications: false, stateTransitionHistory: true,
+/// streaming: true}, defaultInputModes: [text/plain], defaultOutputModes: [text/plain],
+/// description: An agent that can answer questions about movies and actors using TMDB.,
+/// documentationUrl: null, iconUrl: null, name: Movie Agent,
+/// agentProvider: {organization: A2A Agents, url: https://example.com/a2a-agents}, security: null,
+/// securitySchemes: null, skills: [{description: Answer general questions or chat about movies, actors, directors.,
+/// examples: [Tell me about the plot of Inception., Recommend a good sci-fi movie., Who directed The Matrix?,
+/// What other movies has Scarlett Johansson been in?, Find action movies starring Keanu Reeves,
+/// Which came out first, Jurassic Park or Terminator 2?], id: general_movie_chat, inputModes: [text/plain],
+/// name: General Movie Chat, outputModes: [text/plain], tags: [movies, actors, directors]}],
+/// supportsAuthenticatedExtendedCard: false, url: http://localhost:41242/, version: 0.0.2}
 Future<int> main() async {
-  final isRunning = await isAgentRunning();
-  if (!isRunning) {
-    print(
-      '${Colorize('Fatal - agent service is not running - exiting')..red()}',
-    );
-    await Future.delayed(Duration(seconds: 1));
-  }
-  if (!isRunning) {
-    return -1;
-  }
-
   A2AClient? testClient;
   const baseUrl = 'http://localhost:41242';
 
@@ -124,20 +109,40 @@ Future<int> main() async {
 
       final payload = A2AMessageSendParams()
         ..message = message
-      ..configuration = (A2AMessageSendConfiguration()
-          ..blocking = true);
+        ..configuration = (A2AMessageSendConfiguration()..blocking = true);
       try {
         final rpcResponse = await testClient!.sendMessage(payload);
         expect(rpcResponse.isError, isFalse);
         final response = rpcResponse as A2ASendMessageSuccessResponse;
         expect(response.result, isNotNull);
-        // TODO this is a task expect(response.result is A2AMessage, isTrue);
-        final result = response.result as A2AMessage;
-        expect(result.role, 'agent');
-        expect(result.parts?.isNotEmpty, isTrue);
-        final tPartList = result.parts as List<A2APart>;
-        final tPart = tPartList.first as A2ATextPart;
-        expect(tPart.text, 'Hello World');
+        final result = response.result as A2ATask;
+        expect(result.artifacts, isNotNull);
+        expect(result.artifacts?.length, 1);
+        final artifact = result.artifacts?.first;
+        expect(artifact?.artifactId, 'artifact-1');
+        expect(artifact?.description, isNull);
+        expect(artifact?.extensions, isNull);
+        expect(artifact?.metadata, isNull);
+        expect(artifact?.name, 'artifact-1');
+        expect(artifact?.parts, isNotNull);
+        expect(artifact?.parts.length, 1);
+        expect(
+          (artifact?.parts.first as A2ATextPart).text.contains('completed'),
+          isTrue,
+        );
+        expect(result.contextId.isNotEmpty, isTrue);
+        expect(result.id.isNotEmpty, isTrue);
+        expect(result.history, isNotNull);
+        expect(result.history?.length, 3);
+        expect(result.history?.first.messageId, '10');
+        expect(result.history?[1].parts?.length, 1);
+        expect(result.history?.last.parts?.isEmpty, isTrue);
+        final status = result.status;
+        expect(status, isNotNull);
+        expect(status?.timestamp, isNotEmpty);
+        expect(status?.state, A2ATaskState.completed);
+        expect(status?.message?.messageId.isNotEmpty, isTrue);
+        expect(status?.message?.role, 'agent');
       } catch (e) {
         rethrow;
       }
