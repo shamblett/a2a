@@ -196,7 +196,7 @@ class A2AClient {
     // Ensure agent card is fetched
     if (_agentCard != null) {
       if (_agentCard!.capabilities.pushNotifications != null) {
-        if (!_agentCard!.capabilities.streaming!) {
+        if (!_agentCard!.capabilities.pushNotifications!) {
           throw Exception(
             'setTaskPushNotificationConfig:: Agent does not support push notification (AgentCard.capabilities.pushnotifications is not true).',
           );

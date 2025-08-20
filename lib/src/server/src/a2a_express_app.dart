@@ -84,17 +84,31 @@ class A2AExpressApp {
           res.status(200).json((rpcResponseOrStream as dynamic).toJson());
         }
       } catch (e) {
-        print(
-          '${Colorize('A2AExpressApp::setupRoutes - Unhandled error in A2AExpressApp POST handler:').red()}, '
-          '$e',
-        );
-        final error = e is A2AServerError
-            ? e
-            : A2AServerError.internalError('Streaming error.', null);
-        final errorResponse = A2AJSONRPCErrorResponse()
-          ..error = error as A2AError;
-        if (!res.finished) {
-          res.status(500).json(errorResponse.toJson());
+        // Check for operation not supported errors
+        if (e is A2APushNotificationNotSupportedError) {
+          print(
+            '${Colorize('A2AExpressApp::setupRoutes - Push notifications are not supported').yellow()}',
+          );
+          final errorResponse = A2AJSONRPCErrorResponse()
+            ..error = e as A2AError;
+          if (!res.finished) {
+            res.status(500).json(errorResponse.toJson());
+          }
+        } else {
+          // Check more here if needed
+          // General error
+          print(
+            '${Colorize('A2AExpressApp::setupRoutes - Unhandled error in A2AExpressApp POST handler:').red()}, '
+            '$e',
+          );
+          final error = e is A2AServerError
+              ? e
+              : A2AServerError.internalError('Streaming error.', null);
+          final errorResponse = A2AJSONRPCErrorResponse()
+            ..error = error as A2AError;
+          if (!res.finished) {
+            res.status(500).json(errorResponse.toJson());
+          }
         }
       }
     });

@@ -145,6 +145,12 @@ class A2AJsonRpcTransportHandler {
         }
       }
     } catch (e, s) {
+      // Check for unsupported operations
+      if ( e is A2APushNotificationNotSupportedError ) {
+        rethrow;
+      }
+
+      // General failure
       Error.throwWithStackTrace(
         A2AServerError.internalError(
           'A2AJsonRpcTransportHandler::handle '

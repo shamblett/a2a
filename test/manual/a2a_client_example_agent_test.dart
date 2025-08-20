@@ -199,7 +199,7 @@ Future<int> main() async {
       } on Exception catch (e) {
         expect(
           e.toString(),
-          'Exception: setTaskPushNotificationConfig:: Agent does not support push notifications(AgentCard.capabilities.pushnotifications is null).',
+          'Exception: setTaskPushNotificationConfig:: Agent does not support push notification (AgentCard.capabilities.pushnotifications is not true).',
         );
       }
     });
