@@ -183,7 +183,7 @@ Future<int> main() async {
     test('Set Task Push NotificationConfig', () async {
       if (testClient == null) {
         testClient ??= A2AClient(baseUrl);
-        await Future.delayed(Duration(seconds: 10));
+        await Future.delayed(Duration(seconds: 1));
       }
       final taskConfig = A2ATaskPushNotificationConfig1()
         ..id = '2'
@@ -206,7 +206,7 @@ Future<int> main() async {
     test('Get Task Push Notification Config', () async {
       if (testClient == null) {
         testClient ??= A2AClient(baseUrl);
-        await Future.delayed(Duration(seconds: 10));
+        await Future.delayed(Duration(seconds: 1));
       }
       final taskParams = A2ATaskIdParams()..id = '1';
 
@@ -227,14 +227,14 @@ Future<int> main() async {
     test('Get Task', () async {
       if (testClient == null) {
         testClient ??= A2AClient(baseUrl);
-        await Future.delayed(Duration(seconds: 10));
+        await Future.delayed(Duration(seconds: 1));
       }
       final taskParams = A2ATaskQueryParams()..id = '1';
 
       try {
         final response = await testClient!.getTask(taskParams);
         expect(response.isError, isTrue);
-        final errorResponse = response as A2AJSONRPCErrorResponseT;
+        final errorResponse = response as A2AJSONRPCErrorResponse;
         expect(errorResponse.error is A2ATaskNotFoundError, isTrue);
       } catch (e) {
         rethrow;
@@ -243,7 +243,7 @@ Future<int> main() async {
     test('Cancel Task', () async {
       if (testClient == null) {
         testClient ??= A2AClient(baseUrl);
-        await Future.delayed(Duration(seconds: 10));
+        await Future.delayed(Duration(seconds: 1));
       }
       final taskParams = A2ATaskIdParams()..id = '1';
 
@@ -259,17 +259,15 @@ Future<int> main() async {
     test('Resubscribe Task', () async {
       if (testClient == null) {
         testClient ??= A2AClient(baseUrl);
-        await Future.delayed(Duration(seconds: 10));
+        await Future.delayed(Duration(seconds: 1));
       }
       final taskParams = A2ATaskIdParams()..id = '1';
 
       try {
         final response = await testClient!.resubscribeTask(taskParams).first;
         expect(response.isError, isTrue);
-        final errorResponse = response as A2AJSONRPCErrorResponseSSM;
-        expect(errorResponse.error?.rpcErrorCode, A2AError.taskNotFound);
-        expect((errorResponse as dynamic).error?.code, A2AError.taskNotFound);
-        expect((errorResponse as dynamic).error.message, 'Task not found');
+        final errorResponse = response as A2AJSONRPCErrorResponse;
+        expect(errorResponse.error is A2ATaskNotFoundError, isTrue);
       } catch (e) {
         rethrow;
       }
