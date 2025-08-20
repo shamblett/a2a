@@ -480,23 +480,18 @@ class A2AClient {
         if (line.isEmpty) {
           continue;
         }
-        final j = json.decode(line);
-        for (final data in j) {
-          final decoded = json.decode(data);
-          final item = A2ASendStreamMessageResponse.fromJson(
-            json.decode(decoded['data']),
-          );
-          if (item.isError) {
-            yield item;
-          }
-          final typedItem = item as A2ASendStreamMessageSuccessResponse;
-          if (typedItem.id != null && typedItem.id != originalRequestId) {
-            throw Exception(
-              '_parseA2ASseStream:: Request/Response id mismatch. Rx : ${item.id}, Tx : $originalRequestId',
-            );
-          }
+        final j = json.decode(line.substring(6));
+        final item = A2ASendStreamMessageResponse.fromJson(j);
+        if (item.isError) {
           yield item;
         }
+        final typedItem = item as A2ASendStreamMessageSuccessResponse;
+        if (typedItem.id != null && typedItem.id != originalRequestId) {
+          throw Exception(
+            '_parseA2ASseStream:: Request/Response id mismatch. Rx : ${item.id}, Tx : $originalRequestId',
+          );
+        }
+        yield item;
       }
     } catch (e, s) {
       Error.throwWithStackTrace(e, s);
