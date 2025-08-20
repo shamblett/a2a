@@ -312,35 +312,19 @@ class A2AClient {
 
     if (!response.ok) {
       var errorBody = '';
-      try {
-        errorBody = await response.text();
-        final errorJson = json.decode(errorBody) as Map<String, dynamic>;
-        if (errorJson.containsKey('error')) {
-          throw Exception(
-            'resubscribeTask:: HTTP error establishing stream for tasks/resubscribe: '
-            ' ${response.status} ${response.statusText}. RPC Error: ${(errorJson as dynamic).error.message} '
-            ' (Code: ${(errorJson as dynamic).error.code})',
-          );
-        }
-      } catch (e, s) {
-        Error.throwWithStackTrace(
-          'resubscribeTask:: HTTP error establishing stream, Status: ${response.status}'
-          'Status text: ${response.statusText} Response: $errorBody',
-          s,
+      errorBody = await response.text();
+      final errorJson = json.decode(errorBody) as Map<String, dynamic>;
+      if (errorJson.containsKey('error')) {
+        yield (A2AJSONRPCErrorResponseSSM.fromJson(errorJson))..isError = true;
+      }
+      if (!response.headers
+          .get('Content-Type')!
+          .startsWith('text/event-stream')) {
+        // Server should explicitly set this content type for SSE.
+        throw Exception(
+          "sendMessageStream::  Invalid response Content-Type for SSE stream. Expected 'text/event-stream'.",
         );
       }
-      throw Exception(
-        'resubscribeTask::  HTTP error establishing stream, Status: ${response.status}'
-        'Status text: ${response.statusText}',
-      );
-    }
-    if (!response.headers
-        .get('Content-Type')!
-        .startsWith('text/event-stream')) {
-      // Server should explicitly set this content type for SSE.
-      throw Exception(
-        "sendMessageStream::  Invalid response Content-Type for SSE stream. Expected 'text/event-stream'.",
-      );
     }
     // Yield events from the parsed SSE stream.
     // Each event's 'data' field is a JSON-RPC response.

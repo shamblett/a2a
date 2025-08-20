@@ -36,7 +36,7 @@ class A2AJsonRpcTransportHandler {
     try {
       rpcRequest = requestBody is String
           ? A2ARequest.fromJson(json.decode(requestBody))
-          : A2ARequest.fromJson(requestBody as Map<String,dynamic>);
+          : A2ARequest.fromJson(requestBody as Map<String, dynamic>);
       if (!supportedTypes.contains(rpcRequest.runtimeType)) {
         throw A2AServerError.invalidRequest(
           'A2AJsonRpcTransportHandler::handle '
@@ -67,13 +67,25 @@ class A2AJsonRpcTransportHandler {
         }
 
         final requestId = rpcRequest.id;
-        final agentEventStream = rpcRequest is A2ASendStreamingMessageRequest
-            ? _requestHandler.sendMessageStream(rpcRequest.params!)
-            : _requestHandler.resubscribe(rpcRequest.params);
-
+        final agentEventStream = <A2AResult>[];
+          if (rpcRequest is A2ASendStreamingMessageRequest) {
+            await for (final event in _requestHandler.sendMessageStream(
+              rpcRequest.params!,
+            )) {
+              agentEventStream.add(event);
+            }
+          } else {
+            // Must be resubscribe
+            await for (final event in _requestHandler.resubscribe(
+              rpcRequest.params,
+            )) {
+              agentEventStream.add(event);
+            }
+          }
+        // Return an async generator for the events stream
         return (() async* {
           try {
-            await for (final event in agentEventStream) {
+            for (final event in agentEventStream) {
               final ret = A2ASendStreamingMessageSuccessResponse();
               ret.id = requestId;
               ret.result = event;
@@ -146,10 +158,10 @@ class A2AJsonRpcTransportHandler {
       }
     } catch (e, s) {
       // Check for unsupported operations or operations which can fail
-      if ( e is A2APushNotificationNotSupportedError ) {
+      if (e is A2APushNotificationNotSupportedError) {
         rethrow;
       }
-      if ( e is A2ATaskNotFoundError) {
+      if (e is A2ATaskNotFoundError) {
         rethrow;
       }
 

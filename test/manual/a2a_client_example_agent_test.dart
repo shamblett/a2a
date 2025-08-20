@@ -266,7 +266,7 @@ Future<int> main() async {
       try {
         final response = await testClient!.resubscribeTask(taskParams).first;
         expect(response.isError, isTrue);
-        final errorResponse = response as A2AJSONRPCErrorResponse;
+        final errorResponse = response as A2AJSONRPCErrorResponseSSM;
         expect(errorResponse.error is A2ATaskNotFoundError, isTrue);
       } catch (e) {
         rethrow;
