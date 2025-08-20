@@ -76,7 +76,7 @@ Future<int> main() async {
     test('Send Message', () async {
       if (testClient == null) {
         testClient ??= A2AClient(baseUrl);
-        await Future.delayed(Duration(seconds: 10));
+        await Future.delayed(Duration(seconds: 1));
       }
       final part = A2ATextPart()
         ..text = 'how much is 10 USD in INR?'
@@ -107,7 +107,7 @@ Future<int> main() async {
     test('Send Message Stream', () async {
       if (testClient == null) {
         testClient ??= A2AClient(baseUrl);
-        await Future.delayed(Duration(seconds: 10));
+        await Future.delayed(Duration(seconds: 1));
       }
       final message = A2AMessage()
         ..role = 'user'
@@ -140,7 +140,7 @@ Future<int> main() async {
     test('Set Task Push NotificationConfig', () async {
       if (testClient == null) {
         testClient ??= A2AClient(baseUrl);
-        await Future.delayed(Duration(seconds: 10));
+        await Future.delayed(Duration(seconds: 1));
       }
       final taskConfig = A2ATaskPushNotificationConfig1()
         ..id = '2'
@@ -163,7 +163,7 @@ Future<int> main() async {
     test('Get Task Push Notification Config', () async {
       if (testClient == null) {
         testClient ??= A2AClient(baseUrl);
-        await Future.delayed(Duration(seconds: 10));
+        await Future.delayed(Duration(seconds: 1));
       }
       final taskParams = A2ATaskIdParams()..id = '1';
 
@@ -192,7 +192,7 @@ Future<int> main() async {
     test('Get Task', () async {
       if (testClient == null) {
         testClient ??= A2AClient(baseUrl);
-        await Future.delayed(Duration(seconds: 10));
+        await Future.delayed(Duration(seconds: 1));
       }
       final taskParams = A2ATaskQueryParams()..id = '1';
 
@@ -210,7 +210,7 @@ Future<int> main() async {
     test('Cancel Task', () async {
       if (testClient == null) {
         testClient ??= A2AClient(baseUrl);
-        await Future.delayed(Duration(seconds: 10));
+        await Future.delayed(Duration(seconds: 1));
       }
       final taskParams = A2ATaskIdParams()..id = '1';
 
@@ -228,7 +228,7 @@ Future<int> main() async {
     test('Resubscribe Task', () async {
       if (testClient == null) {
         testClient ??= A2AClient(baseUrl);
-        await Future.delayed(Duration(seconds: 10));
+        await Future.delayed(Duration(seconds: 1));
       }
       final taskParams = A2ATaskIdParams()..id = '1';
 
