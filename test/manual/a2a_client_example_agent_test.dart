@@ -217,16 +217,8 @@ Future<int> main() async {
         expect(response.isError, isTrue);
         final errorResponse = response as A2AJSONRPCErrorResponseGTPR;
         expect(
-          errorResponse.error?.rpcErrorCode,
-          A2AError.unsupportedOperation,
-        );
-        expect(
-          (errorResponse as dynamic).error?.code,
-          A2AError.unsupportedOperation,
-        );
-        expect(
-          (errorResponse as dynamic).error.message,
-          'This operation is not supported',
+          errorResponse.error is A2APushNotificationNotSupportedError,
+          isTrue,
         );
       } catch (e) {
         rethrow;
@@ -243,9 +235,7 @@ Future<int> main() async {
         final response = await testClient!.getTask(taskParams);
         expect(response.isError, isTrue);
         final errorResponse = response as A2AJSONRPCErrorResponseT;
-        expect(errorResponse.error?.rpcErrorCode, A2AError.taskNotFound);
-        expect((errorResponse as dynamic).error?.code, A2AError.taskNotFound);
-        expect((errorResponse as dynamic).error.message, 'Task not found');
+        expect(errorResponse.error is A2ATaskNotFoundError, isTrue);
       } catch (e) {
         rethrow;
       }
@@ -261,9 +251,7 @@ Future<int> main() async {
         final response = await testClient!.cancelTask(taskParams);
         expect(response.isError, isTrue);
         final errorResponse = response as A2AJSONRPCErrorResponse;
-        expect(errorResponse.error?.rpcErrorCode, A2AError.taskNotFound);
-        expect((errorResponse as dynamic).error?.code, A2AError.taskNotFound);
-        expect((errorResponse as dynamic).error.message, 'Task not found');
+        expect(errorResponse.error is A2ATaskNotFoundError, isTrue);
       } catch (e) {
         rethrow;
       }

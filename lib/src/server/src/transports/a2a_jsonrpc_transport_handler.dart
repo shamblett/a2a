@@ -145,8 +145,11 @@ class A2AJsonRpcTransportHandler {
         }
       }
     } catch (e, s) {
-      // Check for unsupported operations
+      // Check for unsupported operations or operations which can fail
       if ( e is A2APushNotificationNotSupportedError ) {
+        rethrow;
+      }
+      if ( e is A2ATaskNotFoundError) {
         rethrow;
       }
 
