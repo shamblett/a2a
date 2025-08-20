@@ -75,10 +75,16 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
       );
     }
 
-    // Default to blocking behavior if 'blocking' is not explicitly false.
-    final isBlocking = params.configuration != null
-        ? params.configuration?.blocking
-        : false;
+    // Default to blocking behavior even if 'blocking' is false
+    bool isBlocking = true;
+    if (params.configuration != null &&
+        params.configuration?.blocking == false) {
+      print(
+        '${Colorize('A2ADefaultRequestHandler::sendMessage '
+        'Non blocking request selected, ignoring, request will be treated as blocking').yellow()}',
+      );
+    }
+
     final taskId = incomingMessage.taskId ?? _uuid.v4();
 
     // Instantiate ResultManager before creating RequestContext
@@ -135,7 +141,7 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
     });
 
     final resolver = A2AResultResolver();
-    if (isBlocking!) {
+    if (isBlocking) {
       // In blocking mode, wait for the full processing to complete.
       await _processEvents(taskId, resultManager, eventQueue);
       final finalResult = resultManager.finalResult;
@@ -148,11 +154,11 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
       }
       resolver.result = finalResult;
       completer.complete(resolver);
-    } else {
-      // In non-blocking mode, return a Future that will be settled by fullProcessing.
-      resolver.result = _processEvents(taskId, resultManager, eventQueue);
-      completer.complete(resolver);
-    }
+    } // else { Non blocking response - not yet implemented
+    // In non-blocking mode, return a Future that will be settled by fullProcessing.
+    // resolver.result = _processEvents(taskId, resultManager, eventQueue);
+    // completer.complete(resolver);
+    //}
     return completer.future;
   }
 

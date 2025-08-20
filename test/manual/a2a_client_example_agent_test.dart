@@ -93,7 +93,7 @@ Future<int> main() async {
     });
   });
   group('Client Methods', () {
-    test('Send Message No Stream Blocking', () async {
+    test('Send Message No Stream', () async {
       if (testClient == null) {
         testClient ??= A2AClient(baseUrl);
         await Future.delayed(Duration(seconds: 1));
@@ -109,7 +109,7 @@ Future<int> main() async {
 
       final payload = A2AMessageSendParams()
         ..message = message
-        ..configuration = (A2AMessageSendConfiguration()..blocking = true);
+        ..configuration = (A2AMessageSendConfiguration()..blocking = false);
       try {
         final rpcResponse = await testClient!.sendMessage(payload);
         expect(rpcResponse.isError, isFalse);
