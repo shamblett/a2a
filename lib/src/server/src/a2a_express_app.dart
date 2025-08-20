@@ -43,12 +43,10 @@ class A2AExpressApp {
           res.set('Content-Type', 'text/event-stream');
           res.set('Cache-Control', 'no-cache');
           res.set('Connection', 'keep-alive');
-          final streamData = <String>[];
+          String streamData = '';
           try {
             await for (final event in rpcResponseOrStream()) {
-              // Each event from the stream is already a JSONRPCResult
-              final eventMap = {'data': '${json.encode(event.toJson())}\n'};
-              streamData.add(json.encode(eventMap));
+              streamData += 'data: ${json.encode(event.toJson())}\n';
             }
           } catch (e) {
             print(
@@ -65,7 +63,7 @@ class A2AExpressApp {
             res.status(500).json(errorResponse.toJson());
           } finally {
             if (!res.finished) {
-              res.end(json.encode(streamData));
+              res.end(streamData);
             }
           }
         } else {
