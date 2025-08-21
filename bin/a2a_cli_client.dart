@@ -186,13 +186,13 @@ void commonPrintHandling(Object event) {
     print('${prefix.toString()} ${Colorize('Task Stream Event').blue()}');
     if (update.id != currentTaskId) {
       print(
-        '${Colorize('Task ID updated from $currentTaskId to ${update.id}')..dark()}',
+        '${Colorize('Task Id updated from ${currentTaskId.isEmpty ? '<none>' : currentTaskId} to ${update.id}')..dark()}',
       );
       currentTaskId = update.id;
     }
     if (update.contextId != currentContextId) {
       print(
-        '${Colorize('Context ID updated from $currentContextId to ${update.contextId}')..dark()}',
+        '${Colorize('Context Id updated from ${currentContextId.isEmpty ? '<none>' : currentContextId} to ${update.contextId}')..dark()}',
       );
       currentContextId = update.contextId;
     }
@@ -225,7 +225,7 @@ void commonPrintHandling(Object event) {
   } else if (event is A2ATaskArtifactUpdateEvent) {
     final update = event;
     print(
-      '${Colorize('Task artifact update event received for task $update.taskId')..yellow()}',
+      '${Colorize('Task artifact update event received for task ${update.taskId}')..yellow()}',
     );
   } else if (event is A2AMessage) {
     final update = event;
