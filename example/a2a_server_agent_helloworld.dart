@@ -10,12 +10,13 @@ import 'package:uuid/uuid.dart';
 
 import 'package:a2a/a2a.dart';
 
-/// A fully annotated example of how to construct an A2A Agent
-/// using the Server SDK.
+/// An implementation of the A2A helloworld sample agent
+/// originally implemented in Python, see [here](https://github.com/a2aproject/a2a-samples/tree/main/samples/python/agents/helloworld)
+///
 ///
 /// This is a runnable example of an A2A Agent -
 ///
-/// dart examples/a2a_server_agent.dart
+/// dart examples/a2a_server_agent_helloworld.dart
 ///
 /// Starts the agent server on http://localhost:41242
 ///
