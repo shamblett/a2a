@@ -173,6 +173,42 @@ void printMessageContent(A2AMessage? message) {
   }
 }
 
+void printArtifactContent(A2AArtifact? artifact) {
+  int index = 0;
+  if (artifact == null) {
+    print('${Colorize('Cannot print message, message is null').yellow}');
+    return;
+  }
+  final partPrefix = '${Colorize('Part ${index + 1}:')..red()}';
+  for (final part in artifact.parts) {
+    if (part is A2ATextPart) {
+      print('$partPrefix ${Colorize('📝 Text:')..green()}, ${part.text}');
+    } else if (part is A2AFilePart) {
+      String name = '';
+      String mimeType = '';
+      String variant = '';
+      if (part.file is A2AFileWithBytes) {
+        final tmp = part.file as A2AFileWithBytes;
+        name = tmp.name;
+        mimeType = tmp.mimeType;
+        variant = 'Inline Bytes';
+      } else {
+        if (part.file is A2AFileWithUri) {
+          final tmp = part.file as A2AFileWithUri;
+          name = tmp.name;
+          mimeType = 'N/A';
+          variant = tmp.uri;
+        }
+      }
+      print(
+        '$partPrefix ${Colorize('📄 File:')..blue()}, Name: $name, Type: $mimeType, Source: $variant',
+      );
+    } else if (part is A2ADataPart) {
+      print('$partPrefix ${Colorize('📊 Data: ')..yellow()}, $part.data');
+    }
+  }
+}
+
 void commonPrintHandling(Object event) {
   final timestamp = DateTime.now()
     ..toLocal(); // Get fresh timestamp for each event
@@ -186,18 +222,17 @@ void commonPrintHandling(Object event) {
     print('${prefix.toString()} ${Colorize('Task Stream Event').blue()}');
     if (update.id != currentTaskId) {
       print(
-        '${Colorize('Task ID updated from $currentTaskId to ${update.id}')..dark()}',
+        '${Colorize('Task Id updated from ${currentTaskId.isEmpty ? '<none>' : currentTaskId} to ${update.id}')..dark()}',
       );
       currentTaskId = update.id;
     }
     if (update.contextId != currentContextId) {
       print(
-        '${Colorize('Context ID updated from $currentContextId to ${update.contextId}')..dark()}',
+        '${Colorize('Context Id updated from ${currentContextId.isEmpty ? '<none>' : currentContextId} to ${update.contextId}')..dark()}',
       );
       currentContextId = update.contextId;
     }
     if (update.status?.message != null) {
-      print('${Colorize('   Task includes message:')..darkGray()}');
       printMessageContent(update.status?.message);
     }
     if (update.artifacts != null && update.artifacts?.isNotEmpty == true) {
@@ -225,8 +260,9 @@ void commonPrintHandling(Object event) {
   } else if (event is A2ATaskArtifactUpdateEvent) {
     final update = event;
     print(
-      '${Colorize('Task artifact update event received for task $update.taskId')..yellow()}',
+      '${Colorize('Task artifact update event received for task ${update.taskId}')..yellow()}',
     );
+    printArtifactContent(update.artifact);
   } else if (event is A2AMessage) {
     final update = event;
     print(
