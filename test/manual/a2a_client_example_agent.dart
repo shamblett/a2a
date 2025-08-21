@@ -127,7 +127,7 @@ Future<int> main() async {
         expect(artifact?.parts, isNotNull);
         expect(artifact?.parts.length, 1);
         expect(
-          (artifact?.parts.first as A2ATextPart).text.contains('completed'),
+          (artifact?.parts.first as A2ATextPart).text.contains('Movie Agent'),
           isTrue,
         );
         expect(result.contextId.isNotEmpty, isTrue);

@@ -21,11 +21,8 @@ Some key concepts are :-
 For detailed explanations, please refer to the [Key Concepts](https://a2a-protocol.org/latest/topics/key-concepts/) guide.
 
 
-Specifically the project implements an A2A SDK for Dart, modelled from the JavaScript
+Specifically the package implements an A2A SDK for Dart, modelled from the JavaScript
 SDK that can be found [here](https://github.com/a2aproject/a2a-js).
-
-The roadmap for the package is that the initial release contains the A2AClient, to be followed by 
-implementation of the cli-client, the server functionality and a sample agent. 
 
 The SDK consists of the following components :-
 
@@ -74,7 +71,7 @@ This will give you command line access to the a2a_cli_client.
 
 ## The A2A Server(Remote Agent)
 
-The A2AServer is a server implementation for the Agent-to-Agent (A2A) communication protocol, 
+The A2AServer(A2AServer) is a server implementation for the Agent-to-Agent (A2A) communication protocol, 
 built atop of the [Darto](https://pub.dev/packages/darto) microframework, 
 a package inspired by the Node.js [Express](https://expressjs.com/) framework for building web applications.
 
@@ -98,8 +95,7 @@ using the taskId & contextId from the RequestContext.
 The executor should subsequently publish TaskStatusUpdateEvent or 
 TaskArtifactUpdateEvent(s).
 
-The executor should indicate which is the final event and also call the 
-finished() method of the event bus.
+The executor should indicate which is the final event.
 
 The executor should also check if an ongoing task has been cancelled. 
 if it has, the execution should be cancelled and TaskStatusUpdateEvent 
@@ -111,7 +107,7 @@ The executor should implement cancellation mechanism for an ongoing task.
 A fully annotated example of creating an A2A Agent in this manner can be found in the 
 [a2a_server_agent](https://github.com/shamblett/a2a/blob/main/example/a2a_server_agent.dart) example.
 
-An implementation of the helloworld agent provided as parat of the A2A Samples repository can be found
+An implementation of the helloworld agent provided as part of the A2A Samples repository can be found
 in the [a2a_server_agent_helloworld](https://github.com/shamblett/a2a/blob/main/example/a2a_server_agent_helloworld.dart)
 example.
 
