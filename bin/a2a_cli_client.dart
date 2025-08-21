@@ -31,6 +31,9 @@ String currentContextId = '';
 // Uuid
 final uuid = Uuid();
 
+// No streaming
+bool noStreaming = false;
+
 // Utility function to check if the base URL is
 // remote or on local host. Note remote means not localhost
 // or 127.0.0.1
@@ -378,13 +381,16 @@ Future<void> queryAgent(String query) async {
 
   // Send the message, streaming if supported
   try {
-    if (agentSupportsStreaming) {
+    if (agentSupportsStreaming && !noStreaming) {
       final events = client?.sendMessageStream(params);
       await for (final event in events!) {
         processAgentStreamingResponse(event);
       }
     } else {
       // Fallback to send message
+      print(
+        '${Colorize('Agent does not support streaming or streaming methods are disabled.')..blue()}',
+      );
       params.configuration?.blocking = true;
       final response = await client?.sendMessage(params);
       if (response != null) {
@@ -438,6 +444,12 @@ Future<int> main(List<String> argv) async {
 
   // Initialize the argument parser and parse the arguments
   final argParser = ArgParser();
+  argParser.addFlag(
+    'no-streaming',
+    abbr: 's',
+    help: 'Do not use streaming API calls even if the agent supports streaming',
+    negatable: false,
+  );
   argParser.addFlag('help', abbr: 'h', negatable: false);
 
   try {
@@ -453,6 +465,11 @@ Future<int> main(List<String> argv) async {
     print('');
     print(argParser.usage);
     return 0;
+  }
+
+  // No streaming
+  if (results['no-streaming']) {
+    noStreaming = true;
   }
 
   baseUrl = results.rest.isNotEmpty
