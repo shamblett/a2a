@@ -13,6 +13,15 @@ import 'package:a2a/a2a.dart';
 /// A fully annotated example of how to construct an A2A Agent
 /// using the Server SDK.
 ///
+/// This is a runnable example of an A2A Agent -
+///
+/// dart examples/a2a_server_agent.dart
+///
+/// Starts the agent server on http://localhost:41242
+///
+/// You can then use the client API or the a2a_cli_client to
+/// interact with the agent.
+///
 /// Status information is printed to the console, blue is for information,
 /// yellow for an event that has occurred and red for failure
 

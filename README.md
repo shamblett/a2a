@@ -56,7 +56,7 @@ dart pub global activate a2a
 ```
 This will give you command line access to the a2a_cli_client.
 
-## The A2A Server
+## The A2A Server(Remote Agent)
 
 The A2AServer is a server implementation for the Agent-to-Agent (A2A) communication protocol, 
 built atop of the [Darto](https://pub.dev/packages/darto) microframework, 
