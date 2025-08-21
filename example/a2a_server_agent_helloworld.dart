@@ -33,18 +33,16 @@ import 'package:a2a/a2a.dart';
 
 final helloworldAgentCard = A2AAgentCard()
   ..name = 'Hello World Agent'
-  ..description =
-      'Just a hello world agent'
+  ..description = 'Just a hello world agent'
   // Adjust the base URL and port as needed.
   ..url = 'http://localhost:9999/'
   ..version = '1.0.0'
-  ..capabilities =
-      (A2AAgentCapabilities()
-        ..streaming =
-            true // Supports streaming
-        ..pushNotifications =
-            false //  Assuming not implemented for this agent yet
-        ..stateTransitionHistory = false)
+  ..capabilities = (A2AAgentCapabilities()
+    ..streaming =
+        true // Supports streaming
+    ..pushNotifications =
+        false //  Assuming not implemented for this agent yet
+    ..stateTransitionHistory = false)
   ..securitySchemes =
       null // Or define actual security schemes if any
   ..security = null
@@ -54,12 +52,9 @@ final helloworldAgentCard = A2AAgentCard()
     A2AAgentSkill()
       ..id = 'hello_world'
       ..name = 'Returns hello world'
-      ..description =
-          'Just returns hello world'
+      ..description = 'Just returns hello world'
       ..tags = ['hello', 'world']
-      ..examples = [
-        'Hi', 'hello world'
-      ]
+      ..examples = ['Hi', 'hello world']
       ..inputModes = ['text/plain']
       ..outputModes = ['text/plain'],
   ])
@@ -110,56 +105,20 @@ class MyAgentExecutor implements A2AAgentExecutor {
       eventBus.publish(initialTask);
     }
 
-    // 2. Publish "working" status update
-    final workingStatusUpdate = A2ATaskStatusUpdateEvent()
-      ..taskId = taskId
-      ..contextId = contextId
-      ..status = (A2ATaskStatus()
-        ..state = A2ATaskState.working
-        ..message = (A2AMessage()
-          ..role = 'agent'
-          ..messageId = _uuid.v4()
-          ..parts = [(A2ATextPart()..text = 'Generating code...')]
-          ..taskId = taskId
-          ..contextId = contextId)
-        ..timestamp = A2AUtilities.getCurrentTimestamp())
-      ..end = false;
-
-    eventBus.publish(workingStatusUpdate);
-
-    // Simulate work...
-    await Future.delayed(Duration(seconds: 3));
-
-    // Check for request cancellation
-    if (_cancelledTasks.contains(taskId)) {
-      print('${Colorize('Request cancelled for task: $taskId').yellow()}');
-      final cancelledUpdate = A2ATaskStatusUpdateEvent()
-        ..taskId = taskId
-        ..contextId = contextId
-        ..status = (A2ATaskStatus()
-          ..state = A2ATaskState.canceled
-          ..timestamp = A2AUtilities.getCurrentTimestamp())
-        ..end = true;
-
-      eventBus.publish(cancelledUpdate);
-      eventBus.finished();
-      return;
-    }
-
-    // 3. Publish artifact update
+    // 2. Publish artifact update
     final artifactUpdate = A2ATaskArtifactUpdateEvent()
       ..taskId = taskId
       ..contextId = contextId
       ..artifact = (A2AArtifact()
         ..artifactId = 'artifact-1'
         ..name = 'artifact-1'
-        ..parts = [(A2ATextPart()..text = 'Task $taskId completed.')])
+        ..parts = [(A2ATextPart()..text = 'Hello World')])
       ..append = false
       ..lastChunk = true;
 
     eventBus.publish(artifactUpdate);
 
-    // 4. Publish final status update
+    // 3. Publish final status update
     final finalUpdate = A2ATaskStatusUpdateEvent()
       ..taskId = taskId
       ..contextId = contextId
