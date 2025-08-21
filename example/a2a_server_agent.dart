@@ -159,7 +159,9 @@ class MyAgentExecutor implements A2AAgentExecutor {
       ..artifact = (A2AArtifact()
         ..artifactId = 'artifact-1'
         ..name = 'artifact-1'
-        ..parts = [(A2ATextPart()..text = 'Task $taskId completed.')])
+        ..parts = [
+          (A2ATextPart()..text = 'Artifact update from the Movie Agent'),
+        ])
       ..append = false
       ..lastChunk = true;
 
