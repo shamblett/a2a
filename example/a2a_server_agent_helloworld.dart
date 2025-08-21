@@ -13,7 +13,6 @@ import 'package:a2a/a2a.dart';
 /// An implementation of the A2A helloworld sample agent
 /// originally implemented in Python, see [here](https://github.com/a2aproject/a2a-samples/tree/main/samples/python/agents/helloworld)
 ///
-///
 /// This is a runnable example of an A2A Agent -
 ///
 /// dart examples/a2a_server_agent_helloworld.dart
@@ -25,47 +24,41 @@ import 'package:a2a/a2a.dart';
 ///
 /// Status information is printed to the console, blue is for information,
 /// yellow for an event that has occurred and red for failure
-
+///
+/// Note that unlike the Python example this example does not support
+/// Authenticated Extended Card.
 ///
 /// Step 1 - Define the Agent Card
 ///
 
-final movieAgentCard = A2AAgentCard()
-  ..name = 'Movie Agent'
+final helloworldAgentCard = A2AAgentCard()
+  ..name = 'Hello World Agent'
   ..description =
-      'An agent that can answer questions about movies and actors using TMDB.'
+      'Just a hello world agent'
   // Adjust the base URL and port as needed.
-  ..url = 'http://localhost:41242/'
-  ..agentProvider = (A2AAgentProvider()
-    ..organization = 'A2A Agents'
-    ..url = 'https://example.com/a2a-agents')
-  ..version = '0.0.2'
+  ..url = 'http://localhost:9999/'
+  ..version = '1.0.0'
   ..capabilities =
       (A2AAgentCapabilities()
         ..streaming =
             true // Supports streaming
         ..pushNotifications =
             false //  Assuming not implemented for this agent yet
-        ..stateTransitionHistory = true) // Agent uses history
+        ..stateTransitionHistory = false)
   ..securitySchemes =
       null // Or define actual security schemes if any
   ..security = null
-  ..defaultInputModes = ['text/plain']
-  ..defaultOutputModes = ['text/plain']
+  ..defaultInputModes = ['text']
+  ..defaultOutputModes = ['text']
   ..skills = ([
     A2AAgentSkill()
-      ..id = 'general_movie_chat'
-      ..name = 'General Movie Chat'
+      ..id = 'hello_world'
+      ..name = 'Returns hello world'
       ..description =
-          'Answer general questions or chat about movies, actors, directors.'
-      ..tags = ['movies', 'actors', 'directors']
+          'Just returns hello world'
+      ..tags = ['hello', 'world']
       ..examples = [
-        'Tell me about the plot of Inception.',
-        'Recommend a good sci-fi movie.',
-        'Who directed The Matrix?',
-        'What other movies has Scarlett Johansson been in?',
-        'Find action movies starring Keanu Reeves',
-        'Which came out first, Jurassic Park or Terminator 2?',
+        'Hi', 'hello world'
       ]
       ..inputModes = ['text/plain']
       ..outputModes = ['text/plain'],
@@ -194,7 +187,7 @@ void main() {
   final agentExecutor = MyAgentExecutor();
   final eventBusManager = A2ADefaultExecutionEventBusManager();
   final requestHandler = A2ADefaultRequestHandler(
-    movieAgentCard,
+    helloworldAgentCard,
     taskStore,
     agentExecutor,
     eventBusManager,
@@ -206,7 +199,7 @@ void main() {
   final expressApp = appBuilder.setupRoutes(Darto(), '');
 
   // Start listening
-  const port = 41242;
+  const port = 9999;
   expressApp.listen(port, () {
     print(
       '${Colorize('[MyAgent] Server using new framework started on http://localhost:$port').blue()}',
