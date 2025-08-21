@@ -13,7 +13,8 @@ import 'package:test/test.dart';
 import 'package:a2a/a2a.dart';
 
 /// Tests the client against the local 'helloworld' agent located at
-/// http://localhost:9999.
+/// http://localhost:9999. Either the local agent example or the podman
+/// Python example.
 ///
 /// Please start this before running this test otherwise the test will exit
 /// with an error message.
@@ -83,6 +84,7 @@ Future<int> main() async {
         ..kind = 'text';
 
       final message = A2AMessage()
+        ..messageId = '12345'
         ..role = 'user'
         ..parts = [part];
 
@@ -122,17 +124,24 @@ Future<int> main() async {
         ..configuration = configuration;
 
       try {
-        final rpcResponse = await testClient!.sendMessageStream(payload).first;
-        expect(rpcResponse.isError, isFalse);
-        final response = rpcResponse as A2ASendStreamMessageSuccessResponse;
-        expect(response.result, isNotNull);
-        expect(response.result is A2AMessage, isTrue);
-        final result = response.result as A2AMessage;
-        expect(result.role, 'agent');
-        expect(result.parts?.isNotEmpty, isTrue);
-        final tPartList = result.parts as List<A2APart>;
-        final tPart = tPartList.first as A2ATextPart;
-        expect(tPart.text, 'Hello World');
+        await for (final rpcResponse in testClient!.sendMessageStream(
+          payload,
+        )) {
+          expect(rpcResponse.isError, isFalse);
+          final response = rpcResponse as A2ASendStreamMessageSuccessResponse;
+          expect(response.result, isNotNull);
+          if (response.result is A2ATask) {
+            continue;
+          }
+          if (response.result is A2AMessage) {
+            final result = response.result as A2AMessage;
+            expect(result.role, 'agent');
+            expect(result.parts?.isNotEmpty, isTrue);
+            final tPartList = result.parts as List<A2APart>;
+            final tPart = tPartList.first as A2ATextPart;
+            expect(tPart.text, 'Hello World');
+          }
+        }
       } catch (e) {
         rethrow;
       }
@@ -165,6 +174,9 @@ Future<int> main() async {
         testClient ??= A2AClient(baseUrl);
         await Future.delayed(Duration(seconds: 1));
       }
+      bool taskNotFound = false;
+      bool unsupported = false;
+
       final taskParams = A2ATaskIdParams()..id = '1';
 
       try {
@@ -173,21 +185,16 @@ Future<int> main() async {
         );
         expect(response.isError, isTrue);
         final errorResponse = response as A2AJSONRPCErrorResponseGTPR;
-        expect(
-          errorResponse.error?.rpcErrorCode,
-          A2AError.unsupportedOperation,
-        );
-        expect(
-          (errorResponse as dynamic).error?.code,
-          A2AError.unsupportedOperation,
-        );
-        expect(
-          (errorResponse as dynamic).error.message,
-          'This operation is not supported',
-        );
+        if (errorResponse.error is A2AUnsupportedOperationError) {
+          unsupported = true;
+        }
+        if (errorResponse.error is A2ATaskNotFoundError) {
+          taskNotFound = true;
+        }
       } catch (e) {
         rethrow;
       }
+      expect(taskNotFound || unsupported, isTrue);
     });
     test('Get Task', () async {
       if (testClient == null) {
@@ -202,7 +209,10 @@ Future<int> main() async {
         final errorResponse = response as A2AJSONRPCErrorResponseT;
         expect(errorResponse.error?.rpcErrorCode, A2AError.taskNotFound);
         expect((errorResponse as dynamic).error?.code, A2AError.taskNotFound);
-        expect((errorResponse as dynamic).error.message, 'Task not found');
+        expect(
+          (errorResponse as dynamic).error.message.contains('Task not found'),
+          isTrue,
+        );
       } catch (e) {
         rethrow;
       }
@@ -220,7 +230,10 @@ Future<int> main() async {
         final errorResponse = response as A2AJSONRPCErrorResponse;
         expect(errorResponse.error?.rpcErrorCode, A2AError.taskNotFound);
         expect((errorResponse as dynamic).error?.code, A2AError.taskNotFound);
-        expect((errorResponse as dynamic).error.message, 'Task not found');
+        expect(
+          (errorResponse as dynamic).error.message.contains('Task not found'),
+          isTrue,
+        );
       } catch (e) {
         rethrow;
       }
@@ -238,7 +251,10 @@ Future<int> main() async {
         final errorResponse = response as A2AJSONRPCErrorResponseSSM;
         expect(errorResponse.error?.rpcErrorCode, A2AError.taskNotFound);
         expect((errorResponse as dynamic).error?.code, A2AError.taskNotFound);
-        expect((errorResponse as dynamic).error.message, 'Task not found');
+        expect(
+          (errorResponse as dynamic).error.message.contains('Task not found'),
+          isTrue,
+        );
       } catch (e) {
         rethrow;
       }

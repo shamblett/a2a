@@ -28,6 +28,8 @@ import 'package:a2a/a2a.dart';
 /// Note that unlike the Python example this example does not support
 /// Authenticated Extended Card.
 ///
+
+///
 /// Step 1 - Define the Agent Card
 ///
 
@@ -39,10 +41,7 @@ final helloworldAgentCard = A2AAgentCard()
   ..version = '1.0.0'
   ..capabilities = (A2AAgentCapabilities()
     ..streaming =
-        true // Supports streaming
-    ..pushNotifications =
-        false //  Assuming not implemented for this agent yet
-    ..stateTransitionHistory = false)
+        true) // Supports streaming)
   ..securitySchemes =
       null // Or define actual security schemes if any
   ..security = null
@@ -52,9 +51,9 @@ final helloworldAgentCard = A2AAgentCard()
     A2AAgentSkill()
       ..id = 'hello_world'
       ..name = 'Returns hello world'
-      ..description = 'Just returns hello world'
-      ..tags = ['hello', 'world']
-      ..examples = ['Hi', 'hello world']
+      ..description = 'just returns hello world'
+      ..tags = ['hello world']
+      ..examples = ['hi', 'hello world']
       ..inputModes = ['text/plain']
       ..outputModes = ['text/plain'],
   ])
@@ -105,34 +104,17 @@ class MyAgentExecutor implements A2AAgentExecutor {
       eventBus.publish(initialTask);
     }
 
-    // 2. Publish artifact update
-    final artifactUpdate = A2ATaskArtifactUpdateEvent()
-      ..taskId = taskId
+    // 2. Publish a message update
+    // No need for artifact or task update generation.
+    // A generated message will terminate the task execution.
+    final message = A2AMessage()
+      ..messageId = _uuid.v4()
       ..contextId = contextId
-      ..artifact = (A2AArtifact()
-        ..artifactId = 'artifact-1'
-        ..name = 'artifact-1'
-        ..parts = [(A2ATextPart()..text = 'Hello World')])
-      ..append = false
-      ..lastChunk = true;
-
-    eventBus.publish(artifactUpdate);
-
-    // 3. Publish final status update
-    final finalUpdate = A2ATaskStatusUpdateEvent()
       ..taskId = taskId
-      ..contextId = contextId
-      ..status = (A2ATaskStatus()
-        ..state = A2ATaskState.completed
-        ..message = (A2AMessage()
-          ..role = 'agent'
-          ..messageId = _uuid.v4()
-          ..taskId = taskId
-          ..contextId = contextId)
-        ..timestamp = A2AUtilities.getCurrentTimestamp())
-      ..end = true;
+      ..role = 'agent'
+      ..parts = ([A2ATextPart()..text = 'Hello World']);
 
-    eventBus.publish(finalUpdate);
+    eventBus.publish(message);
   }
 }
 
