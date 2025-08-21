@@ -39,9 +39,8 @@ final helloworldAgentCard = A2AAgentCard()
   // Adjust the base URL and port as needed.
   ..url = 'http://localhost:9999/'
   ..version = '1.0.0'
-  ..capabilities = (A2AAgentCapabilities()
-    ..streaming =
-        true) // Supports streaming)
+  ..capabilities =
+      (A2AAgentCapabilities()..streaming = true) // Supports streaming)
   ..securitySchemes =
       null // Or define actual security schemes if any
   ..security = null
