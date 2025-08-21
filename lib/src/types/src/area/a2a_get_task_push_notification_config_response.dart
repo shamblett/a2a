@@ -27,16 +27,7 @@ class A2AGetTaskPushNotificationConfigResponse {
     }
   }
 
-  Map<String, dynamic> toJson() {
-    if (this is A2AJSONRPCErrorResponseGTPR) {
-      return (this as A2AJSONRPCErrorResponseGTPR).toJson();
-    }
-    if (this is A2AGetTaskPushNotificationConfigSuccessResponse) {
-      return (this as A2AGetTaskPushNotificationConfigSuccessResponse).toJson();
-    }
-
-    return {};
-  }
+  Map<String, dynamic> toJson() => {};
 }
 
 /// Represents a JSON-RPC 2.0 Error Response object.

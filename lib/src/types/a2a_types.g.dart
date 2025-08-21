@@ -304,7 +304,10 @@ A2ASendMessageRequest _$A2ASendMessageRequestFromJson(
 ) => A2ASendMessageRequest()
   ..id = json['id']
   ..jsonrpc = json['jsonrpc'] as String
-  ..method = json['method'] as String;
+  ..method = json['method'] as String
+  ..params = json['params'] == null
+      ? null
+      : A2AMessageSendParams.fromJson(json['params'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$A2ASendMessageRequestToJson(
   A2ASendMessageRequest instance,
@@ -312,6 +315,7 @@ Map<String, dynamic> _$A2ASendMessageRequestToJson(
   'id': instance.id,
   'jsonrpc': instance.jsonrpc,
   'method': instance.method,
+  'params': instance.params?.toJson(),
 };
 
 A2ASendStreamingMessageRequest _$A2ASendStreamingMessageRequestFromJson(
@@ -457,13 +461,13 @@ A2ATaskPushNotificationConfig _$A2ATaskPushNotificationConfigFromJson(
       : A2ATaskPushNotificationConfig1.fromJson(
           json['pushNotificationConfig'] as Map<String, dynamic>,
         )
-  ..id = json['id'] as String;
+  ..taskId = json['taskId'] as String;
 
 Map<String, dynamic> _$A2ATaskPushNotificationConfigToJson(
   A2ATaskPushNotificationConfig instance,
 ) => <String, dynamic>{
   'pushNotificationConfig': instance.pushNotificationConfig?.toJson(),
-  'id': instance.id,
+  'taskId': instance.taskId,
 };
 
 A2ATaskIdParams _$A2ATaskIdParamsFromJson(Map<String, dynamic> json) =>
@@ -618,13 +622,13 @@ Map<String, dynamic> _$A2AFileWithBytesToJson(A2AFileWithBytes instance) =>
 
 A2AFileWithUri _$A2AFileWithUriFromJson(Map<String, dynamic> json) =>
     A2AFileWithUri()
-      ..mimeTYpe = json['mimeTYpe'] as String
+      ..mimeType = json['mimeType'] as String
       ..name = json['name'] as String
       ..uri = json['uri'] as String;
 
 Map<String, dynamic> _$A2AFileWithUriToJson(A2AFileWithUri instance) =>
     <String, dynamic>{
-      'mimeTYpe': instance.mimeTYpe,
+      'mimeType': instance.mimeType,
       'name': instance.name,
       'uri': instance.uri,
     };

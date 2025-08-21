@@ -175,7 +175,7 @@ Future<int> main() async {
         ..url = 'http://localhost:5000';
 
       final config = A2ATaskPushNotificationConfig()
-        ..id = '1'
+        ..taskId = '1'
         ..pushNotificationConfig = taskConfig;
 
       try {

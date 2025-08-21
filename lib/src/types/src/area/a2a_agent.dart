@@ -8,7 +8,7 @@
 part of '../../a2a_types.dart';
 
 /// Agent class
-sealed class A2AAgent {}
+class A2AAgent {}
 
 /// Defines optional capabilities supported by an agent.
 @JsonSerializable(explicitToJson: true)

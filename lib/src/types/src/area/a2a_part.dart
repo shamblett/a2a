@@ -27,19 +27,7 @@ class A2APart {
     return A2APart();
   }
 
-  Map<String, dynamic> toJson() {
-    if (this is A2ATextPart) {
-      return A2ATextPart().toJson();
-    }
-    if (this is A2AFilePart) {
-      return A2AFilePart().toJson();
-    }
-    if (this is A2ADataPart) {
-      return A2ADataPart().toJson();
-    }
-
-    return {};
-  }
+  Map<String, dynamic> toJson() => {};
 }
 
 /// Represents a text segment within parts.
@@ -113,23 +101,14 @@ class A2AFilePartVariant {
     if (json.containsKey('bytes')) {
       return A2AFileWithBytes.fromJson(json);
     }
-    if (json.containsKey('url')) {
+    if (json.containsKey('uri')) {
       return A2AFileWithUri.fromJson(json);
     }
 
     return A2AFilePartVariant();
   }
 
-  Map<String, dynamic> toJson() {
-    if (this is A2AFileWithBytes) {
-      return (this as A2AFileWithBytes).toJson();
-    }
-    if (this is A2AFileWithUri) {
-      return (this as A2AFileWithUri).toJson();
-    }
-
-    return {};
-  }
+  Map<String, dynamic> toJson() => {};
 }
 
 /// Define the variant where 'bytes' is present and 'uri' is absent
@@ -157,7 +136,7 @@ final class A2AFileWithBytes extends A2AFilePartVariant {
 @JsonSerializable(explicitToJson: true)
 final class A2AFileWithUri extends A2AFilePartVariant {
   /// Optional mimeType for the file
-  String mimeTYpe = '';
+  String mimeType = '';
 
   /// Optional name for the file
   String name = '';

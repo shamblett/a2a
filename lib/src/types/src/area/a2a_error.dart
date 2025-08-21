@@ -70,50 +70,12 @@ class A2AError {
           return A2AInvalidAgentResponseError.fromJson(json)
             ..rpcErrorCode = invalidAgentResponse;
         default:
-          return A2AError();
+          return A2AError()..rpcErrorCode = json['code'];
       }
     }
   }
 
-  Map<String, dynamic> toJson() {
-    if (this is A2AJSONRPCError) {
-      return (this as A2AJSONRPCError).toJson();
-    }
-    if (this is A2AJSONParseError) {
-      return (this as A2AJSONParseError).toJson();
-    }
-    if (this is A2AInvalidRequestError) {
-      return (this as A2AInvalidRequestError).toJson();
-    }
-    if (this is A2AMethodNotFoundError) {
-      return (this as A2AMethodNotFoundError).toJson();
-    }
-    if (this is A2AInvalidParamsError) {
-      return (this as A2AInvalidParamsError).toJson();
-    }
-    if (this is A2AInternalError) {
-      return (this as A2AInternalError).toJson();
-    }
-    if (this is A2ATaskNotFoundError) {
-      return (this as A2ATaskNotFoundError).toJson();
-    }
-    if (this is A2ATaskNotCancelableError) {
-      return (this as A2ATaskNotCancelableError).toJson();
-    }
-    if (this is A2APushNotificationNotSupportedError) {
-      return (this as A2APushNotificationNotSupportedError).toJson();
-    }
-    if (this is A2AUnsupportedOperationError) {
-      return (this as A2AUnsupportedOperationError).toJson();
-    }
-    if (this is A2AContentTypeNotSupportedError) {
-      return (this as A2AContentTypeNotSupportedError).toJson();
-    }
-    if (this is A2AInvalidAgentResponseError) {
-      return (this as A2AInvalidAgentResponseError).toJson();
-    }
-    return {};
-  }
+  Map<String, dynamic> toJson() => {};
 
   /// Convert the RPC code to a string
   static String asString(int code) {
@@ -277,6 +239,7 @@ final class A2ATaskNotFoundError extends A2AError {
   int code = A2AError.taskNotFound;
 
   /// A Primitive or Structured value that contains additional information about the error.
+  /// In this case 'taskId' will contain the Task Id
   A2ASV? data;
 
   /// A String providing a short description of the error.
@@ -297,6 +260,7 @@ final class A2ATaskNotCancelableError extends A2AError {
   int code = A2AError.taskNotCancellable;
 
   /// A Primitive or Structured value that contains additional information about the error.
+  /// In this case 'taskId' will contain the Task Id
   A2ASV? data;
 
   /// A String providing a short description of the error.

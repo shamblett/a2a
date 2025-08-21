@@ -10,8 +10,8 @@ library;
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:a2a/a2a.dart';
 import 'package:oxy/oxy.dart' as http;
-import '/src/types/a2a_types.dart';
 
 /// A2AClient is a HTTP client for interacting
 /// with A2A-compliant agents.
@@ -196,7 +196,7 @@ class A2AClient {
     // Ensure agent card is fetched
     if (_agentCard != null) {
       if (_agentCard!.capabilities.pushNotifications != null) {
-        if (!_agentCard!.capabilities.streaming!) {
+        if (!_agentCard!.capabilities.pushNotifications!) {
           throw Exception(
             'setTaskPushNotificationConfig:: Agent does not support push notification (AgentCard.capabilities.pushnotifications is not true).',
           );
@@ -312,35 +312,19 @@ class A2AClient {
 
     if (!response.ok) {
       var errorBody = '';
-      try {
-        errorBody = await response.text();
-        final errorJson = json.decode(errorBody) as Map<String, dynamic>;
-        if (errorJson.containsKey('error')) {
-          throw Exception(
-            'resubscribeTask:: HTTP error establishing stream for tasks/resubscribe: '
-            ' ${response.status} ${response.statusText}. RPC Error: ${(errorJson as dynamic).error.message} '
-            ' (Code: ${(errorJson as dynamic).error.code})',
-          );
-        }
-      } catch (e, s) {
-        Error.throwWithStackTrace(
-          'resubscribeTask:: HTTP error establishing stream, Status: ${response.status}'
-          'Status text: ${response.statusText} Response: $errorBody',
-          s,
+      errorBody = await response.text();
+      final errorJson = json.decode(errorBody) as Map<String, dynamic>;
+      if (errorJson.containsKey('error')) {
+        yield (A2AJSONRPCErrorResponseSSM.fromJson(errorJson))..isError = true;
+      }
+      if (!response.headers
+          .get('Content-Type')!
+          .startsWith('text/event-stream')) {
+        // Server should explicitly set this content type for SSE.
+        throw Exception(
+          "sendMessageStream::  Invalid response Content-Type for SSE stream. Expected 'text/event-stream'.",
         );
       }
-      throw Exception(
-        'resubscribeTask::  HTTP error establishing stream, Status: ${response.status}'
-        'Status text: ${response.statusText}',
-      );
-    }
-    if (!response.headers
-        .get('Content-Type')!
-        .startsWith('text/event-stream')) {
-      // Server should explicitly set this content type for SSE.
-      throw Exception(
-        "sendMessageStream::  Invalid response Content-Type for SSE stream. Expected 'text/event-stream'.",
-      );
     }
     // Yield events from the parsed SSE stream.
     // Each event's 'data' field is a JSON-RPC response.
@@ -422,7 +406,7 @@ class A2AClient {
     if (!httpResponse.ok) {
       var errorBodyText = '(empty or non-JSON response)';
       try {
-        errorBodyText = await httpResponse.text();
+        errorBodyText = await httpResponse.clone().text();
         final errorJson = (json.decode(errorBodyText) as Map<String, dynamic>);
         // If the body is a valid JSON-RPC error response, let it be handled by the standard parsing below.
         // However, if it's not even a JSON-RPC structure but still an error, throw based on HTTP status.
@@ -456,12 +440,13 @@ class A2AClient {
     }
 
     final rpcResponse = (await httpResponse.json() as Map<String, dynamic>);
-    if (rpcResponse.containsKey('id') &&
-        rpcResponse['id']! == requestId.toString()) {
-      // This is a significant issue for request-response matching.
-      throw Exception(
-        '_postRpcRequest:: RPC response ID mismatch for method $method. Expected $requestId, got ${rpcResponse["id"]}',
-      );
+    if (rpcResponse.containsKey('id')) {
+      if (rpcResponse['id'] != null && rpcResponse['id'] != requestId) {
+        // This is a significant issue for request-response matching.
+        throw Exception(
+          '_postRpcRequest:: RPC response ID mismatch for method $method. Expected $requestId, got ${rpcResponse["id"]}',
+        );
+      }
     }
 
     // Return the response

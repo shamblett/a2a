@@ -15,6 +15,17 @@ typedef A2AId = Object;
 /// Structured value type
 typedef A2ASV = Map<String, dynamic>;
 
+/// Result type
+typedef A2AResult = Object;
+
+typedef A2ATaskOrMessage = Object;
+
+/// Agent Execution Event
+typedef A2AAgentExecutionEvent = Object;
+
+/// Transport handler response or async* function.
+typedef A2AResponseOrGenerator = Object;
+
 /// Represents the possible states of a Task.
 enum A2ATaskState {
   @JsonValue('submitted')
@@ -71,12 +82,22 @@ class A2AMessage {
   /// Identifier of task the message is related to
   String? taskId;
 
+  @override
+  int get hashCode => messageId.hashCode;
+
   A2AMessage();
 
   factory A2AMessage.fromJson(Map<String, dynamic> json) =>
       _$A2AMessageFromJson(json);
 
   Map<String, dynamic> toJson() => _$A2AMessageToJson(this);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is A2AMessage &&
+          runtimeType == other.runtimeType &&
+          messageId == other.messageId;
 }
 
 /// Represents an artifact generated for a task.
@@ -100,12 +121,22 @@ class A2AArtifact {
   /// Artifact parts
   List<A2APart> parts = [];
 
+  @override
+  int get hashCode => artifactId.hashCode;
+
   A2AArtifact();
 
   factory A2AArtifact.fromJson(Map<String, dynamic> json) =>
       _$A2AArtifactFromJson(json);
 
   Map<String, dynamic> toJson() => _$A2AArtifactToJson(this);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is A2AArtifact &&
+          runtimeType == other.runtimeType &&
+          artifactId == other.artifactId;
 }
 
 /// The result object on success.
@@ -134,6 +165,13 @@ class A2ATask {
       _$A2ATaskFromJson(json);
 
   Map<String, dynamic> toJson() => _$A2ATaskToJson(this);
+
+  /// Deep clone.
+  A2ATask clone() {
+    // Take advantage of the fact we can serialize these classes
+    final thisJson = toJson();
+    return A2ATask.fromJson(thisJson);
+  }
 }
 
 /// Current status of the task

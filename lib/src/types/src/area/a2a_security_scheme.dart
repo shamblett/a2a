@@ -31,22 +31,7 @@ class A2ASecurityScheme {
     }
   }
 
-  Map<String, dynamic> toJson() {
-    if (this is A2AAPIKeySecurityScheme) {
-      return (this as A2AAPIKeySecurityScheme).toJson();
-    }
-    if (this is A2AHTTPAuthSecurityScheme) {
-      return (this as A2AHTTPAuthSecurityScheme).toJson();
-    }
-    if (this is A2AOAuth2SecurityScheme) {
-      return (this as A2AOAuth2SecurityScheme).toJson();
-    }
-    if (this is A2AOpenIdConnectSecurityScheme) {
-      return (this as A2AOpenIdConnectSecurityScheme).toJson();
-    }
-
-    return {};
-  }
+  Map<String, dynamic> toJson() => {};
 }
 
 /// API Key security scheme.

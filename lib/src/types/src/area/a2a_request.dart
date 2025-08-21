@@ -17,6 +17,10 @@ class A2ARequest {
   static const tasksPncGet = 'tasks/pushNotificationConfig/get';
   static const tasksResubscribe = 'tasks/resubscribe';
 
+  /// Set if a valid request cannot be formed by [fromJson].
+  @JsonKey(includeFromJson: false)
+  bool unknownRequest = false;
+
   factory A2ARequest.fromJson(Map<String, dynamic> json) {
     if (!json.containsKey('method')) {
       return A2ARequest();
@@ -37,37 +41,14 @@ class A2ARequest {
         case tasksResubscribe:
           return A2ATaskResubscriptionRequest.fromJson(json);
         default:
-          return A2ARequest();
+          return A2ARequest()..unknownRequest = true;
       }
     }
   }
 
   A2ARequest();
 
-  Map<String, dynamic> toJson() {
-    if (this is A2ASendMessageRequest) {
-      return (this as A2ASendMessageRequest).toJson();
-    }
-    if (this is A2ASendStreamingMessageRequest) {
-      return (this as A2ASendStreamingMessageRequest).toJson();
-    }
-    if (this is A2AGetTaskRequest) {
-      return (this as A2AGetTaskRequest).toJson();
-    }
-    if (this is A2ACancelTaskRequest) {
-      return (this as A2ACancelTaskRequest).toJson();
-    }
-    if (this is A2ASetTaskPushNotificationConfigRequest) {
-      return (this as A2ASetTaskPushNotificationConfigRequest).toJson();
-    }
-    if (this is A2AGetTaskPushNotificationConfigRequest) {
-      return (this as A2AGetTaskPushNotificationConfigRequest).toJson();
-    }
-    if (this is A2ATaskResubscriptionRequest) {
-      return (this as A2ATaskResubscriptionRequest).toJson();
-    }
-    return {};
-  }
+  Map<String, dynamic> toJson() => {};
 }
 
 /// JSON-RPC request model for the 'message/send' method.
@@ -82,6 +63,7 @@ final class A2ASendMessageRequest extends A2ARequest {
 
   /// A String containing the name of the method to be invoked.
   String method = 'message/send';
+  A2AMessageSendParams? params;
 
   A2ASendMessageRequest();
 
@@ -263,7 +245,7 @@ class A2ATaskPushNotificationConfig {
   A2ATaskPushNotificationConfig1? pushNotificationConfig;
 
   /// Task Id
-  String id = '';
+  String taskId = '';
 
   A2ATaskPushNotificationConfig();
 

@@ -37,18 +37,7 @@ class A2AJsonRpcResponse {
     }
   }
 
-  Map<String, dynamic> toJson() {
-    if (this is A2ASendMessageSuccessResponse) {
-      return (this as A2ASendMessageSuccessResponse).toJson();
-    }
-    if (this is A2ASendStreamingMessageSuccessResponse) {
-      return (this as A2ASendStreamingMessageSuccessResponse).toJson();
-    }
-    if (this is A2ASetTaskPushNotificationConfigSuccessResponse) {
-      return (this as A2ASetTaskPushNotificationConfigSuccessResponse).toJson();
-    }
-    return {};
-  }
+  Map<String, dynamic> toJson() => {};
 }
 
 /// JSON-RPC response model for the 'message/send' method.
@@ -56,26 +45,13 @@ class A2ASendMessageResponse extends A2AJsonRpcResponse {
   A2ASendMessageResponse();
 
   factory A2ASendMessageResponse.fromJson(Map<String, dynamic> json) {
-    if (json.containsKey('error')) {
-      final response = A2AJSONRPCErrorResponseS.fromJson(json);
-      response.isError = true;
-      return response;
-    } else {
-      return A2ASendMessageSuccessResponse().fromJson((json));
-    }
+    return json.containsKey('error')
+        ? (A2AJSONRPCErrorResponseS.fromJson(json)..isError = true)
+        : A2ASendMessageSuccessResponse().fromJson((json));
   }
 
   @override
-  Map<String, dynamic> toJson() {
-    if (this is A2AJSONRPCErrorResponseS) {
-      return (this as A2AJSONRPCErrorResponseS).toJson();
-    }
-    if (this is A2ASendMessageSuccessResponse) {
-      return (this as A2ASendMessageSuccessResponse).toJson();
-    }
-
-    return {};
-  }
+  Map<String, dynamic> toJson() => {};
 }
 
 /// JSON-RPC response model for the 'message/stream' method.
@@ -83,26 +59,13 @@ class A2ASendStreamingMessageResponse extends A2AJsonRpcResponse {
   A2ASendStreamingMessageResponse();
 
   factory A2ASendStreamingMessageResponse.fromJson(Map<String, dynamic> json) {
-    if (json.containsKey('error')) {
-      final response = A2AJSONRPCErrorResponseS.fromJson(json);
-      response.isError = true;
-      return response as A2AJSONRPCErrorResponseSS;
-    } else {
-      return A2ASendStreamingMessageSuccessResponse().fromJson((json));
-    }
+    return json.containsKey('error')
+        ? (A2AJSONRPCErrorResponseSS.fromJson(json)..isError = true)
+        : A2ASendStreamingMessageSuccessResponse().fromJson((json));
   }
 
   @override
-  Map<String, dynamic> toJson() {
-    if (this is A2AJSONRPCErrorResponseSS) {
-      return (this as A2AJSONRPCErrorResponseSS).toJson();
-    }
-    if (this is A2ASendStreamingMessageSuccessResponse) {
-      return (this as A2ASendStreamingMessageSuccessResponse).toJson();
-    }
-
-    return {};
-  }
+  Map<String, dynamic> toJson() => {};
 }
 
 /// JSON-RPC response model for the 'tasks/pushNotificationConfig/set' method.
@@ -112,26 +75,13 @@ class SetTaskPushNotificationConfigResponse extends A2AJsonRpcResponse {
   factory SetTaskPushNotificationConfigResponse.fromJson(
     Map<String, dynamic> json,
   ) {
-    if (json.containsKey('error')) {
-      final response = A2AJSONRPCErrorResponseS.fromJson(json);
-      response.isError = true;
-      return response as A2AJSONRPCErrorResponsePNCR;
-    } else {
-      return A2ASetTaskPushNotificationConfigSuccessResponse().fromJson((json));
-    }
+    return json.containsKey('error')
+        ? (A2AJSONRPCErrorResponsePNCR.fromJson(json)..isError = true)
+        : A2ASetTaskPushNotificationConfigSuccessResponse().fromJson((json));
   }
 
   @override
-  Map<String, dynamic> toJson() {
-    if (this is A2AJSONRPCErrorResponsePNCR) {
-      return (this as A2AJSONRPCErrorResponsePNCR).toJson();
-    }
-    if (this is A2ASetTaskPushNotificationConfigSuccessResponse) {
-      return (this as A2ASetTaskPushNotificationConfigSuccessResponse).toJson();
-    }
-
-    return {};
-  }
+  Map<String, dynamic> toJson() => {};
 }
 
 /// RPC error send
@@ -185,7 +135,7 @@ final class A2ASendMessageSuccessResponse extends A2ASendMessageResponse {
   String jsonrpc = '2.0';
 
   /// The result object on success, [A2ATask] or [A2AMessage]
-  Object? result;
+  A2AResult? result;
 
   A2ASendMessageSuccessResponse();
 
@@ -194,11 +144,11 @@ final class A2ASendMessageSuccessResponse extends A2ASendMessageResponse {
     final response = _$A2ASendMessageSuccessResponseFromJson(json);
     if (json.containsKey('result')) {
       if (json['result']['kind'] == 'task') {
-        response.result = _$A2ATaskFromJson(json['result']);
+        response.result = A2ATask.fromJson(json['result']);
         return response;
       }
       if (json['result']['kind'] == 'message') {
-        response.result = _$A2AMessageFromJson(json['result']);
+        response.result = A2AMessage.fromJson(json['result']);
         return response;
       }
     }
@@ -211,11 +161,11 @@ final class A2ASendMessageSuccessResponse extends A2ASendMessageResponse {
     final json = _$A2ASendMessageSuccessResponseToJson(this);
     if (result != null) {
       if (result is A2ATask) {
-        json['result'] = _$A2ATaskToJson(result as A2ATask);
+        json['result'] = (result as A2ATask).toJson();
         return json;
       }
       if (result is A2AMessage) {
-        json['result'] = _$A2AMessageToJson(result as A2AMessage);
+        json['result'] = (result as A2AMessage).toJson();
         return json;
       }
     }
@@ -236,7 +186,7 @@ final class A2ASendStreamingMessageSuccessResponse
 
   /// The result object on success, [A2ATask], [A2AMessage], [A2ATaskStatusUpdateEvent] or
   /// [A2ATaskArtifactUpdateEvent]
-  Object? result;
+  A2AResult? result;
 
   A2ASendStreamingMessageSuccessResponse();
 
@@ -245,19 +195,19 @@ final class A2ASendStreamingMessageSuccessResponse
 
     if (json.containsKey('result')) {
       if (json['result']['kind'] == 'task') {
-        response.result = _$A2ATaskFromJson(json['result']);
+        response.result = A2ATask.fromJson(json['result']);
         return response;
       }
       if (json['result']['kind'] == 'message') {
-        response.result = _$A2AMessageFromJson(json['result']);
+        response.result = A2AMessage.fromJson(json['result']);
         return response;
       }
       if (json['result']['kind'] == 'status-update') {
-        response.result = _$A2ATaskStatusUpdateEventFromJson(json['result']);
+        response.result = A2ATaskStatusUpdateEvent.fromJson(json['result']);
         return response;
       }
       if (json['result']['kind'] == 'artifact-update') {
-        response.result = _$A2ATaskArtifactUpdateEventFromJson(json['result']);
+        response.result = A2ATaskArtifactUpdateEvent.fromJson(json['result']);
         return response;
       }
     }
@@ -270,27 +220,19 @@ final class A2ASendStreamingMessageSuccessResponse
     final json = _$A2ASendStreamingMessageSuccessResponseToJson(this);
     if (result != null) {
       if (result is A2ATask) {
-        json['result'] = _$A2ATaskToJson(result as A2ATask);
+        json['result'] = (result as A2ATask).toJson();
         return json;
       }
       if (result is A2AMessage) {
-        json['result'] = _$A2AMessageToJson(result as A2AMessage);
-        return json;
-      }
-      if (result is A2ATask) {
-        json['result'] = _$A2ATaskToJson(result as A2ATask);
+        json['result'] = (result as A2AMessage).toJson();
         return json;
       }
       if (result is A2ATaskStatusUpdateEvent) {
-        json['result'] = _$A2ATaskStatusUpdateEventToJson(
-          result as A2ATaskStatusUpdateEvent,
-        );
+        json['result'] = (result as A2ATaskStatusUpdateEvent).toJson();
         return json;
       }
       if (result is A2ATaskArtifactUpdateEvent) {
-        json['result'] = _$A2ATaskArtifactUpdateEventToJson(
-          result as A2ATaskArtifactUpdateEvent,
-        );
+        json['result'] = (result as A2ATaskArtifactUpdateEvent).toJson();
         return json;
       }
     }

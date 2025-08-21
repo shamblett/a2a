@@ -21,13 +21,7 @@ class A2ASendStreamMessageResponse {
         : (A2AJSONRPCErrorResponseSSM.fromJson(json)..isError = true);
   }
 
-  Map<String, dynamic> toJson() {
-    if (this is A2ASendStreamMessageSuccessResponse) {
-      return (this as A2ASendStreamMessageSuccessResponse).toJson();
-    }
-
-    return {};
-  }
+  Map<String, dynamic> toJson() => {};
 }
 
 /// JSON RPC error response object
@@ -58,7 +52,7 @@ final class A2ASendStreamMessageSuccessResponse
 
   /// The result object on success, [A2ATask], [A2AMessage], [A2ATaskStatusUpdateEvent]
   /// [A2ATaskArtifactUpdateEvent]
-  Object? result;
+  A2AResult? result;
 
   A2ASendStreamMessageSuccessResponse();
 
@@ -69,19 +63,19 @@ final class A2ASendStreamMessageSuccessResponse
 
     if (json.containsKey('result')) {
       if (json['result']['kind'] == 'task') {
-        response.result = _$A2ATaskFromJson(json['result']);
+        response.result = A2ATask.fromJson(json['result']);
         return response;
       }
       if (json['result']['kind'] == 'message') {
-        response.result = _$A2AMessageFromJson(json['result']);
+        response.result = A2AMessage.fromJson(json['result']);
         return response;
       }
       if (json['result']['kind'] == 'status-update') {
-        response.result = _$A2ATaskStatusUpdateEventFromJson(json['result']);
+        response.result = A2ATaskStatusUpdateEvent.fromJson(json['result']);
         return response;
       }
       if (json['result']['kind'] == 'artifact-update') {
-        response.result = _$A2ATaskArtifactUpdateEventFromJson(json['result']);
+        response.result = A2ATaskArtifactUpdateEvent.fromJson(json['result']);
         return response;
       }
     }
@@ -94,27 +88,19 @@ final class A2ASendStreamMessageSuccessResponse
     final json = _$A2ASendStreamMessageSuccessResponseToJson(this);
     if (result != null) {
       if (result is A2ATask) {
-        json['result'] = _$A2ATaskToJson(result as A2ATask);
+        json['result'] = (result as A2ATask).toJson();
         return json;
       }
       if (result is A2AMessage) {
-        json['result'] = _$A2AMessageToJson(result as A2AMessage);
-        return json;
-      }
-      if (result is A2ATask) {
-        json['result'] = _$A2ATaskToJson(result as A2ATask);
-        return json;
-      }
-      if (result is A2ATaskStatusUpdateEvent) {
-        json['result'] = _$A2ATaskStatusUpdateEventToJson(
-          result as A2ATaskStatusUpdateEvent,
-        );
+        json['result'] = (result as A2AMessage).toJson();
         return json;
       }
       if (result is A2ATaskArtifactUpdateEvent) {
-        json['result'] = _$A2ATaskArtifactUpdateEventToJson(
-          result as A2ATaskArtifactUpdateEvent,
-        );
+        json['result'] = (result as A2ATaskArtifactUpdateEvent).toJson();
+        return json;
+      }
+      if (result is A2ATaskStatusUpdateEvent) {
+        json['result'] = (result as A2ATaskStatusUpdateEvent).toJson();
         return json;
       }
     }
