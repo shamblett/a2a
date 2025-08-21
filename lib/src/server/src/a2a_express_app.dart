@@ -46,7 +46,7 @@ class A2AExpressApp {
           String streamData = '';
           try {
             await for (final event in rpcResponseOrStream()) {
-              streamData += 'data: ${json.encode(event.toJson())}\n';
+              streamData += 'data: ${json.encode(event.toJson())}\n\n';
             }
           } catch (e) {
             print(
