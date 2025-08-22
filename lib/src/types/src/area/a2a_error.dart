@@ -111,7 +111,6 @@ class A2AError {
 }
 
 /// Represents a JSON-RPC 2.0 Error object.
-/// This is typically included in a JSONRPCErrorResponse when an error occurs.
 @JsonSerializable(explicitToJson: true)
 final class A2AJSONRPCError extends A2AError {
   /// A Number that indicates the error type that occurred.

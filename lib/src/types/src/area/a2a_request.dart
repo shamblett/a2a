@@ -258,7 +258,7 @@ class A2ATaskPushNotificationConfig {
 /// the method.
 @JsonSerializable(explicitToJson: true)
 class A2ATaskIdParams {
-  /// Task id.
+  /// The unique identifier (e.g. UUID) of the task.
   String id = '';
 
   /// Metadata
@@ -293,14 +293,17 @@ class A2ATaskQueryParams {
   Map<String, dynamic> toJson() => _$A2ATaskQueryParamsToJson(this);
 }
 
-/// A Structured value that holds the parameter values to be used during the invocation of
-/// the method.
+/// Defines the parameters for a request to send a message to an agent. This can be used
+/// to create a new task, continue an existing one, or restart a task.
 @JsonSerializable(explicitToJson: true)
 class A2AMessageSendParams {
+  /// Optional configuration for the send request
   A2AMessageSendConfiguration? configuration;
+
+  /// The message object being sent to the agent.
   A2AMessage message = A2AMessage();
 
-  /// Extension metadata.
+  /// Optional metadata for extensions.
   A2ASV? metadata;
 
   A2AMessageSendParams();
@@ -311,18 +314,19 @@ class A2AMessageSendParams {
   Map<String, dynamic> toJson() => _$A2AMessageSendParamsToJson(this);
 }
 
-/// Send message configuration.
+/// Defines configuration options for a `message/send` or `message/stream` request.
 @JsonSerializable(explicitToJson: true)
 class A2AMessageSendConfiguration {
-  /// Accepted output modalities by the client.
+  /// A list of output MIME types the client is prepared to accept in the response.
   List<String> acceptedOutputModes = [];
 
-  /// If the server should treat the client as a blocking request.
+  /// If true, the client will wait for the task to complete. The server may reject this if the task is long-running.
   bool blocking = false;
 
-  /// Number of recent messages to be retrieved.
+  /// The number of most recent messages from the task's history to retrieve in the response.
   num? historyLength;
 
+  /// Configuration for the agent to send push notifications for updates after the initial response.
   A2APushNotificationConfig? pushNotificationConfig;
 
   A2AMessageSendConfiguration();

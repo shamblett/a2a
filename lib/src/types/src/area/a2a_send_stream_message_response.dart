@@ -109,26 +109,28 @@ final class A2ASendStreamMessageSuccessResponse
   }
 }
 
-/// Sent by server during sendStream or subscribe requests
+/// An event sent by the agent to notify the client of a change in a task's status.
+/// This is typically used in streaming or subscription models.
 @JsonSerializable(explicitToJson: true)
 final class A2ATaskStatusUpdateEvent {
-  /// The context the task is associated with
+  /// The context ID associated with the task.
   String contextId = '';
 
-  /// Indicates the end of the event stream.
+  /// If true indicates the end of the event stream.
   /// Note, this is called 'final' in the TS code.
   bool? end;
 
-  /// Event type
+  /// The type of this event, used as a discriminator. Always 'status-update'.
   @JsonKey(includeToJson: true, includeFromJson: false)
   String kind = 'status-update';
 
   /// Extension metadata.
   A2ASV? metadata;
 
+  /// The new status of the task.
   A2ATaskStatus? status;
 
-  /// Task Id
+  /// The ID of the task that was updated.
   String taskId = '';
 
   A2ATaskStatusUpdateEvent();
@@ -139,27 +141,31 @@ final class A2ATaskStatusUpdateEvent {
   Map<String, dynamic> toJson() => _$A2ATaskStatusUpdateEventToJson(this);
 }
 
-/// Sent by server during sendStream or subscribe requests
+/// An event sent by the agent to notify the client that an artifact has been
+/// generated or updated. This is typically used in streaming models.
 @JsonSerializable(explicitToJson: true)
 final class A2ATaskArtifactUpdateEvent {
-  /// Indicates if this artifact appends to a previous one
+  ///If true, the content of this artifact should be appended to a previously
+  ///sent artifact with the same ID.
   bool? append;
+
+  /// The artifact that was generated or updated.
   A2AArtifact? artifact;
 
-  /// The context the task is associated with
+  /// The context ID associated with the task.
   String contextId = '';
 
-  /// Event type
+  /// he type of this event, used as a discriminator. Always 'artifact-update'.
   @JsonKey(includeToJson: true, includeFromJson: false)
   String kind = 'artifact-update';
 
-  /// Indicates if this is the last chunk of the artifact
+  /// If true, this is the final chunk of the artifact.
   bool? lastChunk;
 
   /// Extension metadata.
   A2ASV? metadata;
 
-  /// Task Id
+  /// The ID of the task this artifact belongs to.
   String taskId = '';
 
   A2ATaskArtifactUpdateEvent();
