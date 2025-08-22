@@ -63,13 +63,15 @@ final class A2AAgentExtension {
 /// - Authentication requirements.
 @JsonSerializable(explicitToJson: true)
 final class A2AAgentCard extends A2AAgent {
+  /// A declaration of optional capabilities supported by the agent.
   A2AAgentCapabilities capabilities = A2AAgentCapabilities();
 
-  /// The set of interaction modes that the agent supports across all skills. This can be overridden per-skill.
-  /// Supported media types for input.
+  /// Default set of supported input MIME types for all skills, which can be
+  /// overridden on a per-skill basis.
   List<String> defaultInputModes = [];
 
-  /// Supported media types for output.
+  /// Default set of supported output MIME types for all skills, which can be
+  /// overridden on a per-skill basis.
   List<String> defaultOutputModes = [];
 
   /// A human-readable description of the agent. Used to assist users and
@@ -84,15 +86,22 @@ final class A2AAgentCard extends A2AAgent {
 
   /// Human readable name of the agent.
   String name = '';
+
+  /// Information about the agent's service provider.
   A2AAgentProvider? agentProvider;
 
-  /// Security requirements for contacting the agent.
+  /// A list of security requirement objects that apply to all agent interactions. Each object
+  /// lists security schemes that can be used. Follows the OpenAPI 3.0 Security Requirement Object.
+  /// This list can be seen as an OR of ANDs. Each object in the list describes one possible
+  /// set of security requirements that must be present on a request. This allows specifying,
+  /// for example, "callers must either use OAuth OR an API Key AND mTLS."
   Map<String, List<String>>? security;
 
-  /// Security requirements for contacting the agent.
+  /// A declaration of the security schemes available to authorize requests. The key is the
+  /// scheme name. Follows the OpenAPI 3.0 Security Scheme Object.
   Map<String, A2ASecurityScheme>? securitySchemes;
 
-  /// Skills are a unit of capability that an agent can perform.
+  /// The set of skills, or distinct capabilities, that the agent can perform.
   List<A2AAgentSkill> skills = [];
 
   /// True if the agent supports providing an extended agent card when the user is authenticated.
@@ -144,15 +153,13 @@ final class A2AAgentSkill extends A2AAgent {
   /// Unique identifier for the agent's skill.
   String id = '';
 
-  /// The set of interaction modes that the skill supports
-  /// (if different than the default).
-  /// Supported media types for input.
+  /// The set of supported input MIME types for this skill, overriding the agent's defaults.
   List<String>? inputModes;
 
   /// Human readable name of the skill.
   String name = '';
 
-  /// Supported media types for output.
+  /// he set of supported output MIME types for this skill, overriding the agent's defaults.
   List<String>? outputModes;
 
   /// Set of tag words describing classes of capabilities for this specific skill.

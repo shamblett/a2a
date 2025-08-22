@@ -7,8 +7,9 @@
 
 part of '../../a2a_types.dart';
 
-/// Mirrors the OpenAPI Security Scheme Object
-/// (https://swagger.io/specification/#security-scheme-object)
+
+/// Defines a security scheme that can be used to secure an agent's endpoints.
+/// This is a discriminated union type based on the OpenAPI 3.0 Security Scheme Object.
 class A2ASecurityScheme {
   A2ASecurityScheme();
 
