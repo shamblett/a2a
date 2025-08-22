@@ -407,9 +407,9 @@ Future<void> queryAgent(String query) async {
 
 // Resubscribe a task
 Future<void> queryAgentResub() async {
-  if (!agentSupportsStreaming) {
+  if (!agentSupportsStreaming || noStreaming) {
     print(
-      '${Colorize('Agent does not support streaming, cannot resubscribe')..yellow()}',
+      '${Colorize('Agent does not support streaming or streaming methods are disabled, cannot resubscribe')..yellow()}',
     );
     return;
   }
