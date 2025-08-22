@@ -237,28 +237,6 @@ final class A2ATaskResubscriptionRequest extends A2ARequest {
   Map<String, dynamic> toJson() => _$A2ATaskResubscriptionRequestToJson(this);
 }
 
-/// The result object on success.
-@JsonSerializable(explicitToJson: true)
-class A2ATaskPushNotificationConfig1 {
-  A2APushNotificationAuthenticationInfo? authentication;
-
-  /// Push Notification ID - created by server to support multiple callbacks
-  String id = '';
-
-  /// Token unique to this task/session.
-  String? token;
-
-  /// URL for sending the push notifications.
-  String url = '';
-
-  A2ATaskPushNotificationConfig1();
-
-  factory A2ATaskPushNotificationConfig1.fromJson(Map<String, dynamic> json) =>
-      _$A2ATaskPushNotificationConfig1FromJson(json);
-
-  Map<String, dynamic> toJson() => _$A2ATaskPushNotificationConfig1ToJson(this);
-}
-
 /// A container associating a push notification configuration with a specific task.
 @JsonSerializable(explicitToJson: true)
 class A2ATaskPushNotificationConfig {

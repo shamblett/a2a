@@ -277,8 +277,8 @@ final class A2ASetTaskPushNotificationConfigSuccessResponse
   Map<String, dynamic> toJson() {
     final json = _$A2ASetTaskPushNotificationConfigSuccessResponseToJson(this);
     if (result != null) {
-      json['result'] = _$A2ATaskPushNotificationConfig1ToJson(
-        result as A2ATaskPushNotificationConfig1,
+      json['result'] = _$A2ATaskPushNotificationConfigToJson(
+        result as A2ATaskPushNotificationConfig,
       );
       return json;
     }

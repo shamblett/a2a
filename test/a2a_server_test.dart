@@ -1081,7 +1081,7 @@ void main() {
       expect(result is A2ASetTaskPushNotificationConfigSuccessResponse, isTrue);
       expect(
         (result as A2ASetTaskPushNotificationConfigSuccessResponse).result
-            is A2ATaskPushNotificationConfig1,
+            is A2ATaskPushNotificationConfig,
         isTrue,
       );
     });
@@ -1100,7 +1100,7 @@ void main() {
       expect(result is A2AGetTaskPushNotificationConfigSuccessResponse, isTrue);
       expect(
         (result as A2AGetTaskPushNotificationConfigSuccessResponse).result
-            is A2ATaskPushNotificationConfig1,
+            is A2ATaskPushNotificationConfig,
         isTrue,
       );
     });

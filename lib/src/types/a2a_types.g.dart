@@ -403,27 +403,6 @@ Map<String, dynamic> _$A2ATaskResubscriptionRequestToJson(
   'params': instance.params?.toJson(),
 };
 
-A2ATaskPushNotificationConfig1 _$A2ATaskPushNotificationConfig1FromJson(
-  Map<String, dynamic> json,
-) => A2ATaskPushNotificationConfig1()
-  ..authentication = json['authentication'] == null
-      ? null
-      : A2APushNotificationAuthenticationInfo.fromJson(
-          json['authentication'] as Map<String, dynamic>,
-        )
-  ..id = json['id'] as String
-  ..token = json['token'] as String?
-  ..url = json['url'] as String;
-
-Map<String, dynamic> _$A2ATaskPushNotificationConfig1ToJson(
-  A2ATaskPushNotificationConfig1 instance,
-) => <String, dynamic>{
-  'authentication': instance.authentication?.toJson(),
-  'id': instance.id,
-  'token': instance.token,
-  'url': instance.url,
-};
-
 A2ATaskPushNotificationConfig _$A2ATaskPushNotificationConfigFromJson(
   Map<String, dynamic> json,
 ) => A2ATaskPushNotificationConfig()

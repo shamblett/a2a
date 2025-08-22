@@ -498,7 +498,7 @@ void main() {
       );
       final testResponse1 =
           pncTaskResponse as A2AGetTaskPushNotificationConfigSuccessResponse;
-      expect(testResponse1.result is A2ATaskPushNotificationConfig1, isTrue);
+      expect(testResponse1.result is A2ATaskPushNotificationConfig, isTrue);
       expect(testResponse1.id, 2);
     });
   });
@@ -826,9 +826,9 @@ void main() {
       );
       final testResponse1 =
           messageResponse as A2ASetTaskPushNotificationConfigSuccessResponse;
-      expect(testResponse1.result is A2ATaskPushNotificationConfig1, isTrue);
+      expect(testResponse1.result is A2ATaskPushNotificationConfig, isTrue);
       final taskResponse =
-          testResponse1.result as A2ATaskPushNotificationConfig1;
+          testResponse1.result as A2APushNotificationConfig;
       expect(taskResponse.id, '2');
       expect(taskResponse.token, 'Token');
       expect(testResponse1.id, 2);
@@ -871,9 +871,9 @@ void main() {
       );
       final testResponse1 =
           messageResponse as A2ASetTaskPushNotificationConfigSuccessResponse;
-      expect(testResponse1.result is A2ATaskPushNotificationConfig1, isTrue);
+      expect(testResponse1.result is A2ATaskPushNotificationConfig, isTrue);
       final taskResponse =
-          testResponse1.result as A2ATaskPushNotificationConfig1;
+          testResponse1.result as A2APushNotificationConfig;
       expect(taskResponse.id, '2');
       expect(taskResponse.token, 'Token');
       expect(testResponse1.id, 2);
