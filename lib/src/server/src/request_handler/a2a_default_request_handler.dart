@@ -435,9 +435,8 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
 
     // Ensure contextId is present
     final messageForContext = incomingMessage;
-    messageForContext.contextId ??= task?.contextId ?? _uuid.v4();
-
-    final contextId = incomingMessage.contextId ?? _uuid.v4();
+    final contextId = messageForContext.contextId ??= task?.contextId ?? _uuid.v4();
+     messageForContext.contextId = contextId;
 
     return A2ARequestContext(
       messageForContext,
