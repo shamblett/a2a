@@ -498,7 +498,7 @@ void main() {
       );
       final testResponse1 =
           pncTaskResponse as A2AGetTaskPushNotificationConfigSuccessResponse;
-      expect(testResponse1.result is A2ATaskPushNotificationConfig, isTrue);
+      expect(testResponse1.result is A2APushNotificationConfig, isTrue);
       expect(testResponse1.id, 2);
     });
   });
@@ -811,7 +811,8 @@ void main() {
       var json = <String, dynamic>{};
 
       final config = A2APushNotificationConfig()
-        ..id = '1';
+        ..id = '2'
+        ..token = 'Token';
       var testResponse = A2ASetTaskPushNotificationConfigSuccessResponse()
         ..id = 2
         ..result = config;
@@ -826,9 +827,8 @@ void main() {
       );
       final testResponse1 =
           messageResponse as A2ASetTaskPushNotificationConfigSuccessResponse;
-      expect(testResponse1.result is A2ATaskPushNotificationConfig, isTrue);
-      final taskResponse =
-          testResponse1.result as A2APushNotificationConfig;
+      expect(testResponse1.result is A2APushNotificationConfig, isTrue);
+      final taskResponse = testResponse1.result as A2APushNotificationConfig;
       expect(taskResponse.id, '2');
       expect(taskResponse.token, 'Token');
       expect(testResponse1.id, 2);
@@ -856,7 +856,8 @@ void main() {
       var json = <String, dynamic>{};
 
       final config = A2APushNotificationConfig()
-        ..id = '1';
+        ..id = '2'
+        ..token = 'Token';
       var testResponse = A2ASetTaskPushNotificationConfigSuccessResponse()
         ..id = 2
         ..result = config;
@@ -871,9 +872,8 @@ void main() {
       );
       final testResponse1 =
           messageResponse as A2ASetTaskPushNotificationConfigSuccessResponse;
-      expect(testResponse1.result is A2ATaskPushNotificationConfig, isTrue);
-      final taskResponse =
-          testResponse1.result as A2APushNotificationConfig;
+      expect(testResponse1.result is A2APushNotificationConfig, isTrue);
+      final taskResponse = testResponse1.result as A2APushNotificationConfig;
       expect(taskResponse.id, '2');
       expect(taskResponse.token, 'Token');
       expect(testResponse1.id, 2);

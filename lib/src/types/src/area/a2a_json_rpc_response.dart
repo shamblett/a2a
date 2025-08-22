@@ -265,9 +265,7 @@ final class A2ASetTaskPushNotificationConfigSuccessResponse
     );
 
     if (json.containsKey('result')) {
-      response.result = _$A2APushNotificationConfigFromJson(
-        json['result'],
-      );
+      response.result = _$A2APushNotificationConfigFromJson(json['result']);
       return response;
     }
     return this;
@@ -277,8 +275,8 @@ final class A2ASetTaskPushNotificationConfigSuccessResponse
   Map<String, dynamic> toJson() {
     final json = _$A2ASetTaskPushNotificationConfigSuccessResponseToJson(this);
     if (result != null) {
-      json['result'] = _$A2ATaskPushNotificationConfigToJson(
-        result as A2ATaskPushNotificationConfig,
+      json['result'] = _$A2APushNotificationConfigToJson(
+        result as A2APushNotificationConfig,
       );
       return json;
     }

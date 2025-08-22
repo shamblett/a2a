@@ -684,10 +684,7 @@ void main() {
       );
       final setConfig = await drq.setTaskPushNotificationConfig(configParams);
       final getConfig = await drq.getTaskPushNotificationConfig(params);
-      expect(
-        setConfig == getConfig,
-        isTrue,
-      );
+      expect(setConfig == getConfig, isTrue);
     });
     test('Cancel Task - No event Bus', () async {
       final agentCard = A2AAgentCard();
@@ -1081,7 +1078,7 @@ void main() {
       expect(result is A2ASetTaskPushNotificationConfigSuccessResponse, isTrue);
       expect(
         (result as A2ASetTaskPushNotificationConfigSuccessResponse).result
-            is A2ATaskPushNotificationConfig,
+            is A2APushNotificationConfig,
         isTrue,
       );
     });
@@ -1100,7 +1097,7 @@ void main() {
       expect(result is A2AGetTaskPushNotificationConfigSuccessResponse, isTrue);
       expect(
         (result as A2AGetTaskPushNotificationConfigSuccessResponse).result
-            is A2ATaskPushNotificationConfig,
+            is A2APushNotificationConfig,
         isTrue,
       );
     });
