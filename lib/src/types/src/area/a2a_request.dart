@@ -334,18 +334,20 @@ class A2AMessageSendConfiguration {
   Map<String, dynamic> toJson() => _$A2AMessageSendConfigurationToJson(this);
 }
 
-/// Where the server should send notifications when disconnected.
+/// Defines the configuration for setting up push notifications for task updates.
 @JsonSerializable(explicitToJson: true)
 class A2APushNotificationConfig {
+  /// Optional authentication details for the agent to use when calling the notification URL.
   A2APushNotificationAuthenticationInfo? authentication;
 
-  /// Push Notification ID - created by server to support multiple callbacks
+  /// A unique identifier (e.g. UUID) for the push notification configuration, set by the client
+  /// to support multiple notification callbacks.
   String? id;
 
-  /// Token unique to this task/session.
+  /// A unique token for this task or session to validate incoming push notifications.
   String? token;
 
-  /// URL for sending the push notifications.
+  /// The callback URL where the agent should send push notifications.
   String url = '';
 
   A2APushNotificationConfig();
