@@ -7,7 +7,8 @@
 
 part of '../../a2a_types.dart';
 
-/// Represents a part of a message, which can be text, a file, or structured data.
+/// A discriminated union representing a part of a message or artifact, which can
+/// be text, a file, or structured data.
 class A2APart {
   A2APart();
 
@@ -30,10 +31,11 @@ class A2APart {
   Map<String, dynamic> toJson() => {};
 }
 
-/// Represents a text segment within parts.
+/// Represents a text segment within a message or artifact.
 @JsonSerializable(explicitToJson: true)
 final class A2ATextPart extends A2APart {
-  /// Part type - text for TextParts
+  /// The type of this part, used as a discriminator. Always 'text'
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String kind = 'text';
 
   /// Optional metadata associated with the part.
@@ -51,16 +53,18 @@ final class A2ATextPart extends A2APart {
   Map<String, dynamic> toJson() => _$A2ATextPartToJson(this);
 }
 
-/// Represents a File segment within parts.
+/// Represents a file segment within a message or artifact. The file content can be
+/// provided either directly as bytes or as a URI.
 @JsonSerializable(explicitToJson: true)
 final class A2AFilePart extends A2APart {
   /// Part type - file for TextParts
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String kind = 'file';
 
   /// Optional metadata associated with the part.
   A2ASV? metadata;
 
-  /// File content either as uri or bytes
+  /// The file content, represented as either a URI or as base64-encoded bytes.
   A2AFilePartVariant? file;
 
   A2AFilePart();
@@ -72,13 +76,14 @@ final class A2AFilePart extends A2APart {
   Map<String, dynamic> toJson() => _$A2AFilePartToJson(this);
 }
 
-/// Represents a Data segment within parts.
+/// Represents a structured data segment (e.g., JSON) within a message or artifact.
 @JsonSerializable(explicitToJson: true)
 final class A2ADataPart extends A2APart {
   /// Structured data content
   A2ASV data = {};
 
   /// Part type - data for DataParts
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String kind = 'data';
 
   /// Optional metadata associated with the part.
@@ -111,10 +116,10 @@ class A2AFilePartVariant {
   Map<String, dynamic> toJson() => {};
 }
 
-/// Define the variant where 'bytes' is present and 'uri' is absent
+/// Represents a file with its content provided directly as a base64-encoded string
 @JsonSerializable(explicitToJson: true)
 final class A2AFileWithBytes extends A2AFilePartVariant {
-  /// base64 encoded content of the file
+  /// The base64 encoded content of the file
   String bytes = '';
 
   /// Optional mimeType for the file
@@ -132,7 +137,7 @@ final class A2AFileWithBytes extends A2AFilePartVariant {
   Map<String, dynamic> toJson() => _$A2AFileWithBytesToJson(this);
 }
 
-/// Define the variant where 'uri' is present and 'bytes' is absent
+/// Represents a file with its content located at a specific URI.
 @JsonSerializable(explicitToJson: true)
 final class A2AFileWithUri extends A2AFilePartVariant {
   /// Optional mimeType for the file
@@ -141,7 +146,7 @@ final class A2AFileWithUri extends A2AFilePartVariant {
   /// Optional name for the file
   String name = '';
 
-  /// URL for the File content
+  /// A URL pointing to the file's content
   String uri = '';
 
   A2AFileWithUri();

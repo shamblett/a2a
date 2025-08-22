@@ -111,10 +111,10 @@ class A2AError {
 }
 
 /// Represents a JSON-RPC 2.0 Error object.
-/// This is typically included in a JSONRPCErrorResponse when an error occurs.
 @JsonSerializable(explicitToJson: true)
 final class A2AJSONRPCError extends A2AError {
   /// A Number that indicates the error type that occurred.
+  @JsonKey(includeToJson: true, includeFromJson: false)
   int code = A2AError.jsonRpc;
 
   /// A Primitive or Structured value that contains additional information about the error.
@@ -136,6 +136,8 @@ final class A2AJSONRPCError extends A2AError {
 /// JSON-RPC error indicating invalid JSON was received by the server.
 @JsonSerializable(explicitToJson: true)
 final class A2AJSONParseError extends A2AError {
+  /// A Number that indicates the error type that occurred.
+  @JsonKey(includeToJson: true, includeFromJson: false)
   int code = A2AError.jsonParse;
 
   /// A Primitive or Structured value that contains additional information about the error.
@@ -156,6 +158,8 @@ final class A2AJSONParseError extends A2AError {
 /// JSON-RPC error indicating invalid JSON was received by the server.
 @JsonSerializable(explicitToJson: true)
 final class A2AInvalidRequestError extends A2AError {
+  /// A Number that indicates the error type that occurred.
+  @JsonKey(includeToJson: true, includeFromJson: false)
   int code = A2AError.invalidRequest;
 
   /// A Primitive or Structured value that contains additional information about the error.
@@ -176,6 +180,8 @@ final class A2AInvalidRequestError extends A2AError {
 /// JSON-RPC error indicating invalid JSON was received by the server.
 @JsonSerializable(explicitToJson: true)
 final class A2AMethodNotFoundError extends A2AError {
+  /// A Number that indicates the error type that occurred.
+  @JsonKey(includeToJson: true, includeFromJson: false)
   int code = A2AError.methodNotFound;
 
   /// A Primitive or Structured value that contains additional information about the error.
@@ -196,6 +202,8 @@ final class A2AMethodNotFoundError extends A2AError {
 /// JSON-RPC error indicating invalid JSON was received by the server.
 @JsonSerializable(explicitToJson: true)
 final class A2AInvalidParamsError extends A2AError {
+  /// A Number that indicates the error type that occurred.
+  @JsonKey(includeToJson: true, includeFromJson: false)
   int code = A2AError.invalidParams;
 
   /// A Primitive or Structured value that contains additional information about the error.
@@ -216,6 +224,8 @@ final class A2AInvalidParamsError extends A2AError {
 /// JSON-RPC error indicating invalid JSON was received by the server.
 @JsonSerializable(explicitToJson: true)
 final class A2AInternalError extends A2AError {
+  /// A Number that indicates the error type that occurred.
+  @JsonKey(includeToJson: true, includeFromJson: false)
   int code = A2AError.internal;
 
   /// A Primitive or Structured value that contains additional information about the error.
@@ -236,6 +246,8 @@ final class A2AInternalError extends A2AError {
 /// JSON-RPC error indicating invalid JSON was received by the server.
 @JsonSerializable(explicitToJson: true)
 final class A2ATaskNotFoundError extends A2AError {
+  /// A Number that indicates the error type that occurred.
+  @JsonKey(includeToJson: true, includeFromJson: false)
   int code = A2AError.taskNotFound;
 
   /// A Primitive or Structured value that contains additional information about the error.
@@ -257,6 +269,8 @@ final class A2ATaskNotFoundError extends A2AError {
 /// JSON-RPC error indicating invalid JSON was received by the server.
 @JsonSerializable(explicitToJson: true)
 final class A2ATaskNotCancelableError extends A2AError {
+  /// A Number that indicates the error type that occurred.
+  @JsonKey(includeToJson: true, includeFromJson: false)
   int code = A2AError.taskNotCancellable;
 
   /// A Primitive or Structured value that contains additional information about the error.
@@ -278,6 +292,8 @@ final class A2ATaskNotCancelableError extends A2AError {
 /// JSON-RPC error indicating invalid JSON was received by the server.
 @JsonSerializable(explicitToJson: true)
 final class A2APushNotificationNotSupportedError extends A2AError {
+  /// A Number that indicates the error type that occurred.
+  @JsonKey(includeToJson: true, includeFromJson: false)
   int code = A2AError.pushNotificationNotSupported;
 
   /// A Primitive or Structured value that contains additional information about the error.
@@ -300,6 +316,8 @@ final class A2APushNotificationNotSupportedError extends A2AError {
 /// JSON-RPC error indicating invalid JSON was received by the server.
 @JsonSerializable(explicitToJson: true)
 final class A2AUnsupportedOperationError extends A2AError {
+  /// A Number that indicates the error type that occurred.
+  @JsonKey(includeToJson: true, includeFromJson: false)
   int code = A2AError.unsupportedOperation;
 
   /// A Primitive or Structured value that contains additional information about the error.
@@ -320,6 +338,8 @@ final class A2AUnsupportedOperationError extends A2AError {
 /// JSON-RPC error indicating invalid JSON was received by the server.
 @JsonSerializable(explicitToJson: true)
 final class A2AContentTypeNotSupportedError extends A2AError {
+  /// A Number that indicates the error type that occurred.
+  @JsonKey(includeToJson: true, includeFromJson: false)
   int code = A2AError.contentTypeNotSupported;
 
   /// A Primitive or Structured value that contains additional information about the error.
@@ -341,6 +361,8 @@ final class A2AContentTypeNotSupportedError extends A2AError {
 /// JSON-RPC error indicating invalid JSON was received by the server.
 @JsonSerializable(explicitToJson: true)
 final class A2AInvalidAgentResponseError extends A2AError {
+  /// A Number that indicates the error type that occurred.
+  @JsonKey(includeToJson: true, includeFromJson: false)
   int code = A2AError.invalidAgentResponse;
 
   /// A Primitive or Structured value that contains additional information about the error.

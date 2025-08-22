@@ -486,7 +486,7 @@ void main() {
       var json = <String, dynamic>{};
 
       var testResponse = A2AGetTaskPushNotificationConfigSuccessResponse()
-        ..result = A2ATaskPushNotificationConfig1()
+        ..result = A2APushNotificationConfig()
         ..id = 2;
       pncTaskResponse = testResponse;
       json = pncTaskResponse.toJson();
@@ -498,7 +498,7 @@ void main() {
       );
       final testResponse1 =
           pncTaskResponse as A2AGetTaskPushNotificationConfigSuccessResponse;
-      expect(testResponse1.result is A2ATaskPushNotificationConfig1, isTrue);
+      expect(testResponse1.result is A2APushNotificationConfig, isTrue);
       expect(testResponse1.id, 2);
     });
   });
@@ -810,7 +810,7 @@ void main() {
       expect(messageResponse.toJson(), {});
       var json = <String, dynamic>{};
 
-      final config = A2ATaskPushNotificationConfig1()
+      final config = A2APushNotificationConfig()
         ..id = '2'
         ..token = 'Token';
       var testResponse = A2ASetTaskPushNotificationConfigSuccessResponse()
@@ -827,9 +827,8 @@ void main() {
       );
       final testResponse1 =
           messageResponse as A2ASetTaskPushNotificationConfigSuccessResponse;
-      expect(testResponse1.result is A2ATaskPushNotificationConfig1, isTrue);
-      final taskResponse =
-          testResponse1.result as A2ATaskPushNotificationConfig1;
+      expect(testResponse1.result is A2APushNotificationConfig, isTrue);
+      final taskResponse = testResponse1.result as A2APushNotificationConfig;
       expect(taskResponse.id, '2');
       expect(taskResponse.token, 'Token');
       expect(testResponse1.id, 2);
@@ -856,7 +855,7 @@ void main() {
       var messageResponse = A2AJsonRpcResponse();
       var json = <String, dynamic>{};
 
-      final config = A2ATaskPushNotificationConfig1()
+      final config = A2APushNotificationConfig()
         ..id = '2'
         ..token = 'Token';
       var testResponse = A2ASetTaskPushNotificationConfigSuccessResponse()
@@ -873,9 +872,8 @@ void main() {
       );
       final testResponse1 =
           messageResponse as A2ASetTaskPushNotificationConfigSuccessResponse;
-      expect(testResponse1.result is A2ATaskPushNotificationConfig1, isTrue);
-      final taskResponse =
-          testResponse1.result as A2ATaskPushNotificationConfig1;
+      expect(testResponse1.result is A2APushNotificationConfig, isTrue);
+      final taskResponse = testResponse1.result as A2APushNotificationConfig;
       expect(taskResponse.id, '2');
       expect(taskResponse.token, 'Token');
       expect(testResponse1.id, 2);

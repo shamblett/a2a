@@ -59,10 +59,13 @@ final class A2ASendMessageRequest extends A2ARequest {
   A2AId? id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String jsonrpc = '2.0';
 
   /// A String containing the name of the method to be invoked.
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String method = 'message/send';
+
   A2AMessageSendParams? params;
 
   A2ASendMessageRequest();
@@ -82,10 +85,13 @@ final class A2ASendStreamingMessageRequest extends A2ARequest {
   A2AId? id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String jsonrpc = '2.0';
 
   /// A String containing the name of the method to be invoked.
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String method = 'message/stream';
+
   A2AMessageSendParams? params;
 
   A2ASendStreamingMessageRequest();
@@ -105,10 +111,13 @@ final class A2AGetTaskRequest extends A2ARequest {
   A2AId? id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String jsonrpc = '2.0';
 
   /// A String containing the name of the method to be invoked.
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String method = 'tasks/get';
+
   A2ATaskQueryParams? params;
 
   A2AGetTaskRequest();
@@ -128,10 +137,13 @@ final class A2ACancelTaskRequest extends A2ARequest {
   A2AId? id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String jsonrpc = '2.0';
 
   /// A String containing the name of the method to be invoked.
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String method = 'tasks/cancel';
+
   A2ATaskIdParams? params;
 
   A2ACancelTaskRequest();
@@ -151,10 +163,13 @@ final class A2ASetTaskPushNotificationConfigRequest extends A2ARequest {
   A2AId? id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String jsonrpc = '2.0';
 
   /// A String containing the name of the method to be invoked.
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String method = 'tasks/pushNotificationConfig/set';
+
   A2ATaskPushNotificationConfig? params;
 
   A2ASetTaskPushNotificationConfigRequest();
@@ -176,10 +191,13 @@ final class A2AGetTaskPushNotificationConfigRequest extends A2ARequest {
   A2AId? id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String jsonrpc = '2.0';
 
   /// A String containing the name of the method to be invoked.
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String method = 'tasks/pushNotificationConfig/get';
+
   A2ATaskIdParams? params;
 
   A2AGetTaskPushNotificationConfigRequest();
@@ -201,10 +219,13 @@ final class A2ATaskResubscriptionRequest extends A2ARequest {
   A2AId? id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String jsonrpc = '2.0';
 
   /// A String containing the name of the method to be invoked.
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String method = 'tasks/resubscribe';
+
   A2ATaskIdParams? params;
 
   A2ATaskResubscriptionRequest();
@@ -216,35 +237,13 @@ final class A2ATaskResubscriptionRequest extends A2ARequest {
   Map<String, dynamic> toJson() => _$A2ATaskResubscriptionRequestToJson(this);
 }
 
-/// The result object on success.
-@JsonSerializable(explicitToJson: true)
-class A2ATaskPushNotificationConfig1 {
-  A2APushNotificationAuthenticationInfo? authentication;
-
-  /// Push Notification ID - created by server to support multiple callbacks
-  String id = '';
-
-  /// Token unique to this task/session.
-  String? token;
-
-  /// URL for sending the push notifications.
-  String url = '';
-
-  A2ATaskPushNotificationConfig1();
-
-  factory A2ATaskPushNotificationConfig1.fromJson(Map<String, dynamic> json) =>
-      _$A2ATaskPushNotificationConfig1FromJson(json);
-
-  Map<String, dynamic> toJson() => _$A2ATaskPushNotificationConfig1ToJson(this);
-}
-
-/// A Structured value that holds the parameter values to be used during the invocation of
-/// the method.
+/// A container associating a push notification configuration with a specific task.
 @JsonSerializable(explicitToJson: true)
 class A2ATaskPushNotificationConfig {
-  A2ATaskPushNotificationConfig1? pushNotificationConfig;
+  ///  The push notification configuration for this task.
+  A2APushNotificationConfig? pushNotificationConfig;
 
-  /// Task Id
+  /// The unique identifier (e.g. UUID) of the task.
   String taskId = '';
 
   A2ATaskPushNotificationConfig();
@@ -259,7 +258,7 @@ class A2ATaskPushNotificationConfig {
 /// the method.
 @JsonSerializable(explicitToJson: true)
 class A2ATaskIdParams {
-  /// Task id.
+  /// The unique identifier (e.g. UUID) of the task.
   String id = '';
 
   /// Metadata
@@ -294,14 +293,17 @@ class A2ATaskQueryParams {
   Map<String, dynamic> toJson() => _$A2ATaskQueryParamsToJson(this);
 }
 
-/// A Structured value that holds the parameter values to be used during the invocation of
-/// the method.
+/// Defines the parameters for a request to send a message to an agent. This can be used
+/// to create a new task, continue an existing one, or restart a task.
 @JsonSerializable(explicitToJson: true)
 class A2AMessageSendParams {
+  /// Optional configuration for the send request
   A2AMessageSendConfiguration? configuration;
+
+  /// The message object being sent to the agent.
   A2AMessage message = A2AMessage();
 
-  /// Extension metadata.
+  /// Optional metadata for extensions.
   A2ASV? metadata;
 
   A2AMessageSendParams();
@@ -312,18 +314,19 @@ class A2AMessageSendParams {
   Map<String, dynamic> toJson() => _$A2AMessageSendParamsToJson(this);
 }
 
-/// Send message configuration.
+/// Defines configuration options for a `message/send` or `message/stream` request.
 @JsonSerializable(explicitToJson: true)
 class A2AMessageSendConfiguration {
-  /// Accepted output modalities by the client.
+  /// A list of output MIME types the client is prepared to accept in the response.
   List<String> acceptedOutputModes = [];
 
-  /// If the server should treat the client as a blocking request.
+  /// If true, the client will wait for the task to complete. The server may reject this if the task is long-running.
   bool blocking = false;
 
-  /// Number of recent messages to be retrieved.
+  /// The number of most recent messages from the task's history to retrieve in the response.
   num? historyLength;
 
+  /// Configuration for the agent to send push notifications for updates after the initial response.
   A2APushNotificationConfig? pushNotificationConfig;
 
   A2AMessageSendConfiguration();
@@ -334,18 +337,20 @@ class A2AMessageSendConfiguration {
   Map<String, dynamic> toJson() => _$A2AMessageSendConfigurationToJson(this);
 }
 
-/// Where the server should send notifications when disconnected.
+/// Defines the configuration for setting up push notifications for task updates.
 @JsonSerializable(explicitToJson: true)
 class A2APushNotificationConfig {
+  /// Optional authentication details for the agent to use when calling the notification URL.
   A2APushNotificationAuthenticationInfo? authentication;
 
-  /// Push Notification ID - created by server to support multiple callbacks
+  /// A unique identifier (e.g. UUID) for the push notification configuration, set by the client
+  /// to support multiple notification callbacks.
   String? id;
 
-  /// Token unique to this task/session.
+  /// A unique token for this task or session to validate incoming push notifications.
   String? token;
 
-  /// URL for sending the push notifications.
+  /// The callback URL where the agent should send push notifications.
   String url = '';
 
   A2APushNotificationConfig();
@@ -356,10 +361,10 @@ class A2APushNotificationConfig {
   Map<String, dynamic> toJson() => _$A2APushNotificationConfigToJson(this);
 }
 
-/// Defines authentication details for push notifications.
+/// Defines authentication details for a push notification endpoint.
 @JsonSerializable(explicitToJson: true)
 class A2APushNotificationAuthenticationInfo {
-  /// Optional credentials
+  /// Optional credentials required by the push notification endpoint.
   String? credentials;
 
   /// Supported authentication schemes - e.g. Basic, Bearer

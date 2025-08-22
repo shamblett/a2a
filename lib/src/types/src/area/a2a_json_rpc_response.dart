@@ -132,6 +132,7 @@ final class A2ASendMessageSuccessResponse extends A2ASendMessageResponse {
   A2AId? id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String jsonrpc = '2.0';
 
   /// The result object on success, [A2ATask] or [A2AMessage]
@@ -182,6 +183,7 @@ final class A2ASendStreamingMessageSuccessResponse
   A2AId? id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String jsonrpc = '2.0';
 
   /// The result object on success, [A2ATask], [A2AMessage], [A2ATaskStatusUpdateEvent] or
@@ -249,8 +251,9 @@ final class A2ASetTaskPushNotificationConfigSuccessResponse
   A2AId? id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String jsonrpc = '2.0';
-  A2ATaskPushNotificationConfig1? result;
+  A2APushNotificationConfig? result;
 
   A2ASetTaskPushNotificationConfigSuccessResponse();
 
@@ -262,9 +265,7 @@ final class A2ASetTaskPushNotificationConfigSuccessResponse
     );
 
     if (json.containsKey('result')) {
-      response.result = _$A2ATaskPushNotificationConfig1FromJson(
-        json['result'],
-      );
+      response.result = _$A2APushNotificationConfigFromJson(json['result']);
       return response;
     }
     return this;
@@ -274,8 +275,8 @@ final class A2ASetTaskPushNotificationConfigSuccessResponse
   Map<String, dynamic> toJson() {
     final json = _$A2ASetTaskPushNotificationConfigSuccessResponseToJson(this);
     if (result != null) {
-      json['result'] = _$A2ATaskPushNotificationConfig1ToJson(
-        result as A2ATaskPushNotificationConfig1,
+      json['result'] = _$A2APushNotificationConfigToJson(
+        result as A2APushNotificationConfig,
       );
       return json;
     }

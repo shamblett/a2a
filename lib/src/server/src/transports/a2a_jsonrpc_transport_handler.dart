@@ -142,14 +142,14 @@ class A2AJsonRpcTransportHandler {
             );
             return A2ASetTaskPushNotificationConfigSuccessResponse()
               ..id = rpcRequest.id
-              ..result = result?.pushNotificationConfig;
+              ..result = result;
           case A2AGetTaskPushNotificationConfigRequest _:
             final result = await _requestHandler.getTaskPushNotificationConfig(
               rpcRequest.params!,
             );
             return A2AGetTaskPushNotificationConfigSuccessResponse()
               ..id = rpcRequest.id
-              ..result = result?.pushNotificationConfig;
+              ..result = result;
           default:
             throw A2AServerError.methodNotFound(
               'A2AJsonRpcTransportHandler::handle',
