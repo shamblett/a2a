@@ -59,10 +59,13 @@ final class A2ASendMessageRequest extends A2ARequest {
   A2AId? id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String jsonrpc = '2.0';
 
   /// A String containing the name of the method to be invoked.
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String method = 'message/send';
+
   A2AMessageSendParams? params;
 
   A2ASendMessageRequest();
@@ -82,10 +85,13 @@ final class A2ASendStreamingMessageRequest extends A2ARequest {
   A2AId? id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String jsonrpc = '2.0';
 
   /// A String containing the name of the method to be invoked.
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String method = 'message/stream';
+
   A2AMessageSendParams? params;
 
   A2ASendStreamingMessageRequest();
@@ -105,10 +111,13 @@ final class A2AGetTaskRequest extends A2ARequest {
   A2AId? id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String jsonrpc = '2.0';
 
   /// A String containing the name of the method to be invoked.
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String method = 'tasks/get';
+
   A2ATaskQueryParams? params;
 
   A2AGetTaskRequest();
@@ -128,10 +137,13 @@ final class A2ACancelTaskRequest extends A2ARequest {
   A2AId? id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String jsonrpc = '2.0';
 
   /// A String containing the name of the method to be invoked.
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String method = 'tasks/cancel';
+
   A2ATaskIdParams? params;
 
   A2ACancelTaskRequest();
@@ -151,10 +163,13 @@ final class A2ASetTaskPushNotificationConfigRequest extends A2ARequest {
   A2AId? id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String jsonrpc = '2.0';
 
   /// A String containing the name of the method to be invoked.
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String method = 'tasks/pushNotificationConfig/set';
+
   A2ATaskPushNotificationConfig? params;
 
   A2ASetTaskPushNotificationConfigRequest();
@@ -176,10 +191,13 @@ final class A2AGetTaskPushNotificationConfigRequest extends A2ARequest {
   A2AId? id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String jsonrpc = '2.0';
 
   /// A String containing the name of the method to be invoked.
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String method = 'tasks/pushNotificationConfig/get';
+
   A2ATaskIdParams? params;
 
   A2AGetTaskPushNotificationConfigRequest();
@@ -201,10 +219,13 @@ final class A2ATaskResubscriptionRequest extends A2ARequest {
   A2AId? id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String jsonrpc = '2.0';
 
   /// A String containing the name of the method to be invoked.
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String method = 'tasks/resubscribe';
+
   A2ATaskIdParams? params;
 
   A2ATaskResubscriptionRequest();

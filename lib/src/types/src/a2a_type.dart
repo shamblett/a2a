@@ -31,34 +31,38 @@ enum A2ATaskState {
   /// he task has been submitted and is awaiting execution.
   @JsonValue('submitted')
   submitted,
+
   /// The agent is actively working on the task
   @JsonValue('working')
   working,
+
   /// The task is paused and waiting for input from the user.
   @JsonValue('input-required')
   inputRequired,
+
   /// he task has been successfully completed.
   @JsonValue('completed')
   completed,
+
   /// The task has been canceled by the user.
   @JsonValue('canceled')
   canceled,
+
   /// The task failed due to an error during execution.
   @JsonValue('failed')
   failed,
+
   /// The task was rejected by the agent and was not started.
   @JsonValue('rejected')
   rejected,
+
   /// The task requires authentication to proceed.
   @JsonValue('auth-required')
   authRequired,
+
   ///  The task is in an unknown or indeterminate state.
   @JsonValue('unknown')
   unknown,
-}
-
-interface class A2AMySchema {
-  Map<String, Object> unknown = {};
 }
 
 /// Represents a single message in the conversation between a user and an agent
@@ -224,6 +228,7 @@ mixin A2AJSONRPCErrorResponseM {
   A2AId? id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String jsonrpc = '2.0';
 }
 
@@ -235,6 +240,7 @@ class A2AJsonRpcRequest {
   A2AId? id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String jsonrpc = '2.0';
 
   /// A String containing the name of the method to be invoked.

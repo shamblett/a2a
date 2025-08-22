@@ -48,6 +48,7 @@ final class A2ASendStreamMessageSuccessResponse
   A2AId? id;
 
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String jsonrpc = '2.0';
 
   /// The result object on success, [A2ATask], [A2AMessage], [A2ATaskStatusUpdateEvent]
@@ -119,10 +120,12 @@ final class A2ATaskStatusUpdateEvent {
   bool? end;
 
   /// Event type
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String kind = 'status-update';
 
   /// Extension metadata.
   A2ASV? metadata;
+
   A2ATaskStatus? status;
 
   /// Task Id
@@ -147,6 +150,7 @@ final class A2ATaskArtifactUpdateEvent {
   String contextId = '';
 
   /// Event type
+  @JsonKey(includeToJson: true, includeFromJson: false)
   String kind = 'artifact-update';
 
   /// Indicates if this is the last chunk of the artifact
