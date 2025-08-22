@@ -11,7 +11,6 @@ A2AMessage _$A2AMessageFromJson(Map<String, dynamic> json) => A2AMessage()
   ..extensions = (json['extensions'] as List<dynamic>?)
       ?.map((e) => e as String)
       .toList()
-  ..kind = json['kind'] as String
   ..messageId = json['messageId'] as String
   ..metadata = json['metadata'] as Map<String, dynamic>?
   ..parts = (json['parts'] as List<dynamic>?)
