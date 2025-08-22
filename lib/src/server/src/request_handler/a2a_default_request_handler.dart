@@ -40,8 +40,7 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
   final _uuid = Uuid();
 
   // Store for push notification configurations (could be part of TaskStore or separate)
-  final Map<String, A2ATaskPushNotificationConfig1> _pushNotificationConfigs =
-      {};
+  final Map<String, A2APushNotificationConfig> _pushNotificationConfigs = {};
 
   @override
   Future<A2AAgentCard> get agentCard async => _agentCard;
@@ -285,9 +284,10 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
   }
 
   @override
-  Future<A2ATaskPushNotificationConfig>? setTaskPushNotificationConfig(
+  Future<A2APushNotificationConfig>? setTaskPushNotificationConfig(
     A2ATaskPushNotificationConfig params,
   ) async {
+    final completer = Completer<A2APushNotificationConfig>();
     if (_agentCard.capabilities.pushNotifications == false) {
       throw A2AServerError.pushNotificationNotSupported();
     }
@@ -300,13 +300,16 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
     // Store the config. In a real app, this might be stored in the TaskStore
     // or a dedicated push notification service.
     _pushNotificationConfigs[params.taskId] = params.pushNotificationConfig!;
-    return params;
+    completer.complete(_pushNotificationConfigs[params.taskId]);
+
+    return completer.future;
   }
 
   @override
-  Future<A2ATaskPushNotificationConfig>? getTaskPushNotificationConfig(
+  Future<A2APushNotificationConfig>? getTaskPushNotificationConfig(
     A2ATaskIdParams params,
   ) async {
+    final completer = Completer<A2APushNotificationConfig>();
     if (_agentCard.capabilities.pushNotifications == false) {
       throw A2AServerError.pushNotificationNotSupported();
     }
@@ -324,9 +327,9 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
         null,
       );
     }
-    return A2ATaskPushNotificationConfig()
-      ..pushNotificationConfig = config
-      ..taskId = params.id;
+    completer.complete(config);
+
+    return completer.future;
   }
 
   @override

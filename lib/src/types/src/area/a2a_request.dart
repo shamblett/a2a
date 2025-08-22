@@ -259,13 +259,13 @@ class A2ATaskPushNotificationConfig1 {
   Map<String, dynamic> toJson() => _$A2ATaskPushNotificationConfig1ToJson(this);
 }
 
-/// A Structured value that holds the parameter values to be used during the invocation of
-/// the method.
+/// A container associating a push notification configuration with a specific task.
 @JsonSerializable(explicitToJson: true)
 class A2ATaskPushNotificationConfig {
-  A2ATaskPushNotificationConfig1? pushNotificationConfig;
+  ///  The push notification configuration for this task.
+  A2APushNotificationConfig? pushNotificationConfig;
 
-  /// Task Id
+  /// The unique identifier (e.g. UUID) of the task.
   String taskId = '';
 
   A2ATaskPushNotificationConfig();
@@ -379,10 +379,10 @@ class A2APushNotificationConfig {
   Map<String, dynamic> toJson() => _$A2APushNotificationConfigToJson(this);
 }
 
-/// Defines authentication details for push notifications.
+/// Defines authentication details for a push notification endpoint.
 @JsonSerializable(explicitToJson: true)
 class A2APushNotificationAuthenticationInfo {
-  /// Optional credentials
+  /// Optional credentials required by the push notification endpoint.
   String? credentials;
 
   /// Supported authentication schemes - e.g. Basic, Bearer

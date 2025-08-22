@@ -667,7 +667,7 @@ void main() {
         ..status = A2ATaskStatus();
       final configParams = A2ATaskPushNotificationConfig()
         ..taskId = '1'
-        ..pushNotificationConfig = A2ATaskPushNotificationConfig1();
+        ..pushNotificationConfig = A2APushNotificationConfig();
       await expectLater(
         drq.getTaskPushNotificationConfig(params),
         throwsA(isA<A2APushNotificationNotSupportedError>()),
@@ -685,7 +685,7 @@ void main() {
       final setConfig = await drq.setTaskPushNotificationConfig(configParams);
       final getConfig = await drq.getTaskPushNotificationConfig(params);
       expect(
-        setConfig?.pushNotificationConfig == getConfig?.pushNotificationConfig,
+        setConfig == getConfig,
         isTrue,
       );
     });
@@ -1076,7 +1076,7 @@ void main() {
       final request = A2ASetTaskPushNotificationConfigRequest()
         ..params = (A2ATaskPushNotificationConfig()
           ..taskId = '1'
-          ..pushNotificationConfig = A2ATaskPushNotificationConfig1());
+          ..pushNotificationConfig = A2APushNotificationConfig());
       final result = await jrth.handle(request.toJson());
       expect(result is A2ASetTaskPushNotificationConfigSuccessResponse, isTrue);
       expect(
@@ -1092,7 +1092,7 @@ void main() {
       final requestSet = A2ASetTaskPushNotificationConfigRequest()
         ..params = (A2ATaskPushNotificationConfig()
           ..taskId = '1'
-          ..pushNotificationConfig = A2ATaskPushNotificationConfig1());
+          ..pushNotificationConfig = A2APushNotificationConfig());
       await jrth.handle(requestSet.toJson());
       final requestGet = A2AGetTaskPushNotificationConfigRequest()
         ..params = (A2ATaskIdParams()..id = '1');

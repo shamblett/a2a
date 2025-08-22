@@ -486,7 +486,7 @@ void main() {
       var json = <String, dynamic>{};
 
       var testResponse = A2AGetTaskPushNotificationConfigSuccessResponse()
-        ..result = A2ATaskPushNotificationConfig1()
+        ..result = A2APushNotificationConfig()
         ..id = 2;
       pncTaskResponse = testResponse;
       json = pncTaskResponse.toJson();
@@ -810,9 +810,8 @@ void main() {
       expect(messageResponse.toJson(), {});
       var json = <String, dynamic>{};
 
-      final config = A2ATaskPushNotificationConfig1()
-        ..id = '2'
-        ..token = 'Token';
+      final config = A2APushNotificationConfig()
+        ..id = '1';
       var testResponse = A2ASetTaskPushNotificationConfigSuccessResponse()
         ..id = 2
         ..result = config;
@@ -856,9 +855,8 @@ void main() {
       var messageResponse = A2AJsonRpcResponse();
       var json = <String, dynamic>{};
 
-      final config = A2ATaskPushNotificationConfig1()
-        ..id = '2'
-        ..token = 'Token';
+      final config = A2APushNotificationConfig()
+        ..id = '1';
       var testResponse = A2ASetTaskPushNotificationConfigSuccessResponse()
         ..id = 2
         ..result = config;

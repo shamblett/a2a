@@ -169,7 +169,7 @@ Future<int> main() async {
         testClient ??= A2AClient(baseUrl);
         await Future.delayed(Duration(seconds: 10));
       }
-      final taskConfig = A2ATaskPushNotificationConfig1()
+      final taskConfig = A2APushNotificationConfig()
         ..id = '2'
         ..token = 'token'
         ..url = 'http://localhost:5000';

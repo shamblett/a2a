@@ -253,7 +253,7 @@ final class A2ASetTaskPushNotificationConfigSuccessResponse
   /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
   @JsonKey(includeToJson: true, includeFromJson: false)
   String jsonrpc = '2.0';
-  A2ATaskPushNotificationConfig1? result;
+  A2APushNotificationConfig? result;
 
   A2ASetTaskPushNotificationConfigSuccessResponse();
 
@@ -265,7 +265,7 @@ final class A2ASetTaskPushNotificationConfigSuccessResponse
     );
 
     if (json.containsKey('result')) {
-      response.result = _$A2ATaskPushNotificationConfig1FromJson(
+      response.result = _$A2APushNotificationConfigFromJson(
         json['result'],
       );
       return response;

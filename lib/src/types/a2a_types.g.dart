@@ -429,7 +429,7 @@ A2ATaskPushNotificationConfig _$A2ATaskPushNotificationConfigFromJson(
 ) => A2ATaskPushNotificationConfig()
   ..pushNotificationConfig = json['pushNotificationConfig'] == null
       ? null
-      : A2ATaskPushNotificationConfig1.fromJson(
+      : A2APushNotificationConfig.fromJson(
           json['pushNotificationConfig'] as Map<String, dynamic>,
         )
   ..taskId = json['taskId'] as String;
@@ -808,7 +808,7 @@ _$A2AGetTaskPushNotificationConfigSuccessResponseFromJson(
   ..id = json['id']
   ..result = json['result'] == null
       ? null
-      : A2ATaskPushNotificationConfig1.fromJson(
+      : A2APushNotificationConfig.fromJson(
           json['result'] as Map<String, dynamic>,
         );
 
@@ -971,7 +971,7 @@ _$A2ASetTaskPushNotificationConfigSuccessResponseFromJson(
   ..id = json['id']
   ..result = json['result'] == null
       ? null
-      : A2ATaskPushNotificationConfig1.fromJson(
+      : A2APushNotificationConfig.fromJson(
           json['result'] as Map<String, dynamic>,
         );
 
