@@ -17,7 +17,11 @@ import 'package:oxy/oxy.dart' as http;
 /// with A2A-compliant agents.
 ///
 class A2AClient {
+  static const defaultAgentCardPath = '.well-known/agent.json';
+
   String agentBaseUrl = '';
+
+  String _agentCardPath = defaultAgentCardPath;
 
   late String _serviceEndpointUrl;
 
@@ -48,15 +52,21 @@ class A2AClient {
   /// Constructs an A2AClient instance.
   ///
   /// The agent card is fetched from the provided agent baseUrl.
-  /// The Agent Card is expected at `${agentBaseUrl}/.well-known/agent.json`.
+  /// The Agent Card is fetched from a path relative to the agentBaseUrl, which defaults to '.well-known/agent.json'.
   /// The `url` field from the Agent Card will be used as the RPC service endpoint.
   /// @param agentBaseUrl The base URL of the A2A agent (e.g., https://agent.example.com).
-  A2AClient(String agentBaseUrl) {
-    if (agentBaseUrl.endsWith('/')) {
-      this.agentBaseUrl = agentBaseUrl.substring(0, agentBaseUrl.length - 1);
-    } else {
-      this.agentBaseUrl = agentBaseUrl;
-    }
+  /// @param optional agentCardPath path to the agent card, defaults to .well-known/agent.json
+  A2AClient(
+    String agentBaseUrl, [
+    String agentCardPath = defaultAgentCardPath,
+  ]) {
+    this.agentBaseUrl = agentBaseUrl.endsWith('/')
+        ? agentBaseUrl.substring(0, agentBaseUrl.length - 1)
+        : this.agentBaseUrl = agentBaseUrl;
+
+    _agentCardPath = agentCardPath.endsWith('/')
+        ? agentCardPath.substring(0, agentCardPath.length - 1)
+        : agentCardPath;
     _fetchAndCacheAgentCard();
   }
 
@@ -347,7 +357,7 @@ class A2AClient {
       fetchUrl = baseUrl;
       cache = false;
     }
-    final agentCardUrl = '$fetchUrl/.well-known/agent.json';
+    final agentCardUrl = '$fetchUrl/$_agentCardPath';
     try {
       final response = await http.fetch(
         agentCardUrl,
