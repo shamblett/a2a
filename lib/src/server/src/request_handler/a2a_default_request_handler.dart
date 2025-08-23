@@ -351,7 +351,7 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
 
     final configs = _pushNotificationConfigs[params.id];
     final retConfig = A2ATaskPushNotificationConfig();
-    if ( configs == null ) {
+    if (configs == null) {
       retConfig.pushNotificationConfig = null;
       retConfig.taskId = params.id;
       completer.complete(retConfig);
@@ -390,12 +390,14 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
     }
 
     final taskList = <A2ATaskPushNotificationConfig>[];
-    for (final config in _pushNotificationConfigs[params.id]!) {
-      taskList.add(
-        A2ATaskPushNotificationConfig()
-          ..pushNotificationConfig = config
-          ..taskId = params.id,
-      );
+    if (_pushNotificationConfigs.containsKey(params.id)) {
+      for (final config in _pushNotificationConfigs[params.id]!) {
+        taskList.add(
+          A2ATaskPushNotificationConfig()
+            ..pushNotificationConfig = config
+            ..taskId = params.id,
+        );
+      }
     }
     completer.complete(taskList);
 

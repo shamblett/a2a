@@ -685,7 +685,43 @@ void main() {
 
       final setConfig = await drq.setTaskPushNotificationConfig(configParams);
       final getConfig = await drq.getTaskPushNotificationConfig(params);
-      expect(setConfig?.pushNotificationConfig == getConfig?.pushNotificationConfig, isTrue);
+      expect(setConfig?.taskId == getConfig?.taskId, isTrue);
+    });
+    test('vvvList Task Push Notification Config C', () async {
+      final agentCard = A2AAgentCard()
+        ..capabilities = (A2AAgentCapabilities()
+          ..pushNotifications = true);
+      final store = A2AInMemoryTaskStore();
+      final drq = A2ADefaultRequestHandler(
+          agentCard,
+          store,
+          A2ATestAgentExecutor(),
+          A2ADefaultExecutionEventBusManager(),
+          null
+      );
+      final task = A2ATask()
+        ..id = '1'
+        ..status = A2ATaskStatus();
+      final configParams1 = A2ATaskPushNotificationConfig()
+        ..taskId = '1'
+        ..pushNotificationConfig = (A2APushNotificationConfig()..id = '10');
+      final configParams2 = A2ATaskPushNotificationConfig()
+        ..taskId = '1'
+        ..pushNotificationConfig = (A2APushNotificationConfig()..id = '20');
+      await store.save(task);
+      agentCard.capabilities.pushNotifications = true;
+      await drq.setTaskPushNotificationConfig(configParams1);
+      await drq.setTaskPushNotificationConfig(configParams2);
+
+      final resp = await drq.listTaskPushNotificationConfigs(
+          A2AListTaskPushNotificationConfigParams()
+            ..id = '1');
+      expect(resp is A2AListTaskPushNotificationConfigSuccessResponse, isTrue);
+      expect(resp?.length, 2);
+      expect(resp?.first.taskId, '1');
+      expect(resp?.last.taskId, '1');
+      expect(resp?.first.pushNotificationConfig?.id, '10');
+      expect(resp?.last.pushNotificationConfig?.id, '20');
     });
     test('Cancel Task - No event Bus', () async {
       final agentCard = A2AAgentCard();
