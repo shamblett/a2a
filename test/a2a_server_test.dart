@@ -1169,17 +1169,20 @@ void main() {
       final requestSet = A2ASetTaskPushNotificationConfigRequest()
         ..params = (A2ATaskPushNotificationConfig()
           ..taskId = '1'
-          ..pushNotificationConfig = A2APushNotificationConfig());
+          ..pushNotificationConfig = (A2APushNotificationConfig()..id = '10'));
       await jrth.handle(requestSet.toJson());
       final requestGet = A2AGetTaskPushNotificationConfigRequest()
-        ..params = (A2AGetTaskPushNotificationConfigParams()..id = '1');
+        ..params = (A2AGetTaskPushNotificationConfigParams()
+          ..id = '1'
+          ..pushNotificationConfigId = '10');
       final result = await jrth.handle(requestGet.toJson());
       expect(result is A2AGetTaskPushNotificationConfigSuccessResponse, isTrue);
       expect(
         (result as A2AGetTaskPushNotificationConfigSuccessResponse).result
-            is A2ATaskPushNotificationConfig,
+            is A2APushNotificationConfig,
         isTrue,
       );
     });
+    // TODO add List and delete tests
   });
 }
