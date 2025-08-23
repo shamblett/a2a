@@ -18,6 +18,7 @@ part 'src/area/a2a_cancel_task_response.dart';
 part 'src/area/a2a_get_task_push_notification_config_response.dart';
 part 'src/area/a2a_set_task_push_notification_config_response.dart';
 part 'src/area/a2a_list_task_push_notification_config_response.dart';
+part 'src/area/a2a_delete_task_push_notification_config_response.dart';
 part 'src/area/a2a_get_task_response.dart';
 part 'src/area/a2a_json_rpc_response.dart';
 part 'src/area/a2a_send_stream_message_response.dart';
