@@ -689,7 +689,7 @@ void main() {
       await store.save(task);
 
       await drq.setTaskPushNotificationConfig(configParams1);
-      await drq.setTaskPushNotificationConfig(configParams1);
+      await drq.setTaskPushNotificationConfig(configParams2);
       final getConfig = await drq.getTaskPushNotificationConfig(params);
       expect(configParams2.taskId == getConfig?.taskId, isTrue);
       expect(
@@ -733,7 +733,7 @@ void main() {
       expect(resp?.first.pushNotificationConfig?.id, '10');
       expect(resp?.last.pushNotificationConfig?.id, '20');
     });
-    test('Delete Task Push Notification Config C', () async {
+    test('Delete Task Push Notification Config', () async {
       final agentCard = A2AAgentCard()
         ..capabilities = (A2AAgentCapabilities()..pushNotifications = true);
       final store = A2AInMemoryTaskStore();
