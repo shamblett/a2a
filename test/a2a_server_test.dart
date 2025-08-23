@@ -586,7 +586,7 @@ void main() {
         A2AInMemoryTaskStore(),
         A2ATestAgentExecutor(),
         A2ADefaultExecutionEventBusManager(),
-        null
+        null,
       );
       expect(await drq.agentCard, agentCard);
     });
@@ -599,7 +599,7 @@ void main() {
         store,
         A2ATestAgentExecutor(),
         A2ADefaultExecutionEventBusManager(),
-        null
+        null,
       );
       final params = A2ATaskIdParams()..id = '1';
       final task = A2ATask()
@@ -641,7 +641,7 @@ void main() {
         store,
         A2ATestAgentExecutor(),
         A2ADefaultExecutionEventBusManager(),
-        null
+        null,
       );
       final params = A2ATaskPushNotificationConfig();
       await expectLater(
@@ -663,7 +663,7 @@ void main() {
         store,
         A2ATestAgentExecutor(),
         A2ADefaultExecutionEventBusManager(),
-        null
+        null,
       );
       final params = A2ATaskIdParams()..id = '1';
       final task = A2ATask()
@@ -687,17 +687,16 @@ void main() {
       final getConfig = await drq.getTaskPushNotificationConfig(params);
       expect(setConfig?.taskId == getConfig?.taskId, isTrue);
     });
-    test('vvvList Task Push Notification Config C', () async {
+    test('List Task Push Notification Config C', () async {
       final agentCard = A2AAgentCard()
-        ..capabilities = (A2AAgentCapabilities()
-          ..pushNotifications = true);
+        ..capabilities = (A2AAgentCapabilities()..pushNotifications = true);
       final store = A2AInMemoryTaskStore();
       final drq = A2ADefaultRequestHandler(
-          agentCard,
-          store,
-          A2ATestAgentExecutor(),
-          A2ADefaultExecutionEventBusManager(),
-          null
+        agentCard,
+        store,
+        A2ATestAgentExecutor(),
+        A2ADefaultExecutionEventBusManager(),
+        null,
       );
       final task = A2ATask()
         ..id = '1'
@@ -709,19 +708,47 @@ void main() {
         ..taskId = '1'
         ..pushNotificationConfig = (A2APushNotificationConfig()..id = '20');
       await store.save(task);
-      agentCard.capabilities.pushNotifications = true;
+
       await drq.setTaskPushNotificationConfig(configParams1);
       await drq.setTaskPushNotificationConfig(configParams2);
 
       final resp = await drq.listTaskPushNotificationConfigs(
-          A2AListTaskPushNotificationConfigParams()
-            ..id = '1');
-      expect(resp is A2AListTaskPushNotificationConfigSuccessResponse, isTrue);
+        A2AListTaskPushNotificationConfigParams()..id = '1',
+      );
+      expect(resp is List<A2ATaskPushNotificationConfig>, isTrue);
       expect(resp?.length, 2);
       expect(resp?.first.taskId, '1');
       expect(resp?.last.taskId, '1');
       expect(resp?.first.pushNotificationConfig?.id, '10');
       expect(resp?.last.pushNotificationConfig?.id, '20');
+    });
+    test('Delete Task Push Notification Config C', () async {
+      final agentCard = A2AAgentCard()
+        ..capabilities = (A2AAgentCapabilities()
+          ..pushNotifications = true);
+      final store = A2AInMemoryTaskStore();
+      final drq = A2ADefaultRequestHandler(
+        agentCard,
+        store,
+        A2ATestAgentExecutor(),
+        A2ADefaultExecutionEventBusManager(),
+        null,
+      );
+      final task = A2ATask()
+        ..id = '1'
+        ..status = A2ATaskStatus();
+      final configParams1 = A2ATaskPushNotificationConfig()
+        ..taskId = '1'
+        ..pushNotificationConfig = (A2APushNotificationConfig()
+          ..id = '10');
+      final configParams2 = A2ATaskPushNotificationConfig()
+        ..taskId = '1'
+        ..pushNotificationConfig = (A2APushNotificationConfig()
+          ..id = '20');
+      await store.save(task);
+
+      await drq.setTaskPushNotificationConfig(configParams1);
+      await drq.setTaskPushNotificationConfig(configParams2);
     });
     test('Cancel Task - No event Bus', () async {
       final agentCard = A2AAgentCard();
@@ -731,7 +758,7 @@ void main() {
         store,
         A2ATestAgentExecutor(),
         A2ADefaultExecutionEventBusManager(),
-        null
+        null,
       );
       final params = A2ATaskIdParams()..id = '1';
       final task = A2ATask()
@@ -785,7 +812,7 @@ void main() {
         store,
         A2ATestAgentExecutor(),
         eventBus,
-        null
+        null,
       );
       final params = A2ATaskIdParams()..id = '1';
       final task = A2ATask()
@@ -808,7 +835,7 @@ void main() {
         store,
         A2ATestAgentExecutor(),
         A2ADefaultExecutionEventBusManager(),
-        null
+        null,
       );
       final params = A2ATaskQueryParams()..id = '1';
       final task = A2ATask()
@@ -845,7 +872,7 @@ void main() {
         store,
         A2ATestAgentExecutorThrows(),
         busManager,
-        null
+        null,
       );
       final params = A2AMessageSendParams();
       final task = A2ATask()..id = '1';
@@ -889,7 +916,7 @@ void main() {
         store,
         eventBus,
         busManager,
-        null
+        null,
       );
       final params = A2AMessageSendParams();
       final task = A2ATask()..id = '1';
@@ -927,7 +954,7 @@ void main() {
         store,
         A2ATestAgentExecutorThrows(),
         busManager,
-        null
+        null,
       );
       final params = A2AMessageSendParams();
       final task = A2ATask()..id = '1';
@@ -969,7 +996,7 @@ void main() {
         store,
         A2ATestAgentExecutor(),
         busManager,
-        null
+        null,
       );
       final params = A2AMessageSendParams();
       final task = A2ATask()..id = '1';
@@ -1002,7 +1029,7 @@ void main() {
       store,
       A2ATestAgentExecutor(),
       busManager,
-      null
+      null,
     );
     final task = A2ATask()..id = '1';
     test('Construction TH', () async {

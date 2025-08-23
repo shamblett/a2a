@@ -42,8 +42,7 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
   final _uuid = Uuid();
 
   // Store for push notification configurations (could be part of TaskStore or separate)
-  final Map<String, List<A2APushNotificationConfig>> _pushNotificationConfigs =
-      {};
+  final Map<String, List<A2APushNotificationConfig>> _pushNotificationConfigs = {};
 
   @override
   Future<A2AAgentCard> get agentCard async => _agentCard;
@@ -314,15 +313,16 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
     params.pushNotificationConfig?.id ??= params.taskId;
 
     // Add or update the configuration
+    _pushNotificationConfigs[params.taskId] ??= [];
     int? index = _pushNotificationConfigs[params.taskId]?.indexOf(
       params.pushNotificationConfig!,
     );
-    if (index == null || index == -1) {
+    if ( index == -1 ) {
       _pushNotificationConfigs[params.taskId]?.add(
         params.pushNotificationConfig!,
       );
     } else {
-      _pushNotificationConfigs[params.taskId]?[index] =
+      _pushNotificationConfigs[params.taskId]?[index!] =
           params.pushNotificationConfig!;
     }
 
