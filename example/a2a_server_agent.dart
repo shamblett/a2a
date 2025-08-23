@@ -189,8 +189,16 @@ class MyAgentExecutor implements A2AAgentExecutor {
 /// Step 3 - Start the server
 ///
 
+/// Define a middleware function to log incoming requests
+final mwLogging = ((Request req, Response res, NextFunction next) {
+  print(
+    '${Colorize('📝 Request: ${req.method} ${req.uri} from ${req.hostname}').blue()}',
+  );
+  next();
+});
+
 void main() {
-  // Initialise the required server components for the express application
+  /// Initialise the required server components for the express application
   final taskStore = A2AInMemoryTaskStore();
   final agentExecutor = MyAgentExecutor();
   final eventBusManager = A2ADefaultExecutionEventBusManager();
@@ -202,9 +210,15 @@ void main() {
   );
   final transportHandler = A2AJsonRpcTransportHandler(requestHandler);
 
-  // Initialise the express app
+  /// Initialise the Darto application with the middleware logger.
+  /// You can add as many middleware functions as you wish, each
+  /// chained to the next.
   final appBuilder = A2AExpressApp(requestHandler, transportHandler);
-  final expressApp = appBuilder.setupRoutes(Darto(), '');
+  final expressApp = appBuilder.setupRoutes(
+    Darto(),
+    '',
+    middlewares: [mwLogging],
+  );
 
   // Start listening
   const port = 41242;
@@ -216,5 +230,6 @@ void main() {
       '${Colorize('[MyAgent] Agent Card: http://localhost:$port}/.well-known/agent-card.json').blue()}',
     );
     print('${Colorize('[MyAgent] Press Ctrl+C to stop the server').blue()}');
+    print('');
   });
 }
