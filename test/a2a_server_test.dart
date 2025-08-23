@@ -586,6 +586,7 @@ void main() {
         A2AInMemoryTaskStore(),
         A2ATestAgentExecutor(),
         A2ADefaultExecutionEventBusManager(),
+        null
       );
       expect(await drq.agentCard, agentCard);
     });
@@ -598,6 +599,7 @@ void main() {
         store,
         A2ATestAgentExecutor(),
         A2ADefaultExecutionEventBusManager(),
+        null
       );
       final params = A2ATaskIdParams()..id = '1';
       final task = A2ATask()
@@ -630,7 +632,7 @@ void main() {
       }
       expect(eventCount, 2);
     });
-    test('Set Task Push Notification Config', () async {
+    test('Set Task Push Notification Config A', () async {
       final agentCard = A2AAgentCard()
         ..capabilities = (A2AAgentCapabilities()..pushNotifications = false);
       final store = A2AInMemoryTaskStore();
@@ -639,6 +641,7 @@ void main() {
         store,
         A2ATestAgentExecutor(),
         A2ADefaultExecutionEventBusManager(),
+        null
       );
       final params = A2ATaskPushNotificationConfig();
       await expectLater(
@@ -651,7 +654,7 @@ void main() {
         throwsA(isA<A2ATaskNotFoundError>()),
       );
     });
-    test('Get Task Push Notification Config', () async {
+    test('Get Task Push Notification Config B', () async {
       final agentCard = A2AAgentCard()
         ..capabilities = (A2AAgentCapabilities()..pushNotifications = false);
       final store = A2AInMemoryTaskStore();
@@ -660,6 +663,7 @@ void main() {
         store,
         A2ATestAgentExecutor(),
         A2ADefaultExecutionEventBusManager(),
+        null
       );
       final params = A2ATaskIdParams()..id = '1';
       final task = A2ATask()
@@ -678,13 +682,10 @@ void main() {
         throwsA(isA<A2ATaskNotFoundError>()),
       );
       await store.save(task);
-      await expectLater(
-        drq.getTaskPushNotificationConfig(params),
-        throwsA(isA<A2AInternalError>()),
-      );
+
       final setConfig = await drq.setTaskPushNotificationConfig(configParams);
       final getConfig = await drq.getTaskPushNotificationConfig(params);
-      expect(setConfig == getConfig, isTrue);
+      expect(setConfig?.pushNotificationConfig == getConfig?.pushNotificationConfig, isTrue);
     });
     test('Cancel Task - No event Bus', () async {
       final agentCard = A2AAgentCard();
@@ -694,6 +695,7 @@ void main() {
         store,
         A2ATestAgentExecutor(),
         A2ADefaultExecutionEventBusManager(),
+        null
       );
       final params = A2ATaskIdParams()..id = '1';
       final task = A2ATask()
@@ -747,6 +749,7 @@ void main() {
         store,
         A2ATestAgentExecutor(),
         eventBus,
+        null
       );
       final params = A2ATaskIdParams()..id = '1';
       final task = A2ATask()
@@ -769,6 +772,7 @@ void main() {
         store,
         A2ATestAgentExecutor(),
         A2ADefaultExecutionEventBusManager(),
+        null
       );
       final params = A2ATaskQueryParams()..id = '1';
       final task = A2ATask()
@@ -805,6 +809,7 @@ void main() {
         store,
         A2ATestAgentExecutorThrows(),
         busManager,
+        null
       );
       final params = A2AMessageSendParams();
       final task = A2ATask()..id = '1';
@@ -848,6 +853,7 @@ void main() {
         store,
         eventBus,
         busManager,
+        null
       );
       final params = A2AMessageSendParams();
       final task = A2ATask()..id = '1';
@@ -885,6 +891,7 @@ void main() {
         store,
         A2ATestAgentExecutorThrows(),
         busManager,
+        null
       );
       final params = A2AMessageSendParams();
       final task = A2ATask()..id = '1';
@@ -926,6 +933,7 @@ void main() {
         store,
         A2ATestAgentExecutor(),
         busManager,
+        null
       );
       final params = A2AMessageSendParams();
       final task = A2ATask()..id = '1';
@@ -958,6 +966,7 @@ void main() {
       store,
       A2ATestAgentExecutor(),
       busManager,
+      null
     );
     final task = A2ATask()..id = '1';
     test('Construction TH', () async {
@@ -1097,7 +1106,7 @@ void main() {
       expect(result is A2AGetTaskPushNotificationConfigSuccessResponse, isTrue);
       expect(
         (result as A2AGetTaskPushNotificationConfigSuccessResponse).result
-            is A2APushNotificationConfig,
+            is A2ATaskPushNotificationConfig,
         isTrue,
       );
     });

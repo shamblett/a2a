@@ -350,8 +350,14 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
     }
 
     final configs = _pushNotificationConfigs[params.id];
-
-    int index = configs!.indexWhere((e) => e.id == params.id);
+    final retConfig = A2ATaskPushNotificationConfig();
+    if ( configs == null ) {
+      retConfig.pushNotificationConfig = null;
+      retConfig.taskId = params.id;
+      completer.complete(retConfig);
+      return retConfig;
+    }
+    int index = configs.indexWhere((e) => e.id == params.id);
     if (index == -1) {
       throw A2AServerError.internalError(
         ''
