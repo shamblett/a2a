@@ -379,3 +379,34 @@ class A2APushNotificationAuthenticationInfo {
   Map<String, dynamic> toJson() =>
       _$A2APushNotificationAuthenticationInfoToJson(this);
 }
+
+/// The parameters identifying the task whose configurations are to be listed.
+@JsonSerializable(explicitToJson: true)
+class A2AListTaskPushNotificationConfigParams extends A2ATaskIdParams {
+  A2AListTaskPushNotificationConfigParams();
+
+  factory A2AListTaskPushNotificationConfigParams.fromJson(
+    Map<String, dynamic> json,
+  ) => _$A2AListTaskPushNotificationConfigParamsFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$A2AListTaskPushNotificationConfigParamsToJson(this);
+}
+
+/// The parameters identifying the push notification configuration to delete.
+@JsonSerializable(explicitToJson: true)
+class A2ADeleteTaskPushNotificationConfigParams extends A2ATaskIdParams {
+  /// The ID of the push notification configuration to delete.
+  String pushNotificationConfigId = '';
+
+  A2ADeleteTaskPushNotificationConfigParams();
+
+  factory A2ADeleteTaskPushNotificationConfigParams.fromJson(
+    Map<String, dynamic> json,
+  ) => _$A2ADeleteTaskPushNotificationConfigParamsFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$A2ADeleteTaskPushNotificationConfigParamsToJson(this);
+}

@@ -519,6 +519,32 @@ Map<String, dynamic> _$A2APushNotificationAuthenticationInfoToJson(
   'schemes': instance.schemes,
 };
 
+A2AListTaskPushNotificationConfigParams
+_$A2AListTaskPushNotificationConfigParamsFromJson(Map<String, dynamic> json) =>
+    A2AListTaskPushNotificationConfigParams()
+      ..id = json['id'] as String
+      ..metadata = json['metadata'] as Map<String, dynamic>?;
+
+Map<String, dynamic> _$A2AListTaskPushNotificationConfigParamsToJson(
+  A2AListTaskPushNotificationConfigParams instance,
+) => <String, dynamic>{'id': instance.id, 'metadata': instance.metadata};
+
+A2ADeleteTaskPushNotificationConfigParams
+_$A2ADeleteTaskPushNotificationConfigParamsFromJson(
+  Map<String, dynamic> json,
+) => A2ADeleteTaskPushNotificationConfigParams()
+  ..id = json['id'] as String
+  ..metadata = json['metadata'] as Map<String, dynamic>?
+  ..pushNotificationConfigId = json['pushNotificationConfigId'] as String;
+
+Map<String, dynamic> _$A2ADeleteTaskPushNotificationConfigParamsToJson(
+  A2ADeleteTaskPushNotificationConfigParams instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'metadata': instance.metadata,
+  'pushNotificationConfigId': instance.pushNotificationConfigId,
+};
+
 A2ATextPart _$A2ATextPartFromJson(Map<String, dynamic> json) => A2ATextPart()
   ..metadata = json['metadata'] as Map<String, dynamic>?
   ..text = json['text'] as String;
