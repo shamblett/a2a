@@ -15,6 +15,8 @@ class A2ARequest {
   static const tasksCancel = 'tasks/cancel';
   static const tasksPncSet = 'tasks/pushNotificationConfig/set';
   static const tasksPncGet = 'tasks/pushNotificationConfig/get';
+  static const tasksPncList = 'tasks/pushNotificationConfig/list';
+  static const tasksPncDelete = 'tasks/pushNotificationConfig/delete';
   static const tasksResubscribe = 'tasks/resubscribe';
 
   /// Set if a valid request cannot be formed by [fromJson].
@@ -38,6 +40,10 @@ class A2ARequest {
           return A2ASetTaskPushNotificationConfigRequest.fromJson(json);
         case tasksPncGet:
           return A2AGetTaskPushNotificationConfigRequest.fromJson(json);
+        case tasksPncList:
+          return A2AListTaskPushNotificationConfigRequest.fromJson(json);
+        case tasksPncDelete:
+          return A2ADeleteTaskPushNotificationConfigRequest.fromJson(json);
         case tasksResubscribe:
           return A2ATaskResubscriptionRequest.fromJson(json);
         default:
@@ -64,7 +70,7 @@ final class A2ASendMessageRequest extends A2ARequest {
 
   /// A String containing the name of the method to be invoked.
   @JsonKey(includeToJson: true, includeFromJson: false)
-  String method = 'message/send';
+  String method = A2ARequest.messageSend;
 
   A2AMessageSendParams? params;
 
@@ -90,7 +96,7 @@ final class A2ASendStreamingMessageRequest extends A2ARequest {
 
   /// A String containing the name of the method to be invoked.
   @JsonKey(includeToJson: true, includeFromJson: false)
-  String method = 'message/stream';
+  String method = A2ARequest.messageStream;
 
   A2AMessageSendParams? params;
 
@@ -116,7 +122,7 @@ final class A2AGetTaskRequest extends A2ARequest {
 
   /// A String containing the name of the method to be invoked.
   @JsonKey(includeToJson: true, includeFromJson: false)
-  String method = 'tasks/get';
+  String method = A2ARequest.tasksGet;
 
   A2ATaskQueryParams? params;
 
@@ -142,7 +148,7 @@ final class A2ACancelTaskRequest extends A2ARequest {
 
   /// A String containing the name of the method to be invoked.
   @JsonKey(includeToJson: true, includeFromJson: false)
-  String method = 'tasks/cancel';
+  String method = A2ARequest.tasksCancel;
 
   A2ATaskIdParams? params;
 
@@ -168,7 +174,7 @@ final class A2ASetTaskPushNotificationConfigRequest extends A2ARequest {
 
   /// A String containing the name of the method to be invoked.
   @JsonKey(includeToJson: true, includeFromJson: false)
-  String method = 'tasks/pushNotificationConfig/set';
+  String method = A2ARequest.tasksPncSet;
 
   A2ATaskPushNotificationConfig? params;
 
@@ -196,9 +202,9 @@ final class A2AGetTaskPushNotificationConfigRequest extends A2ARequest {
 
   /// A String containing the name of the method to be invoked.
   @JsonKey(includeToJson: true, includeFromJson: false)
-  String method = 'tasks/pushNotificationConfig/get';
+  String method = A2ARequest.tasksPncGet;
 
-  A2ATaskIdParams? params;
+  A2AGetTaskPushNotificationConfigParams? params;
 
   A2AGetTaskPushNotificationConfigRequest();
 
@@ -224,15 +230,15 @@ final class A2ADeleteTaskPushNotificationConfigRequest extends A2ARequest {
 
   /// A String containing the name of the method to be invoked.
   @JsonKey(includeToJson: true, includeFromJson: false)
-  String method = 'tasks/pushNotificationConfig/delete';
+  String method = A2ARequest.tasksPncDelete;
 
   A2ADeleteTaskPushNotificationConfigParams? params;
 
   A2ADeleteTaskPushNotificationConfigRequest();
 
   factory A2ADeleteTaskPushNotificationConfigRequest.fromJson(
-      Map<String, dynamic> json,
-      ) => _$A2ADeleteTaskPushNotificationConfigRequestFromJson(json);
+    Map<String, dynamic> json,
+  ) => _$A2ADeleteTaskPushNotificationConfigRequestFromJson(json);
 
   @override
   Map<String, dynamic> toJson() =>
@@ -252,21 +258,20 @@ final class A2AListTaskPushNotificationConfigRequest extends A2ARequest {
 
   /// A String containing the name of the method to be invoked.
   @JsonKey(includeToJson: true, includeFromJson: false)
-  String method = 'tasks/pushNotificationConfig/list';
+  String method = A2ARequest.tasksPncList;
 
   A2AListTaskPushNotificationConfigParams? params;
 
   A2AListTaskPushNotificationConfigRequest();
 
   factory A2AListTaskPushNotificationConfigRequest.fromJson(
-      Map<String, dynamic> json,
-      ) => _$A2AListTaskPushNotificationConfigRequestFromJson(json);
+    Map<String, dynamic> json,
+  ) => _$A2AListTaskPushNotificationConfigRequestFromJson(json);
 
   @override
   Map<String, dynamic> toJson() =>
       _$A2AListTaskPushNotificationConfigRequestToJson(this);
 }
-
 
 /// JSON-RPC request model for the 'tasks/resubscribe' method.
 @JsonSerializable(explicitToJson: true)
@@ -459,6 +464,23 @@ class A2AListTaskPushNotificationConfigParams extends A2ATaskIdParams {
   @override
   Map<String, dynamic> toJson() =>
       _$A2AListTaskPushNotificationConfigParamsToJson(this);
+}
+
+/// Defines parameters for fetching a specific push notification configuration for a task.
+@JsonSerializable(explicitToJson: true)
+class A2AGetTaskPushNotificationConfigParams extends A2ATaskIdParams {
+  /// The ID of the push notification configuration to retrieve.
+  String? pushNotificationConfigId;
+
+  A2AGetTaskPushNotificationConfigParams();
+
+  factory A2AGetTaskPushNotificationConfigParams.fromJson(
+    Map<String, dynamic> json,
+  ) => _$A2AGetTaskPushNotificationConfigParamsFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$A2AGetTaskPushNotificationConfigParamsToJson(this);
 }
 
 /// The parameters identifying the push notification configuration to delete.

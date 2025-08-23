@@ -390,7 +390,9 @@ _$A2AGetTaskPushNotificationConfigRequestFromJson(Map<String, dynamic> json) =>
       ..id = json['id']
       ..params = json['params'] == null
           ? null
-          : A2ATaskIdParams.fromJson(json['params'] as Map<String, dynamic>);
+          : A2AGetTaskPushNotificationConfigParams.fromJson(
+              json['params'] as Map<String, dynamic>,
+            );
 
 Map<String, dynamic> _$A2AGetTaskPushNotificationConfigRequestToJson(
   A2AGetTaskPushNotificationConfigRequest instance,
@@ -582,6 +584,21 @@ _$A2AListTaskPushNotificationConfigParamsFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$A2AListTaskPushNotificationConfigParamsToJson(
   A2AListTaskPushNotificationConfigParams instance,
 ) => <String, dynamic>{'id': instance.id, 'metadata': instance.metadata};
+
+A2AGetTaskPushNotificationConfigParams
+_$A2AGetTaskPushNotificationConfigParamsFromJson(Map<String, dynamic> json) =>
+    A2AGetTaskPushNotificationConfigParams()
+      ..id = json['id'] as String
+      ..metadata = json['metadata'] as Map<String, dynamic>?
+      ..pushNotificationConfigId = json['pushNotificationConfigId'] as String?;
+
+Map<String, dynamic> _$A2AGetTaskPushNotificationConfigParamsToJson(
+  A2AGetTaskPushNotificationConfigParams instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'metadata': instance.metadata,
+  'pushNotificationConfigId': instance.pushNotificationConfigId,
+};
 
 A2ADeleteTaskPushNotificationConfigParams
 _$A2ADeleteTaskPushNotificationConfigParamsFromJson(

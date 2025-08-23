@@ -25,7 +25,7 @@ abstract interface class A2ARequestHandler {
   );
 
   Future<A2ATaskPushNotificationConfig>? getTaskPushNotificationConfig(
-    A2ATaskIdParams params,
+    A2AGetTaskPushNotificationConfigParams params,
   );
 
   Future<List<A2ATaskPushNotificationConfig>>? listTaskPushNotificationConfigs(

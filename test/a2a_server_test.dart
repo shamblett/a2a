@@ -632,7 +632,7 @@ void main() {
       }
       expect(eventCount, 2);
     });
-    test('Set Task Push Notification Config A', () async {
+    test('Set Task Push Notification Config - Error', () async {
       final agentCard = A2AAgentCard()
         ..capabilities = (A2AAgentCapabilities()..pushNotifications = false);
       final store = A2AInMemoryTaskStore();
@@ -654,7 +654,7 @@ void main() {
         throwsA(isA<A2ATaskNotFoundError>()),
       );
     });
-    test('Get Task Push Notification Config B', () async {
+    test('Get/Set Task Push Notification Config', () async {
       final agentCard = A2AAgentCard()
         ..capabilities = (A2AAgentCapabilities()..pushNotifications = false);
       final store = A2AInMemoryTaskStore();
@@ -665,13 +665,18 @@ void main() {
         A2ADefaultExecutionEventBusManager(),
         null,
       );
-      final params = A2ATaskIdParams()..id = '1';
+      final params = A2AGetTaskPushNotificationConfigParams()
+      ..pushNotificationConfigId = '20'
+      ..id = '1';
       final task = A2ATask()
         ..id = '1'
         ..status = A2ATaskStatus();
-      final configParams = A2ATaskPushNotificationConfig()
+      final configParams1 = A2ATaskPushNotificationConfig()
         ..taskId = '1'
-        ..pushNotificationConfig = A2APushNotificationConfig();
+        ..pushNotificationConfig = (A2APushNotificationConfig()..id = '10');
+      final configParams2 = A2ATaskPushNotificationConfig()
+        ..taskId = '1'
+        ..pushNotificationConfig = (A2APushNotificationConfig()..id = '20');
       await expectLater(
         drq.getTaskPushNotificationConfig(params),
         throwsA(isA<A2APushNotificationNotSupportedError>()),
@@ -683,7 +688,8 @@ void main() {
       );
       await store.save(task);
 
-      final setConfig = await drq.setTaskPushNotificationConfig(configParams);
+      await drq.setTaskPushNotificationConfig(configParams1);
+      await drq.setTaskPushNotificationConfig(configParams1);
       final getConfig = await drq.getTaskPushNotificationConfig(params);
       expect(setConfig?.taskId == getConfig?.taskId, isTrue);
     });
