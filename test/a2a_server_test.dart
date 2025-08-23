@@ -666,8 +666,8 @@ void main() {
         null,
       );
       final params = A2AGetTaskPushNotificationConfigParams()
-      ..pushNotificationConfigId = '20'
-      ..id = '1';
+        ..pushNotificationConfigId = '20'
+        ..id = '1';
       final task = A2ATask()
         ..id = '1'
         ..status = A2ATaskStatus();
@@ -691,9 +691,14 @@ void main() {
       await drq.setTaskPushNotificationConfig(configParams1);
       await drq.setTaskPushNotificationConfig(configParams1);
       final getConfig = await drq.getTaskPushNotificationConfig(params);
-      expect(setConfig?.taskId == getConfig?.taskId, isTrue);
+      expect(configParams2.taskId == getConfig?.taskId, isTrue);
+      expect(
+        configParams2.pushNotificationConfig?.id ==
+            getConfig?.pushNotificationConfig?.id,
+        isTrue,
+      );
     });
-    test('List Task Push Notification Config C', () async {
+    test('List Task Push Notification Config', () async {
       final agentCard = A2AAgentCard()
         ..capabilities = (A2AAgentCapabilities()..pushNotifications = true);
       final store = A2AInMemoryTaskStore();
@@ -730,8 +735,7 @@ void main() {
     });
     test('Delete Task Push Notification Config C', () async {
       final agentCard = A2AAgentCard()
-        ..capabilities = (A2AAgentCapabilities()
-          ..pushNotifications = true);
+        ..capabilities = (A2AAgentCapabilities()..pushNotifications = true);
       final store = A2AInMemoryTaskStore();
       final drq = A2ADefaultRequestHandler(
         agentCard,
@@ -745,12 +749,10 @@ void main() {
         ..status = A2ATaskStatus();
       final configParams1 = A2ATaskPushNotificationConfig()
         ..taskId = '1'
-        ..pushNotificationConfig = (A2APushNotificationConfig()
-          ..id = '10');
+        ..pushNotificationConfig = (A2APushNotificationConfig()..id = '10');
       final configParams2 = A2ATaskPushNotificationConfig()
         ..taskId = '1'
-        ..pushNotificationConfig = (A2APushNotificationConfig()
-          ..id = '20');
+        ..pushNotificationConfig = (A2APushNotificationConfig()..id = '20');
       await store.save(task);
 
       await drq.setTaskPushNotificationConfig(configParams1);
@@ -1170,7 +1172,7 @@ void main() {
           ..pushNotificationConfig = A2APushNotificationConfig());
       await jrth.handle(requestSet.toJson());
       final requestGet = A2AGetTaskPushNotificationConfigRequest()
-        ..params = (A2ATaskIdParams()..id = '1');
+        ..params = (A2AGetTaskPushNotificationConfigParams()..id = '1');
       final result = await jrth.handle(requestGet.toJson());
       expect(result is A2AGetTaskPushNotificationConfigSuccessResponse, isTrue);
       expect(

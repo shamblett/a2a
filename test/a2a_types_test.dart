@@ -1134,7 +1134,7 @@ void main() {
     test('A2AGetTaskPushNotificationConfigRequest', () {
       var request = A2ARequest();
       var json = <String, dynamic>{};
-      final params = A2ATaskIdParams()
+      final params = A2AGetTaskPushNotificationConfigParams()
         ..id = '2'
         ..metadata = {'First': 1};
       var testRequest = A2AGetTaskPushNotificationConfigRequest()
