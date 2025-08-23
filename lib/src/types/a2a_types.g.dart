@@ -938,7 +938,8 @@ _$A2AListTaskPushNotificationConfigSuccessResponseFromJson(
   ..id = json['id']
   ..result = (json['result'] as List<dynamic>?)
       ?.map(
-        (e) => A2APushNotificationConfig.fromJson(e as Map<String, dynamic>),
+        (e) =>
+            A2ATaskPushNotificationConfig.fromJson(e as Map<String, dynamic>),
       )
       .toList();
 
