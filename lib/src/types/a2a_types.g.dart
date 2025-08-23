@@ -284,6 +284,21 @@ Map<String, dynamic> _$A2AInvalidAgentResponseErrorToJson(
   'message': instance.message,
 };
 
+A2AAuthenticatedExtendedCardNotConfiguredError
+_$A2AAuthenticatedExtendedCardNotConfiguredErrorFromJson(
+  Map<String, dynamic> json,
+) => A2AAuthenticatedExtendedCardNotConfiguredError()
+  ..data = json['data'] as Map<String, dynamic>?
+  ..message = json['message'] as String;
+
+Map<String, dynamic> _$A2AAuthenticatedExtendedCardNotConfiguredErrorToJson(
+  A2AAuthenticatedExtendedCardNotConfiguredError instance,
+) => <String, dynamic>{
+  'code': instance.code,
+  'data': instance.data,
+  'message': instance.message,
+};
+
 A2ASendMessageRequest _$A2ASendMessageRequestFromJson(
   Map<String, dynamic> json,
 ) => A2ASendMessageRequest()
@@ -379,6 +394,45 @@ _$A2AGetTaskPushNotificationConfigRequestFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$A2AGetTaskPushNotificationConfigRequestToJson(
   A2AGetTaskPushNotificationConfigRequest instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'jsonrpc': instance.jsonrpc,
+  'method': instance.method,
+  'params': instance.params?.toJson(),
+};
+
+A2ADeleteTaskPushNotificationConfigRequest
+_$A2ADeleteTaskPushNotificationConfigRequestFromJson(
+  Map<String, dynamic> json,
+) => A2ADeleteTaskPushNotificationConfigRequest()
+  ..id = json['id']
+  ..params = json['params'] == null
+      ? null
+      : A2ADeleteTaskPushNotificationConfigParams.fromJson(
+          json['params'] as Map<String, dynamic>,
+        );
+
+Map<String, dynamic> _$A2ADeleteTaskPushNotificationConfigRequestToJson(
+  A2ADeleteTaskPushNotificationConfigRequest instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'jsonrpc': instance.jsonrpc,
+  'method': instance.method,
+  'params': instance.params?.toJson(),
+};
+
+A2AListTaskPushNotificationConfigRequest
+_$A2AListTaskPushNotificationConfigRequestFromJson(Map<String, dynamic> json) =>
+    A2AListTaskPushNotificationConfigRequest()
+      ..id = json['id']
+      ..params = json['params'] == null
+          ? null
+          : A2AListTaskPushNotificationConfigParams.fromJson(
+              json['params'] as Map<String, dynamic>,
+            );
+
+Map<String, dynamic> _$A2AListTaskPushNotificationConfigRequestToJson(
+  A2AListTaskPushNotificationConfigRequest instance,
 ) => <String, dynamic>{
   'id': instance.id,
   'jsonrpc': instance.jsonrpc,

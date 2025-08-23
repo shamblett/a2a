@@ -211,6 +211,63 @@ final class A2AGetTaskPushNotificationConfigRequest extends A2ARequest {
       _$A2AGetTaskPushNotificationConfigRequestToJson(this);
 }
 
+/// Represents a JSON-RPC request for the `tasks/pushNotificationConfig/delete` method.
+@JsonSerializable(explicitToJson: true)
+final class A2ADeleteTaskPushNotificationConfigRequest extends A2ARequest {
+  /// An identifier established by the Client that MUST contain a String, Number.
+  /// Numbers SHOULD NOT contain fractional parts.
+  A2AId? id;
+
+  /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
+  @JsonKey(includeToJson: true, includeFromJson: false)
+  String jsonrpc = '2.0';
+
+  /// A String containing the name of the method to be invoked.
+  @JsonKey(includeToJson: true, includeFromJson: false)
+  String method = 'tasks/pushNotificationConfig/delete';
+
+  A2ADeleteTaskPushNotificationConfigParams? params;
+
+  A2ADeleteTaskPushNotificationConfigRequest();
+
+  factory A2ADeleteTaskPushNotificationConfigRequest.fromJson(
+      Map<String, dynamic> json,
+      ) => _$A2ADeleteTaskPushNotificationConfigRequestFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$A2ADeleteTaskPushNotificationConfigRequestToJson(this);
+}
+
+/// Represents a JSON-RPC request for the `tasks/pushNotificationConfig/list` method.
+@JsonSerializable(explicitToJson: true)
+final class A2AListTaskPushNotificationConfigRequest extends A2ARequest {
+  /// An identifier established by the Client that MUST contain a String, Number.
+  /// Numbers SHOULD NOT contain fractional parts.
+  A2AId? id;
+
+  /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
+  @JsonKey(includeToJson: true, includeFromJson: false)
+  String jsonrpc = '2.0';
+
+  /// A String containing the name of the method to be invoked.
+  @JsonKey(includeToJson: true, includeFromJson: false)
+  String method = 'tasks/pushNotificationConfig/list';
+
+  A2AListTaskPushNotificationConfigParams? params;
+
+  A2AListTaskPushNotificationConfigRequest();
+
+  factory A2AListTaskPushNotificationConfigRequest.fromJson(
+      Map<String, dynamic> json,
+      ) => _$A2AListTaskPushNotificationConfigRequestFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$A2AListTaskPushNotificationConfigRequestToJson(this);
+}
+
+
 /// JSON-RPC request model for the 'tasks/resubscribe' method.
 @JsonSerializable(explicitToJson: true)
 final class A2ATaskResubscriptionRequest extends A2ARequest {
@@ -353,12 +410,22 @@ class A2APushNotificationConfig {
   /// The callback URL where the agent should send push notifications.
   String url = '';
 
+  @override
+  int get hashCode => id.hashCode;
+
   A2APushNotificationConfig();
 
   factory A2APushNotificationConfig.fromJson(Map<String, dynamic> json) =>
       _$A2APushNotificationConfigFromJson(json);
 
   Map<String, dynamic> toJson() => _$A2APushNotificationConfigToJson(this);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is A2APushNotificationConfig &&
+          runtimeType == other.runtimeType &&
+          id == other.id;
 }
 
 /// Defines authentication details for a push notification endpoint.

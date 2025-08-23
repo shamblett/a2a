@@ -70,6 +70,11 @@ class A2AServerError {
       A2AUnsupportedOperationError()
         ..message = 'Unsupported operation: $operation';
 
+  static A2AAuthenticatedExtendedCardNotConfiguredError
+  authenticatedExtendedCardNotConfigured() =>
+      A2AAuthenticatedExtendedCardNotConfiguredError()
+        ..message = 'Extended card not configured.';
+
   /// Formats the error into a standard JSON-RPC error object structure.
   A2AJSONRPCError toJSONRPCError() {
     final error = A2AJSONRPCError();

@@ -17,6 +17,8 @@ const supportedTypes = <Type>[
   A2ACancelTaskRequest,
   A2ASetTaskPushNotificationConfigRequest,
   A2AGetTaskPushNotificationConfigRequest,
+  A2ADeleteTaskPushNotificationConfigRequest,
+  A2AListTaskPushNotificationConfigRequest
 ];
 
 /// Handles JSON-RPC transport layer, routing requests to an [A2ARequestHandler].

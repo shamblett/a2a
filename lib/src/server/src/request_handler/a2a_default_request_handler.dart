@@ -31,6 +31,8 @@ const finalStates = [
 class A2ADefaultRequestHandler implements A2ARequestHandler {
   final A2AAgentCard _agentCard;
 
+  final A2AAgentCard? _extendedAgentCard;
+
   final A2ATaskStore _taskStore;
 
   final A2AAgentExecutor _agentExecutor;
@@ -40,16 +42,27 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
   final _uuid = Uuid();
 
   // Store for push notification configurations (could be part of TaskStore or separate)
-  final Map<String, A2APushNotificationConfig> _pushNotificationConfigs = {};
+  final Map<String, List<A2APushNotificationConfig>> _pushNotificationConfigs =
+      {};
 
   @override
   Future<A2AAgentCard> get agentCard async => _agentCard;
+
+  @override
+  Future<A2AAgentCard> get authenticatedExtendedAgentCard async {
+    if (_extendedAgentCard == null) {
+      throw A2AServerError.authenticatedExtendedCardNotConfigured();
+    }
+
+    return _extendedAgentCard;
+  }
 
   A2ADefaultRequestHandler(
     this._agentCard,
     this._taskStore,
     this._agentExecutor,
     this._eventBusManager,
+    this._extendedAgentCard,
   );
 
   /// This method can be blocking or non blocking as selected by the blocking flag
@@ -297,10 +310,23 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
       throw A2AServerError.taskNotFound(params.taskId);
     }
 
-    // Store the config. In a real app, this might be stored in the TaskStore
-    // or a dedicated push notification service.
-    _pushNotificationConfigs[params.taskId] = params.pushNotificationConfig!;
-    completer.complete(_pushNotificationConfigs[params.taskId]);
+    // Default the config ID to the task ID if not provided for backward compatibility.
+    params.pushNotificationConfig?.id ??= params.taskId;
+
+    // Add or update the configuration
+    int? index = _pushNotificationConfigs[params.taskId]?.indexOf(
+      params.pushNotificationConfig!,
+    );
+    if (index == null || index == -1) {
+      _pushNotificationConfigs[params.taskId]?.add(
+        params.pushNotificationConfig!,
+      );
+    } else {
+      _pushNotificationConfigs[params.taskId]?[index] =
+          params.pushNotificationConfig!;
+    }
+
+    completer.complete(params.pushNotificationConfig);
 
     return completer.future;
   }
@@ -314,22 +340,64 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
       throw A2AServerError.pushNotificationNotSupported();
     }
 
-    final taskAndHistory = await _taskStore.load(params.id);
-    if (taskAndHistory == null) {
+    final task = await _taskStore.load(params.id);
+    if (task == null) {
       throw A2AServerError.taskNotFound(params.id);
     }
 
-    final config = _pushNotificationConfigs[params.id];
-    if (config == null) {
+    final configs = _pushNotificationConfigs[params.id];
+
+    int index = configs!.indexWhere((e) => e.id == params.id);
+    if (index == -1) {
       throw A2AServerError.internalError(
         ''
         'Push notification config not found for task ${params.id}.',
         null,
       );
     }
-    completer.complete(config);
+
+    completer.complete(configs[index]);
 
     return completer.future;
+  }
+
+  @override
+  Future<List<A2APushNotificationConfig>>? listTaskPushNotificationConfigs(
+    A2AListTaskPushNotificationConfigParams params,
+  ) async {
+    final completer = Completer<List<A2APushNotificationConfig>>();
+    if (_agentCard.capabilities.pushNotifications == false) {
+      throw A2AServerError.pushNotificationNotSupported();
+    }
+
+    final task = await _taskStore.load(params.id);
+    if (task == null) {
+      throw A2AServerError.taskNotFound(params.id);
+    }
+
+    completer.complete(_pushNotificationConfigs[params.id]);
+
+    return completer.future;
+  }
+
+  @override
+  Future<void> deleteTaskPushNotificationConfig(
+    A2ADeleteTaskPushNotificationConfigParams params,
+  ) async {
+    if (_agentCard.capabilities.pushNotifications == false) {
+      throw A2AServerError.pushNotificationNotSupported();
+    }
+
+    final task = await _taskStore.load(params.id);
+    if (task == null) {
+      throw A2AServerError.taskNotFound(params.id);
+    }
+
+    final configs = _pushNotificationConfigs[params.id];
+
+    configs!.removeWhere((e) => e.id == params.id);
+
+    return;
   }
 
   @override
@@ -435,8 +503,9 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
 
     // Ensure contextId is present
     final messageForContext = incomingMessage;
-    final contextId = messageForContext.contextId ??= task?.contextId ?? _uuid.v4();
-     messageForContext.contextId = contextId;
+    final contextId = messageForContext.contextId ??=
+        task?.contextId ?? _uuid.v4();
+    messageForContext.contextId = contextId;
 
     return A2ARequestContext(
       messageForContext,
