@@ -207,7 +207,7 @@ void main() {
     taskStore,
     agentExecutor,
     eventBusManager,
-    null
+    null,
   );
   final transportHandler = A2AJsonRpcTransportHandler(requestHandler);
 

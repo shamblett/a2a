@@ -19,9 +19,7 @@ class A2ADeleteTaskPushNotificationConfigResponse {
     Map<String, dynamic> json,
   ) {
     return json.containsKey('result')
-          ? A2ADeleteTaskPushNotificationConfigSuccessResponse.fromJson(
-              json,
-            )
+          ? A2ADeleteTaskPushNotificationConfigSuccessResponse.fromJson(json)
           : A2AJSONRPCErrorResponseDTPR.fromJson(json)
       ..isError = true;
   }

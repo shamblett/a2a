@@ -42,7 +42,8 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
   final _uuid = Uuid();
 
   // Store for push notification configurations (could be part of TaskStore or separate)
-  final Map<String, List<A2APushNotificationConfig>> _pushNotificationConfigs = {};
+  final Map<String, List<A2APushNotificationConfig>> _pushNotificationConfigs =
+      {};
 
   @override
   Future<A2AAgentCard> get agentCard async => _agentCard;
@@ -317,7 +318,7 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
     int? index = _pushNotificationConfigs[params.taskId]?.indexOf(
       params.pushNotificationConfig!,
     );
-    if ( index == -1 ) {
+    if (index == -1) {
       _pushNotificationConfigs[params.taskId]?.add(
         params.pushNotificationConfig!,
       );
@@ -350,15 +351,16 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
     }
 
     final configs = _pushNotificationConfigs[params.id];
-    final retConfig = A2ATaskPushNotificationConfig();
     if (configs == null) {
       throw A2AServerError.internalError(
         ''
-            'Push notification config not found for task ${params.id}.',
+        'Push notification config not found for task ${params.id}.',
         null,
       );
     }
-    int index = configs.indexWhere((e) => e.id == params.pushNotificationConfigId);
+    int index = configs.indexWhere(
+      (e) => e.id == params.pushNotificationConfigId,
+    );
     if (index == -1) {
       throw A2AServerError.internalError(
         ''
