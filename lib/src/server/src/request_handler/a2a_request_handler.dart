@@ -20,15 +20,15 @@ abstract interface class A2ARequestHandler {
 
   Future<A2ATask> cancelTask(A2ATaskIdParams params);
 
-  Future<A2APushNotificationConfig>? setTaskPushNotificationConfig(
+  Future<A2ATaskPushNotificationConfig>? setTaskPushNotificationConfig(
     A2ATaskPushNotificationConfig params,
   );
 
-  Future<A2APushNotificationConfig>? getTaskPushNotificationConfig(
+  Future<A2ATaskPushNotificationConfig>? getTaskPushNotificationConfig(
     A2ATaskIdParams params,
   );
 
-  Future<List<A2APushNotificationConfig>>? listTaskPushNotificationConfigs(
+  Future<List<A2ATaskPushNotificationConfig>>? listTaskPushNotificationConfigs(
     A2AListTaskPushNotificationConfigParams params,
   );
 

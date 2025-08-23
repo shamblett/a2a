@@ -297,10 +297,10 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
   }
 
   @override
-  Future<A2APushNotificationConfig>? setTaskPushNotificationConfig(
+  Future<A2ATaskPushNotificationConfig>? setTaskPushNotificationConfig(
     A2ATaskPushNotificationConfig params,
   ) async {
-    final completer = Completer<A2APushNotificationConfig>();
+    final completer = Completer<A2ATaskPushNotificationConfig>();
     if (_agentCard.capabilities.pushNotifications == false) {
       throw A2AServerError.pushNotificationNotSupported();
     }
@@ -326,16 +326,20 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
           params.pushNotificationConfig!;
     }
 
-    completer.complete(params.pushNotificationConfig);
+    completer.complete(
+      A2ATaskPushNotificationConfig()
+        ..pushNotificationConfig = params.pushNotificationConfig
+        ..taskId = params.taskId,
+    );
 
     return completer.future;
   }
 
   @override
-  Future<A2APushNotificationConfig>? getTaskPushNotificationConfig(
+  Future<A2ATaskPushNotificationConfig>? getTaskPushNotificationConfig(
     A2ATaskIdParams params,
   ) async {
-    final completer = Completer<A2APushNotificationConfig>();
+    final completer = Completer<A2ATaskPushNotificationConfig>();
     if (_agentCard.capabilities.pushNotifications == false) {
       throw A2AServerError.pushNotificationNotSupported();
     }
@@ -356,16 +360,20 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
       );
     }
 
-    completer.complete(configs[index]);
+    completer.complete(
+      A2ATaskPushNotificationConfig()
+        ..pushNotificationConfig = configs[index]
+        ..taskId = params.id,
+    );
 
     return completer.future;
   }
 
   @override
-  Future<List<A2APushNotificationConfig>>? listTaskPushNotificationConfigs(
+  Future<List<A2ATaskPushNotificationConfig>>? listTaskPushNotificationConfigs(
     A2AListTaskPushNotificationConfigParams params,
   ) async {
-    final completer = Completer<List<A2APushNotificationConfig>>();
+    final completer = Completer<List<A2ATaskPushNotificationConfig>>();
     if (_agentCard.capabilities.pushNotifications == false) {
       throw A2AServerError.pushNotificationNotSupported();
     }
@@ -375,7 +383,15 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
       throw A2AServerError.taskNotFound(params.id);
     }
 
-    completer.complete(_pushNotificationConfigs[params.id]);
+    final taskList = <A2ATaskPushNotificationConfig>[];
+    for (final config in _pushNotificationConfigs[params.id]!) {
+      taskList.add(
+        A2ATaskPushNotificationConfig()
+          ..pushNotificationConfig = config
+          ..taskId = params.id,
+      );
+    }
+    completer.complete(taskList);
 
     return completer.future;
   }
