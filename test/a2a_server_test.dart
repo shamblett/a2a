@@ -1183,6 +1183,59 @@ void main() {
         isTrue,
       );
     });
-    // TODO add List and delete tests
+    test('List Task Push Notification Config TH', () async {
+      final jrth = A2AJsonRpcTransportHandler(drq);
+      await store.save(task);
+      agentCard.capabilities.pushNotifications = true;
+      final request = A2ASetTaskPushNotificationConfigRequest()
+        ..params = (A2ATaskPushNotificationConfig()
+          ..taskId = '1'
+          ..pushNotificationConfig = A2APushNotificationConfig());
+      final result = await jrth.handle(request.toJson());
+      expect(result is A2ASetTaskPushNotificationConfigSuccessResponse, isTrue);
+      expect(
+        (result as A2ASetTaskPushNotificationConfigSuccessResponse).result
+            is A2APushNotificationConfig,
+        isTrue,
+      );
+      final listRequest = A2AListTaskPushNotificationConfigRequest()
+        ..params = (A2AListTaskPushNotificationConfigParams()..id = '1');
+      final list = await jrth.handle(listRequest.toJson());
+      expect(list is A2AListTaskPushNotificationConfigSuccessResponse, isTrue);
+      expect(
+        (list as A2AListTaskPushNotificationConfigSuccessResponse).result
+            is List<A2ATaskPushNotificationConfig>,
+        isTrue,
+      );
+    });
+    test('Delete Task Push Notification Config TH', () async {
+      final jrth = A2AJsonRpcTransportHandler(drq);
+      await store.save(task);
+      agentCard.capabilities.pushNotifications = true;
+      final request = A2ASetTaskPushNotificationConfigRequest()
+        ..params = (A2ATaskPushNotificationConfig()
+          ..taskId = '1'
+          ..pushNotificationConfig = (A2APushNotificationConfig()..id = '10'));
+      final result = await jrth.handle(request.toJson());
+      expect(result is A2ASetTaskPushNotificationConfigSuccessResponse, isTrue);
+      expect(
+        (result as A2ASetTaskPushNotificationConfigSuccessResponse).result
+            is A2APushNotificationConfig,
+        isTrue,
+      );
+      final deleteRequest = A2ADeleteTaskPushNotificationConfigRequest()
+        ..params = (A2ADeleteTaskPushNotificationConfigParams()
+          ..id = '1'
+          ..pushNotificationConfigId = '10');
+      final delete = await jrth.handle(deleteRequest.toJson());
+      expect(
+        delete is A2ADeleteTaskPushNotificationConfigSuccessResponse,
+        isTrue,
+      );
+      expect(
+        (delete as A2ADeleteTaskPushNotificationConfigSuccessResponse).result,
+        isNull,
+      );
+    });
   });
 }
