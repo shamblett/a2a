@@ -1236,7 +1236,43 @@ Map<String, dynamic> _$A2AAgentExtensionToJson(A2AAgentExtension instance) =>
       'uri': instance.uri,
     };
 
+A2AAgentInterface _$A2AAgentInterfaceFromJson(Map<String, dynamic> json) =>
+    A2AAgentInterface()
+      ..url = json['url'] as String
+      ..transport = $enumDecode(
+        _$A2ATransportProtocolEnumMap,
+        json['transport'],
+      );
+
+Map<String, dynamic> _$A2AAgentInterfaceToJson(A2AAgentInterface instance) =>
+    <String, dynamic>{
+      'url': instance.url,
+      'transport': _$A2ATransportProtocolEnumMap[instance.transport]!,
+    };
+
+const _$A2ATransportProtocolEnumMap = {
+  A2ATransportProtocol.jsonRpc: 'JSONRPC',
+  A2ATransportProtocol.gRpc: 'GRPC',
+  A2ATransportProtocol.httpJson: 'HTTP+JSON',
+};
+
+A2AAgentCardSignature _$A2AAgentCardSignatureFromJson(
+  Map<String, dynamic> json,
+) => A2AAgentCardSignature()
+  ..protected = json['protected'] as String
+  ..signature = json['signature'] as String
+  ..header = json['header'] as Map<String, dynamic>?;
+
+Map<String, dynamic> _$A2AAgentCardSignatureToJson(
+  A2AAgentCardSignature instance,
+) => <String, dynamic>{
+  'protected': instance.protected,
+  'signature': instance.signature,
+  'header': instance.header,
+};
+
 A2AAgentCard _$A2AAgentCardFromJson(Map<String, dynamic> json) => A2AAgentCard()
+  ..protocolVersion = json['protocolVersion'] as String
   ..capabilities = A2AAgentCapabilities.fromJson(
     json['capabilities'] as Map<String, dynamic>,
   )
@@ -1267,10 +1303,21 @@ A2AAgentCard _$A2AAgentCardFromJson(Map<String, dynamic> json) => A2AAgentCard()
   ..supportsAuthenticatedExtendedCard =
       json['supportsAuthenticatedExtendedCard'] as bool?
   ..url = json['url'] as String
+  ..preferredTransport = $enumDecode(
+    _$A2ATransportProtocolEnumMap,
+    json['preferredTransport'],
+  )
+  ..additionalInterfaces = (json['additionalInterfaces'] as List<dynamic>?)
+      ?.map((e) => A2AAgentInterface.fromJson(e as Map<String, dynamic>))
+      .toList()
+  ..signatures = (json['signatures'] as List<dynamic>?)
+      ?.map((e) => A2AAgentCardSignature.fromJson(e as Map<String, dynamic>))
+      .toList()
   ..version = json['version'] as String;
 
 Map<String, dynamic> _$A2AAgentCardToJson(A2AAgentCard instance) =>
     <String, dynamic>{
+      'protocolVersion': instance.protocolVersion,
       'capabilities': instance.capabilities.toJson(),
       'defaultInputModes': instance.defaultInputModes,
       'defaultOutputModes': instance.defaultOutputModes,
@@ -1287,6 +1334,12 @@ Map<String, dynamic> _$A2AAgentCardToJson(A2AAgentCard instance) =>
       'supportsAuthenticatedExtendedCard':
           instance.supportsAuthenticatedExtendedCard,
       'url': instance.url,
+      'preferredTransport':
+          _$A2ATransportProtocolEnumMap[instance.preferredTransport]!,
+      'additionalInterfaces': instance.additionalInterfaces
+          ?.map((e) => e.toJson())
+          .toList(),
+      'signatures': instance.signatures?.map((e) => e.toJson()).toList(),
       'version': instance.version,
     };
 

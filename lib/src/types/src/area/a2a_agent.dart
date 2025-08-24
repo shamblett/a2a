@@ -78,6 +78,13 @@ class A2AAgentInterface {
 
   /// The transport protocol supported at this URL.
   A2ATransportProtocol transport = A2ATransportProtocol.jsonRpc;
+
+  A2AAgentInterface();
+
+  factory A2AAgentInterface.fromJson(Map<String, dynamic> json) =>
+      _$A2AAgentInterfaceFromJson(json);
+
+  Map<String, dynamic> toJson() => _$A2AAgentInterfaceToJson(this);
 }
 
 /// AgentCardSignature represents a JWS signature of an AgentCard.
@@ -93,6 +100,13 @@ class A2AAgentCardSignature {
 
   /// The unprotected JWS header values.
   A2ASV? header;
+
+  A2AAgentCardSignature();
+
+  factory A2AAgentCardSignature.fromJson(Map<String, dynamic> json) =>
+      _$A2AAgentCardSignatureFromJson(json);
+
+  Map<String, dynamic> toJson() => _$A2AAgentCardSignatureToJson(this);
 }
 
 /// An AgentCard conveys key information:
