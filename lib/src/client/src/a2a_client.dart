@@ -232,18 +232,115 @@ class A2AClient {
 
   /// Gets the push notification configuration for a given task.
   ///
-  /// @param params Parameters containing the taskId.
+  /// @param params Parameters containing the taskId and the id of the
+  /// push notification to get.
   /// @returns A [Future] resolving to [A2AGetTaskPushNotificationConfigResponse].
   Future<A2AGetTaskPushNotificationConfigResponse>
-  getTaskPushNotificationConfig(A2ATaskIdParams params) async {
-    // The 'params' (TaskIdParams) directly matches the structure expected by the RPC method.
+  getTaskPushNotificationConfig(
+    A2AGetTaskPushNotificationConfigParams params,
+  ) async {
+    // Ensure agent card is fetched
+    if (_agentCard != null) {
+      if (_agentCard!.capabilities.pushNotifications != null) {
+        if (!_agentCard!.capabilities.pushNotifications!) {
+          throw Exception(
+            'getTaskPushNotificationConfig:: Agent does not support push notification (AgentCard.capabilities.pushnotifications is not true).',
+          );
+        }
+      } else {
+        throw Exception(
+          'getTaskPushNotificationConfig:: Agent does not support push notifications(AgentCard.capabilities.pushnotifications is null).',
+        );
+      }
+    } else {
+      throw Exception(
+        'getTaskPushNotificationConfig:: Agent does not support push notifications agent card is null',
+      );
+    }
+
+    // The 'params' directly matches the structure expected by the RPC method.
     final result =
         await _postRpcRequest<
-          A2ATaskIdParams,
+          A2AGetTaskPushNotificationConfigParams,
           A2AGetTaskPushNotificationConfigResponse
         >('tasks/pushNotificationConfig/get', params);
 
     return A2AGetTaskPushNotificationConfigResponse.fromJson(result);
+  }
+
+  /// Lists the push notification configuration for a given task.
+  ///
+  /// @param params Parameters containing the taskId.
+  /// @returns A [Future] resolving to [A2ListTaskPushNotificationConfigResponse].
+  Future<A2AListTaskPushNotificationConfigResponse>
+  listTaskPushNotificationConfig(
+    A2AListTaskPushNotificationConfigParams params,
+  ) async {
+    // Ensure agent card is fetched
+    if (_agentCard != null) {
+      if (_agentCard!.capabilities.pushNotifications != null) {
+        if (!_agentCard!.capabilities.pushNotifications!) {
+          throw Exception(
+            'listTaskPushNotificationConfig:: Agent does not support push notification (AgentCard.capabilities.pushnotifications is not true).',
+          );
+        }
+      } else {
+        throw Exception(
+          'listTaskPushNotificationConfig:: Agent does not support push notifications(AgentCard.capabilities.pushnotifications is null).',
+        );
+      }
+    } else {
+      throw Exception(
+        'listTaskPushNotificationConfig:: Agent does not support push notifications agent card is null',
+      );
+    }
+
+    // The 'params' directly matches the structure expected by the RPC method.
+    final result =
+        await _postRpcRequest<
+          A2AListTaskPushNotificationConfigParams,
+          A2AListTaskPushNotificationConfigResponse
+        >('tasks/pushNotificationConfig/get', params);
+
+    return A2AListTaskPushNotificationConfigResponse.fromJson(result);
+  }
+
+  /// Deletes a push notification configuration for a given task.
+  ///
+  /// @param params Parameters containing the taskId and the id of the push notification
+  /// to delete.
+  /// @returns A [Future] resolving to [A2ListTaskPushNotificationConfigResponse].
+  Future<A2ADeleteTaskPushNotificationConfigResponse>
+  deleteTaskPushNotificationConfig(
+    A2ADeleteTaskPushNotificationConfigParams params,
+  ) async {
+    // Ensure agent card is fetched
+    if (_agentCard != null) {
+      if (_agentCard!.capabilities.pushNotifications != null) {
+        if (!_agentCard!.capabilities.pushNotifications!) {
+          throw Exception(
+            'deleteTaskPushNotificationConfig:: Agent does not support push notification (AgentCard.capabilities.pushnotifications is not true).',
+          );
+        }
+      } else {
+        throw Exception(
+          'deleteTaskPushNotificationConfig:: Agent does not support push notifications(AgentCard.capabilities.pushnotifications is null).',
+        );
+      }
+    } else {
+      throw Exception(
+        'deleteTaskPushNotificationConfig:: Agent does not support push notifications agent card is null',
+      );
+    }
+
+    // The 'params' directly matches the structure expected by the RPC method.
+    final result =
+        await _postRpcRequest<
+          A2ADeleteTaskPushNotificationConfigParams,
+          A2ADeleteTaskPushNotificationConfigResponse
+        >('tasks/pushNotificationConfig/get', params);
+
+    return A2ADeleteTaskPushNotificationConfigResponse.fromJson(result);
   }
 
   /// Retrieves a task by its ID.
