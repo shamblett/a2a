@@ -81,7 +81,10 @@ class A2AClient {
   }) async {
     final completer = Completer<A2AAgentCard>();
     if (agentBaseUrl != null) {
-      final agentCard = await _fetchAndCacheAgentCard(baseUrl: agentBaseUrl);
+      final agentCard = await _fetchAndCacheAgentCard(
+        baseUrl: agentBaseUrl,
+        agentCardPath: _agentCardPath,
+      );
       completer.complete(agentCard);
     } else {
       // If no specific URL is given, return the initially configured agent's card.
