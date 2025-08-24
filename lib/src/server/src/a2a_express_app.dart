@@ -22,6 +22,7 @@ class A2AExpressApp {
     Darto app,
     String baseUrl, {
     List<Middleware>? middlewares,
+    String agentCardPath = A2AConstants.agentCardPath,
   }) {
     final router = Router();
     if (middlewares != null) {
@@ -30,7 +31,7 @@ class A2AExpressApp {
       }
     }
 
-    router.get('/.well-known/agent.json', (Request req, Response res) async {
+    router.get(agentCardPath, (Request req, Response res) async {
       try {
         // getAgentCard is on A2ARequestHandler, which DefaultRequestHandler implements
         final agentCard = await _requestHandler.agentCard;

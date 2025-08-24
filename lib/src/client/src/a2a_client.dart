@@ -17,11 +17,9 @@ import 'package:oxy/oxy.dart' as http;
 /// with A2A-compliant agents.
 ///
 class A2AClient {
-  static const defaultAgentCardPath = '.well-known/agent.json';
-
   String agentBaseUrl = '';
 
-  String _agentCardPath = defaultAgentCardPath;
+  String _agentCardPath = A2AConstants.agentCardPath;
 
   late String _serviceEndpointUrl;
 
@@ -52,13 +50,13 @@ class A2AClient {
   /// Constructs an A2AClient instance.
   ///
   /// The agent card is fetched from the provided agent baseUrl.
-  /// The Agent Card is fetched from a path relative to the agentBaseUrl, which defaults to '.well-known/agent.json'.
+  /// The Agent Card is fetched from a path relative to the agentBaseUrl, which defaults to '.well-known/agent-card.json'.
   /// The `url` field from the Agent Card will be used as the RPC service endpoint.
   /// @param agentBaseUrl The base URL of the A2A agent (e.g., https://agent.example.com).
-  /// @param optional agentCardPath path to the agent card, defaults to .well-known/agent.json
+  /// @param optional agentCardPath path to the agent card, defaults to .well-known/agent-card.json
   A2AClient(
     String agentBaseUrl, [
-    String agentCardPath = defaultAgentCardPath,
+    String agentCardPath = A2AConstants.agentCardPath,
   ]) {
     this.agentBaseUrl = agentBaseUrl.endsWith('/')
         ? agentBaseUrl.substring(0, agentBaseUrl.length - 1)
@@ -77,7 +75,10 @@ class A2AClient {
   /// @param agentBaseUrl Optional. The base URL of the agent to fetch the card from.
   /// If provided, this will fetch a new card, not use the cached one from the constructor's URL.
   /// @returns A [Future] that resolves to the [A2AAgentCard].
-  Future<A2AAgentCard> getAgentCard({String? agentBaseUrl}) async {
+  Future<A2AAgentCard> getAgentCard({
+    String? agentBaseUrl,
+    String agentCardPath = A2AConstants.agentCardPath,
+  }) async {
     final completer = Completer<A2AAgentCard>();
     if (agentBaseUrl != null) {
       final agentCard = await _fetchAndCacheAgentCard(baseUrl: agentBaseUrl);
@@ -347,7 +348,10 @@ class A2AClient {
   // the card details will not be cached, just returned.
   // This method is called by the constructor.
   // @returns A Future that eventually resolves to the AgentCard.
-  Future<A2AAgentCard> _fetchAndCacheAgentCard({String baseUrl = ''}) async {
+  Future<A2AAgentCard> _fetchAndCacheAgentCard({
+    String baseUrl = '',
+    String agentCardPath = A2AConstants.agentCardPath,
+  }) async {
     var fetchUrl = agentBaseUrl;
     bool cache = true;
     if (baseUrl.isNotEmpty) {
@@ -357,7 +361,7 @@ class A2AClient {
       fetchUrl = baseUrl;
       cache = false;
     }
-    final agentCardUrl = '$fetchUrl/$_agentCardPath';
+    final agentCardUrl = '$fetchUrl/$agentCardPath';
     try {
       final response = await http.fetch(
         agentCardUrl,

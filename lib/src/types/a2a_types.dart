@@ -10,6 +10,7 @@ library;
 import 'package:json_annotation/json_annotation.dart';
 
 part 'src/a2a_type.dart';
+part 'src/a2a_constants.dart';
 part 'src/area/a2a_error.dart';
 part 'src/area/a2a_request.dart';
 part 'src/area/a2a_part.dart';
