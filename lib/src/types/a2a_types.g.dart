@@ -884,7 +884,7 @@ _$A2AGetTaskPushNotificationConfigSuccessResponseFromJson(
   ..id = json['id']
   ..result = json['result'] == null
       ? null
-      : A2APushNotificationConfig.fromJson(
+      : A2ATaskPushNotificationConfig.fromJson(
           json['result'] as Map<String, dynamic>,
         );
 

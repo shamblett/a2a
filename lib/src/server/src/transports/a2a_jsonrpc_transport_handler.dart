@@ -151,7 +151,7 @@ class A2AJsonRpcTransportHandler {
             );
             return A2AGetTaskPushNotificationConfigSuccessResponse()
               ..id = rpcRequest.id
-              ..result = result?.pushNotificationConfig;
+              ..result = result;
           case A2AListTaskPushNotificationConfigRequest _:
             final result = await _requestHandler
                 .listTaskPushNotificationConfigs(rpcRequest.params!);

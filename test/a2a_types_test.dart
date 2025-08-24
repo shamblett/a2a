@@ -486,7 +486,7 @@ void main() {
       var json = <String, dynamic>{};
 
       var testResponse = A2AGetTaskPushNotificationConfigSuccessResponse()
-        ..result = A2APushNotificationConfig()
+        ..result = A2ATaskPushNotificationConfig()
         ..id = 2;
       pncTaskResponse = testResponse;
       json = pncTaskResponse.toJson();
@@ -498,7 +498,7 @@ void main() {
       );
       final testResponse1 =
           pncTaskResponse as A2AGetTaskPushNotificationConfigSuccessResponse;
-      expect(testResponse1.result is A2APushNotificationConfig, isTrue);
+      expect(testResponse1.result is A2ATaskPushNotificationConfig, isTrue);
       expect(testResponse1.id, 2);
     });
   });
