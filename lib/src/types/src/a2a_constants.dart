@@ -9,6 +9,5 @@ part of '../a2a_types.dart';
 
 /// Shared constants for the A2A library
 class A2AConstants {
-
   static const agentCardPath = '.well-known/agent-card.json';
 }
