@@ -284,6 +284,21 @@ Map<String, dynamic> _$A2AInvalidAgentResponseErrorToJson(
   'message': instance.message,
 };
 
+A2AAuthenticatedExtendedCardNotConfiguredError
+_$A2AAuthenticatedExtendedCardNotConfiguredErrorFromJson(
+  Map<String, dynamic> json,
+) => A2AAuthenticatedExtendedCardNotConfiguredError()
+  ..data = json['data'] as Map<String, dynamic>?
+  ..message = json['message'] as String;
+
+Map<String, dynamic> _$A2AAuthenticatedExtendedCardNotConfiguredErrorToJson(
+  A2AAuthenticatedExtendedCardNotConfiguredError instance,
+) => <String, dynamic>{
+  'code': instance.code,
+  'data': instance.data,
+  'message': instance.message,
+};
+
 A2ASendMessageRequest _$A2ASendMessageRequestFromJson(
   Map<String, dynamic> json,
 ) => A2ASendMessageRequest()
@@ -375,10 +390,51 @@ _$A2AGetTaskPushNotificationConfigRequestFromJson(Map<String, dynamic> json) =>
       ..id = json['id']
       ..params = json['params'] == null
           ? null
-          : A2ATaskIdParams.fromJson(json['params'] as Map<String, dynamic>);
+          : A2AGetTaskPushNotificationConfigParams.fromJson(
+              json['params'] as Map<String, dynamic>,
+            );
 
 Map<String, dynamic> _$A2AGetTaskPushNotificationConfigRequestToJson(
   A2AGetTaskPushNotificationConfigRequest instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'jsonrpc': instance.jsonrpc,
+  'method': instance.method,
+  'params': instance.params?.toJson(),
+};
+
+A2ADeleteTaskPushNotificationConfigRequest
+_$A2ADeleteTaskPushNotificationConfigRequestFromJson(
+  Map<String, dynamic> json,
+) => A2ADeleteTaskPushNotificationConfigRequest()
+  ..id = json['id']
+  ..params = json['params'] == null
+      ? null
+      : A2ADeleteTaskPushNotificationConfigParams.fromJson(
+          json['params'] as Map<String, dynamic>,
+        );
+
+Map<String, dynamic> _$A2ADeleteTaskPushNotificationConfigRequestToJson(
+  A2ADeleteTaskPushNotificationConfigRequest instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'jsonrpc': instance.jsonrpc,
+  'method': instance.method,
+  'params': instance.params?.toJson(),
+};
+
+A2AListTaskPushNotificationConfigRequest
+_$A2AListTaskPushNotificationConfigRequestFromJson(Map<String, dynamic> json) =>
+    A2AListTaskPushNotificationConfigRequest()
+      ..id = json['id']
+      ..params = json['params'] == null
+          ? null
+          : A2AListTaskPushNotificationConfigParams.fromJson(
+              json['params'] as Map<String, dynamic>,
+            );
+
+Map<String, dynamic> _$A2AListTaskPushNotificationConfigRequestToJson(
+  A2AListTaskPushNotificationConfigRequest instance,
 ) => <String, dynamic>{
   'id': instance.id,
   'jsonrpc': instance.jsonrpc,
@@ -517,6 +573,47 @@ Map<String, dynamic> _$A2APushNotificationAuthenticationInfoToJson(
 ) => <String, dynamic>{
   'credentials': instance.credentials,
   'schemes': instance.schemes,
+};
+
+A2AListTaskPushNotificationConfigParams
+_$A2AListTaskPushNotificationConfigParamsFromJson(Map<String, dynamic> json) =>
+    A2AListTaskPushNotificationConfigParams()
+      ..id = json['id'] as String
+      ..metadata = json['metadata'] as Map<String, dynamic>?;
+
+Map<String, dynamic> _$A2AListTaskPushNotificationConfigParamsToJson(
+  A2AListTaskPushNotificationConfigParams instance,
+) => <String, dynamic>{'id': instance.id, 'metadata': instance.metadata};
+
+A2AGetTaskPushNotificationConfigParams
+_$A2AGetTaskPushNotificationConfigParamsFromJson(Map<String, dynamic> json) =>
+    A2AGetTaskPushNotificationConfigParams()
+      ..id = json['id'] as String
+      ..metadata = json['metadata'] as Map<String, dynamic>?
+      ..pushNotificationConfigId = json['pushNotificationConfigId'] as String?;
+
+Map<String, dynamic> _$A2AGetTaskPushNotificationConfigParamsToJson(
+  A2AGetTaskPushNotificationConfigParams instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'metadata': instance.metadata,
+  'pushNotificationConfigId': instance.pushNotificationConfigId,
+};
+
+A2ADeleteTaskPushNotificationConfigParams
+_$A2ADeleteTaskPushNotificationConfigParamsFromJson(
+  Map<String, dynamic> json,
+) => A2ADeleteTaskPushNotificationConfigParams()
+  ..id = json['id'] as String
+  ..metadata = json['metadata'] as Map<String, dynamic>?
+  ..pushNotificationConfigId = json['pushNotificationConfigId'] as String;
+
+Map<String, dynamic> _$A2ADeleteTaskPushNotificationConfigParamsToJson(
+  A2ADeleteTaskPushNotificationConfigParams instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'metadata': instance.metadata,
+  'pushNotificationConfigId': instance.pushNotificationConfigId,
 };
 
 A2ATextPart _$A2ATextPartFromJson(Map<String, dynamic> json) => A2ATextPart()
@@ -787,7 +884,7 @@ _$A2AGetTaskPushNotificationConfigSuccessResponseFromJson(
   ..id = json['id']
   ..result = json['result'] == null
       ? null
-      : A2APushNotificationConfig.fromJson(
+      : A2ATaskPushNotificationConfig.fromJson(
           json['result'] as Map<String, dynamic>,
         );
 
@@ -833,6 +930,73 @@ _$A2ASetTaskPushNotificationConfigSuccessResponseSTPRToJson(
   'id': instance.id,
   'jsonrpc': instance.jsonrpc,
   'result': instance.result?.toJson(),
+};
+
+A2AJSONRPCErrorResponseLTPR _$A2AJSONRPCErrorResponseLTPRFromJson(
+  Map<String, dynamic> json,
+) => A2AJSONRPCErrorResponseLTPR()
+  ..error = json['error'] == null
+      ? null
+      : A2AError.fromJson(json['error'] as Map<String, dynamic>)
+  ..id = json['id'];
+
+Map<String, dynamic> _$A2AJSONRPCErrorResponseLTPRToJson(
+  A2AJSONRPCErrorResponseLTPR instance,
+) => <String, dynamic>{
+  'error': instance.error?.toJson(),
+  'id': instance.id,
+  'jsonrpc': instance.jsonrpc,
+};
+
+A2AListTaskPushNotificationConfigSuccessResponse
+_$A2AListTaskPushNotificationConfigSuccessResponseFromJson(
+  Map<String, dynamic> json,
+) => A2AListTaskPushNotificationConfigSuccessResponse()
+  ..id = json['id']
+  ..result = (json['result'] as List<dynamic>?)
+      ?.map(
+        (e) =>
+            A2ATaskPushNotificationConfig.fromJson(e as Map<String, dynamic>),
+      )
+      .toList();
+
+Map<String, dynamic> _$A2AListTaskPushNotificationConfigSuccessResponseToJson(
+  A2AListTaskPushNotificationConfigSuccessResponse instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'jsonrpc': instance.jsonrpc,
+  'result': instance.result?.map((e) => e.toJson()).toList(),
+};
+
+A2AJSONRPCErrorResponseDTPR _$A2AJSONRPCErrorResponseDTPRFromJson(
+  Map<String, dynamic> json,
+) => A2AJSONRPCErrorResponseDTPR()
+  ..error = json['error'] == null
+      ? null
+      : A2AError.fromJson(json['error'] as Map<String, dynamic>)
+  ..id = json['id'];
+
+Map<String, dynamic> _$A2AJSONRPCErrorResponseDTPRToJson(
+  A2AJSONRPCErrorResponseDTPR instance,
+) => <String, dynamic>{
+  'error': instance.error?.toJson(),
+  'id': instance.id,
+  'jsonrpc': instance.jsonrpc,
+};
+
+A2ADeleteTaskPushNotificationConfigSuccessResponse
+_$A2ADeleteTaskPushNotificationConfigSuccessResponseFromJson(
+  Map<String, dynamic> json,
+) => A2ADeleteTaskPushNotificationConfigSuccessResponse()
+  ..id = json['id']
+  ..result = json['result'];
+
+Map<String, dynamic> _$A2ADeleteTaskPushNotificationConfigSuccessResponseToJson(
+  A2ADeleteTaskPushNotificationConfigSuccessResponse instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'jsonrpc': instance.jsonrpc,
+  'result': instance.result,
 };
 
 A2AJSONRPCErrorResponseT _$A2AJSONRPCErrorResponseTFromJson(

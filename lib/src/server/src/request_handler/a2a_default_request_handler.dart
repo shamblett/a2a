@@ -31,6 +31,8 @@ const finalStates = [
 class A2ADefaultRequestHandler implements A2ARequestHandler {
   final A2AAgentCard _agentCard;
 
+  final A2AAgentCard? _extendedAgentCard;
+
   final A2ATaskStore _taskStore;
 
   final A2AAgentExecutor _agentExecutor;
@@ -40,16 +42,27 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
   final _uuid = Uuid();
 
   // Store for push notification configurations (could be part of TaskStore or separate)
-  final Map<String, A2APushNotificationConfig> _pushNotificationConfigs = {};
+  final Map<String, List<A2APushNotificationConfig>> _pushNotificationConfigs =
+      {};
 
   @override
   Future<A2AAgentCard> get agentCard async => _agentCard;
+
+  @override
+  Future<A2AAgentCard> get authenticatedExtendedAgentCard async {
+    if (_extendedAgentCard == null) {
+      throw A2AServerError.authenticatedExtendedCardNotConfigured();
+    }
+
+    return _extendedAgentCard;
+  }
 
   A2ADefaultRequestHandler(
     this._agentCard,
     this._taskStore,
     this._agentExecutor,
     this._eventBusManager,
+    this._extendedAgentCard,
   );
 
   /// This method can be blocking or non blocking as selected by the blocking flag
@@ -284,10 +297,10 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
   }
 
   @override
-  Future<A2APushNotificationConfig>? setTaskPushNotificationConfig(
+  Future<A2ATaskPushNotificationConfig>? setTaskPushNotificationConfig(
     A2ATaskPushNotificationConfig params,
   ) async {
-    final completer = Completer<A2APushNotificationConfig>();
+    final completer = Completer<A2ATaskPushNotificationConfig>();
     if (_agentCard.capabilities.pushNotifications == false) {
       throw A2AServerError.pushNotificationNotSupported();
     }
@@ -297,39 +310,121 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
       throw A2AServerError.taskNotFound(params.taskId);
     }
 
-    // Store the config. In a real app, this might be stored in the TaskStore
-    // or a dedicated push notification service.
-    _pushNotificationConfigs[params.taskId] = params.pushNotificationConfig!;
-    completer.complete(_pushNotificationConfigs[params.taskId]);
+    // Default the config ID to the task ID if not provided for backward compatibility.
+    params.pushNotificationConfig?.id ??= params.taskId;
+
+    // Add or update the configuration
+    _pushNotificationConfigs[params.taskId] ??= [];
+    int? index = _pushNotificationConfigs[params.taskId]?.indexOf(
+      params.pushNotificationConfig!,
+    );
+    if (index == -1) {
+      _pushNotificationConfigs[params.taskId]?.add(
+        params.pushNotificationConfig!,
+      );
+    } else {
+      _pushNotificationConfigs[params.taskId]?[index!] =
+          params.pushNotificationConfig!;
+    }
+
+    completer.complete(
+      A2ATaskPushNotificationConfig()
+        ..pushNotificationConfig = params.pushNotificationConfig
+        ..taskId = params.taskId,
+    );
 
     return completer.future;
   }
 
   @override
-  Future<A2APushNotificationConfig>? getTaskPushNotificationConfig(
-    A2ATaskIdParams params,
+  Future<A2ATaskPushNotificationConfig>? getTaskPushNotificationConfig(
+    A2AGetTaskPushNotificationConfigParams params,
   ) async {
-    final completer = Completer<A2APushNotificationConfig>();
+    final completer = Completer<A2ATaskPushNotificationConfig>();
     if (_agentCard.capabilities.pushNotifications == false) {
       throw A2AServerError.pushNotificationNotSupported();
     }
 
-    final taskAndHistory = await _taskStore.load(params.id);
-    if (taskAndHistory == null) {
+    final task = await _taskStore.load(params.id);
+    if (task == null) {
       throw A2AServerError.taskNotFound(params.id);
     }
 
-    final config = _pushNotificationConfigs[params.id];
-    if (config == null) {
+    final configs = _pushNotificationConfigs[params.id];
+    if (configs == null) {
       throw A2AServerError.internalError(
         ''
         'Push notification config not found for task ${params.id}.',
         null,
       );
     }
-    completer.complete(config);
+    int index = configs.indexWhere(
+      (e) => e.id == params.pushNotificationConfigId,
+    );
+    if (index == -1) {
+      throw A2AServerError.internalError(
+        ''
+        'Push notification config not found for task ${params.id}.',
+        null,
+      );
+    }
+
+    completer.complete(
+      A2ATaskPushNotificationConfig()
+        ..pushNotificationConfig = configs[index]
+        ..taskId = params.id,
+    );
 
     return completer.future;
+  }
+
+  @override
+  Future<List<A2ATaskPushNotificationConfig>>? listTaskPushNotificationConfigs(
+    A2AListTaskPushNotificationConfigParams params,
+  ) async {
+    final completer = Completer<List<A2ATaskPushNotificationConfig>>();
+    if (_agentCard.capabilities.pushNotifications == false) {
+      throw A2AServerError.pushNotificationNotSupported();
+    }
+
+    final task = await _taskStore.load(params.id);
+    if (task == null) {
+      throw A2AServerError.taskNotFound(params.id);
+    }
+
+    final taskList = <A2ATaskPushNotificationConfig>[];
+    if (_pushNotificationConfigs.containsKey(params.id)) {
+      for (final config in _pushNotificationConfigs[params.id]!) {
+        taskList.add(
+          A2ATaskPushNotificationConfig()
+            ..pushNotificationConfig = config
+            ..taskId = params.id,
+        );
+      }
+    }
+    completer.complete(taskList);
+
+    return completer.future;
+  }
+
+  @override
+  Future<void> deleteTaskPushNotificationConfig(
+    A2ADeleteTaskPushNotificationConfigParams params,
+  ) async {
+    if (_agentCard.capabilities.pushNotifications == false) {
+      throw A2AServerError.pushNotificationNotSupported();
+    }
+
+    final task = await _taskStore.load(params.id);
+    if (task == null) {
+      throw A2AServerError.taskNotFound(params.id);
+    }
+
+    final configs = _pushNotificationConfigs[params.id];
+
+    configs!.removeWhere((e) => e.id == params.id);
+
+    return;
   }
 
   @override
@@ -435,9 +530,9 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
 
     // Ensure contextId is present
     final messageForContext = incomingMessage;
-    messageForContext.contextId ??= task?.contextId ?? _uuid.v4();
-
-    final contextId = incomingMessage.contextId ?? _uuid.v4();
+    final contextId = messageForContext.contextId ??=
+        task?.contextId ?? _uuid.v4();
+    messageForContext.contextId = contextId;
 
     return A2ARequestContext(
       messageForContext,

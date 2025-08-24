@@ -5,19 +5,15 @@
 * Copyright :  S.Hamblett
 */
 
-library;
-
-import 'dart:async';
-import 'dart:convert';
-
-import 'package:a2a/a2a.dart';
-import 'package:oxy/oxy.dart' as http;
+part of '../a2a_client.dart';
 
 /// A2AClient is a HTTP client for interacting
 /// with A2A-compliant agents.
 ///
 class A2AClient {
   String agentBaseUrl = '';
+
+  String _agentCardPath = A2AConstants.agentCardPath;
 
   late String _serviceEndpointUrl;
 
@@ -48,15 +44,21 @@ class A2AClient {
   /// Constructs an A2AClient instance.
   ///
   /// The agent card is fetched from the provided agent baseUrl.
-  /// The Agent Card is expected at `${agentBaseUrl}/.well-known/agent.json`.
+  /// The Agent Card is fetched from a path relative to the agentBaseUrl, which defaults to '.well-known/agent-card.json'.
   /// The `url` field from the Agent Card will be used as the RPC service endpoint.
   /// @param agentBaseUrl The base URL of the A2A agent (e.g., https://agent.example.com).
-  A2AClient(String agentBaseUrl) {
-    if (agentBaseUrl.endsWith('/')) {
-      this.agentBaseUrl = agentBaseUrl.substring(0, agentBaseUrl.length - 1);
-    } else {
-      this.agentBaseUrl = agentBaseUrl;
-    }
+  /// @param optional agentCardPath path to the agent card, defaults to .well-known/agent-card.json
+  A2AClient(
+    String agentBaseUrl, [
+    String agentCardPath = A2AConstants.agentCardPath,
+  ]) {
+    this.agentBaseUrl = agentBaseUrl.endsWith('/')
+        ? agentBaseUrl.substring(0, agentBaseUrl.length - 1)
+        : this.agentBaseUrl = agentBaseUrl;
+
+    _agentCardPath = agentCardPath.endsWith('/')
+        ? agentCardPath.substring(0, agentCardPath.length - 1)
+        : agentCardPath;
     _fetchAndCacheAgentCard();
   }
 
@@ -67,10 +69,16 @@ class A2AClient {
   /// @param agentBaseUrl Optional. The base URL of the agent to fetch the card from.
   /// If provided, this will fetch a new card, not use the cached one from the constructor's URL.
   /// @returns A [Future] that resolves to the [A2AAgentCard].
-  Future<A2AAgentCard> getAgentCard({String? agentBaseUrl}) async {
+  Future<A2AAgentCard> getAgentCard({
+    String? agentBaseUrl,
+    String agentCardPath = A2AConstants.agentCardPath,
+  }) async {
     final completer = Completer<A2AAgentCard>();
     if (agentBaseUrl != null) {
-      final agentCard = await _fetchAndCacheAgentCard(baseUrl: agentBaseUrl);
+      final agentCard = await _fetchAndCacheAgentCard(
+        baseUrl: agentBaseUrl,
+        agentCardPath: _agentCardPath,
+      );
       completer.complete(agentCard);
     } else {
       // If no specific URL is given, return the initially configured agent's card.
@@ -224,18 +232,115 @@ class A2AClient {
 
   /// Gets the push notification configuration for a given task.
   ///
-  /// @param params Parameters containing the taskId.
+  /// @param params Parameters containing the taskId and the id of the
+  /// push notification to get.
   /// @returns A [Future] resolving to [A2AGetTaskPushNotificationConfigResponse].
   Future<A2AGetTaskPushNotificationConfigResponse>
-  getTaskPushNotificationConfig(A2ATaskIdParams params) async {
-    // The 'params' (TaskIdParams) directly matches the structure expected by the RPC method.
+  getTaskPushNotificationConfig(
+    A2AGetTaskPushNotificationConfigParams params,
+  ) async {
+    // Ensure agent card is fetched
+    if (_agentCard != null) {
+      if (_agentCard!.capabilities.pushNotifications != null) {
+        if (!_agentCard!.capabilities.pushNotifications!) {
+          throw Exception(
+            'getTaskPushNotificationConfig:: Agent does not support push notification (AgentCard.capabilities.pushnotifications is not true).',
+          );
+        }
+      } else {
+        throw Exception(
+          'getTaskPushNotificationConfig:: Agent does not support push notifications(AgentCard.capabilities.pushnotifications is null).',
+        );
+      }
+    } else {
+      throw Exception(
+        'getTaskPushNotificationConfig:: Agent does not support push notifications agent card is null',
+      );
+    }
+
+    // The 'params' directly matches the structure expected by the RPC method.
     final result =
         await _postRpcRequest<
-          A2ATaskIdParams,
+          A2AGetTaskPushNotificationConfigParams,
           A2AGetTaskPushNotificationConfigResponse
         >('tasks/pushNotificationConfig/get', params);
 
     return A2AGetTaskPushNotificationConfigResponse.fromJson(result);
+  }
+
+  /// Lists the push notification configuration for a given task.
+  ///
+  /// @param params Parameters containing the taskId.
+  /// @returns A [Future] resolving to [A2ListTaskPushNotificationConfigResponse].
+  Future<A2AListTaskPushNotificationConfigResponse>
+  listTaskPushNotificationConfig(
+    A2AListTaskPushNotificationConfigParams params,
+  ) async {
+    // Ensure agent card is fetched
+    if (_agentCard != null) {
+      if (_agentCard!.capabilities.pushNotifications != null) {
+        if (!_agentCard!.capabilities.pushNotifications!) {
+          throw Exception(
+            'listTaskPushNotificationConfig:: Agent does not support push notification (AgentCard.capabilities.pushnotifications is not true).',
+          );
+        }
+      } else {
+        throw Exception(
+          'listTaskPushNotificationConfig:: Agent does not support push notifications(AgentCard.capabilities.pushnotifications is null).',
+        );
+      }
+    } else {
+      throw Exception(
+        'listTaskPushNotificationConfig:: Agent does not support push notifications agent card is null',
+      );
+    }
+
+    // The 'params' directly matches the structure expected by the RPC method.
+    final result =
+        await _postRpcRequest<
+          A2AListTaskPushNotificationConfigParams,
+          A2AListTaskPushNotificationConfigResponse
+        >('tasks/pushNotificationConfig/get', params);
+
+    return A2AListTaskPushNotificationConfigResponse.fromJson(result);
+  }
+
+  /// Deletes a push notification configuration for a given task.
+  ///
+  /// @param params Parameters containing the taskId and the id of the push notification
+  /// to delete.
+  /// @returns A [Future] resolving to [A2ListTaskPushNotificationConfigResponse].
+  Future<A2ADeleteTaskPushNotificationConfigResponse>
+  deleteTaskPushNotificationConfig(
+    A2ADeleteTaskPushNotificationConfigParams params,
+  ) async {
+    // Ensure agent card is fetched
+    if (_agentCard != null) {
+      if (_agentCard!.capabilities.pushNotifications != null) {
+        if (!_agentCard!.capabilities.pushNotifications!) {
+          throw Exception(
+            'deleteTaskPushNotificationConfig:: Agent does not support push notification (AgentCard.capabilities.pushnotifications is not true).',
+          );
+        }
+      } else {
+        throw Exception(
+          'deleteTaskPushNotificationConfig:: Agent does not support push notifications(AgentCard.capabilities.pushnotifications is null).',
+        );
+      }
+    } else {
+      throw Exception(
+        'deleteTaskPushNotificationConfig:: Agent does not support push notifications agent card is null',
+      );
+    }
+
+    // The 'params' directly matches the structure expected by the RPC method.
+    final result =
+        await _postRpcRequest<
+          A2ADeleteTaskPushNotificationConfigParams,
+          A2ADeleteTaskPushNotificationConfigResponse
+        >('tasks/pushNotificationConfig/get', params);
+
+    return A2ADeleteTaskPushNotificationConfigResponse.fromJson(result);
   }
 
   /// Retrieves a task by its ID.
@@ -337,7 +442,10 @@ class A2AClient {
   // the card details will not be cached, just returned.
   // This method is called by the constructor.
   // @returns A Future that eventually resolves to the AgentCard.
-  Future<A2AAgentCard> _fetchAndCacheAgentCard({String baseUrl = ''}) async {
+  Future<A2AAgentCard> _fetchAndCacheAgentCard({
+    String baseUrl = '',
+    String agentCardPath = A2AConstants.agentCardPath,
+  }) async {
     var fetchUrl = agentBaseUrl;
     bool cache = true;
     if (baseUrl.isNotEmpty) {
@@ -347,7 +455,7 @@ class A2AClient {
       fetchUrl = baseUrl;
       cache = false;
     }
-    final agentCardUrl = '$fetchUrl/.well-known/agent.json';
+    final agentCardUrl = '$fetchUrl/$agentCardPath';
     try {
       final response = await http.fetch(
         agentCardUrl,

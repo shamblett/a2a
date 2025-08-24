@@ -10,6 +10,8 @@ part of '../../a2a_server.dart';
 abstract interface class A2ARequestHandler {
   Future<A2AAgentCard> get agentCard;
 
+  Future<A2AAgentCard> get authenticatedExtendedAgentCard;
+
   Future<A2ATaskOrMessage> sendMessage(A2AMessageSendParams params);
 
   Stream<A2AResult> sendMessageStream(A2AMessageSendParams params);
@@ -18,12 +20,20 @@ abstract interface class A2ARequestHandler {
 
   Future<A2ATask> cancelTask(A2ATaskIdParams params);
 
-  Future<A2APushNotificationConfig>? setTaskPushNotificationConfig(
+  Future<A2ATaskPushNotificationConfig>? setTaskPushNotificationConfig(
     A2ATaskPushNotificationConfig params,
   );
 
-  Future<A2APushNotificationConfig>? getTaskPushNotificationConfig(
-    A2ATaskIdParams params,
+  Future<A2ATaskPushNotificationConfig>? getTaskPushNotificationConfig(
+    A2AGetTaskPushNotificationConfigParams params,
+  );
+
+  Future<List<A2ATaskPushNotificationConfig>>? listTaskPushNotificationConfigs(
+    A2AListTaskPushNotificationConfigParams params,
+  );
+
+  Future<void> deleteTaskPushNotificationConfig(
+    A2ADeleteTaskPushNotificationConfigParams params,
   );
 
   /// Does not return A2AMessage

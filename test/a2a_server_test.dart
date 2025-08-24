@@ -586,6 +586,7 @@ void main() {
         A2AInMemoryTaskStore(),
         A2ATestAgentExecutor(),
         A2ADefaultExecutionEventBusManager(),
+        null,
       );
       expect(await drq.agentCard, agentCard);
     });
@@ -598,6 +599,7 @@ void main() {
         store,
         A2ATestAgentExecutor(),
         A2ADefaultExecutionEventBusManager(),
+        null,
       );
       final params = A2ATaskIdParams()..id = '1';
       final task = A2ATask()
@@ -630,7 +632,7 @@ void main() {
       }
       expect(eventCount, 2);
     });
-    test('Set Task Push Notification Config', () async {
+    test('Set Task Push Notification Config - Error', () async {
       final agentCard = A2AAgentCard()
         ..capabilities = (A2AAgentCapabilities()..pushNotifications = false);
       final store = A2AInMemoryTaskStore();
@@ -639,6 +641,7 @@ void main() {
         store,
         A2ATestAgentExecutor(),
         A2ADefaultExecutionEventBusManager(),
+        null,
       );
       final params = A2ATaskPushNotificationConfig();
       await expectLater(
@@ -651,7 +654,7 @@ void main() {
         throwsA(isA<A2ATaskNotFoundError>()),
       );
     });
-    test('Get Task Push Notification Config', () async {
+    test('Get/Set Task Push Notification Config', () async {
       final agentCard = A2AAgentCard()
         ..capabilities = (A2AAgentCapabilities()..pushNotifications = false);
       final store = A2AInMemoryTaskStore();
@@ -660,14 +663,20 @@ void main() {
         store,
         A2ATestAgentExecutor(),
         A2ADefaultExecutionEventBusManager(),
+        null,
       );
-      final params = A2ATaskIdParams()..id = '1';
+      final params = A2AGetTaskPushNotificationConfigParams()
+        ..pushNotificationConfigId = '20'
+        ..id = '1';
       final task = A2ATask()
         ..id = '1'
         ..status = A2ATaskStatus();
-      final configParams = A2ATaskPushNotificationConfig()
+      final configParams1 = A2ATaskPushNotificationConfig()
         ..taskId = '1'
-        ..pushNotificationConfig = A2APushNotificationConfig();
+        ..pushNotificationConfig = (A2APushNotificationConfig()..id = '10');
+      final configParams2 = A2ATaskPushNotificationConfig()
+        ..taskId = '1'
+        ..pushNotificationConfig = (A2APushNotificationConfig()..id = '20');
       await expectLater(
         drq.getTaskPushNotificationConfig(params),
         throwsA(isA<A2APushNotificationNotSupportedError>()),
@@ -678,13 +687,76 @@ void main() {
         throwsA(isA<A2ATaskNotFoundError>()),
       );
       await store.save(task);
-      await expectLater(
-        drq.getTaskPushNotificationConfig(params),
-        throwsA(isA<A2AInternalError>()),
-      );
-      final setConfig = await drq.setTaskPushNotificationConfig(configParams);
+
+      await drq.setTaskPushNotificationConfig(configParams1);
+      await drq.setTaskPushNotificationConfig(configParams2);
       final getConfig = await drq.getTaskPushNotificationConfig(params);
-      expect(setConfig == getConfig, isTrue);
+      expect(configParams2.taskId == getConfig?.taskId, isTrue);
+      expect(
+        configParams2.pushNotificationConfig?.id ==
+            getConfig?.pushNotificationConfig?.id,
+        isTrue,
+      );
+    });
+    test('List Task Push Notification Config', () async {
+      final agentCard = A2AAgentCard()
+        ..capabilities = (A2AAgentCapabilities()..pushNotifications = true);
+      final store = A2AInMemoryTaskStore();
+      final drq = A2ADefaultRequestHandler(
+        agentCard,
+        store,
+        A2ATestAgentExecutor(),
+        A2ADefaultExecutionEventBusManager(),
+        null,
+      );
+      final task = A2ATask()
+        ..id = '1'
+        ..status = A2ATaskStatus();
+      final configParams1 = A2ATaskPushNotificationConfig()
+        ..taskId = '1'
+        ..pushNotificationConfig = (A2APushNotificationConfig()..id = '10');
+      final configParams2 = A2ATaskPushNotificationConfig()
+        ..taskId = '1'
+        ..pushNotificationConfig = (A2APushNotificationConfig()..id = '20');
+      await store.save(task);
+
+      await drq.setTaskPushNotificationConfig(configParams1);
+      await drq.setTaskPushNotificationConfig(configParams2);
+
+      final resp = await drq.listTaskPushNotificationConfigs(
+        A2AListTaskPushNotificationConfigParams()..id = '1',
+      );
+      expect(resp is List<A2ATaskPushNotificationConfig>, isTrue);
+      expect(resp?.length, 2);
+      expect(resp?.first.taskId, '1');
+      expect(resp?.last.taskId, '1');
+      expect(resp?.first.pushNotificationConfig?.id, '10');
+      expect(resp?.last.pushNotificationConfig?.id, '20');
+    });
+    test('Delete Task Push Notification Config', () async {
+      final agentCard = A2AAgentCard()
+        ..capabilities = (A2AAgentCapabilities()..pushNotifications = true);
+      final store = A2AInMemoryTaskStore();
+      final drq = A2ADefaultRequestHandler(
+        agentCard,
+        store,
+        A2ATestAgentExecutor(),
+        A2ADefaultExecutionEventBusManager(),
+        null,
+      );
+      final task = A2ATask()
+        ..id = '1'
+        ..status = A2ATaskStatus();
+      final configParams1 = A2ATaskPushNotificationConfig()
+        ..taskId = '1'
+        ..pushNotificationConfig = (A2APushNotificationConfig()..id = '10');
+      final configParams2 = A2ATaskPushNotificationConfig()
+        ..taskId = '1'
+        ..pushNotificationConfig = (A2APushNotificationConfig()..id = '20');
+      await store.save(task);
+
+      await drq.setTaskPushNotificationConfig(configParams1);
+      await drq.setTaskPushNotificationConfig(configParams2);
     });
     test('Cancel Task - No event Bus', () async {
       final agentCard = A2AAgentCard();
@@ -694,6 +766,7 @@ void main() {
         store,
         A2ATestAgentExecutor(),
         A2ADefaultExecutionEventBusManager(),
+        null,
       );
       final params = A2ATaskIdParams()..id = '1';
       final task = A2ATask()
@@ -747,6 +820,7 @@ void main() {
         store,
         A2ATestAgentExecutor(),
         eventBus,
+        null,
       );
       final params = A2ATaskIdParams()..id = '1';
       final task = A2ATask()
@@ -769,6 +843,7 @@ void main() {
         store,
         A2ATestAgentExecutor(),
         A2ADefaultExecutionEventBusManager(),
+        null,
       );
       final params = A2ATaskQueryParams()..id = '1';
       final task = A2ATask()
@@ -805,6 +880,7 @@ void main() {
         store,
         A2ATestAgentExecutorThrows(),
         busManager,
+        null,
       );
       final params = A2AMessageSendParams();
       final task = A2ATask()..id = '1';
@@ -848,6 +924,7 @@ void main() {
         store,
         eventBus,
         busManager,
+        null,
       );
       final params = A2AMessageSendParams();
       final task = A2ATask()..id = '1';
@@ -885,6 +962,7 @@ void main() {
         store,
         A2ATestAgentExecutorThrows(),
         busManager,
+        null,
       );
       final params = A2AMessageSendParams();
       final task = A2ATask()..id = '1';
@@ -926,6 +1004,7 @@ void main() {
         store,
         A2ATestAgentExecutor(),
         busManager,
+        null,
       );
       final params = A2AMessageSendParams();
       final task = A2ATask()..id = '1';
@@ -958,6 +1037,7 @@ void main() {
       store,
       A2ATestAgentExecutor(),
       busManager,
+      null,
     );
     final task = A2ATask()..id = '1';
     test('Construction TH', () async {
@@ -1089,16 +1169,72 @@ void main() {
       final requestSet = A2ASetTaskPushNotificationConfigRequest()
         ..params = (A2ATaskPushNotificationConfig()
           ..taskId = '1'
-          ..pushNotificationConfig = A2APushNotificationConfig());
+          ..pushNotificationConfig = (A2APushNotificationConfig()..id = '10'));
       await jrth.handle(requestSet.toJson());
       final requestGet = A2AGetTaskPushNotificationConfigRequest()
-        ..params = (A2ATaskIdParams()..id = '1');
+        ..params = (A2AGetTaskPushNotificationConfigParams()
+          ..id = '1'
+          ..pushNotificationConfigId = '10');
       final result = await jrth.handle(requestGet.toJson());
       expect(result is A2AGetTaskPushNotificationConfigSuccessResponse, isTrue);
       expect(
         (result as A2AGetTaskPushNotificationConfigSuccessResponse).result
+            is A2ATaskPushNotificationConfig,
+        isTrue,
+      );
+    });
+    test('List Task Push Notification Config TH', () async {
+      final jrth = A2AJsonRpcTransportHandler(drq);
+      await store.save(task);
+      agentCard.capabilities.pushNotifications = true;
+      final request = A2ASetTaskPushNotificationConfigRequest()
+        ..params = (A2ATaskPushNotificationConfig()
+          ..taskId = '1'
+          ..pushNotificationConfig = A2APushNotificationConfig());
+      final result = await jrth.handle(request.toJson());
+      expect(result is A2ASetTaskPushNotificationConfigSuccessResponse, isTrue);
+      expect(
+        (result as A2ASetTaskPushNotificationConfigSuccessResponse).result
             is A2APushNotificationConfig,
         isTrue,
+      );
+      final listRequest = A2AListTaskPushNotificationConfigRequest()
+        ..params = (A2AListTaskPushNotificationConfigParams()..id = '1');
+      final list = await jrth.handle(listRequest.toJson());
+      expect(list is A2AListTaskPushNotificationConfigSuccessResponse, isTrue);
+      expect(
+        (list as A2AListTaskPushNotificationConfigSuccessResponse).result
+            is List<A2ATaskPushNotificationConfig>,
+        isTrue,
+      );
+    });
+    test('Delete Task Push Notification Config TH', () async {
+      final jrth = A2AJsonRpcTransportHandler(drq);
+      await store.save(task);
+      agentCard.capabilities.pushNotifications = true;
+      final request = A2ASetTaskPushNotificationConfigRequest()
+        ..params = (A2ATaskPushNotificationConfig()
+          ..taskId = '1'
+          ..pushNotificationConfig = (A2APushNotificationConfig()..id = '10'));
+      final result = await jrth.handle(request.toJson());
+      expect(result is A2ASetTaskPushNotificationConfigSuccessResponse, isTrue);
+      expect(
+        (result as A2ASetTaskPushNotificationConfigSuccessResponse).result
+            is A2APushNotificationConfig,
+        isTrue,
+      );
+      final deleteRequest = A2ADeleteTaskPushNotificationConfigRequest()
+        ..params = (A2ADeleteTaskPushNotificationConfigParams()
+          ..id = '1'
+          ..pushNotificationConfigId = '10');
+      final delete = await jrth.handle(deleteRequest.toJson());
+      expect(
+        delete is A2ADeleteTaskPushNotificationConfigSuccessResponse,
+        isTrue,
+      );
+      expect(
+        (delete as A2ADeleteTaskPushNotificationConfigSuccessResponse).result,
+        isNull,
       );
     });
   });

@@ -21,6 +21,7 @@ class A2AError {
   static const unsupportedOperation = -32004;
   static const contentTypeNotSupported = -32005;
   static const invalidAgentResponse = -32006;
+  static const authenticatedExtendedCardNotConfigured = -32007;
   static const unknown = -1;
 
   /// The error code as received from the RPC call.
@@ -378,4 +379,28 @@ final class A2AInvalidAgentResponseError extends A2AError {
 
   @override
   Map<String, dynamic> toJson() => _$A2AInvalidAgentResponseErrorToJson(this);
+}
+
+/// JSON-RPC error indicating no authenticated agen card has been configured.
+@JsonSerializable(explicitToJson: true)
+final class A2AAuthenticatedExtendedCardNotConfiguredError extends A2AError {
+  /// A Number that indicates the error type that occurred.
+  @JsonKey(includeToJson: true, includeFromJson: false)
+  int code = A2AError.authenticatedExtendedCardNotConfigured;
+
+  /// A Primitive or Structured value that contains additional information about the error.
+  A2ASV? data;
+
+  /// A String providing a short description of the error.
+  String message = '';
+
+  A2AAuthenticatedExtendedCardNotConfiguredError();
+
+  factory A2AAuthenticatedExtendedCardNotConfiguredError.fromJson(
+    Map<String, dynamic> json,
+  ) => _$A2AAuthenticatedExtendedCardNotConfiguredErrorFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$A2AAuthenticatedExtendedCardNotConfiguredErrorToJson(this);
 }

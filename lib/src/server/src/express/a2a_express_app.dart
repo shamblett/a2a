@@ -5,7 +5,7 @@
 * Copyright :  S.Hamblett
 */
 
-part of '../a2a_server.dart';
+part of '../../a2a_server.dart';
 
 class A2AExpressApp {
   final A2ARequestHandler _requestHandler; // Kept for getAgentCard
@@ -16,12 +16,22 @@ class A2AExpressApp {
   /// Adds A2A routes to an existing Darto app.
   /// @param app Optional existing Express app.
   /// @param baseUrl The base URL for A2A endpoints (e.g., "/a2a/api").
+  /// @param middlewares Optional array of Darto middlewares to apply to the A2A routes.
   /// @returns The Express app with A2A routes.
-  Darto setupRoutes(Darto app, String baseUrl) {
-    app.get('$baseUrl/.well-known/agent.json', (
-      Request req,
-      Response res,
-    ) async {
+  Darto setupRoutes(
+    Darto app,
+    String baseUrl, {
+    List<Middleware>? middlewares,
+    String agentCardPath = A2AConstants.agentCardPath,
+  }) {
+    final router = Router();
+    if (middlewares != null) {
+      for (final middleware in middlewares) {
+        router.use(middleware);
+      }
+    }
+
+    router.get(agentCardPath, (Request req, Response res) async {
       try {
         // getAgentCard is on A2ARequestHandler, which DefaultRequestHandler implements
         final agentCard = await _requestHandler.agentCard;
@@ -34,7 +44,7 @@ class A2AExpressApp {
       }
     });
 
-    app.post(baseUrl, (Request req, Response res) async {
+    router.post('/', (Request req, Response res) async {
       final body = await req.body;
       try {
         final rpcResponseOrStream = await _jsonRpcTransportHandler.handle(body);
@@ -111,6 +121,8 @@ class A2AExpressApp {
         }
       }
     });
+
+    app.use(baseUrl, router);
     return app;
   }
 }

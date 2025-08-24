@@ -17,6 +17,8 @@ const supportedTypes = <Type>[
   A2ACancelTaskRequest,
   A2ASetTaskPushNotificationConfigRequest,
   A2AGetTaskPushNotificationConfigRequest,
+  A2ADeleteTaskPushNotificationConfigRequest,
+  A2AListTaskPushNotificationConfigRequest,
 ];
 
 /// Handles JSON-RPC transport layer, routing requests to an [A2ARequestHandler].
@@ -142,7 +144,7 @@ class A2AJsonRpcTransportHandler {
             );
             return A2ASetTaskPushNotificationConfigSuccessResponse()
               ..id = rpcRequest.id
-              ..result = result;
+              ..result = result?.pushNotificationConfig;
           case A2AGetTaskPushNotificationConfigRequest _:
             final result = await _requestHandler.getTaskPushNotificationConfig(
               rpcRequest.params!,
@@ -150,6 +152,19 @@ class A2AJsonRpcTransportHandler {
             return A2AGetTaskPushNotificationConfigSuccessResponse()
               ..id = rpcRequest.id
               ..result = result;
+          case A2AListTaskPushNotificationConfigRequest _:
+            final result = await _requestHandler
+                .listTaskPushNotificationConfigs(rpcRequest.params!);
+            return A2AListTaskPushNotificationConfigSuccessResponse()
+              ..id = rpcRequest.id
+              ..result = result;
+          case A2ADeleteTaskPushNotificationConfigRequest _:
+            await _requestHandler.deleteTaskPushNotificationConfig(
+              rpcRequest.params!,
+            );
+            return A2ADeleteTaskPushNotificationConfigSuccessResponse()
+              ..id = rpcRequest.id
+              ..result = null;
           default:
             throw A2AServerError.methodNotFound(
               'A2AJsonRpcTransportHandler::handle',
