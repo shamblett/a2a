@@ -5,13 +5,7 @@
 * Copyright :  S.Hamblett
 */
 
-library;
-
-import 'dart:async';
-import 'dart:convert';
-
-import 'package:a2a/a2a.dart';
-import 'package:oxy/oxy.dart' as http;
+part of '../a2a_client.dart';
 
 /// A2AClient is a HTTP client for interacting
 /// with A2A-compliant agents.

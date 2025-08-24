@@ -5,6 +5,8 @@
 * Copyright :  S.Hamblett
 */
 
+part of '../a2a_client.dart';
+
 /// Generic interface for handling authentication for HTTP requests.
 ///
 /// - For each HTTP request, this handler is called to provide additional headers to the request through
@@ -19,4 +21,12 @@
 ///   called with the headers that were used to successfully complete the request.  This callback provides an
 ///   opportunity to save the headers for subsequent requests if they were not already saved.
 ///
-interface class A2AAuthenticationHandler {
+abstract interface class A2AAuthenticationHandler {
+
+  /// Provides additional HTTP request headers.
+  /// @returns HTTP headers which may include Authorization if available.
+  Future<http.Headers> get headers;
+
+
+
+}
