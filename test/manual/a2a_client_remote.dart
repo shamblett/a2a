@@ -192,7 +192,7 @@ Future<int> main() async {
         testClient ??= A2AClient(baseUrl);
         await Future.delayed(Duration(seconds: 10));
       }
-      final taskParams = A2ATaskIdParams()..id = '1';
+      final taskParams = A2AGetTaskPushNotificationConfigParams()..id = '1';
 
       try {
         final response = await testClient!.getTaskPushNotificationConfig(

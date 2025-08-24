@@ -177,7 +177,7 @@ Future<int> main() async {
       bool taskNotFound = false;
       bool unsupported = false;
 
-      final taskParams = A2ATaskIdParams()..id = '1';
+      final taskParams = A2AGetTaskPushNotificationConfigParams()..id = '1';
 
       try {
         final response = await testClient!.getTaskPushNotificationConfig(
