@@ -22,11 +22,29 @@ part of '../a2a_client.dart';
 ///   opportunity to save the headers for subsequent requests if they were not already saved.
 ///
 abstract interface class A2AAuthenticationHandler {
-
   /// Provides additional HTTP request headers.
   /// @returns HTTP headers which may include Authorization if available.
   Future<http.Headers> get headers;
 
+  /// For every HTTP response (even 200s) the shouldRetryWithHeaders() method is called.
+  /// This method is supposed to check if the request needs to be retried and if, yes,
+  /// return a set of headers. An A2A server might indicate auth failures in its response
+  /// by JSON-rpc codes, HTTP codes like 401, 403 or headers like WWW-Authenticate.
+  ///
+  /// @param req The RequestInit object used to invoke fetch()
+  /// @param res The fetch Response object
+  /// @returns If the HTTP request should be retried then returns the HTTP headers to use,
+  /// 	or returns undefined if no retry should be made.
+  Future<http.Headers> shouldRetryWithHeaders(
+    http.Request req,
+    http.Response res,
+  );
 
-
+  /// If the last HTTP request using the headers from [shouldRetryWithHeaders] was successful, and
+  /// this function is implemented, then it will be called with the headers provided from
+  /// [shouldRetryWithHeaders].
+  ///
+  /// This callback allows transient headers to be saved for subsequent requests only when they
+  /// are validated by the server.
+  Future<void>? onSuccessfulRetry(http.Headers headers);
 }
