@@ -23,7 +23,8 @@ import 'package:a2a/a2a.dart';
 /// interact with the agent.
 ///
 /// Status information is printed to the console, blue is for information,
-/// yellow for an event that has occurred and red for failure
+/// yellow for an event that has occurred and red for failure. If you enable
+/// server debug this output will be in green.
 
 ///
 /// Step 1 - Define the Agent Card
@@ -220,6 +221,9 @@ void main() {
     '',
     middlewares: [mwLogging],
   );
+
+  // Turn on debug if needed
+  A2AServerDebug.on();
 
   // Start listening
   const port = 41242;

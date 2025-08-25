@@ -11,7 +11,7 @@ part of '../../a2a_server.dart';
 class A2AServerDebug {
   static bool _debug = false;
 
-  static bool get state => _debug;
+  static bool get isOn => _debug;
 
   static void on() {
     _debug = true;
@@ -19,5 +19,12 @@ class A2AServerDebug {
 
   static void off() {
     _debug = false;
+  }
+
+  /// Pretty print a JSON map
+  static String printJson(dynamic json) {
+    var spaces = ' ' * 2;
+    var encoder = JsonEncoder.withIndent(spaces);
+    return encoder.convert(json);
   }
 }
