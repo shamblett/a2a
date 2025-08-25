@@ -234,17 +234,14 @@ Future<int> main() async {
       final taskParams = A2AGetTaskPushNotificationConfigParams()..id = '1';
 
       try {
-        final response = await testClient!.getTaskPushNotificationConfig(
+        await testClient!.getTaskPushNotificationConfig(
           taskParams,
         );
-        expect(response.isError, isTrue);
-        final errorResponse = response as A2AJSONRPCErrorResponseGTPR;
+      } on Exception catch (e) {
         expect(
-          errorResponse.error is A2APushNotificationNotSupportedError,
-          isTrue,
+          e.toString(),
+          'Exception: getTaskPushNotificationConfig:: Agent does not support push notification (AgentCard.capabilities.pushnotifications is not true).',
         );
-      } catch (e) {
-        rethrow;
       }
     });
     test('Get Task', () async {
