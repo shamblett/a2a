@@ -234,9 +234,7 @@ Future<int> main() async {
       final taskParams = A2AGetTaskPushNotificationConfigParams()..id = '1';
 
       try {
-        await testClient!.getTaskPushNotificationConfig(
-          taskParams,
-        );
+        await testClient!.getTaskPushNotificationConfig(taskParams);
       } on Exception catch (e) {
         expect(
           e.toString(),
