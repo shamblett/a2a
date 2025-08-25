@@ -77,7 +77,7 @@ final movieAgentCard = A2AAgentCard()
 ///
 
 // 1. Define your agent's logic as an  A2AAgentExecutor
-class MyAgentExecutor implements A2AAgentExecutor {
+class MovieAgentExecutor implements A2AAgentExecutor {
   final Set<String> _cancelledTasks = {};
   final _uuid = Uuid();
 
@@ -149,7 +149,6 @@ class MyAgentExecutor implements A2AAgentExecutor {
         ..end = true;
 
       eventBus.publish(cancelledUpdate);
-      eventBus.finished();
       return;
     }
 
@@ -201,7 +200,7 @@ final mwLogging = ((Request req, Response res, NextFunction next) {
 void main() {
   /// Initialise the required server components for the express application
   final taskStore = A2AInMemoryTaskStore();
-  final agentExecutor = MyAgentExecutor();
+  final agentExecutor = MovieAgentExecutor();
   final eventBusManager = A2ADefaultExecutionEventBusManager();
   final requestHandler = A2ADefaultRequestHandler(
     movieAgentCard,

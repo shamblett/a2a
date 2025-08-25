@@ -1,0 +1,224 @@
+/*
+* Package : a2a
+* Author : S. Hamblett <steve.hamblett@linux.com>
+* Date   : 10/07/2025
+* Copyright :  S.Hamblett
+*/
+
+part of '../../a2a_server.dart';
+
+/// Simplifies the construction of executors
+class A2AExecutorConstructor {
+  final _uuid = Uuid();
+
+  final A2ARequestContext _requestContext;
+
+  final A2AExecutionEventBus _eventBus;
+
+  /// Cancelled task stream.
+  final StreamController<String> _cancelledTasks =
+      StreamController<String>.broadcast();
+
+  /// Task id
+  String get taskId => _requestContext.taskId;
+
+  /// Context id
+  String get contextId => _requestContext.contextId;
+
+  /// User message
+  A2AMessage get userMessage => _requestContext.userMessage;
+
+  /// Existing task
+  A2ATask? get existingTask => _requestContext.task;
+
+  /// The stream on which all cancelled tasks are added to.
+  StreamController<String> get cancelledTasks => _cancelledTasks;
+
+  /// Add a task to cancel
+  set taskToCancel(String taskId) => cancelledTasks.add(taskId);
+
+  A2AExecutorConstructor(this._requestContext, this._eventBus);
+
+  /// Publishes the initial task update if there is no existing task.
+  void publishInitialTaskUpdate() {
+    final initialTask = A2ATask()
+      ..id = taskId
+      ..contextId = contextId
+      ..status = (A2ATaskStatus()
+        ..state = A2ATaskState.submitted
+        ..timestamp = A2AUtilities.getCurrentTimestamp())
+      ..history = [userMessage]
+      ..metadata = userMessage.metadata
+      ..artifacts = []; // // Initialize artifacts array
+    _eventBus.publish(initialTask);
+  }
+
+  /// Publish working task update
+  void publishWorkingTaskUpdate() {
+    final workingStatusUpdate = A2ATaskStatusUpdateEvent()
+      ..taskId = taskId
+      ..contextId = contextId
+      ..status = (A2ATaskStatus()
+        ..state = A2ATaskState.working
+        ..message = (A2AMessage()
+          ..role = 'agent'
+          ..messageId = _uuid.v4()
+          ..parts = [(A2ATextPart()..text = 'Generating code...')]
+          ..taskId = taskId
+          ..contextId = contextId)
+        ..timestamp = A2AUtilities.getCurrentTimestamp())
+      ..end = false;
+    _eventBus.publish(workingStatusUpdate);
+  }
+
+  /// Publish final task update
+  void publishFinalTaskUpdate() {
+    final finalUpdate = A2ATaskStatusUpdateEvent()
+      ..taskId = taskId
+      ..contextId = contextId
+      ..status = (A2ATaskStatus()
+        ..state = A2ATaskState.completed
+        ..message = (A2AMessage()
+          ..role = 'agent'
+          ..messageId = _uuid.v4()
+          ..taskId = taskId
+          ..contextId = contextId)
+        ..timestamp = A2AUtilities.getCurrentTimestamp())
+      ..end = true;
+    _eventBus.publish(finalUpdate);
+  }
+
+  /// Publish cancel task update
+  void publishCancelTaskUpdate() {
+    final cancelledUpdate = A2ATaskStatusUpdateEvent()
+      ..taskId = taskId
+      ..contextId = contextId
+      ..status = (A2ATaskStatus()
+        ..state = A2ATaskState.canceled
+        ..timestamp = A2AUtilities.getCurrentTimestamp())
+      ..end = true;
+    _eventBus.publish(cancelledUpdate);
+  }
+
+  /// Delay processing, period is milliseconds.
+  void delay(int period) async {
+    await Future.delayed(Duration(milliseconds: period));
+  }
+
+  /// Publish an Artifact update
+  void publishArtifactUpdate(
+    String name,
+    String id,
+    List<A2APart> parts, {
+    bool append = false,
+    bool lastChunk = false,
+  }) {
+    final artifactUpdate = A2ATaskArtifactUpdateEvent()
+      ..taskId = taskId
+      ..contextId = contextId
+      ..artifact = (A2AArtifact()
+        ..artifactId = id
+        ..name = name
+        ..parts = parts)
+      ..append = append
+      ..lastChunk = lastChunk;
+    _eventBus.publish(artifactUpdate);
+  }
+
+  /// Publish the final task update to mark execution complete
+  /// The message sent with the update can have optional parts.
+  void publishFinalUpdate(String messageId, {List<A2APart>? messageParts}) {
+    final finalUpdate = A2ATaskStatusUpdateEvent()
+      ..taskId = taskId
+      ..contextId = contextId
+      ..status = (A2ATaskStatus()
+        ..state = A2ATaskState.completed
+        ..message = (A2AMessage()
+          ..role = 'agent'
+          ..messageId = messageId
+          ..taskId = taskId
+          ..contextId = contextId)
+        ..timestamp = A2AUtilities.getCurrentTimestamp())
+      ..end = true;
+
+    if (messageParts != null) {
+      finalUpdate.status?.message?.parts = messageParts;
+    }
+    _eventBus.publish(finalUpdate);
+  }
+
+  /// Publish a user supplied entity.
+  /// Used for publishing specific created objects.
+  void publishUserObject(Object object) {
+    _eventBus.publish(object);
+  }
+
+  /// Create a text part.
+  A2ATextPart createTextPart(String text, {A2ASV? metadata}) {
+    final textPart = A2ATextPart()..text = text;
+    if (metadata != null) {
+      textPart.metadata = metadata;
+    }
+    return textPart;
+  }
+
+  /// Create a URL file part.
+  A2AFilePart createUrlFilePart(
+    String uri, {
+    String? name,
+    A2ASV? metadata,
+    String? mimetype,
+  }) {
+    final filePart = A2AFilePart();
+    if (metadata != null) {
+      filePart.metadata = metadata;
+    }
+    final fileWithUrl = A2AFileWithUri();
+    if (name != null) {
+      fileWithUrl.name = name;
+    }
+    if (mimetype != null) {
+      fileWithUrl.mimeType = mimetype;
+    }
+    fileWithUrl.uri = uri;
+
+    filePart.file = fileWithUrl;
+
+    return filePart;
+  }
+
+  /// Create a bytes file part.
+  /// The bytes parameter is the base64 encoded content of the file.
+  A2AFilePart createUrlBytesFilePart(
+    String bytes, {
+    String? name,
+    A2ASV? metadata,
+    String? mimetype,
+  }) {
+    final filePart = A2AFilePart();
+    if (metadata != null) {
+      filePart.metadata = metadata;
+    }
+    final fileWithBytes = A2AFileWithBytes();
+    if (name != null) {
+      fileWithBytes.name = name;
+    }
+    if (mimetype != null) {
+      fileWithBytes.mimeType = mimetype;
+    }
+    fileWithBytes.bytes = bytes;
+
+    filePart.file = fileWithBytes;
+
+    return filePart;
+  }
+
+  /// Create a data part.
+  A2ADataPart createDataPart(A2ASV data, {A2ASV? metadata}) {
+    final dataPart = A2ADataPart()..data = data;
+    if (metadata != null) {
+      dataPart.metadata = metadata;
+    }
+    return dataPart;
+  }
+}

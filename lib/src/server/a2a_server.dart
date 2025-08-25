@@ -32,6 +32,6 @@ part 'src/request_handler/a2a_request_handler.dart';
 part 'src/request_handler/a2a_default_request_handler.dart';
 part 'src/agent_execution/a2a_agent_executor.dart';
 part 'src/agent_execution/a2a_request_context.dart';
-part 'src/agent_execution/a2a_executor_construction_helpers.dart';
+part 'src/agent_execution/a2a_executor_constructor.dart';
 part 'src/transports/a2a_jsonrpc_transport_handler.dart';
 part 'src/debug/a2a_server_debug.dart';
