@@ -62,7 +62,7 @@ class A2AExpressApp {
                   '${Colorize('A2AExpressApp::setupRoutes - Sending SSE event $jsonString').green()}',
                 );
               }
-              //TODO res.write('data: ${json.encode(jsonData)}\n\n');
+              res.write('data: ${json.encode(jsonData)}\n\n');
             }
           } catch (e) {
             print(

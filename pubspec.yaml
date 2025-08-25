@@ -22,7 +22,7 @@ dependencies:
     args: '^2.7.0'
     uuid: '^4.5.1'
     events_emitter: '^0.6.0'
-    darto: '^0.0.32'
+    darto: '^0.0.33'
    
 
 dev_dependencies:
