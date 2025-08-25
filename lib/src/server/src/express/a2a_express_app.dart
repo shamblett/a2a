@@ -53,7 +53,6 @@ class A2AExpressApp {
           res.set('Content-Type', 'text/event-stream');
           res.set('Cache-Control', 'no-cache');
           res.set('Connection', 'keep-alive');
-          String streamData = '';
           try {
             await for (final event in rpcResponseOrStream()) {
               final jsonData = event.toJson();
@@ -63,7 +62,7 @@ class A2AExpressApp {
                   '${Colorize('A2AExpressApp::setupRoutes - Sending SSE event $jsonString').green()}',
                 );
               }
-              streamData += 'data: ${json.encode(jsonData)}\n\n';
+              //TODO res.write('data: ${json.encode(jsonData)}\n\n');
             }
           } catch (e) {
             print(
@@ -80,7 +79,7 @@ class A2AExpressApp {
             res.status(500).json(errorResponse.toJson());
           } finally {
             if (!res.finished) {
-              res.end(streamData);
+              res.end();
             }
           }
         } else {
