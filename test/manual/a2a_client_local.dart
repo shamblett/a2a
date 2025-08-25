@@ -174,27 +174,19 @@ Future<int> main() async {
         testClient ??= A2AClient(baseUrl);
         await Future.delayed(Duration(seconds: 1));
       }
-      bool taskNotFound = false;
-      bool unsupported = false;
 
-      final taskParams = A2AGetTaskPushNotificationConfigParams()..id = '1';
+      final config = A2AGetTaskPushNotificationConfigParams()
+        ..id = '1'
+        ..pushNotificationConfigId = '10';
 
       try {
-        final response = await testClient!.getTaskPushNotificationConfig(
-          taskParams,
+        await testClient!.getTaskPushNotificationConfig(config);
+      } on Exception catch (e) {
+        expect(
+          e.toString(),
+          'Exception: getTaskPushNotificationConfig:: Agent does not support push notifications(AgentCard.capabilities.pushnotifications is null).',
         );
-        expect(response.isError, isTrue);
-        final errorResponse = response as A2AJSONRPCErrorResponseGTPR;
-        if (errorResponse.error is A2AUnsupportedOperationError) {
-          unsupported = true;
-        }
-        if (errorResponse.error is A2ATaskNotFoundError) {
-          taskNotFound = true;
-        }
-      } catch (e) {
-        rethrow;
       }
-      expect(taskNotFound || unsupported, isTrue);
     });
     test('Get Task', () async {
       if (testClient == null) {

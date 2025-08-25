@@ -56,7 +56,14 @@ class A2AExpressApp {
           String streamData = '';
           try {
             await for (final event in rpcResponseOrStream()) {
-              streamData += 'data: ${json.encode(event.toJson())}\n\n';
+              final jsonData = event.toJson();
+              if (A2AServerDebug.isOn) {
+                final jsonString = A2AServerDebug.printJson(jsonData);
+                print(
+                  '${Colorize('A2AExpressApp::setupRoutes - Sending SSE event $jsonString').green()}',
+                );
+              }
+              streamData += 'data: ${json.encode(jsonData)}\n\n';
             }
           } catch (e) {
             print(
@@ -88,8 +95,14 @@ class A2AExpressApp {
               (rpcResponseOrStream as dynamic).result = rpcResult.error;
             }
           }
-
-          res.status(200).json((rpcResponseOrStream as dynamic).toJson());
+          final responseMap = (rpcResponseOrStream as dynamic).toJson();
+          if (A2AServerDebug.isOn) {
+            final jsonString = A2AServerDebug.printJson(responseMap);
+            print(
+              '${Colorize('A2AExpressApp::setupRoutes - Sending normal response $jsonString').green()}',
+            );
+          }
+          res.status(200).json(responseMap);
         }
       } on A2APushNotificationNotSupportedError catch (e) {
         print(

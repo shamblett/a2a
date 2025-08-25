@@ -181,10 +181,13 @@ class A2AJsonRpcTransportHandler {
       }
 
       // General failure
+      print(
+        '${Colorize('Exception raised in A2A Transport handler, message is ${(e as dynamic).message}').yellow()}',
+      );
       Error.throwWithStackTrace(
         A2AServerError.internalError(
           'A2AJsonRpcTransportHandler::handle '
-          ' An unexpected error occurred',
+          ' An unexpected error occurred - ${(e as dynamic).message}',
           null,
         ),
         s,
