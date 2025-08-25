@@ -223,7 +223,7 @@ void main() {
   );
 
   // Turn on debug if needed
-  A2AServerDebug.on();
+  // A2AServerDebug.on();
 
   // Start listening
   const port = 41242;
