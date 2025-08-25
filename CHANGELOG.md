@@ -1,3 +1,8 @@
+# 2.2.0
+- [Issue 13](https://github.com/shamblett/a2a/issues/13)
+- [Issue 15](https://github.com/shamblett/a2a/issues/15)
+- [Issue 17](https://github.com/shamblett/a2a/issues/17)
+
 # 2.1.0
 - [Issue 4](https://github.com/shamblett/a2a/issues/4)
 - [Issue 9](https://github.com/shamblett/a2a/issues/9)
