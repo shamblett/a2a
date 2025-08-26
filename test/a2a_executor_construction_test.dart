@@ -29,11 +29,16 @@ void main() {
     ..contextId = contextId
     ..messageId = messageId);
 
+  final testTaskUpdate = A2ATaskStatusUpdateEvent()
+    ..status = (A2ATaskStatus()..state = A2ATaskState.unknown)
+    ..contextId = contextId
+    ..taskId = taskId
+    ..end = false;
+
   final rq = A2ARequestContext(testMessage, testTask, [], taskId, contextId);
 
-  final ev = A2ADefaultExecutionEventBus();
-
-  test('Construction', () async {
+  test('Construction', () {
+    final ev = A2ADefaultExecutionEventBus();
     final ec = A2AExecutorConstructor(rq, ev);
     expect(ec.contextId, contextId);
     expect(ec.taskId, taskId);
@@ -41,5 +46,63 @@ void main() {
     expect(ec.existingTask?.id, taskId);
     expect(ec.referencedTasks, []);
     expect(ec.isTaskCancelled, isFalse);
+  });
+  test('Cancel Task', () {
+    final ev = A2ADefaultExecutionEventBus();
+    final ec = A2AExecutorConstructor(rq, ev);
+    ec.cancelTask = '1234';
+    expect(ec.isTaskCancelled, isFalse);
+    ec.cancelTask = taskId;
+    expect(ec.isTaskCancelled, isTrue);
+  });
+  test('Initial Task Update - default', () {
+    final ev = A2ADefaultExecutionEventBus();
+    final ec = A2AExecutorConstructor(rq, ev);
+    ev.on(A2AExecutionEventBus.a2aEBEvent, ((event) {
+      expect(event is A2ATask, isTrue);
+      final update = event as A2ATask;
+      expect(update.contextId, contextId);
+      expect(update.id, taskId);
+      expect(update.status?.state, A2ATaskState.submitted);
+    }));
+    ec.publishInitialTaskUpdate();
+  });
+  test('Initial Task Update - user supplied', () {
+    final ev = A2ADefaultExecutionEventBus();
+    final ec = A2AExecutorConstructor(rq, ev);
+    ev.on(A2AExecutionEventBus.a2aEBEvent, ((event) {
+      expect(event is A2ATask, isTrue);
+      final update = event as A2ATask;
+      expect(update.contextId, contextId);
+      expect(update.id, taskId);
+      expect(update.status?.state, A2ATaskState.unknown);
+    }));
+    ec.initialTaskUpdate = testTask;
+    ec.publishInitialTaskUpdate();
+  });
+  test('Working Task Update - default', () {
+    final ev = A2ADefaultExecutionEventBus();
+    final ec = A2AExecutorConstructor(rq, ev);
+    ev.on(A2AExecutionEventBus.a2aEBEvent, ((event) {
+      expect(event is A2ATaskStatusUpdateEvent, isTrue);
+      final update = event as A2ATaskStatusUpdateEvent;
+      expect(update.contextId, contextId);
+      expect(update.taskId, taskId);
+      expect(update.status?.state, A2ATaskState.working);
+    }));
+    ec.publishWorkingTaskUpdate();
+  });
+  test('Working Task Update - user supplied', () {
+    final ev = A2ADefaultExecutionEventBus();
+    final ec = A2AExecutorConstructor(rq, ev);
+    ev.on(A2AExecutionEventBus.a2aEBEvent, ((event) {
+      expect(event is A2ATaskStatusUpdateEvent, isTrue);
+      final update = event as A2ATaskStatusUpdateEvent;
+      expect(update.contextId, contextId);
+      expect(update.taskId, taskId);
+      expect(update.status?.state, A2ATaskState.unknown);
+    }));
+    ec.initialWorkingUpdate = testTaskUpdate;
+    ec.publishWorkingTaskUpdate();
   });
 }

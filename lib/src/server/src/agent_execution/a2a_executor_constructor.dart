@@ -9,6 +9,12 @@ part of '../../a2a_server.dart';
 
 /// Simplifies the construction of executors
 class A2AExecutorConstructor {
+  /// User supplied initial task update, state should be submitted.
+  A2ATask? initialTaskUpdate;
+
+  /// User supplied working task status update, state should be working.
+  A2ATaskStatusUpdateEvent? initialWorkingUpdate;
+
   final _uuid = Uuid();
 
   bool _taskCancelled = false;
@@ -61,7 +67,8 @@ class A2AExecutorConstructor {
     return false;
   }
 
-  /// Publishes the initial task update if there is no existing task.
+  /// Publishes the initial task update if there is no user
+  /// supplied initial task..
   void publishInitialTaskUpdate() {
     final initialTask = A2ATask()
       ..id = taskId
@@ -71,12 +78,15 @@ class A2AExecutorConstructor {
         ..timestamp = A2AUtilities.getCurrentTimestamp())
       ..history = [userMessage]
       ..metadata = userMessage.metadata
-      ..artifacts = []; // // Initialize artifacts array
-    _eventBus.publish(initialTask);
+      ..artifacts = [];
+
+    var task = initialTaskUpdate ?? initialTask;
+    _eventBus.publish(task);
+    _requestContext.task = task;
   }
 
   /// Publish working task update
-  void publishWorkingTaskUpdate() {
+  void publishWorkingTaskUpdate({List<A2APart>? part}) {
     final workingStatusUpdate = A2ATaskStatusUpdateEvent()
       ..taskId = taskId
       ..contextId = contextId
@@ -85,12 +95,14 @@ class A2AExecutorConstructor {
         ..message = (A2AMessage()
           ..role = 'agent'
           ..messageId = _uuid.v4()
-          ..parts = [(A2ATextPart()..text = 'Generating code...')]
+          ..parts = part ?? []
           ..taskId = taskId
           ..contextId = contextId)
         ..timestamp = A2AUtilities.getCurrentTimestamp())
       ..end = false;
-    _eventBus.publish(workingStatusUpdate);
+
+    var update = initialWorkingUpdate ?? workingStatusUpdate;
+    _eventBus.publish(update);
   }
 
   /// Publish final task update
