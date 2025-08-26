@@ -29,6 +29,9 @@ class A2AExecutorConstructor {
   /// Existing task
   A2ATask? get existingTask => _requestContext.task;
 
+  /// Referenced tasks
+  List<A2ATask>? get referencedTasks => _requestContext.referenceTasks;
+
   /// Returns true if the task is cancelled.
   /// Use this if you wish to perform your own task cancellation functionality.
   /// if you want the task to be automatically cancelled then use
