@@ -118,18 +118,20 @@ class A2AExecutorConstructor {
   }
 
   /// Publish final task update
-  void publishFinalTaskUpdate({List<A2APart>? part}) {
+  void publishFinalTaskUpdate({A2AMessage? message}) {
+    final defaultMessage = (A2AMessage()
+      ..role = 'agent'
+      ..messageId = _uuid.v4()
+      ..parts = []
+      ..taskId = taskId
+      ..contextId = contextId);
+
     final finalStatusUpdate = A2ATaskStatusUpdateEvent()
       ..taskId = taskId
       ..contextId = contextId
       ..status = (A2ATaskStatus()
         ..state = A2ATaskState.completed
-        ..message = (A2AMessage()
-          ..role = 'agent'
-          ..messageId = _uuid.v4()
-          ..parts = part ?? []
-          ..taskId = taskId
-          ..contextId = contextId)
+        ..message = message ?? defaultMessage
         ..timestamp = A2AUtilities.getCurrentTimestamp())
       ..end = true;
 
@@ -167,28 +169,6 @@ class A2AExecutorConstructor {
     _eventBus.publish(update);
   }
 
-  /// Publish the final task update to mark execution complete
-  /// The message sent with the update can have optional parts.
-  void publishFinalUpdate(String messageId, {List<A2APart>? messageParts}) {
-    final finalUpdate = A2ATaskStatusUpdateEvent()
-      ..taskId = taskId
-      ..contextId = contextId
-      ..status = (A2ATaskStatus()
-        ..state = A2ATaskState.completed
-        ..message = (A2AMessage()
-          ..role = 'agent'
-          ..messageId = messageId
-          ..taskId = taskId
-          ..contextId = contextId)
-        ..timestamp = A2AUtilities.getCurrentTimestamp())
-      ..end = true;
-
-    if (messageParts != null) {
-      finalUpdate.status?.message?.parts = messageParts;
-    }
-    _eventBus.publish(finalUpdate);
-  }
-
   /// Publish a user supplied entity.
   /// Used for publishing specific created objects.
   void publishUserObject(Object object) {
@@ -218,6 +198,22 @@ class A2AExecutorConstructor {
     ..extensions = extensions ?? []
     ..metadata = metadata ?? {}
     ..parts = parts ?? [];
+
+  /// Create a message
+  A2AMessage createMessage(
+    String messageId, {
+    List<String>? extensions,
+    A2ASV? metadata,
+    List<String>? referenceTaskIds,
+    List<A2APart>? parts,
+  }) => A2AMessage()
+    ..contextId = contextId
+    ..taskId = taskId
+    ..messageId = messageId
+    ..parts = parts ?? []
+    ..extensions = extensions ?? []
+    ..metadata = metadata ?? {}
+    ..role = 'agent';
 
   /// Create a text part.
   A2ATextPart createTextPart(String text, {A2ASV? metadata}) {

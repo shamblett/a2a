@@ -30,12 +30,14 @@ void main() {
     ..messageId = messageId);
 
   final testTaskUpdate = A2ATaskStatusUpdateEvent()
-    ..status = (A2ATaskStatus()..state = A2ATaskState.unknown)
+    ..status = (A2ATaskStatus()
+      ..state = A2ATaskState.unknown
+      ..message = testMessage)
     ..contextId = contextId
     ..taskId = taskId
     ..end = false;
 
-  final testArtifact = A2AArtifact()..artifactId = 'Unknown';
+  final testArtifact = A2AArtifact()..artifactId = artifactId;
 
   final testArtifactUpdate = A2ATaskArtifactUpdateEvent()
     ..taskId = taskId
@@ -164,6 +166,12 @@ void main() {
     test('Final Task Update - default', () {
       final ev = A2ADefaultExecutionEventBus();
       final ec = A2AExecutorConstructor(rq, ev);
+      final message = ec.createMessage(
+        'Message id',
+        extensions: ['An extension'],
+        metadata: {'First': 1},
+        parts: [A2ATextPart()..text = 'The text'],
+      );
       ev.on(A2AExecutionEventBus.a2aEBEvent, ((event) {
         expect(event is A2ATaskStatusUpdateEvent, isTrue);
         final update = event as A2ATaskStatusUpdateEvent;
@@ -171,8 +179,9 @@ void main() {
         expect(update.taskId, taskId);
         expect(update.status?.state, A2ATaskState.completed);
         expect(update.end, isTrue);
+        expect((update.status?.message as A2AMessage).messageId, 'Message id');
       }));
-      ec.publishFinalTaskUpdate();
+      ec.publishFinalTaskUpdate(message: message);
     });
     test('Final Task Update - user supplied', () {
       final ev = A2ADefaultExecutionEventBus();
@@ -183,6 +192,7 @@ void main() {
         expect(update.contextId, contextId);
         expect(update.taskId, taskId);
         expect(update.status?.state, A2ATaskState.unknown);
+        expect((update.status?.message as A2AMessage).messageId, messageId);
       }));
       ec.finalUpdate = testTaskUpdate;
       ec.publishFinalTaskUpdate();
@@ -290,6 +300,45 @@ void main() {
       expect(artifact.artifactId, 'The id');
       expect(artifact.name, 'The name');
       expect((artifact.parts.first as A2ATextPart).text, 'The text');
+    });
+    test('Create Message', () {
+      final ev = A2ADefaultExecutionEventBus();
+      final ec = A2AExecutorConstructor(rq, ev);
+      final message = ec.createMessage(
+        'Message id',
+        extensions: ['An extension'],
+        metadata: {'First': 1},
+        parts: [A2ATextPart()..text = 'The text'],
+      );
+      expect(message.metadata, {'First': 1});
+      expect(message.extensions, ['An extension']);
+      expect(message.messageId, 'Message id');
+      expect((message.parts?.first as A2ATextPart).text, 'The text');
+      expect(message.role, 'agent');
+    });
+    test('Has Task been cancelled  - cancelled', () {
+      final ev = A2ADefaultExecutionEventBus();
+      final ec = A2AExecutorConstructor(rq, ev);
+      bool evCalled = false;
+      ev.on(A2AExecutionEventBus.a2aEBEvent, ((event) {
+        expect(event is A2ATaskStatusUpdateEvent, isTrue);
+        evCalled = true;
+      }));
+      ec.cancelTask = taskId;
+      final res = ec.hasTaskBeenCancelled();
+      expect(res, isTrue);
+      expect(evCalled, isTrue);
+    });
+    test('Has Task been cancelled - not cancelled', () {
+      final ev = A2ADefaultExecutionEventBus();
+      final ec = A2AExecutorConstructor(rq, ev);
+      bool evCalled = false;
+      ev.on(A2AExecutionEventBus.a2aEBEvent, ((event) {
+        evCalled = true;
+      }));
+      final res = ec.hasTaskBeenCancelled();
+      expect(res, isFalse);
+      expect(evCalled, isFalse);
     });
   });
 }
