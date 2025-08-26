@@ -12,8 +12,13 @@ class A2AExecutorConstructor {
   /// User supplied initial task update, state should be submitted.
   A2ATask? initialTaskUpdate;
 
-  /// User supplied working task status update, state should be working.
-  A2ATaskStatusUpdateEvent? initialWorkingUpdate;
+  /// User supplied working task status update, state should be working
+  /// end should be false.
+  A2ATaskStatusUpdateEvent? workingUpdate;
+
+  /// User supplied final task status update, state should be completed,
+  /// end should be true.
+  A2ATaskStatusUpdateEvent? finalUpdate;
 
   final _uuid = Uuid();
 
@@ -101,13 +106,13 @@ class A2AExecutorConstructor {
         ..timestamp = A2AUtilities.getCurrentTimestamp())
       ..end = false;
 
-    var update = initialWorkingUpdate ?? workingStatusUpdate;
+    var update = workingUpdate ?? workingStatusUpdate;
     _eventBus.publish(update);
   }
 
   /// Publish final task update
-  void publishFinalTaskUpdate() {
-    final finalUpdate = A2ATaskStatusUpdateEvent()
+  void publishFinalTaskUpdate({List<A2APart>? part}) {
+    final finalStatusUpdate = A2ATaskStatusUpdateEvent()
       ..taskId = taskId
       ..contextId = contextId
       ..status = (A2ATaskStatus()
@@ -115,11 +120,14 @@ class A2AExecutorConstructor {
         ..message = (A2AMessage()
           ..role = 'agent'
           ..messageId = _uuid.v4()
+          ..parts = part ?? []
           ..taskId = taskId
           ..contextId = contextId)
         ..timestamp = A2AUtilities.getCurrentTimestamp())
       ..end = true;
-    _eventBus.publish(finalUpdate);
+
+    var update = finalUpdate ?? finalStatusUpdate;
+    _eventBus.publish(update);
   }
 
   /// Publish cancel task update

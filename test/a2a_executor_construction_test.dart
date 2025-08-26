@@ -102,7 +102,33 @@ void main() {
       expect(update.taskId, taskId);
       expect(update.status?.state, A2ATaskState.unknown);
     }));
-    ec.initialWorkingUpdate = testTaskUpdate;
+    ec.workingUpdate = testTaskUpdate;
     ec.publishWorkingTaskUpdate();
+  });
+  test('Final Task Update - default', () {
+    final ev = A2ADefaultExecutionEventBus();
+    final ec = A2AExecutorConstructor(rq, ev);
+    ev.on(A2AExecutionEventBus.a2aEBEvent, ((event) {
+      expect(event is A2ATaskStatusUpdateEvent, isTrue);
+      final update = event as A2ATaskStatusUpdateEvent;
+      expect(update.contextId, contextId);
+      expect(update.taskId, taskId);
+      expect(update.status?.state, A2ATaskState.completed);
+      expect(update.end, isTrue);
+    }));
+    ec.publishFinalTaskUpdate();
+  });
+  test('Final Task Update - user supplied', () {
+    final ev = A2ADefaultExecutionEventBus();
+    final ec = A2AExecutorConstructor(rq, ev);
+    ev.on(A2AExecutionEventBus.a2aEBEvent, ((event) {
+      expect(event is A2ATaskStatusUpdateEvent, isTrue);
+      final update = event as A2ATaskStatusUpdateEvent;
+      expect(update.contextId, contextId);
+      expect(update.taskId, taskId);
+      expect(update.status?.state, A2ATaskState.unknown);
+    }));
+    ec.finalUpdate = testTaskUpdate;
+    ec.publishFinalTaskUpdate();
   });
 }
