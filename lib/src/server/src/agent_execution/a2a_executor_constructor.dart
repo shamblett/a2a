@@ -24,6 +24,9 @@ class A2AExecutorConstructor {
   /// end should be true.
   A2ATaskStatusUpdateEvent? cancelUpdate;
 
+  /// User supplied artifact update.
+  A2ATaskArtifactUpdateEvent? artifactUpdate;
+
   final _uuid = Uuid();
 
   bool _taskCancelled = false;
@@ -150,22 +153,18 @@ class A2AExecutorConstructor {
 
   /// Publish an Artifact update
   void publishArtifactUpdate(
-    String name,
-    String id,
-    List<A2APart> parts, {
-    bool append = false,
-    bool lastChunk = false,
+    A2AArtifact artifact, {
+    bool? append,
+    bool? lastChunk,
   }) {
-    final artifactUpdate = A2ATaskArtifactUpdateEvent()
+    final localArtifactUpdate = A2ATaskArtifactUpdateEvent()
       ..taskId = taskId
       ..contextId = contextId
-      ..artifact = (A2AArtifact()
-        ..artifactId = id
-        ..name = name
-        ..parts = parts)
-      ..append = append
-      ..lastChunk = lastChunk;
-    _eventBus.publish(artifactUpdate);
+      ..artifact = artifact
+      ..append = append ?? false
+      ..lastChunk = lastChunk ?? false;
+    var update = artifactUpdate ?? localArtifactUpdate;
+    _eventBus.publish(update);
   }
 
   /// Publish the final task update to mark execution complete
@@ -204,6 +203,22 @@ class A2AExecutorConstructor {
     return _taskCancelled;
   }
 
+  /// Create an Artifact
+  A2AArtifact createArtifact(
+    String id, {
+    String? description,
+    List<String>? extensions,
+    A2ASV? metadata,
+    String? name,
+    List<A2APart>? parts,
+  }) => A2AArtifact()
+    ..artifactId = id
+    ..name = name ?? ''
+    ..description = description ?? ''
+    ..extensions = extensions ?? []
+    ..metadata = metadata ?? {}
+    ..parts = parts ?? [];
+
   /// Create a text part.
   A2ATextPart createTextPart(String text, {A2ASV? metadata}) {
     final textPart = A2ATextPart()..text = text;
@@ -240,7 +255,7 @@ class A2AExecutorConstructor {
 
   /// Create a bytes file part.
   /// The bytes parameter is the base64 encoded content of the file.
-  A2AFilePart createUrlBytesFilePart(
+  A2AFilePart createBytesFilePart(
     String bytes, {
     String? name,
     A2ASV? metadata,

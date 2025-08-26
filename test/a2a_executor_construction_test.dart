@@ -35,6 +35,13 @@ void main() {
     ..taskId = taskId
     ..end = false;
 
+  final testArtifact = A2AArtifact()..artifactId = 'Unknown';
+
+  final testArtifactUpdate = A2ATaskArtifactUpdateEvent()
+    ..taskId = taskId
+    ..contextId = contextId
+    ..artifact = testArtifact;
+
   final rq = A2ARequestContext(testMessage, testTask, [], taskId, contextId);
 
   test('Construction', () {
@@ -47,121 +54,242 @@ void main() {
     expect(ec.referencedTasks, []);
     expect(ec.isTaskCancelled, isFalse);
   });
-  test('Cancel Task', () {
-    final ev = A2ADefaultExecutionEventBus();
-    final ec = A2AExecutorConstructor(rq, ev);
-    ec.cancelTask = '1234';
-    expect(ec.isTaskCancelled, isFalse);
-    ec.cancelTask = taskId;
-    expect(ec.isTaskCancelled, isTrue);
+  group('Parts', () {
+    test('Text', () {
+      final ev = A2ADefaultExecutionEventBus();
+      final ec = A2AExecutorConstructor(rq, ev);
+      final part = ec.createTextPart('The text', metadata: {'First': 1});
+      expect(part.text, 'The text');
+      expect(part.metadata, {'First': 1});
+    });
+    test('Data', () {
+      final ev = A2ADefaultExecutionEventBus();
+      final ec = A2AExecutorConstructor(rq, ev);
+      final part = ec.createDataPart({'The data': 15}, metadata: {'First': 1});
+      expect(part.data, {'The data': 15});
+      expect(part.metadata, {'First': 1});
+    });
+    test('File - Bytes', () {
+      final ev = A2ADefaultExecutionEventBus();
+      final ec = A2AExecutorConstructor(rq, ev);
+      final part = ec.createBytesFilePart(
+        'The bytes',
+        name: 'The name',
+        metadata: {'First': 1},
+        mimetype: 'Mime',
+      );
+      expect(part.file is A2AFileWithBytes, isTrue);
+      final bPart = part.file as A2AFileWithBytes;
+      expect(bPart.bytes, 'The bytes');
+      expect(bPart.name, 'The name');
+      expect(bPart.mimeType, 'Mime');
+      expect(part.metadata, {'First': 1});
+    });
+    test('File - Url', () {
+      final ev = A2ADefaultExecutionEventBus();
+      final ec = A2AExecutorConstructor(rq, ev);
+      final part = ec.createUrlFilePart(
+        'The uri',
+        name: 'The name',
+        metadata: {'First': 1},
+        mimetype: 'Mime',
+      );
+      expect(part.file is A2AFileWithUri, isTrue);
+      final bPart = part.file as A2AFileWithUri;
+      expect(bPart.uri, 'The uri');
+      expect(bPart.name, 'The name');
+      expect(bPart.mimeType, 'Mime');
+      expect(part.metadata, {'First': 1});
+    });
   });
-  test('Initial Task Update - default', () {
-    final ev = A2ADefaultExecutionEventBus();
-    final ec = A2AExecutorConstructor(rq, ev);
-    ev.on(A2AExecutionEventBus.a2aEBEvent, ((event) {
-      expect(event is A2ATask, isTrue);
-      final update = event as A2ATask;
-      expect(update.contextId, contextId);
-      expect(update.id, taskId);
-      expect(update.status?.state, A2ATaskState.submitted);
-    }));
-    ec.publishInitialTaskUpdate();
+  group('Publish', () {
+    test('Cancel Task', () {
+      final ev = A2ADefaultExecutionEventBus();
+      final ec = A2AExecutorConstructor(rq, ev);
+      ec.cancelTask = '1234';
+      expect(ec.isTaskCancelled, isFalse);
+      ec.cancelTask = taskId;
+      expect(ec.isTaskCancelled, isTrue);
+    });
+    test('Initial Task Update - default', () {
+      final ev = A2ADefaultExecutionEventBus();
+      final ec = A2AExecutorConstructor(rq, ev);
+      ev.on(A2AExecutionEventBus.a2aEBEvent, ((event) {
+        expect(event is A2ATask, isTrue);
+        final update = event as A2ATask;
+        expect(update.contextId, contextId);
+        expect(update.id, taskId);
+        expect(update.status?.state, A2ATaskState.submitted);
+      }));
+      ec.publishInitialTaskUpdate();
+    });
+    test('Initial Task Update - user supplied', () {
+      final ev = A2ADefaultExecutionEventBus();
+      final ec = A2AExecutorConstructor(rq, ev);
+      ev.on(A2AExecutionEventBus.a2aEBEvent, ((event) {
+        expect(event is A2ATask, isTrue);
+        final update = event as A2ATask;
+        expect(update.contextId, contextId);
+        expect(update.id, taskId);
+        expect(update.status?.state, A2ATaskState.unknown);
+      }));
+      ec.initialTaskUpdate = testTask;
+      ec.publishInitialTaskUpdate();
+    });
+    test('Working Task Update - default', () {
+      final ev = A2ADefaultExecutionEventBus();
+      final ec = A2AExecutorConstructor(rq, ev);
+      ev.on(A2AExecutionEventBus.a2aEBEvent, ((event) {
+        expect(event is A2ATaskStatusUpdateEvent, isTrue);
+        final update = event as A2ATaskStatusUpdateEvent;
+        expect(update.contextId, contextId);
+        expect(update.taskId, taskId);
+        expect(update.status?.state, A2ATaskState.working);
+      }));
+      ec.publishWorkingTaskUpdate();
+    });
+    test('Working Task Update - user supplied', () {
+      final ev = A2ADefaultExecutionEventBus();
+      final ec = A2AExecutorConstructor(rq, ev);
+      ev.on(A2AExecutionEventBus.a2aEBEvent, ((event) {
+        expect(event is A2ATaskStatusUpdateEvent, isTrue);
+        final update = event as A2ATaskStatusUpdateEvent;
+        expect(update.contextId, contextId);
+        expect(update.taskId, taskId);
+        expect(update.status?.state, A2ATaskState.unknown);
+      }));
+      ec.workingUpdate = testTaskUpdate;
+      ec.publishWorkingTaskUpdate();
+    });
+    test('Final Task Update - default', () {
+      final ev = A2ADefaultExecutionEventBus();
+      final ec = A2AExecutorConstructor(rq, ev);
+      ev.on(A2AExecutionEventBus.a2aEBEvent, ((event) {
+        expect(event is A2ATaskStatusUpdateEvent, isTrue);
+        final update = event as A2ATaskStatusUpdateEvent;
+        expect(update.contextId, contextId);
+        expect(update.taskId, taskId);
+        expect(update.status?.state, A2ATaskState.completed);
+        expect(update.end, isTrue);
+      }));
+      ec.publishFinalTaskUpdate();
+    });
+    test('Final Task Update - user supplied', () {
+      final ev = A2ADefaultExecutionEventBus();
+      final ec = A2AExecutorConstructor(rq, ev);
+      ev.on(A2AExecutionEventBus.a2aEBEvent, ((event) {
+        expect(event is A2ATaskStatusUpdateEvent, isTrue);
+        final update = event as A2ATaskStatusUpdateEvent;
+        expect(update.contextId, contextId);
+        expect(update.taskId, taskId);
+        expect(update.status?.state, A2ATaskState.unknown);
+      }));
+      ec.finalUpdate = testTaskUpdate;
+      ec.publishFinalTaskUpdate();
+    });
+    test('Cancel Task Update - default', () {
+      final ev = A2ADefaultExecutionEventBus();
+      final ec = A2AExecutorConstructor(rq, ev);
+      ev.on(A2AExecutionEventBus.a2aEBEvent, ((event) {
+        expect(event is A2ATaskStatusUpdateEvent, isTrue);
+        final update = event as A2ATaskStatusUpdateEvent;
+        expect(update.contextId, contextId);
+        expect(update.taskId, taskId);
+        expect(update.status?.state, A2ATaskState.canceled);
+        expect(update.end, isTrue);
+      }));
+      ec.publishCancelTaskUpdate();
+    });
+    test('Cancel Task Update - user supplied', () {
+      final ev = A2ADefaultExecutionEventBus();
+      final ec = A2AExecutorConstructor(rq, ev);
+      ev.on(A2AExecutionEventBus.a2aEBEvent, ((event) {
+        expect(event is A2ATaskStatusUpdateEvent, isTrue);
+        final update = event as A2ATaskStatusUpdateEvent;
+        expect(update.contextId, contextId);
+        expect(update.taskId, taskId);
+        expect(update.status?.state, A2ATaskState.unknown);
+      }));
+      ec.cancelUpdate = testTaskUpdate;
+      ec.publishCancelTaskUpdate();
+    });
+    test('Artifact Update - default', () {
+      final ev = A2ADefaultExecutionEventBus();
+      final ec = A2AExecutorConstructor(rq, ev);
+      final artifact = ec.createArtifact(
+        'The id',
+        name: 'The name',
+        description: 'The description',
+        extensions: ['An extension'],
+        metadata: {'First': 1},
+        parts: [A2ATextPart()..text = 'The text'],
+      );
+      ev.on(A2AExecutionEventBus.a2aEBEvent, ((event) {
+        expect(event is A2ATaskArtifactUpdateEvent, isTrue);
+        final update = event as A2ATaskArtifactUpdateEvent;
+        expect(update.contextId, contextId);
+        expect(update.taskId, taskId);
+        expect(update.artifact == artifact, isTrue);
+        expect(update.lastChunk, isTrue);
+        expect(update.append, isTrue);
+      }));
+      ec.publishArtifactUpdate(artifact, append: true, lastChunk: true);
+    });
+    test('Artifact Update - user supplied', () {
+      final ev = A2ADefaultExecutionEventBus();
+      final ec = A2AExecutorConstructor(rq, ev);
+      final artifact = ec.createArtifact(
+        'The id',
+        name: 'The name',
+        description: 'The description',
+        extensions: ['An extension'],
+        metadata: {'First': 1},
+        parts: [A2ATextPart()..text = 'The text'],
+      );
+      ev.on(A2AExecutionEventBus.a2aEBEvent, ((event) {
+        expect(event is A2ATaskArtifactUpdateEvent, isTrue);
+        final update = event as A2ATaskArtifactUpdateEvent;
+        expect(update.contextId, contextId);
+        expect(update.taskId, taskId);
+        expect(update.artifact == artifact, isFalse);
+      }));
+      ec.artifactUpdate = testArtifactUpdate;
+      ec.publishArtifactUpdate(artifact, append: true, lastChunk: true);
+    });
+    test('User object', () {
+      final ev = A2ADefaultExecutionEventBus();
+      final ec = A2AExecutorConstructor(rq, ev);
+      ev.on(A2AExecutionEventBus.a2aEBEvent, ((event) {
+        expect(event is A2AMessage, isTrue);
+      }));
+      ec.publishUserObject(A2AMessage());
+    });
   });
-  test('Initial Task Update - user supplied', () {
-    final ev = A2ADefaultExecutionEventBus();
-    final ec = A2AExecutorConstructor(rq, ev);
-    ev.on(A2AExecutionEventBus.a2aEBEvent, ((event) {
-      expect(event is A2ATask, isTrue);
-      final update = event as A2ATask;
-      expect(update.contextId, contextId);
-      expect(update.id, taskId);
-      expect(update.status?.state, A2ATaskState.unknown);
-    }));
-    ec.initialTaskUpdate = testTask;
-    ec.publishInitialTaskUpdate();
-  });
-  test('Working Task Update - default', () {
-    final ev = A2ADefaultExecutionEventBus();
-    final ec = A2AExecutorConstructor(rq, ev);
-    ev.on(A2AExecutionEventBus.a2aEBEvent, ((event) {
-      expect(event is A2ATaskStatusUpdateEvent, isTrue);
-      final update = event as A2ATaskStatusUpdateEvent;
-      expect(update.contextId, contextId);
-      expect(update.taskId, taskId);
-      expect(update.status?.state, A2ATaskState.working);
-    }));
-    ec.publishWorkingTaskUpdate();
-  });
-  test('Working Task Update - user supplied', () {
-    final ev = A2ADefaultExecutionEventBus();
-    final ec = A2AExecutorConstructor(rq, ev);
-    ev.on(A2AExecutionEventBus.a2aEBEvent, ((event) {
-      expect(event is A2ATaskStatusUpdateEvent, isTrue);
-      final update = event as A2ATaskStatusUpdateEvent;
-      expect(update.contextId, contextId);
-      expect(update.taskId, taskId);
-      expect(update.status?.state, A2ATaskState.unknown);
-    }));
-    ec.workingUpdate = testTaskUpdate;
-    ec.publishWorkingTaskUpdate();
-  });
-  test('Final Task Update - default', () {
-    final ev = A2ADefaultExecutionEventBus();
-    final ec = A2AExecutorConstructor(rq, ev);
-    ev.on(A2AExecutionEventBus.a2aEBEvent, ((event) {
-      expect(event is A2ATaskStatusUpdateEvent, isTrue);
-      final update = event as A2ATaskStatusUpdateEvent;
-      expect(update.contextId, contextId);
-      expect(update.taskId, taskId);
-      expect(update.status?.state, A2ATaskState.completed);
-      expect(update.end, isTrue);
-    }));
-    ec.publishFinalTaskUpdate();
-  });
-  test('Final Task Update - user supplied', () {
-    final ev = A2ADefaultExecutionEventBus();
-    final ec = A2AExecutorConstructor(rq, ev);
-    ev.on(A2AExecutionEventBus.a2aEBEvent, ((event) {
-      expect(event is A2ATaskStatusUpdateEvent, isTrue);
-      final update = event as A2ATaskStatusUpdateEvent;
-      expect(update.contextId, contextId);
-      expect(update.taskId, taskId);
-      expect(update.status?.state, A2ATaskState.unknown);
-    }));
-    ec.finalUpdate = testTaskUpdate;
-    ec.publishFinalTaskUpdate();
-  });
-  test('Cancel Task Update - default', () {
-    final ev = A2ADefaultExecutionEventBus();
-    final ec = A2AExecutorConstructor(rq, ev);
-    ev.on(A2AExecutionEventBus.a2aEBEvent, ((event) {
-      expect(event is A2ATaskStatusUpdateEvent, isTrue);
-      final update = event as A2ATaskStatusUpdateEvent;
-      expect(update.contextId, contextId);
-      expect(update.taskId, taskId);
-      expect(update.status?.state, A2ATaskState.canceled);
-      expect(update.end, isTrue);
-    }));
-    ec.publishCancelTaskUpdate();
-  });
-  test('Cancel Task Update - user supplied', () {
-    final ev = A2ADefaultExecutionEventBus();
-    final ec = A2AExecutorConstructor(rq, ev);
-    ev.on(A2AExecutionEventBus.a2aEBEvent, ((event) {
-      expect(event is A2ATaskStatusUpdateEvent, isTrue);
-      final update = event as A2ATaskStatusUpdateEvent;
-      expect(update.contextId, contextId);
-      expect(update.taskId, taskId);
-      expect(update.status?.state, A2ATaskState.unknown);
-    }));
-    ec.cancelUpdate = testTaskUpdate;
-    ec.publishCancelTaskUpdate();
-  });
-  test('Delay', () async {
-    final ev = A2ADefaultExecutionEventBus();
-    final ec = A2AExecutorConstructor(rq, ev);
-    expect(await ec.delay(500), isFalse);
-    ec.cancelTask = taskId;
-    expect(await ec.delay(500), isTrue);
+  group('Misc', () {
+    test('Delay', () async {
+      final ev = A2ADefaultExecutionEventBus();
+      final ec = A2AExecutorConstructor(rq, ev);
+      expect(await ec.delay(500), isFalse);
+      ec.cancelTask = taskId;
+      expect(await ec.delay(500), isTrue);
+    });
+    test('Create Artifact', () {
+      final ev = A2ADefaultExecutionEventBus();
+      final ec = A2AExecutorConstructor(rq, ev);
+      final artifact = ec.createArtifact(
+        'The id',
+        name: 'The name',
+        description: 'The description',
+        extensions: ['An extension'],
+        metadata: {'First': 1},
+        parts: [A2ATextPart()..text = 'The text'],
+      );
+      expect(artifact.metadata, {'First': 1});
+      expect(artifact.extensions, ['An extension']);
+      expect(artifact.description, 'The description');
+      expect(artifact.artifactId, 'The id');
+      expect(artifact.name, 'The name');
+      expect((artifact.parts.first as A2ATextPart).text, 'The text');
+    });
   });
 }
