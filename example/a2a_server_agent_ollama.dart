@@ -81,6 +81,11 @@ class LLMComparisonExecutor implements A2AAgentExecutor {
   /// which is done in the execute method.
   late A2AExecutorConstructor ec;
 
+
+  /// Ollama provider
+  final provider = OllamaProvider();
+  // TODO fix?
+
   @override
   Future<void> cancelTask(String taskId, A2AExecutionEventBus eventBus) async =>
       ec.cancelTask = taskId;
