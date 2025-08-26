@@ -131,8 +131,3 @@ _The JS SDK which this package was ported from did not contain this_
 
 * The Send Message client method can be configured as blocking or non-blocking. The client supports
   selection of this however the server will always treat the request as blocking.
-* SSE event handling is not fully supported as defined in the specification, SSE events are not
-streamed back to the client as they occur, they are sent back to the client in a single RPC response.
-An [issue](https://github.com/evandersondev/darto/issues/22) has been raised 
-on Darto to address this. The server implementation will be updated when this issue is
-resolved.

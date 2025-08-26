@@ -11,13 +11,11 @@ part of '../../a2a_server.dart';
 class A2AExecutorConstructor {
   final _uuid = Uuid();
 
+  bool _taskCancelled = false;
+
   final A2ARequestContext _requestContext;
 
   final A2AExecutionEventBus _eventBus;
-
-  /// Cancelled task stream.
-  final StreamController<String> _cancelledTasks =
-      StreamController<String>.broadcast();
 
   /// Task id
   String get taskId => _requestContext.taskId;
@@ -31,13 +29,34 @@ class A2AExecutorConstructor {
   /// Existing task
   A2ATask? get existingTask => _requestContext.task;
 
-  /// The stream on which all cancelled tasks are added to.
-  StreamController<String> get cancelledTasks => _cancelledTasks;
+  /// Returns true if the task is cancelled.
+  /// Use this if you wish to perform your own task cancellation functionality.
+  /// if you want the task to be automatically cancelled then use
+  /// [hasTaskBeenCancelled].
+  bool get isTaskCancelled => _taskCancelled;
 
-  /// Add a task to cancel
-  set taskToCancel(String taskId) => cancelledTasks.add(taskId);
+  /// If the id of the task to cancel is the id of
+  /// our task mark the task as cancelled.
+  set cancelTask(String id) {
+    if (id == taskId) {
+      _taskCancelled = true;
+    }
+  }
 
   A2AExecutorConstructor(this._requestContext, this._eventBus);
+
+  /// If the task has been cancelled this method will automatically
+  /// send a cancel task event. If you wish to use your own task cancellation
+  /// functionality use [isTaskCancelled]
+  ///
+  /// Returns true if the task has been cancelled.
+  bool hasTaskBeenCancelled() {
+    if (_taskCancelled) {
+      publishCancelTaskUpdate();
+      return true;
+    }
+    return false;
+  }
 
   /// Publishes the initial task update if there is no existing task.
   void publishInitialTaskUpdate() {
