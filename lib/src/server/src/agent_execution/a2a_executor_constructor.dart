@@ -20,6 +20,10 @@ class A2AExecutorConstructor {
   /// end should be true.
   A2ATaskStatusUpdateEvent? finalUpdate;
 
+  /// User supplied cancel task status update, state should be cancelled,
+  /// end should be true.
+  A2ATaskStatusUpdateEvent? cancelUpdate;
+
   final _uuid = Uuid();
 
   bool _taskCancelled = false;
@@ -139,12 +143,9 @@ class A2AExecutorConstructor {
         ..state = A2ATaskState.canceled
         ..timestamp = A2AUtilities.getCurrentTimestamp())
       ..end = true;
-    _eventBus.publish(cancelledUpdate);
-  }
 
-  /// Delay processing, period is milliseconds.
-  void delay(int period) async {
-    await Future.delayed(Duration(milliseconds: period));
+    var update = cancelUpdate ?? cancelledUpdate;
+    _eventBus.publish(update);
   }
 
   /// Publish an Artifact update
@@ -193,6 +194,14 @@ class A2AExecutorConstructor {
   /// Used for publishing specific created objects.
   void publishUserObject(Object object) {
     _eventBus.publish(object);
+  }
+
+  /// Delay processing, period is milliseconds.
+  /// Checks if the task has been cancelled after the delay,
+  /// returns true if this is the case.
+  Future<bool> delay(int period) async {
+    await Future.delayed(Duration(milliseconds: period));
+    return _taskCancelled;
   }
 
   /// Create a text part.

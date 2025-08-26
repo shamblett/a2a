@@ -131,4 +131,37 @@ void main() {
     ec.finalUpdate = testTaskUpdate;
     ec.publishFinalTaskUpdate();
   });
+  test('Cancel Task Update - default', () {
+    final ev = A2ADefaultExecutionEventBus();
+    final ec = A2AExecutorConstructor(rq, ev);
+    ev.on(A2AExecutionEventBus.a2aEBEvent, ((event) {
+      expect(event is A2ATaskStatusUpdateEvent, isTrue);
+      final update = event as A2ATaskStatusUpdateEvent;
+      expect(update.contextId, contextId);
+      expect(update.taskId, taskId);
+      expect(update.status?.state, A2ATaskState.canceled);
+      expect(update.end, isTrue);
+    }));
+    ec.publishCancelTaskUpdate();
+  });
+  test('Cancel Task Update - user supplied', () {
+    final ev = A2ADefaultExecutionEventBus();
+    final ec = A2AExecutorConstructor(rq, ev);
+    ev.on(A2AExecutionEventBus.a2aEBEvent, ((event) {
+      expect(event is A2ATaskStatusUpdateEvent, isTrue);
+      final update = event as A2ATaskStatusUpdateEvent;
+      expect(update.contextId, contextId);
+      expect(update.taskId, taskId);
+      expect(update.status?.state, A2ATaskState.unknown);
+    }));
+    ec.cancelUpdate = testTaskUpdate;
+    ec.publishCancelTaskUpdate();
+  });
+  test('Delay', () async {
+    final ev = A2ADefaultExecutionEventBus();
+    final ec = A2AExecutorConstructor(rq, ev);
+    expect(await ec.delay(500), isFalse);
+    ec.cancelTask = taskId;
+    expect(await ec.delay(500), isTrue);
+  });
 }
