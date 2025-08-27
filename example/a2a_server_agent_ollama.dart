@@ -6,8 +6,8 @@
 */
 
 import 'package:colorize/colorize.dart';
-import 'package:uuid/uuid.dart';
-import 'package:dartantic_ai/dartantic_ai.dart';
+import 'package:llm_dart/llm_dart.dart';
+
 import 'package:a2a/a2a.dart';
 
 /// A fully annotated example of how to construct an A2A Agent
@@ -74,17 +74,10 @@ final movieAgentCard = A2AAgentCard()
 
 // 1. Define your agent's logic as an  A2AAgentExecutor
 class LLMComparisonExecutor implements A2AAgentExecutor {
-  final _uuid = Uuid();
-
   /// Executor construction helper.
   /// Late is OK here, a task cannot be cancelled until it has been created,
   /// which is done in the execute method.
   late A2AExecutorConstructor ec;
-
-
-  /// Ollama provider
-  final provider = OllamaProvider();
-  // TODO fix?
 
   @override
   Future<void> cancelTask(String taskId, A2AExecutionEventBus eventBus) async =>
@@ -98,6 +91,19 @@ class LLMComparisonExecutor implements A2AAgentExecutor {
   ) async {
     /// Create the executor construction helper
     ec = A2AExecutorConstructor(requestContext, eventBus);
+
+    /// Create the Ollama providers
+    final gemma3270Provider = await createProvider(
+      providerId: 'ollama',
+      apiKey: 'sk-cd76c5a922384cb780c5f935eedf3214',
+      model: 'gemma:270m',
+    );
+
+    final gemma7BProvider = await createProvider(
+      providerId: 'ollama',
+      apiKey: 'sk-cd76c5a922384cb780c5f935eedf3214',
+      model: 'gemma:7B',
+    );
 
     print(
       '${Colorize('[LLMComparisonExecutor] Processing message ${ec.userMessage.messageId} '
@@ -113,8 +119,15 @@ class LLMComparisonExecutor implements A2AAgentExecutor {
     final textPart = ec.createTextPart('Querying the LLM\'s');
     ec.publishWorkingTaskUpdate(part: [textPart]);
 
-    await ec.delay(2000);
-    // TODo query the LLM's here
+    String prompt = (ec.userMessage.parts?.first as A2ATextPart).text;
+
+    final messages = [ChatMessage.user(prompt)];
+
+    // Gemma 7B
+    final gemma7BResponse = await gemma7BProvider.chat(messages);
+
+    // Gemma 3270m
+    final gemma3250MResponse = await gemma3270Provider.chat(messages);
 
     // Check for request cancellation
     if (ec.isTaskCancelled) {
@@ -123,37 +136,42 @@ class LLMComparisonExecutor implements A2AAgentExecutor {
       return;
     }
 
-    // 3. Publish artifact update
-    final artifactUpdate = A2ATaskArtifactUpdateEvent()
-      ..taskId = ec.taskId
-      ..contextId = ec.contextId
-      ..artifact = (A2AArtifact()
-        ..artifactId = 'artifact-1'
-        ..name = 'artifact-1'
-        ..parts = [
-          (A2ATextPart()
-            ..text = 'Artifact update from the LLM Comparison Agent'),
-        ])
-      ..append = false
-      ..lastChunk = true;
+    // 3. Publish the responses as artifacts
 
-    eventBus.publish(artifactUpdate);
+    // Gemma 7B
+    final gemma7BResponseText =
+        gemma7BResponse.text ?? '< No response supplied>';
+    final gemma7BText = ec.createTextPart(gemma7BResponseText);
+    final gemma7BArtifact = ec.createArtifact(
+      'gemma7b-text',
+      name: 'gemma7b-text',
+      parts: [gemma7BText],
+    );
+
+    ec.publishArtifactUpdate(gemma7BArtifact, lastChunk: true);
+
+    // Gemma 250M
+    final gemma250mResponseText =
+        gemma3250MResponse.text ?? '< No response supplied>';
+    final gemma250mText = ec.createTextPart(gemma250mResponseText);
+    final gemma250mArtifact = ec.createArtifact(
+      'gemma250m-text',
+      name: 'gemma250m-text',
+      parts: [gemma250mText],
+    );
+
+    ec.publishArtifactUpdate(gemma250mArtifact, lastChunk: true);
 
     // 4. Publish final status update
-    final finalUpdate = A2ATaskStatusUpdateEvent()
-      ..taskId = ec.taskId
-      ..contextId = ec.contextId
-      ..status = (A2ATaskStatus()
-        ..state = A2ATaskState.completed
-        ..message = (A2AMessage()
-          ..role = 'agent'
-          ..messageId = _uuid.v4()
-          ..taskId = ec.taskId
-          ..contextId = ec.contextId)
-        ..timestamp = A2AUtilities.getCurrentTimestamp())
-      ..end = true;
 
-    eventBus.publish(finalUpdate);
+    final finalMessageText = ec.createTextPart(
+      'Final update from the LLM comparator agent',
+    );
+    final finalMessage = ec.createMessage(
+      'llm-comparison-agent',
+      parts: [finalMessageText],
+    );
+    ec.publishFinalTaskUpdate(message: finalMessage);
   }
 }
 

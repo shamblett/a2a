@@ -39,8 +39,7 @@ dev_dependencies:
   stream_channel: '^2.1.4'
   build_test: '^3.3.1'
   build_web_compilers: '^4.2.1'
-  dartantic_ai: '1.0.6'
-  dartantic_interface: '^1.0.2'
+  llm_dart: '^0.9.0'
 
 topics:
   - ai
