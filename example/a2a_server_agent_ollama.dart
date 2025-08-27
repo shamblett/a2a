@@ -79,6 +79,16 @@ class LLMComparisonExecutor implements A2AAgentExecutor {
   /// which is done in the execute method.
   late A2AExecutorConstructor ec;
 
+  /// Ollama API key - adjust as you wish
+  final ollamaApiKey = 'sk-cd76c5a922384cb780c5f935eedf3214';
+
+  /// Model names - adjust as you wish
+  final model1 = 'gemma:7b';
+  final model2 = 'gemma3:270m';
+
+  /// Model provider id
+  final providerId = 'ollama';
+
   @override
   Future<void> cancelTask(String taskId, A2AExecutionEventBus eventBus) async =>
       ec.cancelTask = taskId;
@@ -93,16 +103,16 @@ class LLMComparisonExecutor implements A2AAgentExecutor {
     ec = A2AExecutorConstructor(requestContext, eventBus);
 
     /// Create the Ollama providers
-    final gemma3270Provider = await createProvider(
-      providerId: 'ollama',
-      apiKey: 'sk-cd76c5a922384cb780c5f935eedf3214',
-      model: 'gemma:270m',
+    final model1Provider = await createProvider(
+      providerId: providerId,
+      apiKey: ollamaApiKey,
+      model: model1,
     );
 
-    final gemma7BProvider = await createProvider(
-      providerId: 'ollama',
-      apiKey: 'sk-cd76c5a922384cb780c5f935eedf3214',
-      model: 'gemma:7B',
+    final model2Provider = await createProvider(
+      providerId: providerId,
+      apiKey: ollamaApiKey,
+      model: model2,
     );
 
     print(
@@ -111,11 +121,13 @@ class LLMComparisonExecutor implements A2AAgentExecutor {
     );
 
     // 1. Publish initial Task event if it's a new task
+
     if (ec.existingTask == null) {
       ec.publishInitialTaskUpdate();
     }
 
     // 2. Publish "working" status update
+
     final textPart = ec.createTextPart('Querying the LLM\'s');
     ec.publishWorkingTaskUpdate(part: [textPart]);
 
@@ -123,11 +135,13 @@ class LLMComparisonExecutor implements A2AAgentExecutor {
 
     final messages = [ChatMessage.user(prompt)];
 
-    // Gemma 7B
-    final gemma7BResponse = await gemma7BProvider.chat(messages);
+    // Query the LLM's
 
-    // Gemma 3270m
-    final gemma3250MResponse = await gemma3270Provider.chat(messages);
+    // Model 1
+    final model1Response = await model1Provider.chat(messages);
+
+    // Model 2
+    final model2Response = await model2Provider.chat(messages);
 
     // Check for request cancellation
     if (ec.isTaskCancelled) {
@@ -138,29 +152,39 @@ class LLMComparisonExecutor implements A2AAgentExecutor {
 
     // 3. Publish the responses as artifacts
 
-    // Gemma 7B
-    final gemma7BResponseText =
-        gemma7BResponse.text ?? '< No response supplied>';
-    final gemma7BText = ec.createTextPart(gemma7BResponseText);
-    final gemma7BArtifact = ec.createArtifact(
-      'gemma7b-text',
-      name: 'gemma7b-text',
-      parts: [gemma7BText],
+    // Model 1
+    final model1ResponseText = model1Response.text ?? '< No response supplied>';
+    final model1Intro = ec.createTextPart(
+      '${Colorize('<< Response from <$model1> >>\n').italic()}',
+    );
+    final model1Outro = ec.createTextPart(
+      '${Colorize('<< Response from <$model1> complete>>\n').italic()}',
+    );
+    final model1Text = ec.createTextPart(model1ResponseText);
+    final model1Artifact = ec.createArtifact(
+      '$model1-text',
+      name: '$model1-text',
+      parts: [model1Intro, model1Text, model1Outro],
     );
 
-    ec.publishArtifactUpdate(gemma7BArtifact, lastChunk: true);
+    ec.publishArtifactUpdate(model1Artifact, lastChunk: true);
 
-    // Gemma 250M
-    final gemma250mResponseText =
-        gemma3250MResponse.text ?? '< No response supplied>';
-    final gemma250mText = ec.createTextPart(gemma250mResponseText);
-    final gemma250mArtifact = ec.createArtifact(
-      'gemma250m-text',
-      name: 'gemma250m-text',
-      parts: [gemma250mText],
+    // Model 2
+    final model2ResponseText = model2Response.text ?? '< No response supplied>';
+    final model2Intro = ec.createTextPart(
+      '${Colorize('<< Response from <$model2> >>\n').italic()}',
+    );
+    final model2Outro = ec.createTextPart(
+      '${Colorize('<< Response from <$model2> complete>>\n').italic()}',
+    );
+    final model2Text = ec.createTextPart(model2ResponseText);
+    final model2Artifact = ec.createArtifact(
+      '$model2-text',
+      name: '$model2-text',
+      parts: [model2Intro, model2Text, model2Outro],
     );
 
-    ec.publishArtifactUpdate(gemma250mArtifact, lastChunk: true);
+    ec.publishArtifactUpdate(model2Artifact, lastChunk: true);
 
     // 4. Publish final status update
 

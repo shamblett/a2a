@@ -182,8 +182,9 @@ void printArtifactContent(A2AArtifact? artifact) {
     print('${Colorize('Cannot print message, message is null').yellow}');
     return;
   }
-  final partPrefix = '${Colorize('Part ${index + 1}:')..red()}';
+
   for (final part in artifact.parts) {
+    final partPrefix = '${Colorize('Part ${index + 1}:')..red()}';
     if (part is A2ATextPart) {
       print('$partPrefix ${Colorize('📝 Text:')..green()}, ${part.text}');
     } else if (part is A2AFilePart) {
@@ -209,6 +210,7 @@ void printArtifactContent(A2AArtifact? artifact) {
     } else if (part is A2ADataPart) {
       print('$partPrefix ${Colorize('📊 Data: ')..yellow()}, $part.data');
     }
+    index++;
   }
 }
 
