@@ -7,6 +7,7 @@ Test the a2a_cli_client(package version, NOT the installed version) against
 * The local agent example
 * The local agent helloworld example
 * The local agent podman helloworld example
+* The Ollama example
 
 Along with the unit tests the following manual tests should be run :-
 

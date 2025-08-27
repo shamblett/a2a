@@ -105,11 +105,19 @@ with its state set to cancelled emitted.
 The executor should implement cancellation mechanism for an ongoing task.
 
 A fully annotated example of creating an A2A Agent in this manner can be found in the 
-[a2a_server_agent](https://github.com/shamblett/a2a/blob/main/example/a2a_server_agent.dart) example.
+[a2a_server_agent](https://github.com/shamblett/a2a/blob/main/example/a2a_server_agent.dart) 
+example. This example is an implementation of the Executor example found on the A2A site.
 
 An implementation of the helloworld agent provided as part of the A2A Samples repository can be found
 in the [a2a_server_agent_helloworld](https://github.com/shamblett/a2a/blob/main/example/a2a_server_agent_helloworld.dart)
-example.
+example. This example is an implementation of the helloworld agent sample.
+
+fully annotated example of creating an A2A Agent that queries LLM's can be found in the  
+[a2a_server_agent](https://github.com/shamblett/a2a/blob/main/example/a2a_server_agent_ollama.dart)
+example. This example uses a local Ollama installation to query two selected LLM's so their responses can be compared.
+It uses the A2A Executor Construction(A2AExecutorConstructor class) to greatly simplify the construction
+of the executor. It also uses the [llm_dart](https://pub.dev/packages/llm_dart) package to perform the heavy lifting of communicating with
+Ollama.
 
 ## Sample agents
 
@@ -131,8 +139,3 @@ _The JS SDK which this package was ported from did not contain this_
 
 * The Send Message client method can be configured as blocking or non-blocking. The client supports
   selection of this however the server will always treat the request as blocking.
-* SSE event handling is not fully supported as defined in the specification, SSE events are not
-streamed back to the client as they occur, they are sent back to the client in a single RPC response.
-An [issue](https://github.com/evandersondev/darto/issues/22) has been raised 
-on Darto to address this. The server implementation will be updated when this issue is
-resolved.
