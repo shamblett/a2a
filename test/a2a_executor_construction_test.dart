@@ -160,7 +160,7 @@ void main() {
         expect(update.taskId, taskId);
         expect(update.status?.state, A2ATaskState.unknown);
       }));
-      ec.workingUpdate = testTaskUpdate;
+      ec.workingTaskUpdate = testTaskUpdate;
       ec.publishWorkingTaskUpdate();
     });
     test('Final Task Update - default', () {
@@ -194,8 +194,42 @@ void main() {
         expect(update.status?.state, A2ATaskState.unknown);
         expect((update.status?.message as A2AMessage).messageId, messageId);
       }));
-      ec.finalUpdate = testTaskUpdate;
+      ec.finalTaskUpdate = testTaskUpdate;
       ec.publishFinalTaskUpdate();
+    });
+    test('Failed Task Update - default', () {
+      final ev = A2ADefaultExecutionEventBus();
+      final ec = A2AExecutorConstructor(rq, ev);
+      final message = ec.createMessage(
+        'Message id',
+        extensions: ['An extension'],
+        metadata: {'First': 1},
+        parts: [A2ATextPart()..text = 'The text'],
+      );
+      ev.on(A2AExecutionEventBus.a2aEBEvent, ((event) {
+        expect(event is A2ATaskStatusUpdateEvent, isTrue);
+        final update = event as A2ATaskStatusUpdateEvent;
+        expect(update.contextId, contextId);
+        expect(update.taskId, taskId);
+        expect(update.status?.state, A2ATaskState.failed);
+        expect(update.end, isTrue);
+        expect((update.status?.message as A2AMessage).messageId, 'Message id');
+      }));
+      ec.publishFailedTaskUpdate(message: message);
+    });
+    test('Failed Task Update - user supplied', () {
+      final ev = A2ADefaultExecutionEventBus();
+      final ec = A2AExecutorConstructor(rq, ev);
+      ev.on(A2AExecutionEventBus.a2aEBEvent, ((event) {
+        expect(event is A2ATaskStatusUpdateEvent, isTrue);
+        final update = event as A2ATaskStatusUpdateEvent;
+        expect(update.contextId, contextId);
+        expect(update.taskId, taskId);
+        expect(update.status?.state, A2ATaskState.unknown);
+        expect((update.status?.message as A2AMessage).messageId, messageId);
+      }));
+      ec.failedTaskUpdate = testTaskUpdate;
+      ec.publishFailedTaskUpdate();
     });
     test('Cancel Task Update - default', () {
       final ev = A2ADefaultExecutionEventBus();
@@ -220,7 +254,7 @@ void main() {
         expect(update.taskId, taskId);
         expect(update.status?.state, A2ATaskState.unknown);
       }));
-      ec.cancelUpdate = testTaskUpdate;
+      ec.cancelTaskUpdate = testTaskUpdate;
       ec.publishCancelTaskUpdate();
     });
     test('Artifact Update - default', () {
@@ -282,6 +316,11 @@ void main() {
       expect(await ec.delay(500), isFalse);
       ec.cancelTask = taskId;
       expect(await ec.delay(500), isTrue);
+    });
+    test('Uuid', () async {
+      final ev = A2ADefaultExecutionEventBus();
+      final ec = A2AExecutorConstructor(rq, ev);
+      expect(ec.v4Uuid.length, 36);
     });
     test('Create Artifact', () {
       final ev = A2ADefaultExecutionEventBus();

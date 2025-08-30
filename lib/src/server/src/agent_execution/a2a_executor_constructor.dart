@@ -14,15 +14,19 @@ class A2AExecutorConstructor {
 
   /// User supplied working task status update, state should be working
   /// end should be false.
-  A2ATaskStatusUpdateEvent? workingUpdate;
+  A2ATaskStatusUpdateEvent? workingTaskUpdate;
 
   /// User supplied final task status update, state should be completed,
   /// end should be true.
-  A2ATaskStatusUpdateEvent? finalUpdate;
+  A2ATaskStatusUpdateEvent? finalTaskUpdate;
+
+  /// User supplied failed task status update, state should be failed,
+  /// end should be true.
+  A2ATaskStatusUpdateEvent? failedTaskUpdate;
 
   /// User supplied cancel task status update, state should be cancelled,
   /// end should be true.
-  A2ATaskStatusUpdateEvent? cancelUpdate;
+  A2ATaskStatusUpdateEvent? cancelTaskUpdate;
 
   /// User supplied artifact update.
   A2ATaskArtifactUpdateEvent? artifactUpdate;
@@ -55,6 +59,9 @@ class A2AExecutorConstructor {
   /// if you want the task to be automatically cancelled then use
   /// [hasTaskBeenCancelled].
   bool get isTaskCancelled => _taskCancelled;
+
+  /// Generate a V4 UUID
+  String get v4Uuid => _uuid.v4();
 
   /// If the id of the task to cancel is the id of
   /// our task mark the task as cancelled.
@@ -113,7 +120,7 @@ class A2AExecutorConstructor {
         ..timestamp = A2AUtilities.getCurrentTimestamp())
       ..end = false;
 
-    var update = workingUpdate ?? workingStatusUpdate;
+    var update = workingTaskUpdate ?? workingStatusUpdate;
     _eventBus.publish(update);
   }
 
@@ -135,7 +142,29 @@ class A2AExecutorConstructor {
         ..timestamp = A2AUtilities.getCurrentTimestamp())
       ..end = true;
 
-    var update = finalUpdate ?? finalStatusUpdate;
+    var update = finalTaskUpdate ?? finalStatusUpdate;
+    _eventBus.publish(update);
+  }
+
+  /// Publish error/failed task update
+  void publishFailedTaskUpdate({A2AMessage? message}) {
+    final defaultMessage = (A2AMessage()
+      ..role = 'agent'
+      ..messageId = _uuid.v4()
+      ..parts = []
+      ..taskId = taskId
+      ..contextId = contextId);
+
+    final finalStatusUpdate = A2ATaskStatusUpdateEvent()
+      ..taskId = taskId
+      ..contextId = contextId
+      ..status = (A2ATaskStatus()
+        ..state = A2ATaskState.failed
+        ..message = message ?? defaultMessage
+        ..timestamp = A2AUtilities.getCurrentTimestamp())
+      ..end = true;
+
+    var update = failedTaskUpdate ?? finalStatusUpdate;
     _eventBus.publish(update);
   }
 
@@ -149,7 +178,7 @@ class A2AExecutorConstructor {
         ..timestamp = A2AUtilities.getCurrentTimestamp())
       ..end = true;
 
-    var update = cancelUpdate ?? cancelledUpdate;
+    var update = cancelTaskUpdate ?? cancelledUpdate;
     _eventBus.publish(update);
   }
 
