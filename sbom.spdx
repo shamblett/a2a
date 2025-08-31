@@ -5,18 +5,18 @@ DocumentName: a2a
 DocumentNamespace: https://pub.dev/packages/a2a
 LicenseListVersion: 3.8
 Creator: Tool: https://pub.dev/packages/sbom
-Created: 2025-08-27T14:22:31Z
+Created: 2025-08-31T09:16:12Z
 
 
 PackageName: a2a
 SPDXID: SPDXRef-Package-a2a
-PackageVersion: 2.3.0
+PackageVersion: 2.3.1
 PackageFileName: a2a
 PackageSupplier: NOASSERTION
 PackageOriginator: NOASSERTION
 PackageDownloadLocation: https://pub.dev/packages/a2a
 FilesAnalyzed: true
-PackageVerificationCode: 26aad38763f4b88fa5c048adffa2be1a63c3dda8
+PackageVerificationCode: f93c60dd4fda0b1278a9ca777e6927e189b8dead
 PackageHomePage: https://pub.dev/packages/a2a
 PackageLicenseConcluded: MIT
 PackageLicenseInfoFromFiles: NOASSERTION
@@ -253,7 +253,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/types/src/area/a2a_agent.dart
 SPDXID: SPDXRef-a2a-agent-25
 FileType: SOURCE
-FileChecksum: SHA1: f3adfc81f933df1b0009585e2faf578566b06f31
+FileChecksum: SHA1: 553d5617c6287bce419ce4e0debc68ad085c6c79
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -370,7 +370,7 @@ FileCopyrightText: NOASSERTION
 FileName: pubspec.yaml
 SPDXID: SPDXRef-pubspec-38
 FileType: TEXT
-FileChecksum: SHA1: 06c2f3773a710e1cf1056bae38082d2f92ca0a89
+FileChecksum: SHA1: ccd73a0dafd2802875d77a4f51085a4c1cce99df
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
