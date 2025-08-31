@@ -262,6 +262,9 @@ void commonPrintHandling(Object event) {
     output = generateTaskProgress(prefix.toString(), state!);
     output += '(  Task: ${update.taskId}, Context: ${update.contextId}';
     print(output);
+    if (update.status?.message != null) {
+      printMessageContent(update.status?.message);
+    }
   } else if (event is A2ATaskArtifactUpdateEvent) {
     final update = event;
     print(
