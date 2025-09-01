@@ -1,0 +1,9 @@
+# Build with  'podman build . -f helloworldagent-containerfile -t a2a-helloworld-agent'
+# Run with 'podman run -p 9999:9999 a2a-helloworld-agent'
+FROM dart:3.9.2
+WORKDIR /app
+COPY . .
+RUN dart pub get
+RUN dart compile exe example/a2a_server_agent_helloworld.dart
+EXPOSE 9999
+ENTRYPOINT ["/app/example/a2a_server_agent_helloworld.exe"]
