@@ -1,0 +1,9 @@
+# Build with  'podman build . -f ollamaagent-containerfile -t a2a-ollama-agent'
+# Run with 'podman run -p 41242:41242 a2a-ollama-agent'
+FROM dart:3.9.2
+WORKDIR /app
+COPY . .
+RUN dart pub get
+RUN dart compile exe example/a2a_server_agent_ollama.dart
+EXPOSE 41242
+ENTRYPOINT ["/app/example/a2a_server_agent_ollama.exe"]
