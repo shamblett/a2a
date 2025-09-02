@@ -1,3 +1,7 @@
+# 2.3.3
+- [Issue 28](https://github.com/shamblett/a2a/issues/28)
+- [Issue 30](https://github.com/shamblett/a2a/issues/30)
+
 # 2.3.2
 - [Issue 26](https://github.com/shamblett/a2a/issues/26)
 
