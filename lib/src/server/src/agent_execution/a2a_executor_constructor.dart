@@ -185,10 +185,10 @@ class A2AExecutorConstructor {
       ..taskId = taskId
       ..contextId = contextId
       ..status = (A2ATaskStatus()
-        ..state = A2ATaskState.failed
+        ..state = A2ATaskState.inputRequired
         ..message = message ?? defaultMessage
         ..timestamp = A2AUtilities.getCurrentTimestamp())
-      ..end = true;
+      ..end = false;
 
     var update = inputRequiredTaskUpdate ?? inputRequiredStatusUpdate;
     _eventBus.publish(update);
@@ -209,7 +209,11 @@ class A2AExecutorConstructor {
   }
 
   /// Publish user supplied state task update
-  void publishTaskUpdate(A2ATaskState state, {A2AMessage? message}) {
+  void publishTaskUpdate(
+    A2ATaskState state, {
+    A2AMessage? message,
+    bool end = false,
+  }) {
     final defaultMessage = (A2AMessage()
       ..role = 'agent'
       ..messageId = _uuid.v4()
@@ -224,7 +228,7 @@ class A2AExecutorConstructor {
         ..message = message ?? defaultMessage
         ..state = state
         ..timestamp = A2AUtilities.getCurrentTimestamp())
-      ..end = false;
+      ..end = end;
 
     _eventBus.publish(update);
   }
