@@ -1,4 +1,4 @@
-# Build with  'podman build . -f sampleagent-containerfile -t a2a-server-agent'
+# Build with  'podman build . -f example/sampleagent-containerfile -t a2a-server-agent'
 # Run with 'podman run -p 41242:41242 a2a-server-agent'
 FROM dart:3.9.2
 WORKDIR /app

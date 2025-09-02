@@ -1,5 +1,5 @@
-# Build with  'podman build . -f ollamaagent-containerfile -t a2a-ollama-agent'
-# Run with 'podman run -p 41242:41242 a2a-ollama-agent'
+# Build with  'podman build . -f example/ollamaagent-containerfile -t a2a-ollama-agent'
+# Run with 'podman run --network=host a2a-ollama-agent'
 FROM dart:3.9.2
 WORKDIR /app
 COPY . .

@@ -24,6 +24,10 @@ class A2AExecutorConstructor {
   /// end should be true.
   A2ATaskStatusUpdateEvent? failedTaskUpdate;
 
+  /// User supplied input required task status update, state should be failed,
+  /// end should be true.
+  A2ATaskStatusUpdateEvent? inputRequiredTaskUpdate;
+
   /// User supplied cancel task status update, state should be cancelled,
   /// end should be true.
   A2ATaskStatusUpdateEvent? cancelTaskUpdate;
@@ -168,6 +172,28 @@ class A2AExecutorConstructor {
     _eventBus.publish(update);
   }
 
+  /// Publish input required task update
+  void publishInputRequiredTaskUpdate({A2AMessage? message}) {
+    final defaultMessage = (A2AMessage()
+      ..role = 'agent'
+      ..messageId = _uuid.v4()
+      ..parts = []
+      ..taskId = taskId
+      ..contextId = contextId);
+
+    final inputRequiredStatusUpdate = A2ATaskStatusUpdateEvent()
+      ..taskId = taskId
+      ..contextId = contextId
+      ..status = (A2ATaskStatus()
+        ..state = A2ATaskState.inputRequired
+        ..message = message ?? defaultMessage
+        ..timestamp = A2AUtilities.getCurrentTimestamp())
+      ..end = false;
+
+    var update = inputRequiredTaskUpdate ?? inputRequiredStatusUpdate;
+    _eventBus.publish(update);
+  }
+
   /// Publish cancel task update
   void publishCancelTaskUpdate() {
     final cancelledUpdate = A2ATaskStatusUpdateEvent()
@@ -179,6 +205,31 @@ class A2AExecutorConstructor {
       ..end = true;
 
     var update = cancelTaskUpdate ?? cancelledUpdate;
+    _eventBus.publish(update);
+  }
+
+  /// Publish user supplied state task update
+  void publishTaskUpdate(
+    A2ATaskState state, {
+    A2AMessage? message,
+    bool end = false,
+  }) {
+    final defaultMessage = (A2AMessage()
+      ..role = 'agent'
+      ..messageId = _uuid.v4()
+      ..parts = []
+      ..taskId = taskId
+      ..contextId = contextId);
+
+    final update = A2ATaskStatusUpdateEvent()
+      ..taskId = taskId
+      ..contextId = contextId
+      ..status = (A2ATaskStatus()
+        ..message = message ?? defaultMessage
+        ..state = state
+        ..timestamp = A2AUtilities.getCurrentTimestamp())
+      ..end = end;
+
     _eventBus.publish(update);
   }
 

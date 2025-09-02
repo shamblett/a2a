@@ -257,6 +257,58 @@ void main() {
       ec.cancelTaskUpdate = testTaskUpdate;
       ec.publishCancelTaskUpdate();
     });
+    test('Input Required Task Update - default', () {
+      final ev = A2ADefaultExecutionEventBus();
+      final ec = A2AExecutorConstructor(rq, ev);
+      final message = ec.createMessage(
+        'Message id',
+        extensions: ['An extension'],
+        metadata: {'First': 1},
+        parts: [A2ATextPart()..text = 'The text'],
+      );
+      ev.on(A2AExecutionEventBus.a2aEBEvent, ((event) {
+        expect(event is A2ATaskStatusUpdateEvent, isTrue);
+        final update = event as A2ATaskStatusUpdateEvent;
+        expect(update.contextId, contextId);
+        expect(update.taskId, taskId);
+        expect(update.status?.state, A2ATaskState.inputRequired);
+        expect(update.end, isFalse);
+        expect((update.status?.message as A2AMessage).messageId, 'Message id');
+      }));
+      ec.publishInputRequiredTaskUpdate(message: message);
+    });
+    test('Input Required Task Update - user supplied', () {
+      final ev = A2ADefaultExecutionEventBus();
+      final ec = A2AExecutorConstructor(rq, ev);
+      ev.on(A2AExecutionEventBus.a2aEBEvent, ((event) {
+        expect(event is A2ATaskStatusUpdateEvent, isTrue);
+        final update = event as A2ATaskStatusUpdateEvent;
+        expect(update.contextId, contextId);
+        expect(update.taskId, taskId);
+        expect(update.status?.state, A2ATaskState.unknown);
+        expect((update.status?.message as A2AMessage).messageId, messageId);
+      }));
+      ec.inputRequiredTaskUpdate = testTaskUpdate;
+      ec.publishInputRequiredTaskUpdate();
+    });
+    test('Task Update - user supplied state', () {
+      final ev = A2ADefaultExecutionEventBus();
+      final ec = A2AExecutorConstructor(rq, ev);
+      ev.on(A2AExecutionEventBus.a2aEBEvent, ((event) {
+        expect(event is A2ATaskStatusUpdateEvent, isTrue);
+        final update = event as A2ATaskStatusUpdateEvent;
+        expect(update.contextId, contextId);
+        expect(update.taskId, taskId);
+        expect(update.end, isTrue);
+        expect(update.status?.state, A2ATaskState.authRequired);
+        expect((update.status?.message as A2AMessage).messageId, messageId);
+      }));
+      ec.publishTaskUpdate(
+        A2ATaskState.authRequired,
+        message: testMessage,
+        end: true,
+      );
+    });
     test('Artifact Update - default', () {
       final ev = A2ADefaultExecutionEventBus();
       final ec = A2AExecutorConstructor(rq, ev);
