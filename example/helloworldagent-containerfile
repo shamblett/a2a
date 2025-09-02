@@ -1,4 +1,4 @@
-# Build with  'podman build . -f helloworldagent-containerfile -t a2a-helloworld-agent'
+# Build with  'podman build . -f example/helloworldagent-containerfile -t a2a-helloworld-agent'
 # Run with 'podman run -p 9999:9999 a2a-helloworld-agent'
 FROM dart:3.9.2
 WORKDIR /app
