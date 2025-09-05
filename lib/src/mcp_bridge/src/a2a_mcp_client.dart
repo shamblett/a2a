@@ -15,14 +15,16 @@ void main() async {
   final options = ClientOptions();
   final client = Client(implementation, options: options);
 
-  final serverUrl = Uri.dataFromString('https://mcp.dartai.com/mcp');
-  final serverOptions = StreamableHttpClientTransportOptions(
-    sessionId: 'Dart A2A Client',
+  final serverOptions = StdioServerParameters(
+    command: '/home/steve/Development/idea-IC-243.24978.46/jbr/bin/java',
+    args: [
+      '--classpath',
+      '/home/steve/Development/idea-IC-243.24978.46/plugins/mcpserver/lib/mcpserver-frontend.jar:/home/steve/Development/idea-IC-243.24978.46/lib/util-8.jar',
+      'com.intellij.mcpserver.stdio.McpStdioRunnerKt',
+    ],
+    environment: {'IJ_MCP_SERVER_PORT': '64342'},
   );
-  final clientTransport = StreamableHttpClientTransport(
-    serverUrl,
-    opts: serverOptions,
-  );
+  final clientTransport = StdioClientTransport(serverOptions);
 
   try {
     await client.connect(clientTransport);
@@ -36,3 +38,16 @@ void main() async {
   final serverVersion = client.getServerVersion();
   print(serverVersion);
 }
+
+// {
+// "type": "stdio",
+// "env": {
+// "IJ_MCP_SERVER_PORT": "64342"
+// },
+// "command": "/home/steve/Development/idea-IC-243.24978.46/jbr/bin/java",
+// "args": [
+// "-classpath",
+// "/home/steve/Development/idea-IC-243.24978.46/plugins/mcpserver/lib/mcpserver-frontend.jar:/home/steve/Development/idea-IC-243.24978.46/lib/util-8.jar",
+// "com.intellij.mcpserver.stdio.McpStdioRunnerKt"
+// ]
+// }
