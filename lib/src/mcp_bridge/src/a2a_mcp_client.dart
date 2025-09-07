@@ -11,8 +11,8 @@ class AuthProvider implements OAuthClientProvider {
   /// Get current tokens if available
   @override
   Future<OAuthTokens?> tokens() async => OAuthTokens(
-    accessToken: Platform.environment['API_KEY']!,
-    refreshToken: Platform.environment['API_KEY']!,
+    accessToken: Platform.environment['DART_MCP_API_KEY']!,
+    refreshToken: Platform.environment['DART_MCP_API_KEY']!,
   );
 
   /// Redirect to authorization endpoint
@@ -48,17 +48,33 @@ void main() async {
 
   print('Server Version');
   final serverVersion = client.getServerVersion();
-  print(serverVersion);
+  print('Server Version - $serverVersion');
+
+  print('Server Capabilities');
+  final capabilities = client.getServerCapabilities();
+  print('${capabilities?.toJson()}');
 
   print('Resources');
   final resources = await client.listResources();
   for (final resource in resources.resources) {
-    print(resource.description);
+    print('Resource - ${resource.description}');
   }
 
   print('Prompts');
   final prompts = await client.listPrompts();
   for (final prompt in prompts.prompts) {
-    print(prompt.description);
+    print('Prompt - ${prompt.description}');
+  }
+
+  print('Resource Templates');
+  final templates = await client.listResourceTemplates();
+  for (final template in templates.resourceTemplates) {
+    print('Template - ${template.description}');
+  }
+
+  print('Tools');
+  final tools = await client.listTools();
+  for (final tool in tools.tools) {
+    print('Tool - ${tool.name}');
   }
 }
