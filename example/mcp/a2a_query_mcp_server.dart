@@ -10,13 +10,29 @@ import 'dart:io';
 import 'package:colorize/colorize.dart';
 import 'package:mcp_dart/mcp_dart.dart';
 
+///
+/// This example connects to an MCP server and gets its details such as server version,
+/// capabilities, resources, prompts etc.
+///
+/// If your MCP server needs an authentication token set this in the MCP_API_KEY
+/// environment variable.
+///
+/// The first parameter to the script should be the URL Of your MCP server.
+///
+///
+String getAPIKey() {
+  final env = Platform.environment;
+  if (env.containsKey('MCP_API_KEY')) {
+    return env['MCP_API_KEY'] != null ? env['MCP_API_KEY']! : '';
+  }
+  return '';
+}
+
 class AuthProvider implements OAuthClientProvider {
   /// Get current tokens if available
   @override
-  Future<OAuthTokens?> tokens() async => OAuthTokens(
-    accessToken: Platform.environment['DART_MCP_API_KEY']!,
-    refreshToken: Platform.environment['DART_MCP_API_KEY']!,
-  );
+  Future<OAuthTokens?> tokens() async =>
+      OAuthTokens(accessToken: getAPIKey(), refreshToken: getAPIKey());
 
   /// Redirect to authorization endpoint
   @override
@@ -25,17 +41,17 @@ class AuthProvider implements OAuthClientProvider {
   }
 }
 
-void main() async {
+void main(List<String> args) async {
   final implementation = Implementation(
-    name: 'A2A Dart MCP Client',
+    name: 'A2A MCP Query Example',
     version: '1.0.0',
   );
   final options = ClientOptions();
   final client = Client(implementation, options: options);
 
-  final serverUrl = Uri.parse('https://mcp.dartai.com/mcp');
+  final serverUrl = Uri.parse(args[0]);
   final serverOptions = StreamableHttpClientTransportOptions(
-    sessionId: 'Dart A2A Client',
+    sessionId: 'A2A-MCP-Query',
     authProvider: AuthProvider(),
   );
   final clientTransport = StreamableHttpClientTransport(
@@ -43,16 +59,21 @@ void main() async {
     opts: serverOptions,
   );
 
+  print('Connecting to ${args[0]}');
   try {
     await client.connect(clientTransport);
   } catch (e) {
     print('${Colorize('Exception thrown - $e').red()}');
   }
 
+  print('');
   print('Server Version');
   final serverVersion = client.getServerVersion();
-  print('Server Version - $serverVersion');
+  serverVersion == null
+      ? print('${Colorize('<No Server Version supplied>').yellow()}')
+      : print('${Colorize('Server version - $serverVersion').blue()}');
 
+  print('');
   print('Server Capabilities');
   final capabilities = client.getServerCapabilities();
   print('${capabilities?.toJson()}');
