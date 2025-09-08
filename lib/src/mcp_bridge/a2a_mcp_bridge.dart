@@ -7,6 +7,8 @@
 
 library;
 
+import 'dart:async';
+
 import 'package:a2a/a2a.dart';
 import 'package:colorize/colorize.dart';
 import 'package:mcp_dart/mcp_dart.dart';
