@@ -59,11 +59,13 @@ void main(List<String> args) async {
     opts: serverOptions,
   );
 
-  print('Connecting to ${args[0]}');
+  print('');
+  print('MCP Query Connecting to ${args[0]}');
   try {
     await client.connect(clientTransport);
   } catch (e) {
     print('${Colorize('Exception thrown - $e').red()}');
+    return;
   }
 
   print('');
@@ -71,34 +73,68 @@ void main(List<String> args) async {
   final serverVersion = client.getServerVersion();
   serverVersion == null
       ? print('${Colorize('<No Server Version supplied>').yellow()}')
-      : print('${Colorize('Server version - $serverVersion').blue()}');
+      : print('${Colorize('Server Version - $serverVersion').blue()}');
+
+  print('');
+  print('Server Instructions');
+  final serverInstructions = client.getInstructions();
+  serverInstructions == null
+      ? print('${Colorize('<No Server Instructions supplied>').yellow()}')
+      : print(
+          '${Colorize('Server Instructions - $serverInstructions').blue()}',
+        );
 
   print('');
   print('Server Capabilities');
   final capabilities = client.getServerCapabilities();
-  print('${capabilities?.toJson()}');
+  capabilities == null
+      ? print('${Colorize('<No Capabilities supplied>').yellow()}')
+      : print('${Colorize('Capabilities - ${capabilities.toJson()}').blue()}');
 
+  print('');
   print('Resources');
   final resources = await client.listResources();
-  for (final resource in resources.resources) {
-    print('Resource - ${resource.description}');
+  if (resources.resources.isEmpty) {
+    print('${Colorize('<No Resources supplied>').yellow()}');
+  } else {
+    for (final resource in resources.resources) {
+      print('${Colorize('Resource Name - ${resource.name}').blue()}');
+    }
   }
 
+  print('');
   print('Prompts');
   final prompts = await client.listPrompts();
-  for (final prompt in prompts.prompts) {
-    print('Prompt - ${prompt.description}');
+  if (prompts.prompts.isEmpty) {
+    print('${Colorize('<No Prompts supplied>').yellow()}');
+  } else {
+    for (final prompt in prompts.prompts) {
+      print('${Colorize('Prompt Name - ${prompt.name}').blue()}');
+    }
   }
 
+  print('');
   print('Resource Templates');
   final templates = await client.listResourceTemplates();
-  for (final template in templates.resourceTemplates) {
-    print('Template - ${template.description}');
+  if (templates.resourceTemplates.isEmpty) {
+    print('${Colorize('<No Resource Templates supplied>').yellow()}');
+  } else {
+    for (final template in templates.resourceTemplates) {
+      print('${Colorize('Template Name - ${template.name}').blue()}');
+    }
   }
 
+  print('');
   print('Tools');
   final tools = await client.listTools();
-  for (final tool in tools.tools) {
-    print('Tool - ${tool.name}');
+  if (tools.tools.isEmpty) {
+    print('${Colorize('<No Tools supplied>').yellow()}');
+  } else {
+    for (final tool in tools.tools) {
+      print('${Colorize('Tool Name - ${tool.name}').blue()}');
+    }
   }
+
+  print('');
+  print('MCP Query complete');
 }
