@@ -10,3 +10,6 @@ library;
 import 'package:a2a/a2a.dart';
 import 'package:colorize/colorize.dart';
 import 'package:mcp_dart/mcp_dart.dart';
+
+part 'src/a2a_mcp_server.dart';
+part 'src/a2a_mcp_bridge.dart';
