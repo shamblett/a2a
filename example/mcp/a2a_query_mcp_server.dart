@@ -5,7 +5,10 @@
 * Copyright :  S.Hamblett
 */
 
-part of '../a2a_mcp_bridge.dart';
+import 'dart:io';
+
+import 'package:colorize/colorize.dart';
+import 'package:mcp_dart/mcp_dart.dart';
 
 class AuthProvider implements OAuthClientProvider {
   /// Get current tokens if available
