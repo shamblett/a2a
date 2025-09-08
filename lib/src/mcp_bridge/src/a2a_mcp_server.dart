@@ -36,7 +36,21 @@ class A2AMCPServer {
     _initialiseTools();
   }
 
+
+  final _registerAgentCallback = ((args) {});
+
+
   void _initialiseTools() {
 
+    // Register agent
+    final inputSchema = ToolInputSchema(properties: {'url' : 'String'}, required: ['url']);
+    final outputSchema = ToolOutputSchema(properties: {'status' : 'String', 'agentName' : 'String'});
+    final registerAgent = Tool(name: 'register_agent', description: 'A2A Bridge Register Agent',
+        inputSchema: inputSchema, outputSchema: outputSchema);
+    _tools.add(registerAgent);
+    _server.tool(registerAgent.name, description: registerAgent.description, toolInputSchema: registerAgent.inputSchema,
+        toolOutputSchema: registerAgent.outputSchema, callback: _registerAgentCallback);
   }
+
+
 }
