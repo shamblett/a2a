@@ -30,6 +30,8 @@ class A2AMCPServer {
     version: serverVersion,
   );
 
+  HttpServer? _httpServer;
+
   McpServer _server = McpServer(_implementation); // Default
 
   final List<Tool> _tools = [];
@@ -60,12 +62,9 @@ class A2AMCPServer {
     // Initialise the tools
     _initialiseTools();
     // Create the transport if not set by the user
-    if (transport == null) {
-      final uri = Uri.parse(url);
-      transport = StreamableHTTPServerTransport(
-        options: StreamableHTTPServerTransportOptions(),
-      );
-    }
+    transport ??= StreamableHTTPServerTransport(
+      options: StreamableHTTPServerTransportOptions(),
+    );
   }
 
   /// Start the server
@@ -77,19 +76,22 @@ class A2AMCPServer {
     await _server.connect(transport!);
 
     // Start the HTTTServer
-    final server = await HttpServer.bind(InternetAddress.anyIPv4, serverPort);
+    _httpServer = await HttpServer.bind(InternetAddress.anyIPv4, serverPort);
     print(
       '${Colorize('A2AMcpServer: - MCP Streamable HTTP Server listening on port $serverPort').blue()}',
     );
-    await for (final request in server) {
+    _httpServer?.listen((request) async {
       if (request.uri.path == '/mcp') {
         await transport?.handleRequest(request);
       }
-    }
+    });
   }
 
   /// Close
-  Future<void> close() => _server.close();
+  Future<void> close() async {
+    await _server.close();
+    await _httpServer?.close(force: true);
+  }
 
   // Register agent callback
   late final ToolCallback _registerAgentCallback = (({args, extra}) async {
