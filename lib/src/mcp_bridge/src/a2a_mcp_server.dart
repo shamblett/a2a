@@ -16,6 +16,13 @@ part of '../a2a_mcp_bridge.dart';
 class A2AMCPServer {
   static const serverName = 'A2A MCP Bridge Server';
   static const serverVersion = '1.0.0';
+  static const defaultUrl = 'http://localhost:41243';
+
+  /// The url of the server
+  String url = defaultUrl;
+
+  /// The transport to use, defaults to [StreamableHttpClientTransport]
+  Transport? transport;
 
   static final _implementation = Implementation(
     name: serverName,
@@ -49,8 +56,27 @@ class A2AMCPServer {
       instructions: 'For use ony by the A2A MCP Bridge',
     );
     _server = McpServer(_implementation, options: serverOptions);
+    // Initialise the tools
     _initialiseTools();
+    // Create the transport if not set by the user
+    if (transport == null) {
+      final uri = Uri.parse(url);
+      transport = StreamableHttpClientTransport(uri);
+    }
   }
+
+  /// Connect
+  Future<void> connect() {
+    if (transport == null) {
+      throw StateError(
+        'A2AMCPServer::connect - cannot connect, transport is null',
+      );
+    }
+    return _server.connect(transport!);
+  }
+
+  /// Close
+  Future<void> close() => _server.close();
 
   // Register agent callback
   late final ToolCallback _registerAgentCallback = (({args, extra}) async {
