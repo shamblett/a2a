@@ -51,7 +51,7 @@ void main(List<String> args) async {
 
   final serverUrl = Uri.parse(args[0]);
   final serverOptions = StreamableHttpClientTransportOptions(
-    sessionId: 'A2A-MCP-Query',
+    //sessionId: 'A2A-MCP-Query',
     authProvider: AuthProvider(),
   );
   final clientTransport = StreamableHttpClientTransport(
@@ -69,11 +69,17 @@ void main(List<String> args) async {
   }
 
   print('');
-  print('Server Version');
+  print('Server Name');
   final serverVersion = client.getServerVersion();
   serverVersion == null
+      ? print('${Colorize('<No Server Name supplied>').yellow()}')
+      : print('${Colorize('Server Name - ${serverVersion.name}').blue()}');
+
+  print('');
+  print('Server Version');
+  serverVersion == null
       ? print('${Colorize('<No Server Version supplied>').yellow()}')
-      : print('${Colorize('Server Version - $serverVersion').blue()}');
+      : print('${Colorize('Server Name - ${serverVersion.version}').blue()}');
 
   print('');
   print('Server Instructions');
@@ -90,6 +96,17 @@ void main(List<String> args) async {
   capabilities == null
       ? print('${Colorize('<No Capabilities supplied>').yellow()}')
       : print('${Colorize('Capabilities - ${capabilities.toJson()}').blue()}');
+
+  print('');
+  print('Tools');
+  final tools = await client.listTools();
+  if (tools.tools.isEmpty) {
+    print('${Colorize('<No Tools supplied>').yellow()}');
+  } else {
+    for (final tool in tools.tools) {
+      print('${Colorize('Tool Name - ${tool.name}').blue()}');
+    }
+  }
 
   print('');
   print('Resources');
@@ -121,17 +138,6 @@ void main(List<String> args) async {
   } else {
     for (final template in templates.resourceTemplates) {
       print('${Colorize('Template Name - ${template.name}').blue()}');
-    }
-  }
-
-  print('');
-  print('Tools');
-  final tools = await client.listTools();
-  if (tools.tools.isEmpty) {
-    print('${Colorize('<No Tools supplied>').yellow()}');
-  } else {
-    for (final tool in tools.tools) {
-      print('${Colorize('Tool Name - ${tool.name}').blue()}');
     }
   }
 
