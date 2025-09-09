@@ -19,7 +19,7 @@ Future<void> main() async {
   final mcpServer = A2AMCPServer();
 
   try {
-    await mcpServer.connect();
+    await mcpServer.start();
   } catch (e) {
     print('${Colorize('MCP server failed to connect $e').red()}');
     return;
