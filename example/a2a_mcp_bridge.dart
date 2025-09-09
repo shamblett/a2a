@@ -31,4 +31,7 @@ Future<void> main() async {
 
   print('${Colorize('Closing').blue()}');
   await mcpServer.close();
+
+  await Future.delayed(Duration(seconds: 10));
+  print('${Colorize('Exiting').blue()}');
 }
