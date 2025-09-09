@@ -56,7 +56,7 @@ class A2AMCPServer {
     );
     final serverOptions = ServerOptions(
       capabilities: serverCapabilities,
-      instructions: 'For use ony by the A2A MCP Bridge',
+      instructions: 'For use only by the A2A MCP Bridge',
     );
     _server = McpServer(_implementation, options: serverOptions);
     // Initialise the tools
