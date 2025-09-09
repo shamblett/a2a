@@ -61,9 +61,11 @@ class A2AMCPServer {
     _server = McpServer(_implementation, options: serverOptions);
     // Initialise the tools
     _initialiseTools();
-    // Create the transport if not set by the user
+    // Create the transport if not set by the user, stateless transport
     transport ??= StreamableHTTPServerTransport(
-      options: StreamableHTTPServerTransportOptions(),
+      options: StreamableHTTPServerTransportOptions(
+        sessionIdGenerator: () => null,
+      ),
     );
   }
 
