@@ -16,13 +16,14 @@ part of '../a2a_mcp_bridge.dart';
 class A2AMCPServer {
   static const serverName = 'A2A MCP Bridge Server';
   static const serverVersion = '1.0.0';
-  static const defaultUrl = 'http://localhost:41243';
+  static const serverPort = 14243;
+  static const defaultUrl = 'http://localhost:$serverPort';
 
   /// The url of the server
   String url = defaultUrl;
 
-  /// The transport to use, defaults to [StreamableHttpClientTransport]
-  Transport? transport;
+  /// The transport to use, always [StreamableHttpClientTransport]
+  StreamableHTTPServerTransport? transport;
 
   static final _implementation = Implementation(
     name: serverName,
@@ -61,18 +62,30 @@ class A2AMCPServer {
     // Create the transport if not set by the user
     if (transport == null) {
       final uri = Uri.parse(url);
-      transport = StreamableHttpClientTransport(uri);
+      transport = StreamableHTTPServerTransport(
+        options: StreamableHTTPServerTransportOptions(),
+      );
     }
   }
 
-  /// Connect
-  Future<void> connect() {
+  /// Start the server
+  Future<void> start() async {
     if (transport == null) {
-      throw StateError(
-        'A2AMCPServer::connect - cannot connect, transport is null',
-      );
+      throw StateError('A2AMCPServer::start - cannot start, transport is null');
     }
-    return _server.connect(transport!);
+    // Connect the transport
+    await _server.connect(transport!);
+
+    // Start the HTTTServer
+    final server = await HttpServer.bind(InternetAddress.anyIPv4, serverPort);
+    print(
+      '${Colorize('A2AMcpServer: - MCP Streamable HTTP Server listening on port $serverPort').blue()}',
+    );
+    await for (final request in server) {
+      if (request.uri.path == '/mcp') {
+        await transport?.handleRequest(request);
+      }
+    }
   }
 
   /// Close
