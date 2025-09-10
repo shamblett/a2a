@@ -110,7 +110,10 @@ class A2AMCPServer {
   }
 
   // Register agent callback
-  late final ToolCallback _registerAgentCallback = (({args, extra}) async {
+  Future<CallToolResult> _registerAgentCallback({
+    Map<String, dynamic>? args,
+    RequestHandlerExtra? extra,
+  }) async {
     if (args == null) {
       print(
         '${Colorize('A2AMcpServer::_registerAgentCallback - args are null').yellow()}',
@@ -137,7 +140,7 @@ class A2AMCPServer {
         TextContent(text: agentCard.name),
       ],
     );
-  });
+  }
 
   void _initialiseTools() {
     // Register agent
