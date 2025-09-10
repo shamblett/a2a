@@ -198,10 +198,10 @@ class A2AMCPServer {
     );
     _tools.add(listAgents);
     _server.tool(
-      registerAgent.name,
-      description: registerAgent.description,
-      toolInputSchema: registerAgent.inputSchema,
-      toolOutputSchema: registerAgent.outputSchema,
+      listAgents.name,
+      description: listAgents.description,
+      toolInputSchema: listAgents.inputSchema,
+      toolOutputSchema: listAgents.outputSchema,
       callback: _listAgentsCallback,
     );
   }
