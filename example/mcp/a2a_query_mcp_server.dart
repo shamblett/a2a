@@ -99,46 +99,64 @@ void main(List<String> args) async {
 
   print('');
   print('Tools');
-  final tools = await client.listTools();
-  if (tools.tools.isEmpty) {
-    print('${Colorize('<No Tools supplied>').yellow()}');
-  } else {
-    for (final tool in tools.tools) {
-      print('${Colorize('Tool Name - ${tool.name}').blue()}');
+  try {
+    final tools = await client.listTools();
+    if (tools.tools.isEmpty) {
+      print('${Colorize('<No Tools supplied>').yellow()}');
+    } else {
+      for (final tool in tools.tools) {
+        print('${Colorize('Tool Name - ${tool.name}').blue()}');
+      }
     }
+  } catch (e) {
+    print('${Colorize('Exception raised getting Tools - $e').yellow()}');
   }
 
   print('');
   print('Resources');
-  final resources = await client.listResources();
-  if (resources.resources.isEmpty) {
-    print('${Colorize('<No Resources supplied>').yellow()}');
-  } else {
-    for (final resource in resources.resources) {
-      print('${Colorize('Resource Name - ${resource.name}').blue()}');
+  try {
+    final resources = await client.listResources();
+    if (resources.resources.isEmpty) {
+      print('${Colorize('<No Resources supplied>').yellow()}');
+    } else {
+      for (final resource in resources.resources) {
+        print('${Colorize('Resource Name - ${resource.name}').blue()}');
+      }
     }
+  } catch (e) {
+    print('${Colorize('Exception raised getting Resources - $e').yellow()}');
   }
 
   print('');
   print('Prompts');
-  final prompts = await client.listPrompts();
-  if (prompts.prompts.isEmpty) {
-    print('${Colorize('<No Prompts supplied>').yellow()}');
-  } else {
-    for (final prompt in prompts.prompts) {
-      print('${Colorize('Prompt Name - ${prompt.name}').blue()}');
+  try {
+    final prompts = await client.listPrompts();
+    if (prompts.prompts.isEmpty) {
+      print('${Colorize('<No Prompts supplied>').yellow()}');
+    } else {
+      for (final prompt in prompts.prompts) {
+        print('${Colorize('Prompt Name - ${prompt.name}').blue()}');
+      }
     }
+  } catch (e) {
+    print('${Colorize('Exception raised getting Prompts - $e').yellow()}');
   }
 
   print('');
   print('Resource Templates');
-  final templates = await client.listResourceTemplates();
-  if (templates.resourceTemplates.isEmpty) {
-    print('${Colorize('<No Resource Templates supplied>').yellow()}');
-  } else {
-    for (final template in templates.resourceTemplates) {
-      print('${Colorize('Template Name - ${template.name}').blue()}');
+  try {
+    final templates = await client.listResourceTemplates();
+    if (templates.resourceTemplates.isEmpty) {
+      print('${Colorize('<No Resource Templates supplied>').yellow()}');
+    } else {
+      for (final template in templates.resourceTemplates) {
+        print('${Colorize('Template Name - ${template.name}').blue()}');
+      }
     }
+  } catch (e) {
+    print(
+      '${Colorize('Exception raised getting Resource Templates - $e').yellow()}',
+    );
   }
 
   print('');
