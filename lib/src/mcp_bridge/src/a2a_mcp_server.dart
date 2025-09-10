@@ -142,15 +142,25 @@ class A2AMCPServer {
     );
   }
 
+  // List agents callback
+  Future<CallToolResult> _listAgentsCallback({
+    Map<String, dynamic>? args,
+    RequestHandlerExtra? extra,
+  }) async {
+    final jsonString = json.encode(_registeredAgents.keys.toList());
+    final jsonMap = json.decode(jsonString);
+    return CallToolResult.fromContent(content: [Content.fromJson(jsonMap)]);
+  }
+
   void _initialiseTools() {
     // Register agent
-    final inputSchema = ToolInputSchema(
+    var inputSchema = ToolInputSchema(
       properties: {
         'url': {'type': 'string', 'description': 'The agent URL'},
       },
       required: ['url'],
     );
-    final outputSchema = ToolOutputSchema(
+    var outputSchema = ToolOutputSchema(
       properties: {
         'status': {'type': 'string'},
         'agentName': {'type': 'string'},
@@ -169,6 +179,30 @@ class A2AMCPServer {
       toolInputSchema: registerAgent.inputSchema,
       toolOutputSchema: registerAgent.outputSchema,
       callback: _registerAgentCallback,
+    );
+
+    // List Agents
+    inputSchema = ToolInputSchema(properties: {});
+    outputSchema = ToolOutputSchema(
+      properties: {
+        'type': 'array',
+        'items': {'type': 'string'},
+      },
+    );
+
+    final listAgents = Tool(
+      name: 'list_agents',
+      description: 'A2A Bridge List Agents',
+      inputSchema: inputSchema,
+      outputSchema: outputSchema,
+    );
+    _tools.add(listAgents);
+    _server.tool(
+      registerAgent.name,
+      description: registerAgent.description,
+      toolInputSchema: registerAgent.inputSchema,
+      toolOutputSchema: registerAgent.outputSchema,
+      callback: _listAgentsCallback,
     );
   }
 
