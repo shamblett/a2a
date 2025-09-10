@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_single_quotes
+
 /*
 * Package : a2a
 * Author : S. Hamblett <steve.hamblett@linux.com>
@@ -16,6 +18,8 @@ class A2AMCPBridge {
   final List<Tool> _registeredTools = [];
 
   final Map<String, A2AAgentCard> _registeredAgents = {};
+
+  final Map<String, String> _agentLookup = {};
 
   A2AMCPBridge() {
     // Initialise the tools
@@ -57,12 +61,9 @@ class A2AMCPBridge {
       );
     }
     _registeredAgents[agentCard.name] = agentCard;
-    return CallToolResult.fromContent(
-      content: [
-        TextContent(text: 'success'),
-        TextContent(text: agentCard.name),
-      ],
-    );
+    _agentLookup[args['url']] = agentCard.name;
+    final content = {"status": "success", "agentname": "$agentCard.name"};
+    return CallToolResult.fromContent(content: [Content.fromJson(content)]);
   }
 
   // List agents callback
@@ -73,6 +74,38 @@ class A2AMCPBridge {
     final jsonString = json.encode(_registeredAgents.keys.toList());
     final jsonMap = json.decode(jsonString);
     return CallToolResult.fromContent(content: [Content.fromJson(jsonMap)]);
+  }
+
+  // Unregister agent callback
+  Future<CallToolResult> _unregisterAgentCallback({
+    Map<String, dynamic>? args,
+    RequestHandlerExtra? extra,
+  }) async {
+    if (args == null) {
+      print(
+        '${Colorize('A2AMCPBridge::_unregisterAgentCallback - args are null').yellow()}',
+      );
+      return CallToolResult.fromContent(
+        content: [UnknownContent(type: 'unknown')],
+        isError: true,
+      );
+    }
+    final url = args['url'];
+    if (!_agentLookup.containsKey(url)) {
+      // Agent not registered
+      return CallToolResult.fromContent(
+        content: [TextContent(text: 'Agent is not Registered')],
+        isError: true,
+      );
+    }
+
+    _registeredAgents.remove(_agentLookup[url]);
+    _agentLookup.remove(url);
+
+    // TODO Clean up any task mappings related to this agent
+    // Create  a list of task_ids to remove to avoid modifying the dictionary during iteration
+    final content = {"status": "success"};
+    return CallToolResult.fromContent(content: [Content.fromJson(content)]);
   }
 
   void _initialiseTools() {
@@ -115,6 +148,28 @@ class A2AMCPBridge {
     );
     _registeredTools.add(listAgents);
     _mcpServer.registerTool(listAgents, _listAgentsCallback);
+
+    // Unregister agent
+    inputSchema = ToolInputSchema(
+      properties: {
+        'url': {'type': 'string', 'description': 'The agent URL'},
+      },
+      required: ['url'],
+    );
+    outputSchema = ToolOutputSchema(
+      properties: {
+        'status': {'type': 'string'},
+        'message': {'type': 'string'},
+      },
+    );
+    final unRegisterAgent = Tool(
+      name: 'unregister_agent',
+      description: 'A2A Bridge Unregister Agent',
+      inputSchema: inputSchema,
+      outputSchema: outputSchema,
+    );
+    _registeredTools.add(unRegisterAgent);
+    _mcpServer.registerTool(unRegisterAgent, _unregisterAgentCallback);
   }
 
   // Fetch an agent card, if not found use a dummy one.
