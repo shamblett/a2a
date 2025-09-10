@@ -21,7 +21,7 @@ Future<void> main() async {
   try {
     await mcpServer.start();
   } catch (e) {
-    print('${Colorize('MCP server failed to connect $e').red()}');
+    print('${Colorize('MCP server failed to start $e').red()}');
     return;
   }
 
