@@ -145,11 +145,16 @@ class A2AMCPServer {
   void _initialiseTools() {
     // Register agent
     final inputSchema = ToolInputSchema(
-      properties: {'url': 'String'},
+      properties: {
+        'url': {'type': 'string', 'description': 'The agent URL'},
+      },
       required: ['url'],
     );
     final outputSchema = ToolOutputSchema(
-      properties: {'status': 'String', 'agentName': 'String'},
+      properties: {
+        'status': {'type': 'string'},
+        'agentName': {'type': 'string'},
+      },
     );
     final registerAgent = Tool(
       name: 'register_agent',
