@@ -11,7 +11,7 @@ part of '../a2a_mcp_bridge.dart';
 /// The A2A MCP Bridge.
 ///
 class A2AMCPBridge {
-  final A2AMCPServer _server = A2AMCPServer();
+  final A2AMCPServer _mcpServer = A2AMCPServer();
 
   final List<Tool> _registeredTools = [];
 
@@ -20,13 +20,16 @@ class A2AMCPBridge {
   A2AMCPBridge() {
     // Initialise the tools
     _initialiseTools();
-    // Start the servers
-    _startServers();
+  }
+
+  /// Start the servers
+  Future<void> startServers() async {
+    await _mcpServer.start();
   }
 
   /// Stop the servers
   Future<void> stopServers() async {
-    await _server.close();
+    await _mcpServer.close();
   }
 
   // Register agent callback
@@ -93,7 +96,7 @@ class A2AMCPBridge {
       outputSchema: outputSchema,
     );
     _registeredTools.add(registerAgent);
-    _server.registerTool(registerAgent, _registerAgentCallback);
+    _mcpServer.registerTool(registerAgent, _registerAgentCallback);
 
     // List Agents
     inputSchema = ToolInputSchema(properties: {});
@@ -111,7 +114,7 @@ class A2AMCPBridge {
       outputSchema: outputSchema,
     );
     _registeredTools.add(listAgents);
-    _server.registerTool(listAgents, _listAgentsCallback);
+    _mcpServer.registerTool(listAgents, _listAgentsCallback);
   }
 
   // Fetch an agent card, if not found use a dummy one.
@@ -139,10 +142,5 @@ class A2AMCPBridge {
       agentCard = A2AAgentCard.fromJson(agentCardJson);
     }
     return agentCard;
-  }
-
-  // Start the servers
-  Future<void> _startServers() async {
-    await _server.start();
   }
 }

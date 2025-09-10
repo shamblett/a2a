@@ -16,9 +16,9 @@ import 'package:a2a/a2a.dart';
 Future<void> main() async {
   // Create and start the bridge
   print('${Colorize('Creating MCP Bridge').blue()}');
-  A2AMCPBridge a2aMcpBridge;
+  A2AMCPBridge a2aMcpBridge = A2AMCPBridge();
   try {
-    a2aMcpBridge = A2AMCPBridge();
+    await a2aMcpBridge.startServers();
   } catch (e) {
     print('${Colorize('MCP Bridge failed to start $e').red()}');
     return;
