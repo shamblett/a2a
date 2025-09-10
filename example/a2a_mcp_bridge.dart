@@ -14,24 +14,23 @@ import 'package:a2a/a2a.dart';
 ///
 
 Future<void> main() async {
-  // Create and start the server using defaults
-  print('${Colorize('Creating MCP server and connecting...').blue()}');
-  final mcpServer = A2AMCPServer();
-
+  // Create and start the bridge
+  print('${Colorize('Creating MCP Bridge').blue()}');
+  A2AMCPBridge a2aMcpBridge;
   try {
-    await mcpServer.start();
+    a2aMcpBridge = A2AMCPBridge();
   } catch (e) {
-    print('${Colorize('MCP server failed to start $e').red()}');
+    print('${Colorize('MCP Bridge failed to start $e').red()}');
     return;
   }
 
   // Delay and close
-  print('${Colorize('MCP server connected, delaying...').blue()}');
+  print('${Colorize('delaying...').blue()}');
   await Future.delayed(Duration(seconds: 60));
 
-  print('${Colorize('Closing').blue()}');
-  await mcpServer.close();
+  print('${Colorize('Closing Bridge').blue()}');
+  await a2aMcpBridge.stopServers();
 
-  await Future.delayed(Duration(seconds: 10));
+  await Future.delayed(Duration(seconds: 1));
   print('${Colorize('Exiting').blue()}');
 }

@@ -34,21 +34,6 @@ class A2AMCPServer {
 
   McpServer _server = McpServer(_implementation); // Default
 
-  final List<Tool> _tools = [];
-
-  final Map<String, A2AAgentCard> _registeredAgents = {};
-
-  /// Get a registered agent by its name
-  A2AAgentCard? registeredAgentByName(String name) {
-    if (_registeredAgents.containsKey(name)) {
-      return _registeredAgents[name];
-    }
-    return null;
-  }
-
-  /// All registered agents
-  Map<String, A2AAgentCard> get allRegisteredAgents => _registeredAgents;
-
   /// Construction
   A2AMCPServer() {
     final serverCapabilities = ServerCapabilities(
@@ -59,8 +44,7 @@ class A2AMCPServer {
       instructions: 'For use only by the A2A MCP Bridge',
     );
     _server = McpServer(_implementation, options: serverOptions);
-    // Initialise the tools
-    _initialiseTools();
+
     // Create the transport if not set by the user, stateless transport
     transport ??= StreamableHTTPServerTransport(
       options: StreamableHTTPServerTransportOptions(
@@ -109,128 +93,14 @@ class A2AMCPServer {
     await _httpServer?.close(force: true);
   }
 
-  // Register agent callback
-  Future<CallToolResult> _registerAgentCallback({
-    Map<String, dynamic>? args,
-    RequestHandlerExtra? extra,
-  }) async {
-    if (args == null) {
-      print(
-        '${Colorize('A2AMcpServer::_registerAgentCallback - args are null').yellow()}',
-      );
-      return CallToolResult.fromContent(
-        content: [UnknownContent(type: 'unknown')],
-        isError: true,
-      );
-    }
-    final agentCard = await _fetchAgentCard(args['url']);
-    if (agentCard.name.isEmpty) {
-      print(
-        '${Colorize('A2AMcpServer::_registerAgentCallback - agent has no name in agent card').yellow()}',
-      );
-      return CallToolResult.fromContent(
-        content: [UnknownContent(type: 'unknown')],
-        isError: true,
-      );
-    }
-    _registeredAgents[agentCard.name] = agentCard;
-    return CallToolResult.fromContent(
-      content: [
-        TextContent(text: 'success'),
-        TextContent(text: agentCard.name),
-      ],
-    );
-  }
-
-  // List agents callback
-  Future<CallToolResult> _listAgentsCallback({
-    Map<String, dynamic>? args,
-    RequestHandlerExtra? extra,
-  }) async {
-    final jsonString = json.encode(_registeredAgents.keys.toList());
-    final jsonMap = json.decode(jsonString);
-    return CallToolResult.fromContent(content: [Content.fromJson(jsonMap)]);
-  }
-
-  void _initialiseTools() {
-    // Register agent
-    var inputSchema = ToolInputSchema(
-      properties: {
-        'url': {'type': 'string', 'description': 'The agent URL'},
-      },
-      required: ['url'],
-    );
-    var outputSchema = ToolOutputSchema(
-      properties: {
-        'status': {'type': 'string'},
-        'agentName': {'type': 'string'},
-      },
-    );
-    final registerAgent = Tool(
-      name: 'register_agent',
-      description: 'A2A Bridge Register Agent',
-      inputSchema: inputSchema,
-      outputSchema: outputSchema,
-    );
-    _tools.add(registerAgent);
+  /// Register a tool
+  void registerTool(Tool tool, ToolCallback callback) {
     _server.tool(
-      registerAgent.name,
-      description: registerAgent.description,
-      toolInputSchema: registerAgent.inputSchema,
-      toolOutputSchema: registerAgent.outputSchema,
-      callback: _registerAgentCallback,
+      tool.name,
+      description: tool.description,
+      toolInputSchema: tool.inputSchema,
+      toolOutputSchema: tool.outputSchema,
+      callback: callback,
     );
-
-    // List Agents
-    inputSchema = ToolInputSchema(properties: {});
-    outputSchema = ToolOutputSchema(
-      properties: {
-        'type': 'array',
-        'items': {'type': 'string'},
-      },
-    );
-
-    final listAgents = Tool(
-      name: 'list_agents',
-      description: 'A2A Bridge List Agents',
-      inputSchema: inputSchema,
-      outputSchema: outputSchema,
-    );
-    _tools.add(listAgents);
-    _server.tool(
-      listAgents.name,
-      description: listAgents.description,
-      toolInputSchema: listAgents.inputSchema,
-      toolOutputSchema: listAgents.outputSchema,
-      callback: _listAgentsCallback,
-    );
-  }
-
-  // Fetch an agent card, if not found use a dummy one.
-  Future<A2AAgentCard> _fetchAgentCard(String url) async {
-    String fetchUrl = url;
-    // Check if the URL already contains the agent path
-    if (!url.contains(A2AConstants.agentCardPath)) {
-      fetchUrl = '$url\\${A2AConstants.agentCardPath}';
-    }
-    A2AAgentCard agentCard;
-    final response = await http.fetch(
-      fetchUrl,
-      headers: http.Headers()..append('Accept', 'application/json'),
-    );
-    if (!response.ok) {
-      print(
-        '${Colorize('A2AMcpServer::_fetchAgentCard - failed to fetch agent card for $fetchUrl').yellow()}',
-      );
-      agentCard = A2AAgentCard()
-        ..name = 'Unknown'
-        ..description = 'Failed to fetch'
-        ..url = fetchUrl;
-    } else {
-      final agentCardJson = await response.json();
-      agentCard = A2AAgentCard.fromJson(agentCardJson);
-    }
-
-    return agentCard;
   }
 }
