@@ -28,7 +28,7 @@ typedef A2AResponseOrGenerator = Object;
 
 /// Represents the possible lifecycle states of a Task.
 enum A2ATaskState {
-  /// he task has been submitted and is awaiting execution.
+  /// The task has been submitted and is awaiting execution.
   @JsonValue('submitted')
   submitted,
 

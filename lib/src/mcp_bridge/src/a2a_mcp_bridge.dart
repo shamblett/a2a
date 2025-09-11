@@ -253,7 +253,75 @@ class A2AMCPBridge {
     // Create a client for the agent and send the message to it
     try {
       final client = A2AClient(url!);
-
+      final params = A2ATaskQueryParams()
+        ..id = taskId
+        ..historyLength = historyLength;
+      final response = await client.getTask(params);
+      String responseText = '';
+      String historyResponseText = '';
+      String? taskState = 'unknown';
+      if (response.isError) {
+        final errorResponse = response as A2AJSONRPCErrorResponseT;
+        print(
+          '${Colorize('A2AMCPBridge::_sendMessageCallback - error response ${errorResponse.error?.rpcErrorCode} from agent').yellow()}',
+        );
+        return CallToolResult.fromContent(
+          content: [
+            TextContent(
+              text:
+                  'Error response returned the agent at $url, ${errorResponse.error?.rpcErrorCode}',
+            ),
+          ],
+          isError: true,
+        );
+      } else {
+        final successResponse = response as A2AGetTaskSuccessResponse;
+        final task = successResponse.result as A2ATask;
+        taskState = task.status?.state?.name;
+        // Task message
+        if (task.status?.message != null) {
+          final message = task.status?.message;
+          if (message?.parts != null) {
+            for (final part in message!.parts!) {
+              if (part is A2ATextPart) {
+                responseText += part.text;
+              }
+            }
+          }
+          // Artifacts
+          if (task.artifacts != null) {
+            for (final artifact in task.artifacts!) {
+              for (final part in artifact.parts) {
+                if (part is A2ATextPart) {
+                  responseText += part.text;
+                }
+              }
+            }
+          }
+          // History
+          if (task.history != null) {
+            for (final message in task.history!) {
+              for (final part in message.parts!) {
+                if (part is A2ATextPart) {
+                  historyResponseText += part.text;
+                }
+              }
+            }
+          }
+        }
+      }
+      // Return success
+      return CallToolResult.fromContent(
+        content: [
+          Content.fromJson({
+            "task_id": taskId,
+            "message": responseText,
+            "status": "success",
+            "task_state": taskState,
+            "history": historyResponseText,
+          }),
+        ],
+      );
     } catch (e) {
       return CallToolResult.fromContent(
         content: [
@@ -383,6 +451,7 @@ class A2AMCPBridge {
         "task_id": {"type": "string"},
         "message": {"type": "string"},
         "status": {"type": "string"},
+        "task_state": {"type": "string"},
         "history": {"type": "string"},
       },
     );
