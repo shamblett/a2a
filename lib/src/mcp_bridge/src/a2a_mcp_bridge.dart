@@ -26,7 +26,7 @@ class A2AMCPBridge {
 
   // Task to agent mapping
   // Task ids are unique UUID's so no need for a set.
-  // Agent URL to task id
+  // Task id to agent URL
   final Map<String, String> _taskToAgent = {};
 
   final _uuid = Uuid();
@@ -113,7 +113,7 @@ class A2AMCPBridge {
     _agentLookup.remove(url);
 
     // Clean up any task mappings related to this agent
-    _taskToAgent.remove(url);
+    _taskToAgent.removeWhere((_, value) => value == url);
 
     final content = {"status": "success"};
     return CallToolResult.fromContent(content: [Content.fromJson(content)]);
@@ -143,7 +143,7 @@ class A2AMCPBridge {
     try {
       final client = A2AClient(url);
       final taskId = _uuid.v4();
-      _taskToAgent[url] = taskId;
+      _taskToAgent[taskId] = url;
       final clientMessage = A2AMessage()
         ..contextId =
             sessionId // Use session id
@@ -216,9 +216,53 @@ class A2AMCPBridge {
       );
     }
   }
+  Future<CallToolResult> _getTaskResultCallback({
+    Map<String, dynamic>? args,
+    RequestHandlerExtra? extra,
+  }) async {
+    if (args == null) {
+      print(
+        '${Colorize('A2AMCPBridge::_getTaskResultCallback - args are null')
+            .yellow()}',
+      );
+      return CallToolResult.fromContent(
+        content: [UnknownContent(type: "unknown")],
+        isError: true,
+      );
+    }
+
+    final taskId = args['taskId'];
+    final historyLength = args['history_length'];
+
+    if (!_taskToAgent.containsKey(taskId) ) {
+      return CallToolResult.fromContent(
+        content: [
+          TextContent(
+            text: 'No task registered for Task Id $taskId',
+          ),
+        ],
+        isError: true,
+      );
+    }
+    final url = _taskToAgent[taskId];
+    // Create a client for the agent and send the message to it
+    try {
+      final client = A2AClient(url!);
+    } catch(e) {
+      return CallToolResult.fromContent(
+        content: [
+          TextContent(
+            text: 'Exception raised interfacing with the agent at $url, $e',
+          ),
+        ],
+        isError: true,
+      );
+    }
+  }
 
   void _initialiseTools() {
     // Register agent
+    //  Register an A2A agent with the bridge server.
     var inputSchema = ToolInputSchema(
       properties: {
         "url": {"type": "string", "description": "The agent URL"},
@@ -241,6 +285,7 @@ class A2AMCPBridge {
     _mcpServer.registerTool(registerAgent, _registerAgentCallback);
 
     // List Agents
+    //  List all registered A2A agents.
     inputSchema = ToolInputSchema(properties: {});
     outputSchema = ToolOutputSchema(
       properties: {
@@ -259,6 +304,7 @@ class A2AMCPBridge {
     _mcpServer.registerTool(listAgents, _listAgentsCallback);
 
     // Unregister agent
+    // Unregister an A2A agent from the bridge server.
     inputSchema = ToolInputSchema(
       properties: {
         "url": {"type": "string", "description": "The agent URL"},
@@ -281,6 +327,7 @@ class A2AMCPBridge {
     _mcpServer.registerTool(unRegisterAgent, _unregisterAgentCallback);
 
     // Send Message
+    // Send a message to an A2A agent, non-streaming.
     inputSchema = ToolInputSchema(
       properties: {
         "url": {"type": "string", "description": "The agent URL"},
@@ -311,6 +358,35 @@ class A2AMCPBridge {
     );
     _registeredTools.add(sendMessage);
     _mcpServer.registerTool(sendMessage, _sendMessageCallback);
+
+    // Get Task result
+    // Retrieve the result of a task from an A2A agent.
+    inputSchema = ToolInputSchema(
+      properties: {
+        "task_id": {"type": "string", "description": "The task id"},
+        "history_length ": {
+          "type": "number",
+          "description": " Optional number of history items to include (null for all)",
+        },
+      },
+      required: ["task_id"],
+    );
+    outputSchema = ToolOutputSchema(
+      properties: {
+        "task_id": {"type": "string"},
+        "message": {"type": "string"},
+        "status": {"type": "string"},
+        "history": {"type": "string"},
+      },
+    );
+    final getTaskResult = Tool(
+      name: 'get_task_result',
+      description: 'A2A Bridge retrieves a task result from an Agent',
+      inputSchema: inputSchema,
+      outputSchema: outputSchema,
+    );
+    _registeredTools.add(getTaskResult);
+    _mcpServer.registerTool(getTaskResult, _getTaskResultCallback);
   }
 
   // Fetch an agent card, if not found use a dummy one.
