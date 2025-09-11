@@ -108,6 +108,25 @@ class A2AMCPBridge {
     return CallToolResult.fromContent(content: [Content.fromJson(content)]);
   }
 
+  // Send message callback
+  Future<CallToolResult> _sendMessageCallback({
+    Map<String, dynamic>? args,
+    RequestHandlerExtra? extra,
+  }) async {
+    if (args == null) {
+      print(
+        '${Colorize('A2AMCPBridge::_sendMessageCallback - args are null')
+            .yellow()}',
+      );
+      return CallToolResult.fromContent(
+        content: [UnknownContent(type: 'unknown')],
+        isError: true,
+      );
+    }
+
+
+  }
+
   void _initialiseTools() {
     // Register agent
     var inputSchema = ToolInputSchema(
@@ -170,6 +189,30 @@ class A2AMCPBridge {
     );
     _registeredTools.add(unRegisterAgent);
     _mcpServer.registerTool(unRegisterAgent, _unregisterAgentCallback);
+
+    // Send Message
+    inputSchema = ToolInputSchema(
+      properties: {
+        'url': {'type': 'string', 'description': 'The agent URL'},
+        'message' :  {'type': 'string', 'description': 'Message to send to the agent'},
+        'session_id' : {'type': 'string', 'description': 'Multi conversation session id'},
+      },
+      required: ['url', 'message'],
+    );
+    outputSchema = ToolOutputSchema(
+      properties: {
+        'task_id': {'type': 'string'},
+        'response': {'type': 'string'},
+      },
+    );
+    final sendMessage = Tool(
+      name: 'send_message',
+      description: 'A2A Bridge Send Message to an Agent',
+      inputSchema: inputSchema,
+      outputSchema: outputSchema,
+    );
+    _registeredTools.add(sendMessage);
+    _mcpServer.registerTool(sendMessage, _sendMessageCallback);
   }
 
   // Fetch an agent card, if not found use a dummy one.
