@@ -15,12 +15,18 @@ part of '../a2a_mcp_bridge.dart';
 class A2AMCPBridge {
   final A2AMCPServer _mcpServer = A2AMCPServer();
 
+  // Tools registered with the MCP server
   final List<Tool> _registeredTools = [];
 
+  // Registered agents by name.
   final Map<String, A2AAgentCard> _registeredAgents = {};
 
+  // Agent lookup from name to url.
   final Map<String, String> _agentLookup = {};
 
+  // Task to agent mapping
+  // Task ids are unique UUID's so no need for a set.
+  // Agent URL to task id
   final Map<String, String> _taskToAgent = {};
 
   final _uuid = Uuid();
@@ -106,8 +112,9 @@ class A2AMCPBridge {
     _registeredAgents.remove(_agentLookup[url]);
     _agentLookup.remove(url);
 
-    // TODO Clean up any task mappings related to this agent
-    // Create  a list of task_ids to remove to avoid modifying the dictionary during iteration
+    // Clean up any task mappings related to this agent
+    _taskToAgent.remove(url);
+
     final content = {"status": "success"};
     return CallToolResult.fromContent(content: [Content.fromJson(content)]);
   }
