@@ -21,6 +21,10 @@ class A2AMCPBridge {
 
   final Map<String, String> _agentLookup = {};
 
+  final Map<String, String> _taskToAgent = {};
+
+  final _uuid = Uuid();
+
   A2AMCPBridge() {
     // Initialise the tools
     _initialiseTools();
@@ -56,13 +60,13 @@ class A2AMCPBridge {
         '${Colorize('A2AMcpServer::_registerAgentCallback - agent has no name in agent card').yellow()}',
       );
       return CallToolResult.fromContent(
-        content: [UnknownContent(type: 'unknown')],
+        content: [UnknownContent(type: "unknown")],
         isError: true,
       );
     }
     _registeredAgents[agentCard.name] = agentCard;
     _agentLookup[args['url']] = agentCard.name;
-    final content = {"status": "success", "agentname": "$agentCard.name"};
+    final content = {"status": "success", "agentName": "$agentCard.name"};
     return CallToolResult.fromContent(content: [Content.fromJson(content)]);
   }
 
@@ -86,7 +90,7 @@ class A2AMCPBridge {
         '${Colorize('A2AMCPBridge::_unregisterAgentCallback - args are null').yellow()}',
       );
       return CallToolResult.fromContent(
-        content: [UnknownContent(type: 'unknown')],
+        content: [UnknownContent(type: "unknown")],
         isError: true,
       );
     }
@@ -115,30 +119,109 @@ class A2AMCPBridge {
   }) async {
     if (args == null) {
       print(
-        '${Colorize('A2AMCPBridge::_sendMessageCallback - args are null')
-            .yellow()}',
+        '${Colorize('A2AMCPBridge::_sendMessageCallback - args are null').yellow()}',
       );
       return CallToolResult.fromContent(
-        content: [UnknownContent(type: 'unknown')],
+        content: [UnknownContent(type: "unknown")],
         isError: true,
       );
     }
 
+    final url = args['url'];
+    final message = args['message'];
+    // Session id if present
+    final sessionId = args['session_id'] ?? _uuid.v4();
 
+    // Create a client for the agent and send the message to it
+    try {
+      final client = A2AClient(url);
+      final taskId = _uuid.v4();
+      _taskToAgent[url] = taskId;
+      final clientMessage = A2AMessage()
+        ..contextId =
+            sessionId // Use session id
+        ..taskId = taskId
+        ..messageId = _uuid.v4()
+        ..parts = [A2ATextPart()..text = message]
+        ..role = 'user';
+      final params = A2AMessageSendParams()
+        ..message = clientMessage
+        ..metadata = {"task_id": taskId};
+      String responseText = '';
+      // Process the response, only assemble text responses for now.
+      final response = await client.sendMessage(params);
+      if (response.isError) {
+        final errorResponse = response as A2AJSONRPCErrorResponseS;
+        return CallToolResult.fromContent(
+          content: [
+            TextContent(
+              text:
+                  'Error response returned the agent at $url, ${errorResponse.error?.rpcErrorCode}',
+            ),
+          ],
+          isError: true,
+        );
+      } else {
+        final successResponse = response as A2ASendMessageSuccessResponse;
+        // Check for a message or task
+        if (successResponse.result is A2AMessage) {
+          final success = successResponse.result as A2AMessage;
+          if (success.parts != null) {
+            for (final part in success.parts!) {
+              if (part is A2ATextPart) {
+                responseText += part.text;
+              }
+            }
+          }
+        } else {
+          // Task, assume the task has completed Ok.
+          final success = successResponse.result as A2ATask;
+          if (success.artifacts != null) {
+            for (final artifact in success.artifacts!) {
+              for (final part in artifact.parts) {
+                if (part is A2ATextPart) {
+                  responseText += part.text;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      // Return success
+      return CallToolResult.fromContent(
+        content: [
+          Content.fromJson({
+            "task_id": taskId,
+            "response": responseText,
+            "status": "success",
+          }),
+        ],
+      );
+    } catch (e) {
+      return CallToolResult.fromContent(
+        content: [
+          TextContent(
+            text: 'Exception raised interfacing with the agent at $url, $e',
+          ),
+        ],
+        isError: true,
+      );
+    }
   }
 
   void _initialiseTools() {
     // Register agent
     var inputSchema = ToolInputSchema(
       properties: {
-        'url': {'type': 'string', 'description': 'The agent URL'},
+        "url": {"type": "string", "description": "The agent URL"},
       },
-      required: ['url'],
+      required: ["url"],
     );
     var outputSchema = ToolOutputSchema(
       properties: {
-        'status': {'type': 'string'},
-        'agentName': {'type': 'string'},
+        "status": {"type": "string"},
+        "agentName": {"type": "string"},
       },
     );
     final registerAgent = Tool(
@@ -154,8 +237,8 @@ class A2AMCPBridge {
     inputSchema = ToolInputSchema(properties: {});
     outputSchema = ToolOutputSchema(
       properties: {
-        'type': 'array',
-        'items': {'type': 'string'},
+        "type": "array",
+        "items": {"type": "string"},
       },
     );
 
@@ -171,14 +254,14 @@ class A2AMCPBridge {
     // Unregister agent
     inputSchema = ToolInputSchema(
       properties: {
-        'url': {'type': 'string', 'description': 'The agent URL'},
+        "url": {"type": "string", "description": "The agent URL"},
       },
-      required: ['url'],
+      required: ["url"],
     );
     outputSchema = ToolOutputSchema(
       properties: {
-        'status': {'type': 'string'},
-        'message': {'type': 'string'},
+        "status": {"type": "string"},
+        "message": {"type": "string"},
       },
     );
     final unRegisterAgent = Tool(
@@ -193,16 +276,24 @@ class A2AMCPBridge {
     // Send Message
     inputSchema = ToolInputSchema(
       properties: {
-        'url': {'type': 'string', 'description': 'The agent URL'},
-        'message' :  {'type': 'string', 'description': 'Message to send to the agent'},
-        'session_id' : {'type': 'string', 'description': 'Multi conversation session id'},
+        "url": {"type": "string", "description": "The agent URL"},
+        "message": {
+          "type": "string",
+          "description": "Message to send to the agent",
+        },
+        "session_id": {
+          "type": "string",
+          "description": "Multi conversation session id",
+        },
       },
-      required: ['url', 'message'],
+      required: ["url", "message"],
     );
     outputSchema = ToolOutputSchema(
       properties: {
-        'task_id': {'type': 'string'},
-        'response': {'type': 'string'},
+        "task_id": {"type": "string"},
+        "response": {"type": "string"},
+        "status": {"type": "string"},
+        "message": {"type": "string"},
       },
     );
     final sendMessage = Tool(
