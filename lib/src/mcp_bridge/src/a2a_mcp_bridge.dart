@@ -103,6 +103,9 @@ class A2AMCPBridge {
     final url = args['url'];
     if (!_agentLookup.containsKey(url)) {
       // Agent not registered
+      print(
+        '${Colorize('A2AMCPBridge::_registerAgentCallback - agent is not registered').yellow()}',
+      );
       return CallToolResult.fromContent(
         content: [TextContent(text: 'Agent is not Registered')],
         isError: true,
@@ -159,6 +162,9 @@ class A2AMCPBridge {
       final response = await client.sendMessage(params);
       if (response.isError) {
         final errorResponse = response as A2AJSONRPCErrorResponseS;
+        print(
+          '${Colorize('A2AMCPBridge::_sendMessageCallback - error response ${errorResponse.error?.rpcErrorCode} from agent').yellow()}',
+        );
         return CallToolResult.fromContent(
           content: [
             TextContent(
@@ -216,14 +222,14 @@ class A2AMCPBridge {
       );
     }
   }
+
   Future<CallToolResult> _getTaskResultCallback({
     Map<String, dynamic>? args,
     RequestHandlerExtra? extra,
   }) async {
     if (args == null) {
       print(
-        '${Colorize('A2AMCPBridge::_getTaskResultCallback - args are null')
-            .yellow()}',
+        '${Colorize('A2AMCPBridge::_getTaskResultCallback - args are null').yellow()}',
       );
       return CallToolResult.fromContent(
         content: [UnknownContent(type: "unknown")],
@@ -234,13 +240,12 @@ class A2AMCPBridge {
     final taskId = args['taskId'];
     final historyLength = args['history_length'];
 
-    if (!_taskToAgent.containsKey(taskId) ) {
+    if (!_taskToAgent.containsKey(taskId)) {
+      print(
+        '${Colorize('A2AMCPBridge::_getTaskResultCallback - no registered agent for task Id $taskId').yellow()}',
+      );
       return CallToolResult.fromContent(
-        content: [
-          TextContent(
-            text: 'No task registered for Task Id $taskId',
-          ),
-        ],
+        content: [TextContent(text: 'No task registered for Task Id $taskId')],
         isError: true,
       );
     }
@@ -248,7 +253,8 @@ class A2AMCPBridge {
     // Create a client for the agent and send the message to it
     try {
       final client = A2AClient(url!);
-    } catch(e) {
+
+    } catch (e) {
       return CallToolResult.fromContent(
         content: [
           TextContent(
@@ -366,7 +372,8 @@ class A2AMCPBridge {
         "task_id": {"type": "string", "description": "The task id"},
         "history_length ": {
           "type": "number",
-          "description": " Optional number of history items to include (null for all)",
+          "description":
+              " Optional number of history items to include (null for all)",
         },
       },
       required: ["task_id"],
