@@ -1,0 +1,9 @@
+# Build with  'podman build . -f example/mcpbridge-containerfile -t a2a-mcpbridge'
+# Run with 'podman run -p 3000:3000 a2a-mcpbridge'
+FROM dart:3.9.2
+WORKDIR /app
+COPY . .
+RUN dart pub get
+RUN dart compile exe example/a2a_mcp_bridge.dart
+EXPOSE 3000
+ENTRYPOINT ["/app/example/a2a_mcp_bridge.exe"]
