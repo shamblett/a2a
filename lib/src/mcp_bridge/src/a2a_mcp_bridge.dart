@@ -215,7 +215,8 @@ class A2AMCPBridge {
       return CallToolResult.fromContent(
         content: [
           TextContent(
-            text: 'Exception raised interfacing with the agent at $url, $e',
+            text:
+                '_sendMessageCallback - Exception raised interfacing with the agent at $url, $e',
           ),
         ],
         isError: true,
@@ -326,7 +327,89 @@ class A2AMCPBridge {
       return CallToolResult.fromContent(
         content: [
           TextContent(
-            text: 'Exception raised interfacing with the agent at $url, $e',
+            text:
+                '_getTaskResultCallback - Exception raised interfacing with the agent at $url, $e',
+          ),
+        ],
+        isError: true,
+      );
+    }
+  }
+
+  Future<CallToolResult> _cancelTaskCallback({
+    Map<String, dynamic>? args,
+    RequestHandlerExtra? extra,
+  }) async {
+    if (args == null) {
+      print(
+        '${Colorize('A2AMCPBridge::__cancelTaskCallback - args are null').yellow()}',
+      );
+      return CallToolResult.fromContent(
+        content: [UnknownContent(type: "unknown")],
+        isError: true,
+      );
+    }
+
+    final taskId = args['taskId'];
+
+    if (!_taskToAgent.containsKey(taskId)) {
+      print(
+        '${Colorize('A2AMCPBridge::_cancelTaskCallback - no registered agent for task Id $taskId').yellow()}',
+      );
+      return CallToolResult.fromContent(
+        content: [TextContent(text: 'No task registered for Task Id $taskId')],
+        isError: true,
+      );
+    }
+    final url = _taskToAgent[taskId];
+    // Create a client for the agent and send the message to it
+    try {
+      final client = A2AClient(url!);
+      final params = A2ATaskIdParams()..id = taskId;
+      final response = await client.cancelTask(params);
+      if (response.isError) {
+        final errorResponse = response as A2AJSONRPCErrorResponse;
+        print(
+          '${Colorize('A2AMCPBridge::_cancelTaskCallback - error response ${errorResponse.error?.rpcErrorCode} from agent').yellow()}',
+        );
+        return CallToolResult.fromContent(
+          content: [
+            TextContent(
+              text:
+                  'Error response returned the agent at $url, ${errorResponse.error?.rpcErrorCode}',
+            ),
+          ],
+          isError: true,
+        );
+      } else {
+        final successResponse = response as A2ACancelTaskSuccessResponse;
+        final task = successResponse.result;
+        final taskState = task?.status?.state;
+        return taskState == A2ATaskState.canceled ||
+                taskState == A2ATaskState.completed ||
+                taskState == A2ATaskState.rejected
+            ? CallToolResult.fromContent(
+                content: [
+                  Content.fromJson({"task_id": taskId, "status": "success"}),
+                ],
+              )
+            : CallToolResult.fromContent(
+                content: [
+                  Content.fromJson({
+                    "task_id": taskId,
+                    "message":
+                        "Task failed to be cancelled, completed or rejected",
+                    "status": "error",
+                  }),
+                ],
+              );
+      }
+    } catch (e) {
+      return CallToolResult.fromContent(
+        content: [
+          TextContent(
+            text:
+                '_cancelTaskCallback - Exception raised interfacing with the agent at $url, $e',
           ),
         ],
         isError: true,
@@ -463,6 +546,31 @@ class A2AMCPBridge {
     );
     _registeredTools.add(getTaskResult);
     _mcpServer.registerTool(getTaskResult, _getTaskResultCallback);
+
+    // Cancel a task
+    // Cancel a running task on an A2A agent.
+    inputSchema = ToolInputSchema(
+      properties: {
+        "task_id": {"type": "string", "description": "The task id"},
+      },
+      required: ["task_id"],
+    );
+    outputSchema = ToolOutputSchema(
+      properties: {
+        "task_id": {"type": "string"},
+        "message": {"type": "string"},
+        "status": {"type": "string"},
+        "result_code": {"type": "string"},
+      },
+    );
+    final cancelTask = Tool(
+      name: 'cancel_task',
+      description: 'A2A Bridge cancel an active Agent task',
+      inputSchema: inputSchema,
+      outputSchema: outputSchema,
+    );
+    _registeredTools.add(cancelTask);
+    _mcpServer.registerTool(cancelTask, _cancelTaskCallback);
   }
 
   // Fetch an agent card, if not found use a dummy one.
