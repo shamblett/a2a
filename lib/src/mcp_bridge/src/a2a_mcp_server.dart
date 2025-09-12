@@ -16,7 +16,7 @@ part of '../a2a_mcp_bridge.dart';
 class A2AMCPServer {
   static const serverName = 'A2A MCP Bridge Server';
   static const serverVersion = '1.0.0';
-  static const defaultServerPort = 3000;
+  static const defaultServerPort = 3080;
   static const defaultUrl = 'http://localhost:$defaultServerPort';
 
   /// The url of the server
