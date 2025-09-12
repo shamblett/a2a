@@ -23,14 +23,4 @@ Future<void> main() async {
     print('${Colorize('MCP Bridge failed to start $e').red()}');
     return;
   }
-
-  // Delay and close
-  print('${Colorize('delaying...').blue()}');
-  await Future.delayed(Duration(seconds: 60));
-
-  print('${Colorize('Closing Bridge').blue()}');
-  await a2aMcpBridge.stopServers();
-
-  await Future.delayed(Duration(seconds: 1));
-  print('${Colorize('Exiting').blue()}');
 }
