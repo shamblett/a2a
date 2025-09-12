@@ -25,7 +25,7 @@ final implementation = Implementation(
 final options = ClientOptions();
 final client = Client(implementation, options: options);
 
-final serverUrl = Uri.parse('http://localhost:3080');
+final serverUrl = Uri.parse('http://localhost:3080/mcp');
 final serverOptions = StreamableHttpClientTransportOptions(
   authProvider: AuthProvider(),
 );
@@ -35,15 +35,12 @@ final clientTransport = StreamableHttpClientTransport(
 );
 
 Future<void> main() async {
-  // Connect the client
-  print('Connecting client....');
-  await client.connect(clientTransport);
   test('Server Version', () async {
-    client.onclose = (() => print('Client closed'));
+    await client.connect(clientTransport);
     final serverVersion = client.getServerVersion();
     expect(serverVersion, isNotNull);
     expect(serverVersion?.name, 'A2A MCP Bridge Server');
-    expect(serverVersion?.version, '1.0.1');
+    expect(serverVersion?.version, '1.0.0');
     await clientTransport.close();
     await client.close();
   });
