@@ -18,26 +18,27 @@ class AuthProvider implements OAuthClientProvider {
   }
 }
 
+final implementation = Implementation(
+  name: 'A2A MCP Bridge Manual Test',
+  version: '1.0.0',
+);
+final options = ClientOptions();
+final client = Client(implementation, options: options);
+
+final serverUrl = Uri.parse('http://localhost:3080');
+final serverOptions = StreamableHttpClientTransportOptions(
+  authProvider: AuthProvider(),
+);
+final clientTransport = StreamableHttpClientTransport(
+  serverUrl,
+  opts: serverOptions,
+);
+
 Future<void> main() async {
-  final implementation = Implementation(
-    name: 'A2A MCP Bridge Manual Test',
-    version: '1.0.0',
-  );
-  final options = ClientOptions();
-  final client = Client(implementation, options: options);
-
-  final serverUrl = Uri.parse('http://localhost:3080');
-  final serverOptions = StreamableHttpClientTransportOptions(
-    //sessionId: 'A2A-MCP-Query',
-    authProvider: AuthProvider(),
-  );
-  final clientTransport = StreamableHttpClientTransport(
-    serverUrl,
-    opts: serverOptions,
-  );
-
-  test('Server ', () async {
-    await client.connect(clientTransport);
+  // Connect the client
+  print('Connecting client....');
+  await client.connect(clientTransport);
+  test('Server Version', () async {
     client.onclose = (() => print('Client closed'));
     final serverVersion = client.getServerVersion();
     expect(serverVersion, isNotNull);
