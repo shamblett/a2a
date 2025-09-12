@@ -179,23 +179,15 @@ class A2AMCPBridge {
         // Check for a message or task
         if (successResponse.result is A2AMessage) {
           final success = successResponse.result as A2AMessage;
-          if (success.parts != null) {
-            for (final part in success.parts!) {
-              if (part is A2ATextPart) {
-                responseText += part.text;
-              }
-            }
-          }
+          final decodesParts = A2AUtilities.decodeParts(success.parts);
+          responseText = decodesParts.allText;
         } else {
           // Task, assume the task has completed Ok.
           final success = successResponse.result as A2ATask;
           if (success.artifacts != null) {
             for (final artifact in success.artifacts!) {
-              for (final part in artifact.parts) {
-                if (part is A2ATextPart) {
-                  responseText += part.text;
-                }
-              }
+              final decodesParts = A2AUtilities.decodeParts(artifact.parts);
+              responseText = decodesParts.allText;
             }
           }
         }
@@ -282,31 +274,20 @@ class A2AMCPBridge {
         // Task message
         if (task.status?.message != null) {
           final message = task.status?.message;
-          if (message?.parts != null) {
-            for (final part in message!.parts!) {
-              if (part is A2ATextPart) {
-                responseText += part.text;
-              }
-            }
-          }
+          final decodesParts = A2AUtilities.decodeParts(message?.parts);
+          responseText = decodesParts.allText;
           // Artifacts
           if (task.artifacts != null) {
             for (final artifact in task.artifacts!) {
-              for (final part in artifact.parts) {
-                if (part is A2ATextPart) {
-                  responseText += part.text;
-                }
-              }
+              final decodesParts = A2AUtilities.decodeParts(artifact.parts);
+              responseText = decodesParts.allText;
             }
           }
           // History
           if (task.history != null) {
             for (final message in task.history!) {
-              for (final part in message.parts!) {
-                if (part is A2ATextPart) {
-                  historyResponseText += part.text;
-                }
-              }
+              final decodesParts = A2AUtilities.decodeParts(message.parts);
+              historyResponseText = decodesParts.allText;
             }
           }
         }
