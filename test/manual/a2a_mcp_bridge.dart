@@ -34,6 +34,8 @@ final clientTransport = StreamableHttpClientTransport(
   opts: serverOptions,
 );
 
+const agentUrl = 'http://localhost:9999';
+
 Future<void> main() async {
   // Start the client
   await client.connect(clientTransport);
@@ -76,7 +78,7 @@ Future<void> main() async {
   test('Register Agent - Agent not responding to agent card request', () async {
     final params = CallToolRequestParams(
       name: 'register_agent',
-      arguments: {'url': 'http://localhost:9999'},
+      arguments: {'url': agentUrl},
     );
     final result = await client.callTool(params);
     expect(result.isError, isTrue);
@@ -84,7 +86,7 @@ Future<void> main() async {
     expect(content.first.type, 'text');
     expect(
       (content.first as TextContent).text.contains(
-        '_registerAgentCallback - exception raised contacting agent ',
+        '_registerAgentCallback - exception raised contacting agent at $agentUrl',
       ),
       isTrue,
     );
