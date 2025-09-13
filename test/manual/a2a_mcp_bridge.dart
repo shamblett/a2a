@@ -91,4 +91,21 @@ Future<void> main() async {
       isTrue,
     );
   });
+  test('Register Agent Agent contacted', () async {
+    final params = CallToolRequestParams(
+      name: 'register_agent',
+      arguments: {'url': agentUrl},
+    );
+    final result = await client.callTool(params);
+    expect(result.isError, isNull);
+    final content = result.structuredContent;
+    expect(content['status'], 'success');
+    expect(content['agentName'], 'Hello World Agent');
+    final params1 = CallToolRequestParams(name: 'list_agents');
+    final result1 = await client.callTool(params1);
+    expect(result1.isError, isNull);
+    final content1 = result1.structuredContent;
+    expect(content1.length, 1);
+    expect(content1['result'], ['Hello World Agent']);
+  });
 }
