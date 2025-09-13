@@ -91,8 +91,8 @@ class A2AMCPBridge {
     }
     _registeredAgents[agentCard.name] = agentCard;
     _agentLookup[args['url']] = agentCard.name;
-    final content = {"status": "success", "agentName": "$agentCard.name"};
-    return CallToolResult.fromContent(content: [Content.fromJson(content)]);
+    final content = {"status": "success", "agentName": agentCard.name};
+    return CallToolResult.fromStructuredContent(structuredContent: content);
   }
 
   // List agents callback
