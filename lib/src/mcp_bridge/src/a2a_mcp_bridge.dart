@@ -153,7 +153,7 @@ class A2AMCPBridge {
         '${Colorize('A2AMCPBridge::_sendMessageCallback - args are null').yellow()}',
       );
       return CallToolResult.fromContent(
-        content: [UnknownContent(type: "unknown")],
+        content: [TextContent(text: '_sendMessageCallback - args are null')],
         isError: true,
       );
     }
@@ -179,7 +179,7 @@ class A2AMCPBridge {
         ..message = clientMessage
         ..metadata = {"task_id": taskId};
       String responseText =
-          'Response from <${_registeredAgents[url]} agent\n\n';
+          'Response from <${_registeredAgents[url]?.name}> agent\n\n';
       // Process the response, only assemble text responses for now.
       final response = await client.sendMessage(params);
       if (response.isError) {
@@ -191,7 +191,7 @@ class A2AMCPBridge {
           content: [
             TextContent(
               text:
-                  'Error response returned the agent at $url, ${errorResponse.error?.rpcErrorCode}',
+                  '_sendMessageCallback - Error response returned by the agent at $url, ${errorResponse.error?.rpcErrorCode}',
             ),
           ],
           isError: true,
@@ -216,14 +216,12 @@ class A2AMCPBridge {
       }
 
       // Return success
-      return CallToolResult.fromContent(
-        content: [
-          Content.fromJson({
+      return CallToolResult.fromStructuredContent(
+        structuredContent: {
             "task_id": taskId,
             "response": responseText,
             "status": "success",
-          }),
-        ],
+          },
       );
     } catch (e) {
       return CallToolResult.fromContent(
