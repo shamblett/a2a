@@ -108,4 +108,26 @@ Future<void> main() async {
     expect(content1.length, 1);
     expect(content1['result'], ['Hello World Agent']);
   });
+  test('Send Message - null arguments', () async {
+    final params = CallToolRequestParams(name: 'send_message');
+    final result = await client.callTool(params);
+    expect(result.isError, isTrue);
+    final content = result.content;
+    expect(content.first.type, 'text');
+    expect(
+      (content.first as TextContent).text,
+      '_sendMessageCallback - args are null',
+    );
+  });
+  test('Send Message', () async {
+    final params = CallToolRequestParams(
+        name: 'send_message',
+    arguments: {'url' : agentUrl, 'message' : 'Hello agent'});
+    final result = await client.callTool(params);
+    expect(result.isError, isNull);
+    final content = result.structuredContent;
+    expect(content['task_id'] is String, isTrue);
+    expect(content['status'], 'success');
+    expect(content['message'], 'Response from <Hello World Agent> agent\n\nHello World');
+  });
 }
