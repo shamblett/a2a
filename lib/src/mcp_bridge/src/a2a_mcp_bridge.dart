@@ -21,7 +21,7 @@ class A2AMCPBridge {
   // Registered agents by name.
   final Map<String, A2AAgentCard> _registeredAgents = {};
 
-  // Agent lookup from name to url.
+  // Agent lookup from url to name.
   final Map<String, String> _agentLookup = {};
 
   // Task to agent mapping
@@ -166,20 +166,19 @@ class A2AMCPBridge {
     // Create a client for the agent and send the message to it
     try {
       final client = A2AClient(url);
+      await Future.delayed(Duration(seconds: 2));
       final taskId = _uuid.v4();
       _taskToAgent[taskId] = url;
       final clientMessage = A2AMessage()
         ..contextId =
             sessionId // Use session id
-        ..taskId = taskId
         ..messageId = _uuid.v4()
         ..parts = [A2ATextPart()..text = message]
         ..role = 'user';
       final params = A2AMessageSendParams()
         ..message = clientMessage
         ..metadata = {"task_id": taskId};
-      String responseText =
-          'Response from <${_registeredAgents[url]?.name}> agent\n\n';
+      String responseText = 'Response from <${_agentLookup[url]}> agent\n\n';
       // Process the response, only assemble text responses for now.
       final response = await client.sendMessage(params);
       if (response.isError) {
@@ -202,14 +201,14 @@ class A2AMCPBridge {
         if (successResponse.result is A2AMessage) {
           final success = successResponse.result as A2AMessage;
           final decodesParts = A2AUtilities.decodeParts(success.parts);
-          responseText = decodesParts.allText;
+          responseText += decodesParts.allText;
         } else {
           // Task, assume the task has completed Ok.
           final success = successResponse.result as A2ATask;
           if (success.artifacts != null) {
             for (final artifact in success.artifacts!) {
               final decodesParts = A2AUtilities.decodeParts(artifact.parts);
-              responseText = decodesParts.allText;
+              responseText += decodesParts.allText;
             }
           }
         }
@@ -218,10 +217,10 @@ class A2AMCPBridge {
       // Return success
       return CallToolResult.fromStructuredContent(
         structuredContent: {
-            "task_id": taskId,
-            "response": responseText,
-            "status": "success",
-          },
+          "task_id": taskId,
+          "response": responseText,
+          "status": "success",
+        },
       );
     } catch (e) {
       return CallToolResult.fromContent(

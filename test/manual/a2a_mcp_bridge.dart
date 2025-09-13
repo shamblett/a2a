@@ -119,15 +119,24 @@ Future<void> main() async {
       '_sendMessageCallback - args are null',
     );
   });
-  test('Send Message', () async {
+  test('Send Message - valid arguments', () async {
+    final paramsReg = CallToolRequestParams(
+      name: 'register_agent',
+      arguments: {'url': agentUrl},
+    );
+    await client.callTool(paramsReg);
     final params = CallToolRequestParams(
-        name: 'send_message',
-    arguments: {'url' : agentUrl, 'message' : 'Hello agent'});
+      name: 'send_message',
+      arguments: {'url': agentUrl, 'message': 'Hello agent'},
+    );
     final result = await client.callTool(params);
     expect(result.isError, isNull);
     final content = result.structuredContent;
     expect(content['task_id'] is String, isTrue);
     expect(content['status'], 'success');
-    expect(content['message'], 'Response from <Hello World Agent> agent\n\nHello World');
+    expect(
+      content['response'],
+      'Response from <Hello World Agent> agent\n\nHello World',
+    );
   });
 }
