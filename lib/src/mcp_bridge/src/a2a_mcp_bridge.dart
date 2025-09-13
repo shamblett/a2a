@@ -56,17 +56,36 @@ class A2AMCPBridge {
         '${Colorize('A2AMCPBridge::_registerAgentCallback - args are null').yellow()}',
       );
       return CallToolResult.fromContent(
-        content: [UnknownContent(type: 'unknown')],
+        content: [TextContent(text: '_registerAgentCallback - args are null')],
         isError: true,
       );
     }
-    final agentCard = await _fetchAgentCard(args['url']);
+    final url = args['url'];
+    A2AAgentCard agentCard;
+    try {
+      agentCard = await _fetchAgentCard(url);
+    } catch (e) {
+      return CallToolResult.fromContent(
+        content: [
+          TextContent(
+            text:
+                '_registerAgentCallback - exception raised contacting agent at $url, $e',
+          ),
+        ],
+        isError: true,
+      );
+    }
     if (agentCard.name.isEmpty) {
       print(
-        '${Colorize('A2AMcpServer::_registerAgentCallback - agent has no name in agent card').yellow()}',
+        '${Colorize('A2AMcpServer::_registerAgentCallback - cannot ascertain agent name at $url').yellow()}',
       );
       return CallToolResult.fromContent(
-        content: [UnknownContent(type: "unknown")],
+        content: [
+          TextContent(
+            text:
+                '_registerAgentCallback - cannot ascertain agent name at $url',
+          ),
+        ],
         isError: true,
       );
     }
