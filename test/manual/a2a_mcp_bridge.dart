@@ -35,13 +35,23 @@ final clientTransport = StreamableHttpClientTransport(
 );
 
 Future<void> main() async {
+  // Start the client
+  await client.connect(clientTransport);
+
   test('Server Version', () async {
-    await client.connect(clientTransport);
     final serverVersion = client.getServerVersion();
     expect(serverVersion, isNotNull);
     expect(serverVersion?.name, 'A2A MCP Bridge Server');
     expect(serverVersion?.version, '1.0.0');
-    await clientTransport.close();
-    await client.close();
+  });
+  test('List Tools', () async {
+    final tools = await client.listTools();
+    expect(tools.tools.length, 6);
+    expect(tools.tools.first.name, 'register_agent');
+    expect(tools.tools[1].name, 'list_agents');
+    expect(tools.tools[2].name, 'unregister_agent');
+    expect(tools.tools[3].name, 'send_message');
+    expect(tools.tools[4].name, 'get_task_result');
+    expect(tools.tools.last.name, 'cancel_task');
   });
 }
