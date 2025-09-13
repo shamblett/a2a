@@ -62,4 +62,31 @@ Future<void> main() async {
     expect(content.length, 1);
     expect(content['result'], []);
   });
+  test('Register Agent - null arguments', () async {
+    final params = CallToolRequestParams(name: 'register_agent');
+    final result = await client.callTool(params);
+    expect(result.isError, isTrue);
+    final content = result.content;
+    expect(content.first.type, 'text');
+    expect(
+      (content.first as TextContent).text,
+      '_registerAgentCallback - args are null',
+    );
+  });
+  test('Register Agent - Agent not responding to agent card request', () async {
+    final params = CallToolRequestParams(
+      name: 'register_agent',
+      arguments: {'url': 'http://localhost:9999'},
+    );
+    final result = await client.callTool(params);
+    expect(result.isError, isTrue);
+    final content = result.content;
+    expect(content.first.type, 'text');
+    expect(
+      (content.first as TextContent).text.contains(
+        '_registerAgentCallback - exception raised contacting agent ',
+      ),
+      isTrue,
+    );
+  });
 }
