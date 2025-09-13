@@ -54,4 +54,12 @@ Future<void> main() async {
     expect(tools.tools[4].name, 'get_task_result');
     expect(tools.tools.last.name, 'cancel_task');
   });
+  test('List Agents', () async {
+    final params = CallToolRequestParams(name: 'list_agents');
+    final result = await client.callTool(params);
+    expect(result.isError, isNull);
+    final content = result.structuredContent;
+    expect(content.length, 1);
+    expect(content['result'], []);
+  });
 }
