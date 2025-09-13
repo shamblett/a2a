@@ -83,7 +83,9 @@ class A2AMCPBridge {
   }) async {
     final jsonString = json.encode(_registeredAgents.keys.toList());
     final jsonMap = json.decode(jsonString);
-    return CallToolResult.fromContent(content: [Content.fromJson(jsonMap)]);
+    return CallToolResult.fromStructuredContent(
+      structuredContent: {"result": jsonMap},
+    );
   }
 
   // Unregister agent callback
@@ -157,7 +159,8 @@ class A2AMCPBridge {
       final params = A2AMessageSendParams()
         ..message = clientMessage
         ..metadata = {"task_id": taskId};
-      String responseText = '';
+      String responseText =
+          'Response from <${_registeredAgents[url]} agent\n\n';
       // Process the response, only assemble text responses for now.
       final response = await client.sendMessage(params);
       if (response.isError) {
@@ -428,7 +431,7 @@ class A2AMCPBridge {
     outputSchema = ToolOutputSchema(
       properties: {
         "type": "array",
-        "items": {"type": "string"},
+        "result": {"type": "string"},
       },
     );
 
