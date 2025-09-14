@@ -230,6 +230,7 @@ class A2AMCPBridge {
     }
   }
 
+  // Get task result
   Future<CallToolResult> _getTaskResultCallback({
     Map<String, dynamic>? args,
     RequestHandlerExtra? extra,
@@ -331,21 +332,22 @@ class A2AMCPBridge {
     }
   }
 
+  // Cancel task
   Future<CallToolResult> _cancelTaskCallback({
     Map<String, dynamic>? args,
     RequestHandlerExtra? extra,
   }) async {
     if (args == null) {
       print(
-        '${Colorize('A2AMCPBridge::__cancelTaskCallback - args are null').yellow()}',
+        '${Colorize('A2AMCPBridge::_cancelTaskCallback - args are null').yellow()}',
       );
       return CallToolResult.fromContent(
-        content: [UnknownContent(type: "unknown")],
+        content: [TextContent(text: '_cancelTaskCallback - args are null')],
         isError: true,
       );
     }
 
-    final taskId = args['taskId'];
+    final taskId = args['task_id'];
 
     if (!_taskToAgent.containsKey(taskId)) {
       print(
@@ -412,6 +414,7 @@ class A2AMCPBridge {
     }
   }
 
+  // Initialise the tools
   void _initialiseTools() {
     // Register agent
     //  Register an A2A agent with the bridge server.
