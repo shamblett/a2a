@@ -17,7 +17,7 @@ import 'package:a2a/a2a.dart';
 ///
 
 Future<int> main() async {
-  const baseUrl = 'http://localhost:9999';
+  const baseUrl = 'https://sample-a2a-agent-908687846511.us-central1.run.app';
 
   print('');
   print('A2AClient Example');
@@ -89,7 +89,7 @@ Future<int> main() async {
   /// No error so we have a success response
   final response = rpcResponse as A2ASendMessageSuccessResponse;
 
-  /// The result is an A2ATask
+  /// The result is an A2ATask for this agent, it may be a message for others.
   final result = response.result as A2ATask;
 
   /// Get the artifacts
