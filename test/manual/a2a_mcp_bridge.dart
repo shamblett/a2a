@@ -144,4 +144,15 @@ Future<void> main() async {
     final content = result.structuredContent;
     expect(content['status'], 'success');
   });
+  test('Get task result - null arguments', () async {
+    final params = CallToolRequestParams(name: 'get_task_result');
+    final result = await client.callTool(params);
+    expect(result.isError, isTrue);
+    final content = result.content;
+    expect(content.first.type, 'text');
+    expect(
+      (content.first as TextContent).text,
+      '_getTaskResultCallback - args are null',
+    );
+  });
 }

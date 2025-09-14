@@ -13,7 +13,6 @@ import 'dart:io';
 
 import 'package:colorize/colorize.dart';
 import 'package:mcp_dart/mcp_dart.dart';
-import 'package:oxy/oxy.dart' as http;
 import 'package:uuid/uuid.dart';
 
 import '../client/a2a_client.dart';

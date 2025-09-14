@@ -47,6 +47,7 @@ class A2AMCPBridge {
   }
 
   // Register agent callback
+  // Doesn't check if the agent is already registered, kust registers it again
   Future<CallToolResult> _registerAgentCallback({
     Map<String, dynamic>? args,
     RequestHandlerExtra? extra,
@@ -109,6 +110,8 @@ class A2AMCPBridge {
   }
 
   // Unregister agent callback
+  // Doesn't check if the agent is already registered, just unregisters it if
+  // it is registered, as such this always returns success if the arguments are valid
   Future<CallToolResult> _unregisterAgentCallback({
     Map<String, dynamic>? args,
     RequestHandlerExtra? extra,
@@ -236,7 +239,7 @@ class A2AMCPBridge {
         '${Colorize('A2AMCPBridge::_getTaskResultCallback - args are null').yellow()}',
       );
       return CallToolResult.fromContent(
-        content: [UnknownContent(type: "unknown")],
+        content: [TextContent(text: '_getTaskResultCallback - args are null')],
         isError: true,
       );
     }
@@ -249,7 +252,7 @@ class A2AMCPBridge {
         '${Colorize('A2AMCPBridge::_getTaskResultCallback - no registered agent for task Id $taskId').yellow()}',
       );
       return CallToolResult.fromContent(
-        content: [TextContent(text: 'No task registered for Task Id $taskId')],
+        content: [TextContent(text: '_getTaskResultCallback - no registered agent for task Id $taskId')],
         isError: true,
       );
     }
