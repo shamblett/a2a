@@ -17,7 +17,7 @@ import 'package:a2a/a2a.dart';
 ///
 
 Future<int> main() async {
-  const baseUrl = 'https://sample-a2a-agent-908687846511.us-central1.run.app';
+  const baseUrl = 'http://localhost:9999';
 
   print('');
   print('A2AClient Example');
@@ -25,11 +25,6 @@ Future<int> main() async {
   /// Construct the client, needs the base URL of the agent.
   /// This will also prefetch and cache the agents agent card.
   A2AClient? client = A2AClient(baseUrl);
-
-  /// Delay a little to allow the fetch to complete.
-  print('');
-  print('Awaiting agent card........');
-  await Future.delayed(Duration(seconds: 10));
 
   /// Get the agent card.
   /// If a baseUrl parameter is provided the agent card will be fetched from the agent

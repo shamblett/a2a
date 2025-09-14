@@ -15,7 +15,7 @@ class A2AClient {
 
   String _agentCardPath = A2AConstants.agentCardPath;
 
-  late String _serviceEndpointUrl;
+  String _serviceEndpointUrl = '';
 
   A2AAgentCard? _agentCard;
 
@@ -23,6 +23,7 @@ class A2AClient {
 
   /// Gets the RPC service endpoint URL. Ensures the agent card has been fetched first.
   /// @returns a [Future] that resolves to the service endpoint URL string.
+  /// Defaults to the agent base url [agentBaseUrl].
   Future<String> get serviceEndpoint async {
     if (_serviceEndpointUrl.isNotEmpty) {
       return _serviceEndpointUrl;
@@ -56,10 +57,14 @@ class A2AClient {
         ? agentBaseUrl.substring(0, agentBaseUrl.length - 1)
         : this.agentBaseUrl = agentBaseUrl;
 
+    _serviceEndpointUrl = agentBaseUrl;
+
     _agentCardPath = agentCardPath.endsWith('/')
         ? agentCardPath.substring(0, agentCardPath.length - 1)
         : agentCardPath;
-    _fetchAndCacheAgentCard();
+
+    // Fetch the agent card in the background
+    Timer(Duration(milliseconds: 10), _getAgentCard);
   }
 
   /// Retrieves the Agent Card.
@@ -73,22 +78,17 @@ class A2AClient {
     String? agentBaseUrl,
     String agentCardPath = A2AConstants.agentCardPath,
   }) async {
-    final completer = Completer<A2AAgentCard>();
     if (agentBaseUrl != null) {
-      final agentCard = await _fetchAndCacheAgentCard(
+      return _fetchAndCacheAgentCard(
         baseUrl: agentBaseUrl,
         agentCardPath: _agentCardPath,
       );
-      completer.complete(agentCard);
     } else {
-      // If no specific URL is given, return the initially configured agent's card.
-      // or throw if null
       if (_agentCard == null) {
-        throw Exception('getAgentCard :: No cached agent card');
+        return _fetchAndCacheAgentCard();
       }
-      completer.complete(_agentCard);
     }
-    return completer.future;
+    return _agentCard!;
   }
 
   /// Sends a message to the agent.
@@ -440,8 +440,8 @@ class A2AClient {
   //
   // If a [baseUrl] parameter is supplied this will be used instead of the agent base url and
   // the card details will not be cached, just returned.
-  // This method is called by the constructor.
-  // @returns A Future that eventually resolves to the AgentCard.
+  // This method is called by the constructor via a timer callback
+  // @returns A Future that resolves to the AgentCard.
   Future<A2AAgentCard> _fetchAndCacheAgentCard({
     String baseUrl = '',
     String agentCardPath = A2AConstants.agentCardPath,
@@ -605,4 +605,7 @@ class A2AClient {
       Error.throwWithStackTrace(e, s);
     }
   }
+
+  // Construction timer callback to get the agent card
+  Future<void> _getAgentCard() async => await _fetchAndCacheAgentCard();
 }
