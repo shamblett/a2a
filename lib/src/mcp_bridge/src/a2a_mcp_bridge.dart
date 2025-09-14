@@ -244,7 +244,7 @@ class A2AMCPBridge {
       );
     }
 
-    final taskId = args['taskId'];
+    final taskId = args['task_id'];
     final historyLength = args['history_length'];
 
     if (!_taskToAgent.containsKey(taskId)) {

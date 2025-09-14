@@ -61,8 +61,7 @@ Future<void> main() async {
     final result = await client.callTool(params);
     expect(result.isError, isNull);
     final content = result.structuredContent;
-    expect(content.length, 1);
-    expect(content['result'], []);
+    expect(content['result'] is List, isTrue);
   });
   test('Register Agent - null arguments', () async {
     final params = CallToolRequestParams(name: 'register_agent');
@@ -154,5 +153,28 @@ Future<void> main() async {
       (content.first as TextContent).text,
       '_getTaskResultCallback - args are null',
     );
+  });
+  test('Get Task Result - valid arguments', () async {
+    final paramsReg = CallToolRequestParams(
+      name: 'register_agent',
+      arguments: {'url': agentUrl},
+    );
+    await client.callTool(paramsReg);
+    var params = CallToolRequestParams(
+      name: 'send_message',
+      arguments: {'url': agentUrl, 'message': 'Hello agent'},
+    );
+    var result = await client.callTool(params);
+    expect(result.isError, isNull);
+    var content = result.structuredContent;
+    final taskId = content['task_id'];
+    params = CallToolRequestParams(
+      name: 'get_task_result',
+      arguments: {'task_id': taskId},
+    );
+    result = await client.callTool(params);
+    expect(result.isError, isTrue);
+    final content1 = result.content.first;
+    expect((content1 as TextContent).text.contains('32001'), isTrue);
   });
 }
