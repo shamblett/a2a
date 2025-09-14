@@ -63,7 +63,8 @@ class A2AMCPBridge {
     final url = args['url'];
     A2AAgentCard agentCard;
     try {
-      agentCard = await _fetchAgentCard(url);
+      final client = A2AClient(url);
+      agentCard = await client.getAgentCard();
     } catch (e) {
       return CallToolResult.fromContent(
         content: [
@@ -117,30 +118,21 @@ class A2AMCPBridge {
         '${Colorize('A2AMCPBridge::_unregisterAgentCallback - args are null').yellow()}',
       );
       return CallToolResult.fromContent(
-        content: [UnknownContent(type: "unknown")],
+        content: [TextContent(text: '_unregisterAgentCallback - args are null')],
         isError: true,
       );
     }
     final url = args['url'];
-    if (!_agentLookup.containsKey(url)) {
-      // Agent not registered
-      print(
-        '${Colorize('A2AMCPBridge::_registerAgentCallback - agent is not registered').yellow()}',
-      );
-      return CallToolResult.fromContent(
-        content: [TextContent(text: 'Agent is not Registered')],
-        isError: true,
-      );
+    if ( _registeredAgents.containsKey(url) ) {
+      _registeredAgents.remove(_agentLookup[url]);
+      _agentLookup.remove(url);
     }
-
-    _registeredAgents.remove(_agentLookup[url]);
-    _agentLookup.remove(url);
 
     // Clean up any task mappings related to this agent
     _taskToAgent.removeWhere((_, value) => value == url);
 
     final content = {"status": "success"};
-    return CallToolResult.fromContent(content: [Content.fromJson(content)]);
+    return CallToolResult.fromStructuredContent(structuredContent: content);
   }
 
   // Send message callback
@@ -571,32 +563,5 @@ class A2AMCPBridge {
     );
     _registeredTools.add(cancelTask);
     _mcpServer.registerTool(cancelTask, _cancelTaskCallback);
-  }
-
-  // Fetch an agent card, if not found use a dummy one.
-  Future<A2AAgentCard> _fetchAgentCard(String url) async {
-    String fetchUrl = url;
-    // Check if the URL already contains the agent path
-    if (!url.contains(A2AConstants.agentCardPath)) {
-      fetchUrl = '$url\\${A2AConstants.agentCardPath}';
-    }
-    A2AAgentCard agentCard;
-    final response = await http.fetch(
-      fetchUrl,
-      headers: http.Headers()..append('Accept', 'application/json'),
-    );
-    if (!response.ok) {
-      print(
-        '${Colorize('A2AMcpBridge::_fetchAgentCard - failed to fetch agent card for $fetchUrl').yellow()}',
-      );
-      agentCard = A2AAgentCard()
-        ..name = 'Unknown'
-        ..description = 'Failed to fetch'
-        ..url = fetchUrl;
-    } else {
-      final agentCardJson = await response.json();
-      agentCard = A2AAgentCard.fromJson(agentCardJson);
-    }
-    return agentCard;
   }
 }

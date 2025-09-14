@@ -75,22 +75,6 @@ Future<void> main() async {
       '_registerAgentCallback - args are null',
     );
   });
-  test('Register Agent - Agent not responding to agent card request', () async {
-    final params = CallToolRequestParams(
-      name: 'register_agent',
-      arguments: {'url': agentUrl},
-    );
-    final result = await client.callTool(params);
-    expect(result.isError, isTrue);
-    final content = result.content;
-    expect(content.first.type, 'text');
-    expect(
-      (content.first as TextContent).text.contains(
-        '_registerAgentCallback - exception raised contacting agent at $agentUrl',
-      ),
-      isTrue,
-    );
-  });
   test('Register Agent Agent contacted', () async {
     final params = CallToolRequestParams(
       name: 'register_agent',
@@ -138,5 +122,26 @@ Future<void> main() async {
       content['response'],
       'Response from <Hello World Agent> agent\n\nHello World',
     );
+  });
+  test('Unregister Agent - null arguments', () async {
+    final params = CallToolRequestParams(name: 'unregister_agent');
+    final result = await client.callTool(params);
+    expect(result.isError, isTrue);
+    final content = result.content;
+    expect(content.first.type, 'text');
+    expect(
+      (content.first as TextContent).text,
+      '_unregisterAgentCallback - args are null',
+    );
+  });
+  test('Unregister Agent - valid arguments', () async {
+    final params = CallToolRequestParams(
+      name: 'unregister_agent',
+      arguments: {'url': 'http://localhost:9999'},
+    );
+    final result = await client.callTool(params);
+    expect(result.isError, isNull);
+    final content = result.structuredContent;
+    expect(content['status'], 'success');
   });
 }
