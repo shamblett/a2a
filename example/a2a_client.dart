@@ -26,11 +26,6 @@ Future<int> main() async {
   /// This will also prefetch and cache the agents agent card.
   A2AClient? client = A2AClient(baseUrl);
 
-  /// Delay a little to allow the fetch to complete.
-  print('');
-  print('Awaiting agent card........');
-  await Future.delayed(Duration(seconds: 10));
-
   /// Get the agent card.
   /// If a baseUrl parameter is provided the agent card will be fetched from the agent
   /// at the location specified, otherwise the cached agent card will be returned.
@@ -94,7 +89,7 @@ Future<int> main() async {
   /// No error so we have a success response
   final response = rpcResponse as A2ASendMessageSuccessResponse;
 
-  /// The result is an A2ATask
+  /// The result is an A2ATask for this agent, it may be a message for others.
   final result = response.result as A2ATask;
 
   /// Get the artifacts
