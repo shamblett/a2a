@@ -36,13 +36,13 @@ class A2AMCPBridge {
     _initialiseTools();
   }
 
-  /// Start the servers
-  Future<void> startServers() async {
-    await _mcpServer.start();
+  /// Start the server
+  Future<void> startServer({int port = A2AMCPServer.defaultServerPort}) async {
+    await _mcpServer.start(port: port);
   }
 
-  /// Stop the servers
-  Future<void> stopServers() async {
+  /// Stop the server
+  Future<void> stopServer() async {
     await _mcpServer.close();
   }
 
@@ -121,12 +121,14 @@ class A2AMCPBridge {
         '${Colorize('A2AMCPBridge::_unregisterAgentCallback - args are null').yellow()}',
       );
       return CallToolResult.fromContent(
-        content: [TextContent(text: '_unregisterAgentCallback - args are null')],
+        content: [
+          TextContent(text: '_unregisterAgentCallback - args are null'),
+        ],
         isError: true,
       );
     }
     final url = args['url'];
-    if ( _registeredAgents.containsKey(url) ) {
+    if (_registeredAgents.containsKey(url)) {
       _registeredAgents.remove(_agentLookup[url]);
       _agentLookup.remove(url);
     }
@@ -253,7 +255,12 @@ class A2AMCPBridge {
         '${Colorize('A2AMCPBridge::_getTaskResultCallback - no registered agent for task Id $taskId').yellow()}',
       );
       return CallToolResult.fromContent(
-        content: [TextContent(text: '_getTaskResultCallback - no registered agent for task Id $taskId')],
+        content: [
+          TextContent(
+            text:
+                '_getTaskResultCallback - no registered agent for task Id $taskId',
+          ),
+        ],
         isError: true,
       );
     }
