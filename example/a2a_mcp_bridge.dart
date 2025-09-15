@@ -12,10 +12,10 @@ import 'package:a2a/a2a.dart';
 ///
 /// An example showing usage of the MCP to A2A bridge.
 ///
-/// The server starts on http://localhost:3080 by default, the port can be changed.
+/// The server starts on http://localhost:3080/mcp by default, the port can be changed.
 /// To see the server details now run the mcp/a2a_query_mcp_server.dart example -
 ///
-///   'dart example/mcp/a2a_query_mcp_server.dart localhost:3080'
+///   'dart example/mcp/a2a_query_mcp_server.dart localhost:3080/mcp'
 ///
 Future<void> main() async {
   // Create and start the bridge
