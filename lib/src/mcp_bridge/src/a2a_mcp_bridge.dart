@@ -93,6 +93,9 @@ class A2AMCPBridge {
     }
     _registeredAgents[agentCard.name] = agentCard;
     _agentLookup[args['url']] = agentCard.name;
+    print(
+      '${Colorize('A2AMCPBridge:: Agent ${agentCard.name} at $url registered').blue()}',
+    );
     final content = {"status": "success", "agentName": agentCard.name};
     return CallToolResult.fromStructuredContent(structuredContent: content);
   }
@@ -104,6 +107,9 @@ class A2AMCPBridge {
   }) async {
     final jsonString = json.encode(_registeredAgents.keys.toList());
     final jsonMap = json.decode(jsonString);
+    print(
+      '${Colorize('A2AMCPBridge:: Listed ${_registeredAgents.keys.length} agents').blue()}',
+    );
     return CallToolResult.fromStructuredContent(
       structuredContent: {"result": jsonMap},
     );
@@ -135,6 +141,8 @@ class A2AMCPBridge {
 
     // Clean up any task mappings related to this agent
     _taskToAgent.removeWhere((_, value) => value == url);
+
+    print('${Colorize('A2AMCPBridge:: Agent at $url unregistered').blue()}');
 
     final content = {"status": "success"};
     return CallToolResult.fromStructuredContent(structuredContent: content);
@@ -211,6 +219,9 @@ class A2AMCPBridge {
         }
       }
 
+      print(
+        '${Colorize('A2AMCPBridge:: Send message successful for agent at $url').blue()}',
+      );
       // Return success
       return CallToolResult.fromStructuredContent(
         structuredContent: {
@@ -315,6 +326,9 @@ class A2AMCPBridge {
         }
       }
       // Return success
+      print(
+        '${Colorize('A2AMCPBridge:: Get task result successful for agent at $url').blue()}',
+      );
       return CallToolResult.fromContent(
         content: [
           Content.fromJson({
@@ -389,6 +403,9 @@ class A2AMCPBridge {
         final successResponse = response as A2ACancelTaskSuccessResponse;
         final task = successResponse.result;
         final taskState = task?.status?.state;
+        print(
+          '${Colorize('A2AMCPBridge:: Cancel task completed for agent at $url').blue()}',
+        );
         return taskState == A2ATaskState.canceled ||
                 taskState == A2ATaskState.completed ||
                 taskState == A2ATaskState.rejected
