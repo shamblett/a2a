@@ -92,7 +92,9 @@ Future<void> main() async {
     expect(result1.isError, isNull);
     final content1 = result1.structuredContent;
     expect(content1.length, 1);
-    expect(content1['result'], {'result': ['Hello World Agent']});
+    expect(content1['result'], {
+      'result': ['Hello World Agent'],
+    });
   });
   test('Send Message - null arguments', () async {
     final params = CallToolRequestParams(name: 'send_message');
@@ -119,7 +121,6 @@ Future<void> main() async {
     expect(result.isError, isNull);
     final content = result.structuredContent;
     expect(content['task_id'] is String, isTrue);
-    expect(content['status'], 'success');
     expect(
       content['response'],
       'Response from <Hello World Agent> agent\n\nHello World',
@@ -144,7 +145,10 @@ Future<void> main() async {
     final result = await client.callTool(params);
     expect(result.isError, isNull);
     final content = result.structuredContent;
-    expect(content['status'], 'success');
+    expect(
+      content['agent_name'],
+      anyOf('Hello World Agent', 'Agent Not Found'),
+    );
   });
   test('Get Task Result - null arguments', () async {
     final params = CallToolRequestParams(name: 'get_task_result');
@@ -176,9 +180,12 @@ Future<void> main() async {
       arguments: {'task_id': taskId},
     );
     result = await client.callTool(params);
-    expect(result.isError, isTrue);
-    final content1 = result.content.first;
-    expect((content1 as TextContent).text.contains('32001'), isTrue);
+    expect(result.isError, isNull);
+    final content1 = result.structuredContent;
+    expect(
+      content1['message'],
+      'Response from <Hello World Agent> agent\n\nHello World',
+    );
   });
   test('Cancel Task - null arguments', () async {
     final params = CallToolRequestParams(name: 'cancel_task');
@@ -210,8 +217,8 @@ Future<void> main() async {
       arguments: {'task_id': taskId},
     );
     result = await client.callTool(params);
-    expect(result.isError, isTrue);
-    final content1 = result.content.first;
-    expect((content1 as TextContent).text.contains('32001'), isTrue);
+    expect(result.isError, isNull);
+    final content1 = result.structuredContent;
+    expect(content1['task_id'], taskId);
   });
 }

@@ -148,8 +148,10 @@ class A2AMCPBridge {
       );
     }
     final url = args['url'];
-    if (_registeredAgents.containsKey(url)) {
-      _registeredAgents.remove(_agentLookup[url]);
+    String agentName = 'Agent Not Found';
+    if (_agentLookup.containsKey(url)) {
+      agentName = _agentLookup[url]!;
+      _registeredAgents.remove(agentName);
       _agentLookup.remove(url);
     }
 
@@ -158,7 +160,12 @@ class A2AMCPBridge {
 
     print('${Colorize('A2AMCPBridge:: Agent at $url unregistered').blue()}');
 
-    final content = {"content": {}, "structuredContent": {}};
+    final content = {
+      "content": [
+        {"type": "text", "text": agentName},
+      ],
+      "structuredContent": {"agent_name": agentName},
+    };
     return CallToolResult.fromJson(content);
   }
 
@@ -240,7 +247,9 @@ class A2AMCPBridge {
       _taskIdToResponse[taskId] = responseText;
       final result = {"task_id": taskId, "response": responseText};
       return CallToolResult.fromJson({
-        "content": json.encode(result),
+        "content": [
+          {"type": "text", "text": json.encode(result)},
+        ],
         "structuredContent": result,
       });
     } catch (e) {
@@ -272,7 +281,6 @@ class A2AMCPBridge {
     }
 
     final taskId = args['task_id'];
-    final historyLength = args['history_length'];
 
     if (!_taskToAgent.containsKey(taskId)) {
       print(
@@ -304,13 +312,10 @@ class A2AMCPBridge {
     // Create a client for the agent and send the message to it
     try {
       final client = A2AClient(url!);
-      final params = A2ATaskQueryParams()
-        ..id = taskId
-        ..historyLength = historyLength;
+      final params = A2ATaskQueryParams()..id = taskId;
       final response = await client.getTask(params);
       String responseText = '';
-      String historyResponseText = '';
-      String? taskState = 'unknown';
+      String? taskState = 'From Cache';
       if (response.isError) {
         final errorResponse = response as A2AJSONRPCErrorResponseT;
         print(
@@ -341,13 +346,6 @@ class A2AMCPBridge {
               responseText = decodesParts.allText;
             }
           }
-          // History
-          if (task.history != null) {
-            for (final message in task.history!) {
-              final decodesParts = A2AUtilities.decodeParts(message.parts);
-              historyResponseText = decodesParts.allText;
-            }
-          }
         }
       }
       // Return success
@@ -358,7 +356,6 @@ class A2AMCPBridge {
         "task_id": taskId,
         "message": responseText,
         "task_state": taskState,
-        "history": historyResponseText,
       };
 
       return CallToolResult.fromJson({
@@ -406,6 +403,19 @@ class A2AMCPBridge {
         isError: true,
       );
     }
+    // Check the cache
+    if (_taskIdToResponse.containsKey(taskId)) {
+      _taskIdToResponse.remove(taskId);
+      _taskToAgent.remove(taskId);
+      final result = {"task_id": taskId};
+      return CallToolResult.fromJson({
+        "content": [
+          {"type": "text", "text": json.encode(result)},
+        ],
+        "structuredContent": result,
+      });
+    }
+    // Cancel with the agent
     final url = _taskToAgent[taskId];
     // Create a client for the agent and send the message to it
     try {
@@ -432,6 +442,7 @@ class A2AMCPBridge {
         );
         if (_taskIdToResponse.containsKey(taskId)) {
           _taskIdToResponse.remove(taskId);
+          _taskToAgent.remove(taskId);
         }
         final result = {"task_id": taskId};
         return CallToolResult.fromJson({
@@ -507,10 +518,16 @@ class A2AMCPBridge {
       },
       required: ["url"],
     );
+    outputSchema = ToolOutputSchema(
+      properties: {
+        "agent_name": {"type": "string", "description": "The Agent name"},
+      },
+    );
     final unRegisterAgent = Tool(
       name: 'unregister_agent',
       description: 'A2A Bridge Unregister Agent',
       inputSchema: inputSchema,
+      outputSchema: outputSchema,
     );
     _registeredTools.add(unRegisterAgent);
     _mcpServer.registerTool(unRegisterAgent, _unregisterAgentCallback);
@@ -555,11 +572,6 @@ class A2AMCPBridge {
     inputSchema = ToolInputSchema(
       properties: {
         "task_id": {"type": "string", "description": "The Task id"},
-        "history_length ": {
-          "type": "number",
-          "description":
-              " Optional number of history items to include (null for all)",
-        },
       },
       required: ["task_id"],
     );
@@ -574,7 +586,6 @@ class A2AMCPBridge {
           "type": "string",
           "description": "The response from the Agent(may be from cache",
         },
-        "history": {"type": "string", "description": "History contents"},
       },
       required: ["task_id"],
     );
