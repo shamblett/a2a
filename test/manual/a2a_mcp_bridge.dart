@@ -83,7 +83,8 @@ Future<void> main() async {
     expect(result.isError, isNull);
     final content = result.structuredContent;
     expect(content['status'], 'success');
-    expect(content['agentName'], 'Hello World Agent');
+    expect(content['agent_name'], 'Hello World Agent');
+    expect(content['url'], agentUrl);
     final params1 = CallToolRequestParams(name: 'list_agents');
     final result1 = await client.callTool(params1);
     expect(result1.isError, isNull);
