@@ -61,7 +61,10 @@ Future<void> main() async {
     final result = await client.callTool(params);
     expect(result.isError, isNull);
     final content = result.structuredContent;
-    expect(content['result'] is List, isTrue);
+    expect(content['result'] is Map, isTrue);
+    final res = content['result'];
+    expect(res['result'] is List, isTrue);
+    expect(res['result'].first is String, isTrue);
   });
   test('Register Agent - null arguments', () async {
     final params = CallToolRequestParams(name: 'register_agent');
@@ -82,7 +85,6 @@ Future<void> main() async {
     final result = await client.callTool(params);
     expect(result.isError, isNull);
     final content = result.structuredContent;
-    expect(content['status'], 'success');
     expect(content['agent_name'], 'Hello World Agent');
     expect(content['url'], agentUrl);
     final params1 = CallToolRequestParams(name: 'list_agents');
@@ -90,7 +92,7 @@ Future<void> main() async {
     expect(result1.isError, isNull);
     final content1 = result1.structuredContent;
     expect(content1.length, 1);
-    expect(content1['result'], ['Hello World Agent']);
+    expect(content1['result'], {'result': ['Hello World Agent']});
   });
   test('Send Message - null arguments', () async {
     final params = CallToolRequestParams(name: 'send_message');

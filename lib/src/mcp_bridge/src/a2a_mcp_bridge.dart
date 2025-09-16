@@ -31,7 +31,7 @@ class A2AMCPBridge {
 
   // Task to send message response mapping.
   // Used for get_task_result calls
-  Map<String, String> _taskIdToResponse = {};
+  final Map<String, String> _taskIdToResponse = {};
 
   final _uuid = Uuid();
 
@@ -102,7 +102,9 @@ class A2AMCPBridge {
     );
     final result = {"agent_name": agentCard.name, "url": url};
     final content = {
-      "content": json.encode(result),
+      "content": [
+        {"type": "text", "text": json.encode(result)},
+      ],
       "structuredContent": result,
     };
     return CallToolResult.fromJson(content);
@@ -118,9 +120,12 @@ class A2AMCPBridge {
       '${Colorize('A2AMCPBridge:: Listed ${_registeredAgents.keys.length} agents, response $registeredAgents').blue()}',
     );
 
+    final result = {"result": registeredAgents};
     return CallToolResult.fromJson({
-      "content": json.encode(registeredAgents),
-      "structuredContent": {"result": registeredAgents},
+      "content": [
+        {"type": "text", "text": json.encode(result)},
+      ],
+      "structuredContent": {"result": result},
     });
   }
 
@@ -287,7 +292,9 @@ class A2AMCPBridge {
       final result = {"task_id": taskId, "message": _taskIdToResponse[taskId]};
 
       return CallToolResult.fromJson({
-        "content": json.encode(result),
+        "content": [
+          {"type": "text", "text": json.encode(result)},
+        ],
         "structuredContent": result,
       });
     }
@@ -355,7 +362,9 @@ class A2AMCPBridge {
       };
 
       return CallToolResult.fromJson({
-        "content": json.encode(result),
+        "content": [
+          {"type": "text", "text": json.encode(result)},
+        ],
         "structuredContent": result,
       });
     } catch (e) {
@@ -426,7 +435,9 @@ class A2AMCPBridge {
         }
         final result = {"task_id": taskId};
         return CallToolResult.fromJson({
-          "content": json.encode(result),
+          "content": [
+            {"type": "text", "text": json.encode(result)},
+          ],
           "structuredContent": result,
         });
       }
@@ -474,7 +485,7 @@ class A2AMCPBridge {
     inputSchema = ToolInputSchema(properties: {});
     outputSchema = ToolOutputSchema(
       properties: {
-        "result": {"type": "array", "description": "Registered Agents by name"},
+        "result": {"type": "any", "description": "Registered Agents by name"},
       },
       required: ["result"],
     );
