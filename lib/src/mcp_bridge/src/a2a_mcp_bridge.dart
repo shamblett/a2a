@@ -96,13 +96,9 @@ class A2AMCPBridge {
     print(
       '${Colorize('A2AMCPBridge:: Agent ${agentCard.name} at $url registered').blue()}',
     );
-    final content = {
-      "structuredContent": {
-        "status": "success",
-        "agent_name": agentCard.name,
-        "url": url,
-      },
-    };
+    final result = {"agent_name": agentCard.name, "url": url};
+    final jsonResult = json.encode(result);
+    final content = {"content": jsonResult, "structuredContent": result};
     return CallToolResult.fromJson(content);
   }
 
@@ -115,7 +111,9 @@ class A2AMCPBridge {
     print(
       '${Colorize('A2AMCPBridge:: Listed ${_registeredAgents.keys.length} agents, response $registeredAgents').blue()}',
     );
+
     return CallToolResult.fromJson({
+      "content": json.encode(registeredAgents),
       "structuredContent": {"result": registeredAgents},
     });
   }
@@ -149,9 +147,7 @@ class A2AMCPBridge {
 
     print('${Colorize('A2AMCPBridge:: Agent at $url unregistered').blue()}');
 
-    final content = {
-      "structuredContent": {"status": "success"},
-    };
+    final content = {"content": {}, "structuredContent": {}};
     return CallToolResult.fromJson(content);
   }
 
@@ -230,12 +226,10 @@ class A2AMCPBridge {
         '${Colorize('A2AMCPBridge:: Send message successful for agent at $url').blue()}',
       );
       // Return success
+      final result = {"task_id": taskId, "response": responseText};
       return CallToolResult.fromJson({
-        "structuredContent": {
-          "task_id": taskId,
-          "response": responseText,
-          "status": "success",
-        },
+        "content": json.encode(result),
+        "structuredContent": result,
       });
     } catch (e) {
       return CallToolResult.fromContent(
@@ -336,14 +330,16 @@ class A2AMCPBridge {
       print(
         '${Colorize('A2AMCPBridge:: Get task result successful for agent at $url').blue()}',
       );
+      final result = {
+        "task_id": taskId,
+        "message": responseText,
+        "task_state": taskState,
+        "history": historyResponseText,
+      };
+
       return CallToolResult.fromJson({
-        "structuredContent": {
-          "task_id": taskId,
-          "message": responseText,
-          "status": "success",
-          "task_state": taskState,
-          "history": historyResponseText,
-        },
+        "content": json.encode(result),
+        "structuredContent": result,
       });
     } catch (e) {
       return CallToolResult.fromContent(
@@ -407,26 +403,14 @@ class A2AMCPBridge {
       } else {
         final successResponse = response as A2ACancelTaskSuccessResponse;
         final task = successResponse.result;
-        final taskState = task?.status?.state;
         print(
           '${Colorize('A2AMCPBridge:: Cancel task completed for agent at $url').blue()}',
         );
-        return taskState == A2ATaskState.canceled ||
-                taskState == A2ATaskState.completed ||
-                taskState == A2ATaskState.rejected
-            ? CallToolResult.fromContent(
-                content: [
-                  Content.fromJson({"task_id": taskId, "status": "success"}),
-                ],
-              )
-            : CallToolResult.fromJson({
-                "structuredContent": {
-                  "task_id": taskId,
-                  "message":
-                      "Task failed to be cancelled, completed or rejected",
-                  "status": "error",
-                },
-              });
+        final result = {"task_id": taskId};
+        return CallToolResult.fromJson({
+          "content": json.encode(result),
+          "structuredContent": result,
+        });
       }
     } catch (e) {
       return CallToolResult.fromContent(
@@ -453,10 +437,10 @@ class A2AMCPBridge {
     );
     var outputSchema = ToolOutputSchema(
       properties: {
-        "status": {"type": "string"},
-        "agent_name": {"type": "string"},
-        "url": {"type": "string"},
+        "agent_name": {"type": "string", "description": "Name of the agent"},
+        "url": {"type": "string", "description": "Url of the agent"},
       },
+      required: ["agent_name", "url"],
     );
     final registerAgent = Tool(
       name: 'register_agent',
@@ -472,8 +456,9 @@ class A2AMCPBridge {
     inputSchema = ToolInputSchema(properties: {});
     outputSchema = ToolOutputSchema(
       properties: {
-        "result": {"type": "array"},
+        "result": {"type": "array", "description": "Registered Agents by name"},
       },
+      required: ["result"],
     );
 
     final listAgents = Tool(
@@ -489,21 +474,14 @@ class A2AMCPBridge {
     // Unregister an A2A agent from the bridge server.
     inputSchema = ToolInputSchema(
       properties: {
-        "url": {"type": "string", "description": "The agent URL"},
+        "url": {"type": "string", "description": "The Agent URL"},
       },
       required: ["url"],
-    );
-    outputSchema = ToolOutputSchema(
-      properties: {
-        "status": {"type": "string"},
-        "message": {"type": "string"},
-      },
     );
     final unRegisterAgent = Tool(
       name: 'unregister_agent',
       description: 'A2A Bridge Unregister Agent',
       inputSchema: inputSchema,
-      outputSchema: outputSchema,
     );
     _registeredTools.add(unRegisterAgent);
     _mcpServer.registerTool(unRegisterAgent, _unregisterAgentCallback);
@@ -512,7 +490,7 @@ class A2AMCPBridge {
     // Send a message to an A2A agent, non-streaming.
     inputSchema = ToolInputSchema(
       properties: {
-        "url": {"type": "string", "description": "The agent URL"},
+        "url": {"type": "string", "description": "The Agent URL"},
         "message": {
           "type": "string",
           "description": "Message to send to the agent",
@@ -526,11 +504,13 @@ class A2AMCPBridge {
     );
     outputSchema = ToolOutputSchema(
       properties: {
-        "task_id": {"type": "string"},
-        "response": {"type": "string"},
-        "status": {"type": "string"},
-        "message": {"type": "string"},
+        "task_id": {"type": "string", "description": "The Task Id"},
+        "response": {
+          "type": "string",
+          "description": "Response from the Agent",
+        },
       },
+      required: ["task_id"],
     );
     final sendMessage = Tool(
       name: 'send_message',
@@ -545,7 +525,7 @@ class A2AMCPBridge {
     // Retrieve the result of a task from an A2A agent.
     inputSchema = ToolInputSchema(
       properties: {
-        "task_id": {"type": "string", "description": "The task id"},
+        "task_id": {"type": "string", "description": "The Task id"},
         "history_length ": {
           "type": "number",
           "description":
@@ -556,12 +536,18 @@ class A2AMCPBridge {
     );
     outputSchema = ToolOutputSchema(
       properties: {
-        "task_id": {"type": "string"},
-        "message": {"type": "string"},
-        "status": {"type": "string"},
-        "task_state": {"type": "string"},
-        "history": {"type": "string"},
+        "task_id": {"type": "string", "description": "The task id"},
+        "task_state": {
+          "type": "string",
+          "description": "The state of the task",
+        },
+        "message": {
+          "type": "string",
+          "description": "The response from the Agent(may be from cache",
+        },
+        "history": {"type": "string", "description": "History contents"},
       },
+      required: ["task_id"],
     );
     final getTaskResult = Tool(
       name: 'get_task_result',
@@ -582,11 +568,9 @@ class A2AMCPBridge {
     );
     outputSchema = ToolOutputSchema(
       properties: {
-        "task_id": {"type": "string"},
-        "message": {"type": "string"},
-        "status": {"type": "string"},
-        "result_code": {"type": "string"},
+        "task_id": {"type": "string", "description": "The task id"},
       },
+      required: ["task_id"],
     );
     final cancelTask = Tool(
       name: 'cancel_task',
