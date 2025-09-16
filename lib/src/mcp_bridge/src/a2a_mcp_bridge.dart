@@ -231,6 +231,12 @@ class A2AMCPBridge {
         } else {
           // Task, assume the task has completed Ok.
           final success = successResponse.result as A2ATask;
+          if (success.status?.message != null) {
+            final decodesParts = A2AUtilities.decodeParts(
+              success.status?.message?.parts,
+            );
+            responseText += decodesParts.allText;
+          }
           if (success.artifacts != null) {
             for (final artifact in success.artifacts!) {
               final decodesParts = A2AUtilities.decodeParts(artifact.parts);
