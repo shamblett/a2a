@@ -97,8 +97,7 @@ class A2AMCPBridge {
       '${Colorize('A2AMCPBridge:: Agent ${agentCard.name} at $url registered').blue()}',
     );
     final result = {"agent_name": agentCard.name, "url": url};
-    final jsonResult = json.encode(result);
-    final content = {"content": jsonResult, "structuredContent": result};
+    final content = {"content": json.encode(result), "structuredContent": result};
     return CallToolResult.fromJson(content);
   }
 
@@ -401,8 +400,6 @@ class A2AMCPBridge {
           isError: true,
         );
       } else {
-        final successResponse = response as A2ACancelTaskSuccessResponse;
-        final task = successResponse.result;
         print(
           '${Colorize('A2AMCPBridge:: Cancel task completed for agent at $url').blue()}',
         );
