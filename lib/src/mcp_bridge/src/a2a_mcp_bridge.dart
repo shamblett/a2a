@@ -29,6 +29,10 @@ class A2AMCPBridge {
   // Task id to agent URL
   final Map<String, String> _taskToAgent = {};
 
+  // Task to send message response mapping.
+  // Used for get_task_result calls
+  Map<String, String> _taskIdToResponse = {};
+
   final _uuid = Uuid();
 
   A2AMCPBridge() {
@@ -97,7 +101,10 @@ class A2AMCPBridge {
       '${Colorize('A2AMCPBridge:: Agent ${agentCard.name} at $url registered').blue()}',
     );
     final result = {"agent_name": agentCard.name, "url": url};
-    final content = {"content": json.encode(result), "structuredContent": result};
+    final content = {
+      "content": json.encode(result),
+      "structuredContent": result,
+    };
     return CallToolResult.fromJson(content);
   }
 
@@ -225,6 +232,7 @@ class A2AMCPBridge {
         '${Colorize('A2AMCPBridge:: Send message successful for agent at $url').blue()}',
       );
       // Return success
+      _taskIdToResponse[taskId] = responseText;
       final result = {"task_id": taskId, "response": responseText};
       return CallToolResult.fromJson({
         "content": json.encode(result),
@@ -275,6 +283,16 @@ class A2AMCPBridge {
         isError: true,
       );
     }
+    if (_taskIdToResponse.containsKey(taskId)) {
+      final result = {"task_id": taskId, "message": _taskIdToResponse[taskId]};
+
+      return CallToolResult.fromJson({
+        "content": json.encode(result),
+        "structuredContent": result,
+      });
+    }
+
+    // No previous response, query the agent
     final url = _taskToAgent[taskId];
     // Create a client for the agent and send the message to it
     try {
@@ -403,6 +421,9 @@ class A2AMCPBridge {
         print(
           '${Colorize('A2AMCPBridge:: Cancel task completed for agent at $url').blue()}',
         );
+        if (_taskIdToResponse.containsKey(taskId)) {
+          _taskIdToResponse.remove(taskId);
+        }
         final result = {"task_id": taskId};
         return CallToolResult.fromJson({
           "content": json.encode(result),
