@@ -42,17 +42,17 @@ class A2AUtilities {
       return A2ADecodedParts();
     }
     final decodedParts = A2ADecodedParts();
-    for ( final part in parts ) {
+    for (final part in parts) {
       switch (part) {
         case A2ATextPart _:
           decodedParts.textParts.add(part);
           decodedParts.textPartText.add(part.text);
           decodedParts.allText += part.text;
           break;
-        case A2ADataPart _ :
+        case A2ADataPart _:
           decodedParts.dataParts.add(part);
           break;
-        case A2AFilePart _ :
+        case A2AFilePart _:
           decodedParts.fileParts.add(part);
           break;
       }
