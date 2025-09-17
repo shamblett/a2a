@@ -57,7 +57,7 @@ class A2AClient {
         ? agentBaseUrl.substring(0, agentBaseUrl.length - 1)
         : this.agentBaseUrl = agentBaseUrl;
 
-    _serviceEndpointUrl = agentBaseUrl;
+    _serviceEndpointUrl = '$agentBaseUrl/';
 
     _agentCardPath = agentCardPath.endsWith('/')
         ? agentCardPath.substring(0, agentCardPath.length - 1)
