@@ -138,7 +138,7 @@ _The JS SDK which this package was ported from did not contain this_
 
 * The Send Message client method can be configured as blocking or non-blocking. The client supports
   selection of this however the server will always treat the request as blocking.
-* 
+
 ## The A2A MCP Bridge
 
 An MCP server that bridges the Model Context Protocol (MCP) with the Agent-to-Agent (A2A) protocol, enabling MCP-compatible AI assistants (like Gemini, Claude etc.) to seamlessly interact with A2A agents.
@@ -207,4 +207,4 @@ interacting with the Movie Agent sample to answer questions about movies.
 
 ![Movie Agent Integration](gemini-movie-agent.jpg)
 
-A more complete conversation with Gemini CLI and the Movie Agent can be found [here]((https://github.com/shamblett/a2a/blob/main/example/mcp/conversation.txt) ).
+A more complete conversation with Gemini CLI and the Movie Agent can be found [here](https://github.com/shamblett/a2a/blob/main/example/mcp/conversation.txt).
