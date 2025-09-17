@@ -1,3 +1,8 @@
+# 2.4.0
+Addition of the MCP Bridge
+- [Issue 32](https://github.com/shamblett/a2a/issues/32)
+- [Issue 33](https://github.com/shamblett/a2a/issues/33)
+
 # 2.3.3
 - [Issue 28](https://github.com/shamblett/a2a/issues/28)
 - [Issue 30](https://github.com/shamblett/a2a/issues/30)
