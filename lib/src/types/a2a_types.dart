@@ -24,6 +24,7 @@ part 'src/area/a2a_get_task_response.dart';
 part 'src/area/a2a_json_rpc_response.dart';
 part 'src/area/a2a_send_stream_message_response.dart';
 part 'src/area/a2a_agent.dart';
+part 'src/a2a_utilities.dart';
 
 /// JSON
 part 'a2a_types.g.dart';

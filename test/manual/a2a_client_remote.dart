@@ -31,7 +31,6 @@ Future<int> main() async {
   group('Client Base', () {
     test('Construction', () async {
       testClient = A2AClient(baseUrl);
-      await Future.delayed(Duration(seconds: 10));
       expect(
         testClient!.agentBaseUrl,
         'https://sample-a2a-agent-908687846511.us-central1.run.app',
@@ -42,10 +41,7 @@ Future<int> main() async {
       );
     });
     test('Get Agent Card', () async {
-      if (testClient == null) {
-        testClient ??= A2AClient(baseUrl);
-        await Future.delayed(Duration(seconds: 10));
-      }
+      testClient ??= A2AClient(baseUrl);
       final agentCard = await testClient!.getAgentCard(
         agentBaseUrl:
             'https://sample-a2a-agent-908687846511.us-central1.run.app',
@@ -77,10 +73,7 @@ Future<int> main() async {
       expect(agentCard.skills.first.tags, ['search', 'google', 'facts']);
     });
     test('Get Service Endpoint', () async {
-      if (testClient == null) {
-        testClient = A2AClient(baseUrl);
-        await Future.delayed(Duration(seconds: 10));
-      }
+      testClient ??= A2AClient(baseUrl);
       final endpoint = await testClient!.serviceEndpoint;
       expect(
         endpoint,
@@ -90,10 +83,7 @@ Future<int> main() async {
   });
   group('Client Methods', () {
     test('Send Message', () async {
-      if (testClient == null) {
-        testClient ??= A2AClient(baseUrl);
-        await Future.delayed(Duration(seconds: 10));
-      }
+      testClient ??= A2AClient(baseUrl);
       final message = A2AMessage()
         ..role = 'user'
         ..parts = [A2ATextPart()..text = 'prompt']
@@ -128,10 +118,7 @@ Future<int> main() async {
       }
     });
     test('Send Message Stream', () async {
-      if (testClient == null) {
-        testClient ??= A2AClient(baseUrl);
-        await Future.delayed(Duration(seconds: 10));
-      }
+      testClient ??= A2AClient(baseUrl);
       final message = A2AMessage()
         ..role = 'user'
         ..parts = [A2ATextPart()..text = 'prompt']
@@ -165,10 +152,7 @@ Future<int> main() async {
       }
     });
     test('Set Task Push NotificationConfig', () async {
-      if (testClient == null) {
-        testClient ??= A2AClient(baseUrl);
-        await Future.delayed(Duration(seconds: 10));
-      }
+      testClient ??= A2AClient(baseUrl);
       final taskConfig = A2APushNotificationConfig()
         ..id = '2'
         ..token = 'token'
@@ -188,10 +172,7 @@ Future<int> main() async {
       }
     });
     test('Get Task Push Notification Config', () async {
-      if (testClient == null) {
-        testClient ??= A2AClient(baseUrl);
-        await Future.delayed(Duration(seconds: 10));
-      }
+      testClient ??= A2AClient(baseUrl);
       final taskParams = A2AGetTaskPushNotificationConfigParams()..id = '1';
 
       try {
@@ -217,10 +198,7 @@ Future<int> main() async {
       }
     });
     test('Get Task', () async {
-      if (testClient == null) {
-        testClient ??= A2AClient(baseUrl);
-        await Future.delayed(Duration(seconds: 10));
-      }
+      testClient ??= A2AClient(baseUrl);
       final taskParams = A2ATaskQueryParams()..id = '1';
 
       try {
@@ -235,10 +213,7 @@ Future<int> main() async {
       }
     });
     test('Cancel Task', () async {
-      if (testClient == null) {
-        testClient ??= A2AClient(baseUrl);
-        await Future.delayed(Duration(seconds: 10));
-      }
+      testClient ??= A2AClient(baseUrl);
       final taskParams = A2ATaskIdParams()..id = '1';
 
       try {
@@ -253,10 +228,7 @@ Future<int> main() async {
       }
     });
     test('Resubscribe Task', () async {
-      if (testClient == null) {
-        testClient ??= A2AClient(baseUrl);
-        await Future.delayed(Duration(seconds: 10));
-      }
+      testClient ??= A2AClient(baseUrl);
       final taskParams = A2ATaskIdParams()..id = '1';
 
       try {
