@@ -194,8 +194,14 @@ final class A2AAgentCard extends A2AAgent {
 
   A2AAgentCard();
 
-  factory A2AAgentCard.fromJson(Map<String, dynamic> json) =>
-      _$A2AAgentCardFromJson(json);
+  factory A2AAgentCard.fromJson(Map<String, dynamic> json) {
+    var fixedJson = json;
+    if (json['preferredTransport'] == null) {
+      fixedJson = Map<String, dynamic>.from(json);
+      fixedJson['preferredTransport'] = 'JSONRPC';
+    }
+    return _$A2AAgentCardFromJson(fixedJson);
+  }
 
   Map<String, dynamic> toJson() => _$A2AAgentCardToJson(this);
 }
