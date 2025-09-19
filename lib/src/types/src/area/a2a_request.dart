@@ -368,6 +368,12 @@ class A2AMessageSendParams {
   /// Optional metadata for extensions.
   A2ASV? metadata;
 
+  /// A list of extensions the client intends to activate.
+  /// These are sent in the X-A2A-Extensions HTTP header and not in the
+  /// message body, hence they are not part of the JSON serialization.
+  @JsonKey(includeToJson: false, includeFromJson: false)
+  List<String> extensions = [];
+
   A2AMessageSendParams();
 
   factory A2AMessageSendParams.fromJson(Map<String, dynamic> json) =>
