@@ -150,6 +150,10 @@ class A2AClient {
     final headers = http.Headers()
       ..append('Accept', 'application/json')
       ..append('Content-Type', 'text/event-stream');
+    if (params.extensions.isNotEmpty) {
+      headers.append('X-A2A-Extensions', params.extensions.join(','));
+    }
+
     final response = await http.fetch(
       endpoint,
       method: 'POST',
@@ -504,6 +508,9 @@ class A2AClient {
     final headers = http.Headers()
       ..append('Accept', 'application/json')
       ..append('Content-Type', 'application/json');
+    if (params is A2AMessageSendParams && params.extensions.isNotEmpty) {
+      headers.append('X-A2A-Extensions', params.extensions.join(','));
+    }
     final httpResponse = await http.fetch(
       endpoint,
       method: 'POST',
