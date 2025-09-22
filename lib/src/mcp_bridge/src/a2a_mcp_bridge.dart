@@ -35,10 +35,36 @@ class A2AMCPBridge {
 
   final _uuid = Uuid();
 
+  /// Registered tools
+  List<Tool> get registeredTools => _registeredTools.toList();
+
+  /// Registered agents
+  Map<String, A2AAgentCard> get registeredAgents => _registeredAgents;
+
   A2AMCPBridge() {
     // Initialise the tools
     _initialiseTools();
   }
+
+  /// Is a tool registered
+  bool isRegistered(Tool tool) =>
+      _registeredTools.where((t) => t.name == tool.name).isNotEmpty;
+
+  /// Register a tool
+  void registerTool(Tool tool, ToolCallback callback) {
+    _registeredTools.add(tool);
+    _mcpServer.registerTool(tool, callback);
+  }
+
+  /// Registered agent
+  A2AAgentCard? registeredAgent(String name) => _registeredAgents[name];
+
+  /// Register an agent
+  void registerAgent(String name, A2AAgentCard card) =>
+      _registeredAgents[name] = card;
+
+  /// Agent lookup
+  String? lookupAgent(String url) => _agentLookup[url];
 
   /// Start the server
   Future<void> startServer({int port = A2AMCPServer.defaultServerPort}) async {
