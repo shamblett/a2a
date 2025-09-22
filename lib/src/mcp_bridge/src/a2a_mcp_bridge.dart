@@ -41,6 +41,20 @@ class A2AMCPBridge {
   /// Registered agents
   Map<String, A2AAgentCard> get registeredAgents => _registeredAgents;
 
+  /// Get the registered agent by name
+  List<String> get registeredAgentNames {
+    final names = <String>[];
+    for (final key in _registeredAgents.keys) {
+      final agentCard = _registeredAgents[key];
+      names.add(agentCard!.name);
+    }
+    if (names.isEmpty) {
+      names.add('No Agents Registered');
+    }
+    return names;
+  }
+
+  /// Construction
   A2AMCPBridge() {
     // Initialise the tools
     _initialiseTools();
@@ -141,7 +155,7 @@ class A2AMCPBridge {
     Map<String, dynamic>? args,
     RequestHandlerExtra? extra,
   }) async {
-    final registeredAgents = _getRegisteredAgentNames();
+    final registeredAgents = registeredAgentNames;
     print(
       '${Colorize('A2AMCPBridge:: Listed ${_registeredAgents.keys.length} agents, response $registeredAgents').blue()}',
     );
@@ -520,8 +534,7 @@ class A2AMCPBridge {
       inputSchema: inputSchema,
       outputSchema: outputSchema,
     );
-    _registeredTools.add(registerAgent);
-    _mcpServer.registerTool(registerAgent, _registerAgentCallback);
+    registerTool(registerAgent, _registerAgentCallback);
 
     // List Agents
     //  List all registered A2A agents.
@@ -539,8 +552,7 @@ class A2AMCPBridge {
       inputSchema: inputSchema,
       outputSchema: outputSchema,
     );
-    _registeredTools.add(listAgents);
-    _mcpServer.registerTool(listAgents, _listAgentsCallback);
+    registerTool(listAgents, _listAgentsCallback);
 
     // Unregister agent
     // Unregister an A2A agent from the bridge server.
@@ -561,8 +573,7 @@ class A2AMCPBridge {
       inputSchema: inputSchema,
       outputSchema: outputSchema,
     );
-    _registeredTools.add(unRegisterAgent);
-    _mcpServer.registerTool(unRegisterAgent, _unregisterAgentCallback);
+    registerTool(unRegisterAgent, _unregisterAgentCallback);
 
     // Send Message
     // Send a message to an A2A agent, non-streaming.
@@ -596,8 +607,7 @@ class A2AMCPBridge {
       inputSchema: inputSchema,
       outputSchema: outputSchema,
     );
-    _registeredTools.add(sendMessage);
-    _mcpServer.registerTool(sendMessage, _sendMessageCallback);
+    registerTool(sendMessage, _sendMessageCallback);
 
     // Get Task result
     // Retrieve the result of a task from an A2A agent.
@@ -627,8 +637,7 @@ class A2AMCPBridge {
       inputSchema: inputSchema,
       outputSchema: outputSchema,
     );
-    _registeredTools.add(getTaskResult);
-    _mcpServer.registerTool(getTaskResult, _getTaskResultCallback);
+    registerTool(getTaskResult, _getTaskResultCallback);
 
     // Cancel a task
     // Cancel a running task on an A2A agent.
@@ -650,20 +659,6 @@ class A2AMCPBridge {
       inputSchema: inputSchema,
       outputSchema: outputSchema,
     );
-    _registeredTools.add(cancelTask);
-    _mcpServer.registerTool(cancelTask, _cancelTaskCallback);
-  }
-
-  // Get the registered agent by name
-  List<String> _getRegisteredAgentNames() {
-    final names = <String>[];
-    for (final key in _registeredAgents.keys) {
-      final agentCard = _registeredAgents[key];
-      names.add(agentCard!.name);
-    }
-    if (names.isEmpty) {
-      names.add('No Agents Registered');
-    }
-    return names;
+    registerTool(cancelTask, _cancelTaskCallback);
   }
 }

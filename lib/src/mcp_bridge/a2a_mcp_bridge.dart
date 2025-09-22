@@ -112,7 +112,6 @@ import 'dart:io';
 
 import 'package:colorize/colorize.dart';
 import 'package:mcp_dart/mcp_dart.dart';
-import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
 
 import '../client/a2a_client.dart';
