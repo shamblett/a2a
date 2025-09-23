@@ -54,6 +54,12 @@ class A2AMCPBridge {
     return names;
   }
 
+  /// Task to agent mapping
+  Map<String, String> get taskToAgent => Map.from(_taskToAgent);
+
+  /// Task to result mapping
+  Map<String, String> get taskToResult => Map.from(_taskIdToResponse);
+
   /// Construction
   A2AMCPBridge() {
     // Initialise the tools
@@ -70,16 +76,40 @@ class A2AMCPBridge {
     _mcpServer.registerTool(tool, callback);
   }
 
-  /// Registered agent
+  /// Registered agent agents card by name
   A2AAgentCard? registeredAgent(String name) => _registeredAgents[name];
 
   /// Register an agent
   void registerAgent(String name, A2AAgentCard card) =>
       _registeredAgents[name] = card;
 
+  /// Unregister an Agent
+  void unregisterAgent(String name) => _registeredAgents.remove(name);
+
   /// Agent lookup
   String? lookupAgent(String url) => _agentLookup[url];
 
+  /// Add an agent lookup
+  void addAgentLookup(String url, String name) => _agentLookup[url] = name;
+
+  /// Remove an agent from lookup
+  void removeAgentLookup(String url) => _agentLookup.remove(url);
+
+  /// Response from task id
+  String? responseFromTask(String taskId) => _taskIdToResponse[taskId];
+
+  /// Add a task response
+  void addTaskResponse(String taskId, String response) =>
+      _taskIdToResponse[taskId] = response;
+
+  /// Remove a task response
+  void removeTaskResponse(String taskId) => _taskIdToResponse.remove(taskId);
+
+  /// Get an agent from lookup
+  String? getAgentNameFromLookup(String url) => _agentLookup[url];
+
+  /// Register an agents output
+  ///
   /// Start the server
   Future<void> startServer({int port = A2AMCPServer.defaultServerPort}) async {
     await _mcpServer.start(port: port);
