@@ -13,6 +13,10 @@ part of '../a2a_mcp_bridge.dart';
 /// The A2A MCP Bridge.
 ///
 class A2AMCPBridge {
+  /// Uuid generator
+  final uuid = Uuid();
+
+  // The MCP server
   final A2AMCPServer _mcpServer = A2AMCPServer();
 
   // Tools registered with the MCP server
@@ -33,7 +37,8 @@ class A2AMCPBridge {
   // Used for get_task_result calls
   final Map<String, String> _taskIdToResponse = {};
 
-  final _uuid = Uuid();
+  /// The MCP server
+  A2AMCPServer get mcpServer => _mcpServer;
 
   /// Registered tools
   List<Tool> get registeredTools => _registeredTools.toList();
@@ -257,18 +262,18 @@ class A2AMCPBridge {
     final url = args['url'];
     final message = args['message'];
     // Session id if present
-    final sessionId = args['session_id'] ?? _uuid.v4();
+    final sessionId = args['session_id'] ?? uuid.v4();
 
     // Create a client for the agent and send the message to it
     try {
       final client = A2AClient(url);
       await Future.delayed(Duration(seconds: 2));
-      final taskId = _uuid.v4();
+      final taskId = uuid.v4();
       _taskToAgent[taskId] = url;
       final clientMessage = A2AMessage()
         ..contextId =
             sessionId // Use session id
-        ..messageId = _uuid.v4()
+        ..messageId = uuid.v4()
         ..parts = [A2ATextPart()..text = message]
         ..role = 'user';
       final params = A2AMessageSendParams()
