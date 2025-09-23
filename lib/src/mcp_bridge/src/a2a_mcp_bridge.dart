@@ -60,10 +60,10 @@ class A2AMCPBridge {
   }
 
   /// Task to agent mapping
-  Map<String, String> get taskToAgent => Map.from(_taskToAgent);
+  Map<String, String> get tasksToAgent => Map.from(_taskToAgent);
 
   /// Task to result mapping
-  Map<String, String> get taskToResult => Map.from(_taskIdToResponse);
+  Map<String, String> get tasksToResult => Map.from(_taskIdToResponse);
 
   /// Construction
   A2AMCPBridge() {
@@ -84,14 +84,28 @@ class A2AMCPBridge {
   /// Registered agent agents card by name
   A2AAgentCard? registeredAgent(String name) => _registeredAgents[name];
 
-  /// Register an agent
-  void registerAgent(String name, A2AAgentCard card) =>
-      _registeredAgents[name] = card;
+  /// Register an agent with lookup
+  void registerAgent(String name, String url, A2AAgentCard card) {
+    _registeredAgents[name] = card;
+    _agentLookup[url] = name;
+  }
 
   /// Unregister an Agent
-  void unregisterAgent(String name) => _registeredAgents.remove(name);
+  void unregisterAgent(String url) {
+    final name = _agentLookup[url];
+    if (name != null) {
+      _registeredAgents.remove(name);
+    }
+    _agentLookup.remove(url);
+    // Task mappings and responses
+    final taskIds = _taskToAgent.values.where((e) => e == url);
+    _taskToAgent.removeWhere((key, value) => value == url);
+    for (final taskId in taskIds) {
+      _taskIdToResponse.removeWhere((key, value) => key == taskId);
+    }
+  }
 
-  /// Agent lookup
+  /// Lookup an agent
   String? lookupAgent(String url) => _agentLookup[url];
 
   /// Add an agent lookup
@@ -99,6 +113,10 @@ class A2AMCPBridge {
 
   /// Remove an agent from lookup
   void removeAgentLookup(String url) => _agentLookup.remove(url);
+
+  /// tTask has a response
+  bool taskHasResponse(String taskId) =>
+      _taskIdToResponse.keys.contains(taskId);
 
   /// Response from task id
   String? responseFromTask(String taskId) => _taskIdToResponse[taskId];
@@ -110,8 +128,17 @@ class A2AMCPBridge {
   /// Remove a task response
   void removeTaskResponse(String taskId) => _taskIdToResponse.remove(taskId);
 
-  /// Get an agent from lookup
-  String? getAgentNameFromLookup(String url) => _agentLookup[url];
+  /// Task has an agent
+  bool taskHasAgent(String taskId) => _taskToAgent.keys.contains(taskId);
+
+  /// Get an agent URL from a task id
+  String? taskToAgent(String taskId) => _taskToAgent[taskId];
+
+  /// Add a task to agent mapping
+  void addTaskToAgent(String taskId, String url) => _taskToAgent[taskId] = url;
+
+  /// Remove a task to agent mapping
+  void removeTaskToAgent(String taskId) => _taskToAgent.remove(taskId);
 
   /// Register an agents output
   ///
@@ -170,8 +197,7 @@ class A2AMCPBridge {
         isError: true,
       );
     }
-    _registeredAgents[agentCard.name] = agentCard;
-    _agentLookup[args['url']] = agentCard.name;
+    registerAgent(agentCard.name, url, agentCard);
     print(
       '${Colorize('A2AMCPBridge:: Agent ${agentCard.name} at $url registered').blue()}',
     );
@@ -223,15 +249,9 @@ class A2AMCPBridge {
       );
     }
     final url = args['url'];
-    String agentName = 'Agent Not Found';
-    if (_agentLookup.containsKey(url)) {
-      agentName = _agentLookup[url]!;
-      _registeredAgents.remove(agentName);
-      _agentLookup.remove(url);
-    }
-
-    // Clean up any task mappings related to this agent
-    _taskToAgent.removeWhere((_, value) => value == url);
+    String? agentName = lookupAgent(url);
+    agentName ??= 'Agent Not Found';
+    unregisterAgent(url);
 
     print('${Colorize('A2AMCPBridge:: Agent at $url unregistered').blue()}');
 
@@ -269,7 +289,7 @@ class A2AMCPBridge {
       final client = A2AClient(url);
       await Future.delayed(Duration(seconds: 2));
       final taskId = uuid.v4();
-      _taskToAgent[taskId] = url;
+      addTaskToAgent(taskId, url);
       final clientMessage = A2AMessage()
         ..contextId =
             sessionId // Use session id
@@ -325,7 +345,7 @@ class A2AMCPBridge {
         '${Colorize('A2AMCPBridge:: Send message successful for agent at $url').blue()}',
       );
       // Return success
-      _taskIdToResponse[taskId] = responseText;
+      addTaskResponse(taskId, responseText);
       final result = {"task_id": taskId, "response": responseText};
       return CallToolResult.fromJson({
         "content": [
@@ -377,8 +397,9 @@ class A2AMCPBridge {
         isError: true,
       );
     }
+    final message = responseFromTask(taskId) ?? '';
     if (_taskIdToResponse.containsKey(taskId)) {
-      final result = {"task_id": taskId, "message": _taskIdToResponse[taskId]};
+      final result = {"task_id": taskId, "message": message};
 
       return CallToolResult.fromJson({
         "content": [
@@ -389,7 +410,7 @@ class A2AMCPBridge {
     }
 
     // No previous response, query the agent
-    final url = _taskToAgent[taskId];
+    final url = taskToAgent(taskId);
     // Create a client for the agent and send the message to it
     try {
       final client = A2AClient(url!);
@@ -430,6 +451,7 @@ class A2AMCPBridge {
         }
       }
       // Return success
+      addTaskResponse(taskId, responseText);
       print(
         '${Colorize('A2AMCPBridge:: Get task result successful for agent at $url').blue()}',
       );
@@ -475,7 +497,7 @@ class A2AMCPBridge {
 
     final taskId = args['task_id'];
 
-    if (!_taskToAgent.containsKey(taskId)) {
+    if (taskToAgent(taskId) == null) {
       print(
         '${Colorize('A2AMCPBridge::_cancelTaskCallback - no registered agent for task Id $taskId').yellow()}',
       );
@@ -484,10 +506,9 @@ class A2AMCPBridge {
         isError: true,
       );
     }
-    // Check the cache
-    if (_taskIdToResponse.containsKey(taskId)) {
-      _taskIdToResponse.remove(taskId);
-      _taskToAgent.remove(taskId);
+    if (taskHasResponse(taskId)) {
+      removeTaskToAgent(taskId);
+      removeTaskResponse(taskId);
       final result = {"task_id": taskId};
       return CallToolResult.fromJson({
         "content": [
@@ -521,9 +542,9 @@ class A2AMCPBridge {
         print(
           '${Colorize('A2AMCPBridge:: Cancel task completed for agent at $url').blue()}',
         );
-        if (_taskIdToResponse.containsKey(taskId)) {
-          _taskIdToResponse.remove(taskId);
-          _taskToAgent.remove(taskId);
+        if (taskHasResponse(taskId)) {
+          removeTaskToAgent(taskId);
+          removeTaskResponse(taskId);
         }
         final result = {"task_id": taskId};
         return CallToolResult.fromJson({
