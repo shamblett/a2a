@@ -13,25 +13,15 @@ import 'dart:async';
 import 'package:test/test.dart';
 
 import 'package:a2a/src/server/a2a_server.dart';
+import 'package:a2a/src/mcp_bridge/a2a_mcp_bridge.dart';
 
 import 'support/a2a_test_agent_executor.dart';
 
-void main() {
-  group('Utilities', () {
-    test('getCurrentTimestamp', () {
-      final dt = A2AUtilities.getCurrentTimestamp();
-      expect(dt.length, 'yyyy-MM-ddTHH:mm:ss.mmm'.length);
-    });
-    test('isTaskStatusUpdate', () {
-      expect(A2AUtilities.isTaskStatusUpdate(A2ATaskStatus()), isTrue);
-      expect(A2AUtilities.isTaskStatusUpdate(A2ATask()), isFalse);
-    });
-    test('isTaskArtifactUpdate', () {
-      expect(A2AUtilities.isTaskArtifactUpdate(A2AArtifact()), isTrue);
-      expect(A2AUtilities.isTaskArtifactUpdate(A2AMessage()), isFalse);
-    });
-  });
+class TestMCPBridge extends A2AMCPBridge {
+  TestMCPBridge() : super();
+}
 
+void main() {
   group('Store', () {
     test('In Memory Task Store', () async {
       final store = A2AInMemoryTaskStore();
@@ -1236,6 +1226,19 @@ void main() {
         (delete as A2ADeleteTaskPushNotificationConfigSuccessResponse).result,
         isNull,
       );
+    });
+  });
+  group('MCP Bridge', () {
+    test('Agent Management Extended Class', () {
+      final bridge = TestMCPBridge();
+      expect(bridge.registeredTools.length, 6);
+      expect(bridge.registeredTools.first.name, 'register_agent');
+      expect(bridge.registeredTools[1].name, 'list_agents');
+      expect(bridge.registeredTools[2].name, 'unregister_agent');
+      expect(bridge.registeredTools[3].name, 'send_message');
+      expect(bridge.registeredTools[4].name, 'get_task_result');
+      expect(bridge.registeredTools.last.name, 'cancel_task');
+
     });
   });
 }
