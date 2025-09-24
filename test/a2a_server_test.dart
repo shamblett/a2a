@@ -1230,18 +1230,40 @@ void main() {
   });
   group('MCP Bridge', () {
     test('Agent Management Extended Class', () {
+      const agentName = 'Agent name';
+      const agentUrl = 'http://localhost';
+      const taskResponse = 'Task Response';
+      const taskId = 'Task Id';
+      final agentCard = A2AAgentCard()
+        ..name = agentName
+        ..url = agentUrl;
       final bridge = TestMCPBridge();
       expect(bridge.registeredTools.length, 6);
-      expect(bridge.registeredTools.first.name, 'register_agent');
-      expect(bridge.registeredTools[1].name, 'list_agents');
-      expect(bridge.registeredTools[2].name, 'unregister_agent');
-      expect(bridge.registeredTools[3].name, 'send_message');
-      expect(bridge.registeredTools[4].name, 'get_task_result');
-      expect(bridge.registeredTools.last.name, 'cancel_task');
+      expect(bridge.isToolRegistered('register_agent'), isTrue);
+      expect(bridge.isToolRegistered('list_agents'), isTrue);
+      expect(bridge.isToolRegistered('unregister_agent'), isTrue);
+      expect(bridge.isToolRegistered('send_message'), isTrue);
+      expect(bridge.isToolRegistered('get_task_result'), isTrue);
+      expect(bridge.isToolRegistered('cancel_task'), isTrue);
       expect(bridge.registeredAgents.length, 0);
       expect(bridge.registeredAgentNames.first, 'No Agents Registered');
       expect(bridge.tasksToAgent.length, 0);
       expect(bridge.tasksToResult.length, 0);
+      bridge.registerAgent(agentName, agentUrl, agentCard);
+      expect(bridge.registeredAgents.length, 1);
+      expect(bridge.isAgentRegistered(agentName), isTrue);
+      expect(bridge.registeredAgent(agentName), isNotNull);
+      expect(bridge.lookupAgent(agentUrl), agentName);
+      bridge.addTaskResponse(taskId, taskResponse);
+      bridge.addTaskToAgent(taskId, agentUrl);
+      expect(bridge.taskHasResponse(taskId), isTrue);
+      expect(bridge.taskHasAgent(taskId), isTrue);
+      bridge.unregisterAgent(agentUrl);
+      expect(bridge.taskHasResponse(taskId), isFalse);
+      expect(bridge.taskHasAgent(taskId), isFalse);
+      expect(bridge.lookupAgent(agentUrl), isNull);
+      expect(bridge.isAgentRegistered(agentName), isFalse);
+      expect(bridge.registeredAgent(agentName), isNull);
     });
   });
 }

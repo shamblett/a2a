@@ -67,13 +67,13 @@ class A2AMCPBridge {
 
   /// Construction
   A2AMCPBridge() {
-    // Initialise the tools
+    // Initialise the base tools
     _initialiseTools();
   }
 
   /// Is a tool registered
-  bool isRegistered(Tool tool) =>
-      _registeredTools.where((t) => t.name == tool.name).isNotEmpty;
+  bool isToolRegistered(String toolName) =>
+      _registeredTools.where((t) => t.name == toolName).isNotEmpty;
 
   /// Register a tool
   void registerTool(Tool tool, ToolCallback callback) {
@@ -83,6 +83,9 @@ class A2AMCPBridge {
 
   /// Registered agent agents card by name
   A2AAgentCard? registeredAgent(String name) => _registeredAgents[name];
+
+  /// Is an Agent registered
+  bool isAgentRegistered(String name) => registeredAgent(name) != null;
 
   /// Register an agent with lookup
   void registerAgent(String name, String url, A2AAgentCard card) {
@@ -98,7 +101,9 @@ class A2AMCPBridge {
     }
     _agentLookup.remove(url);
     // Task mappings and responses
-    final taskIds = _taskToAgent.values.where((e) => e == url);
+    final taskIds = _taskToAgent.keys
+        .where((e) => _taskToAgent[e] == url)
+        .toList();
     _taskToAgent.removeWhere((key, value) => value == url);
     for (final taskId in taskIds) {
       _taskIdToResponse.removeWhere((key, value) => key == taskId);
@@ -108,13 +113,13 @@ class A2AMCPBridge {
   /// Lookup an agent
   String? lookupAgent(String url) => _agentLookup[url];
 
-  /// Add an agent lookup
+  /// Add an agent to lookup
   void addAgentLookup(String url, String name) => _agentLookup[url] = name;
 
   /// Remove an agent from lookup
   void removeAgentLookup(String url) => _agentLookup.remove(url);
 
-  /// tTask has a response
+  /// Task has a response
   bool taskHasResponse(String taskId) =>
       _taskIdToResponse.keys.contains(taskId);
 
@@ -568,9 +573,11 @@ class A2AMCPBridge {
   }
 
   // Initialise the tools
+  // Super classes must call the super constructor to run this method to
+  // register the base too set.
   void _initialiseTools() {
     // Register agent
-    //  Register an A2A agent with the bridge server.
+    // Register an A2A agent with the bridge server.
     var inputSchema = ToolInputSchema(
       properties: {
         "url": {"type": "string", "description": "The agent URL"},
