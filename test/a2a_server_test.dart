@@ -1238,7 +1238,10 @@ void main() {
       expect(bridge.registeredTools[3].name, 'send_message');
       expect(bridge.registeredTools[4].name, 'get_task_result');
       expect(bridge.registeredTools.last.name, 'cancel_task');
-
+      expect(bridge.registeredAgents.length, 0);
+      expect(bridge.registeredAgentNames.first, 'No Agents Registered');
+      expect(bridge.tasksToAgent.length, 0);
+      expect(bridge.tasksToResult.length, 0);
     });
   });
 }
