@@ -1,3 +1,6 @@
+# 2.5.0
+- [Issue 41](https://github.com/shamblett/a2a/issues/41)
+
 # 2.4.1
 - [PR 39](https://github.com/shamblett/a2a/pull/39)
 

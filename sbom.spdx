@@ -5,18 +5,18 @@ DocumentName: a2a
 DocumentNamespace: https://pub.dev/packages/a2a
 LicenseListVersion: 3.8
 Creator: Tool: https://pub.dev/packages/sbom
-Created: 2025-09-20T14:07:55Z
+Created: 2025-09-24T10:50:18Z
 
 
 PackageName: a2a
 SPDXID: SPDXRef-Package-a2a
-PackageVersion: 2.4.1
+PackageVersion: 2.5.0
 PackageFileName: a2a
 PackageSupplier: NOASSERTION
 PackageOriginator: NOASSERTION
 PackageDownloadLocation: https://pub.dev/packages/a2a
 FilesAnalyzed: true
-PackageVerificationCode: e8ce40ff4e9f7f999900b1397694dda2d4dcce2b
+PackageVerificationCode: 54525c31450dda7dd6c2809fd2843a9e96fcad6f
 PackageHomePage: https://pub.dev/packages/a2a
 PackageLicenseConcluded: MIT
 PackageLicenseInfoFromFiles: NOASSERTION
@@ -352,7 +352,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/types/src/area/a2a_part.dart
 SPDXID: SPDXRef-a2a-part-36
 FileType: SOURCE
-FileChecksum: SHA1: 2cad84ca59bfc4f09502abdbd61dee3328f789b3
+FileChecksum: SHA1: f22881bc9741cdcd0a2887c0bff7f6883557d7a5
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -361,7 +361,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/types/src/area/a2a_request.dart
 SPDXID: SPDXRef-a2a-request-37
 FileType: SOURCE
-FileChecksum: SHA1: be59662310626b2d0e3739b595912d0be31edb91
+FileChecksum: SHA1: 327d5fd60245e9c71eef7a7bc8d4bfb107983d77
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -370,7 +370,7 @@ FileCopyrightText: NOASSERTION
 FileName: lib/src/types/src/area/a2a_security_scheme.dart
 SPDXID: SPDXRef-a2a-security-scheme-38
 FileType: SOURCE
-FileChecksum: SHA1: f22881bc9741cdcd0a2887c0bff7f6883557d7a5
+FileChecksum: SHA1: cf1901dda9ffee79d2d927e282aa04b6f391384a
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
@@ -397,7 +397,7 @@ FileCopyrightText: NOASSERTION
 FileName: pubspec.yaml
 SPDXID: SPDXRef-pubspec-41
 FileType: TEXT
-FileChecksum: SHA1: 45f4cd7b27f54f12ce77a8346aa2136bb6e71b40
+FileChecksum: SHA1: dcde4ec19c7aaedc0167d0f9ba7e30d413ddd779
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION
