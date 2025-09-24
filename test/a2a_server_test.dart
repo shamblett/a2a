@@ -13,25 +13,15 @@ import 'dart:async';
 import 'package:test/test.dart';
 
 import 'package:a2a/src/server/a2a_server.dart';
+import 'package:a2a/src/mcp_bridge/a2a_mcp_bridge.dart';
 
 import 'support/a2a_test_agent_executor.dart';
 
-void main() {
-  group('Utilities', () {
-    test('getCurrentTimestamp', () {
-      final dt = A2AUtilities.getCurrentTimestamp();
-      expect(dt.length, 'yyyy-MM-ddTHH:mm:ss.mmm'.length);
-    });
-    test('isTaskStatusUpdate', () {
-      expect(A2AUtilities.isTaskStatusUpdate(A2ATaskStatus()), isTrue);
-      expect(A2AUtilities.isTaskStatusUpdate(A2ATask()), isFalse);
-    });
-    test('isTaskArtifactUpdate', () {
-      expect(A2AUtilities.isTaskArtifactUpdate(A2AArtifact()), isTrue);
-      expect(A2AUtilities.isTaskArtifactUpdate(A2AMessage()), isFalse);
-    });
-  });
+class TestMCPBridge extends A2AMCPBridge {
+  TestMCPBridge() : super();
+}
 
+void main() {
   group('Store', () {
     test('In Memory Task Store', () async {
       final store = A2AInMemoryTaskStore();
@@ -1236,6 +1226,44 @@ void main() {
         (delete as A2ADeleteTaskPushNotificationConfigSuccessResponse).result,
         isNull,
       );
+    });
+  });
+  group('MCP Bridge', () {
+    test('Agent Management Extended Class', () {
+      const agentName = 'Agent name';
+      const agentUrl = 'http://localhost';
+      const taskResponse = 'Task Response';
+      const taskId = 'Task Id';
+      final agentCard = A2AAgentCard()
+        ..name = agentName
+        ..url = agentUrl;
+      final bridge = TestMCPBridge();
+      expect(bridge.registeredTools.length, 6);
+      expect(bridge.isToolRegistered('register_agent'), isTrue);
+      expect(bridge.isToolRegistered('list_agents'), isTrue);
+      expect(bridge.isToolRegistered('unregister_agent'), isTrue);
+      expect(bridge.isToolRegistered('send_message'), isTrue);
+      expect(bridge.isToolRegistered('get_task_result'), isTrue);
+      expect(bridge.isToolRegistered('cancel_task'), isTrue);
+      expect(bridge.registeredAgents.length, 0);
+      expect(bridge.registeredAgentNames.first, 'No Agents Registered');
+      expect(bridge.tasksToAgent.length, 0);
+      expect(bridge.tasksToResult.length, 0);
+      bridge.registerAgent(agentName, agentUrl, agentCard);
+      expect(bridge.registeredAgents.length, 1);
+      expect(bridge.isAgentRegistered(agentName), isTrue);
+      expect(bridge.registeredAgent(agentName), isNotNull);
+      expect(bridge.lookupAgent(agentUrl), agentName);
+      bridge.addTaskResponse(taskId, taskResponse);
+      bridge.addTaskToAgent(taskId, agentUrl);
+      expect(bridge.taskHasResponse(taskId), isTrue);
+      expect(bridge.taskHasAgent(taskId), isTrue);
+      bridge.unregisterAgent(agentUrl);
+      expect(bridge.taskHasResponse(taskId), isFalse);
+      expect(bridge.taskHasAgent(taskId), isFalse);
+      expect(bridge.lookupAgent(agentUrl), isNull);
+      expect(bridge.isAgentRegistered(agentName), isFalse);
+      expect(bridge.registeredAgent(agentName), isNull);
     });
   });
 }

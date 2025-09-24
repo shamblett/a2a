@@ -10,9 +10,112 @@
 part of '../a2a_mcp_bridge.dart';
 
 ///
-/// The A2A MCP Bridge.
+/// A2A MCP Bridge server - [A2AMCPBridge]
 ///
+/// Serves as an MCP bridge between the Model Context Protocol (MCP) and the Agent-to-Agent (A2A) protocol,
+/// enabling MCP-compatible AI assistants (like Claude, Gemini etc.) to seamlessly interact with A2A agents.
+///
+/// This class is be extended into more specialized MCP bridge implementations that register
+/// their own tools.
+///
+///  Tools and parameters provided by this base implementation are :-
+///
+///    - cancel_task:
+///         A2A Bridge cancel an active Agent task
+///       Parameters:
+///         {
+///           "type": "object",
+///           "properties": {
+///             "task_id": {
+///               "type": "string",
+///               "description": "The task id"
+///             }
+///           },
+///           "required": [
+///             "task_id"
+///           ]
+///         }
+///     - get_task_result:
+///         A2A Bridge retrieves a task result from an Agent
+///       Parameters:
+///         {
+///           "type": "object",
+///           "properties": {
+///             "task_id": {
+///               "type": "string",
+///               "description": "The Task id"
+///             }
+///           },
+///           "required": [
+///             "task_id"
+///           ]
+///         }
+///     - list_agents:
+///         A2A Bridge List Agents
+///       Parameters:
+///         {
+///           "type": "object",
+///           "properties": {}
+///         }
+///     - register_agent:
+///         A2A Bridge Register Agent
+///       Parameters:
+///         {
+///           "type": "object",
+///           "properties": {
+///             "url": {
+///               "type": "string",
+///               "description": "The agent URL"
+///             }
+///           },
+///           "required": [
+///             "url"
+///           ]
+///         }
+///     - send_message:
+///         A2A Bridge Send Message to an Agent
+///       Parameters:
+///         {
+///           "type": "object",
+///           "properties": {
+///             "url": {
+///               "type": "string",
+///               "description": "The Agent URL"
+///             },
+///             "message": {
+///               "type": "string",
+///               "description": "Message to send to the agent"
+///             },
+///             "session_id": {
+///               "type": "string",
+///               "description": "Multi conversation session id"
+///             }
+///           },
+///           "required": [
+///             "url",
+///             "message"
+///           ]
+///         }
+///     - unregister_agent:
+///         A2A Bridge Unregister Agent
+///       Parameters:
+///         {
+///           "type": "object",
+///           "properties": {
+///             "url": {
+///               "type": "string",
+///               "description": "The Agent URL"
+///             }
+///           },
+///           "required": [
+///             "url"
+///           ]
+///         }
 class A2AMCPBridge {
+  /// Uuid generator
+  final uuid = Uuid();
+
+  // The MCP server
   final A2AMCPServer _mcpServer = A2AMCPServer();
 
   // Tools registered with the MCP server
@@ -33,13 +136,116 @@ class A2AMCPBridge {
   // Used for get_task_result calls
   final Map<String, String> _taskIdToResponse = {};
 
-  final _uuid = Uuid();
+  /// The MCP server
+  A2AMCPServer get mcpServer => _mcpServer;
 
+  /// Registered tools
+  List<Tool> get registeredTools => _registeredTools.toList();
+
+  /// Registered agents
+  Map<String, A2AAgentCard> get registeredAgents => _registeredAgents;
+
+  /// Get the registered agent by name
+  List<String> get registeredAgentNames {
+    final names = <String>[];
+    for (final key in _registeredAgents.keys) {
+      final agentCard = _registeredAgents[key];
+      names.add(agentCard!.name);
+    }
+    if (names.isEmpty) {
+      names.add('No Agents Registered');
+    }
+    return names;
+  }
+
+  /// Task to agent mapping
+  Map<String, String> get tasksToAgent => Map.from(_taskToAgent);
+
+  /// Task to result mapping
+  Map<String, String> get tasksToResult => Map.from(_taskIdToResponse);
+
+  /// Construction
   A2AMCPBridge() {
-    // Initialise the tools
+    // Initialise the base tools
     _initialiseTools();
   }
 
+  /// Is a tool registered
+  bool isToolRegistered(String toolName) =>
+      _registeredTools.where((t) => t.name == toolName).isNotEmpty;
+
+  /// Register a tool
+  void registerTool(Tool tool, ToolCallback callback) {
+    _registeredTools.add(tool);
+    _mcpServer.registerTool(tool, callback);
+  }
+
+  /// Registered agent agents card by name
+  A2AAgentCard? registeredAgent(String name) => _registeredAgents[name];
+
+  /// Is an Agent registered
+  bool isAgentRegistered(String name) => registeredAgent(name) != null;
+
+  /// Register an agent with lookup
+  void registerAgent(String name, String url, A2AAgentCard card) {
+    _registeredAgents[name] = card;
+    _agentLookup[url] = name;
+  }
+
+  /// Unregister an Agent
+  void unregisterAgent(String url) {
+    final name = _agentLookup[url];
+    if (name != null) {
+      _registeredAgents.remove(name);
+    }
+    _agentLookup.remove(url);
+    // Task mappings and responses
+    final taskIds = _taskToAgent.keys
+        .where((e) => _taskToAgent[e] == url)
+        .toList();
+    _taskToAgent.removeWhere((key, value) => value == url);
+    for (final taskId in taskIds) {
+      _taskIdToResponse.removeWhere((key, value) => key == taskId);
+    }
+  }
+
+  /// Lookup an agent
+  String? lookupAgent(String url) => _agentLookup[url];
+
+  /// Add an agent to lookup
+  void addAgentLookup(String url, String name) => _agentLookup[url] = name;
+
+  /// Remove an agent from lookup
+  void removeAgentLookup(String url) => _agentLookup.remove(url);
+
+  /// Task has a response
+  bool taskHasResponse(String taskId) =>
+      _taskIdToResponse.keys.contains(taskId);
+
+  /// Response from task id
+  String? responseFromTask(String taskId) => _taskIdToResponse[taskId];
+
+  /// Add a task response
+  void addTaskResponse(String taskId, String response) =>
+      _taskIdToResponse[taskId] = response;
+
+  /// Remove a task response
+  void removeTaskResponse(String taskId) => _taskIdToResponse.remove(taskId);
+
+  /// Task has an agent
+  bool taskHasAgent(String taskId) => _taskToAgent.keys.contains(taskId);
+
+  /// Get an agent URL from a task id
+  String? taskToAgent(String taskId) => _taskToAgent[taskId];
+
+  /// Add a task to agent mapping
+  void addTaskToAgent(String taskId, String url) => _taskToAgent[taskId] = url;
+
+  /// Remove a task to agent mapping
+  void removeTaskToAgent(String taskId) => _taskToAgent.remove(taskId);
+
+  /// Register an agents output
+  ///
   /// Start the server
   Future<void> startServer({int port = A2AMCPServer.defaultServerPort}) async {
     await _mcpServer.start(port: port);
@@ -95,8 +301,7 @@ class A2AMCPBridge {
         isError: true,
       );
     }
-    _registeredAgents[agentCard.name] = agentCard;
-    _agentLookup[args['url']] = agentCard.name;
+    registerAgent(agentCard.name, url, agentCard);
     print(
       '${Colorize('A2AMCPBridge:: Agent ${agentCard.name} at $url registered').blue()}',
     );
@@ -115,7 +320,7 @@ class A2AMCPBridge {
     Map<String, dynamic>? args,
     RequestHandlerExtra? extra,
   }) async {
-    final registeredAgents = _getRegisteredAgentNames();
+    final registeredAgents = registeredAgentNames;
     print(
       '${Colorize('A2AMCPBridge:: Listed ${_registeredAgents.keys.length} agents, response $registeredAgents').blue()}',
     );
@@ -148,15 +353,9 @@ class A2AMCPBridge {
       );
     }
     final url = args['url'];
-    String agentName = 'Agent Not Found';
-    if (_agentLookup.containsKey(url)) {
-      agentName = _agentLookup[url]!;
-      _registeredAgents.remove(agentName);
-      _agentLookup.remove(url);
-    }
-
-    // Clean up any task mappings related to this agent
-    _taskToAgent.removeWhere((_, value) => value == url);
+    String? agentName = lookupAgent(url);
+    agentName ??= 'Agent Not Found';
+    unregisterAgent(url);
 
     print('${Colorize('A2AMCPBridge:: Agent at $url unregistered').blue()}');
 
@@ -187,18 +386,18 @@ class A2AMCPBridge {
     final url = args['url'];
     final message = args['message'];
     // Session id if present
-    final sessionId = args['session_id'] ?? _uuid.v4();
+    final sessionId = args['session_id'] ?? uuid.v4();
 
     // Create a client for the agent and send the message to it
     try {
       final client = A2AClient(url);
       await Future.delayed(Duration(seconds: 2));
-      final taskId = _uuid.v4();
-      _taskToAgent[taskId] = url;
+      final taskId = uuid.v4();
+      addTaskToAgent(taskId, url);
       final clientMessage = A2AMessage()
         ..contextId =
             sessionId // Use session id
-        ..messageId = _uuid.v4()
+        ..messageId = uuid.v4()
         ..parts = [A2ATextPart()..text = message]
         ..role = 'user';
       final params = A2AMessageSendParams()
@@ -250,7 +449,7 @@ class A2AMCPBridge {
         '${Colorize('A2AMCPBridge:: Send message successful for agent at $url').blue()}',
       );
       // Return success
-      _taskIdToResponse[taskId] = responseText;
+      addTaskResponse(taskId, responseText);
       final result = {"task_id": taskId, "response": responseText};
       return CallToolResult.fromJson({
         "content": [
@@ -302,8 +501,9 @@ class A2AMCPBridge {
         isError: true,
       );
     }
+    final message = responseFromTask(taskId) ?? '';
     if (_taskIdToResponse.containsKey(taskId)) {
-      final result = {"task_id": taskId, "message": _taskIdToResponse[taskId]};
+      final result = {"task_id": taskId, "message": message};
 
       return CallToolResult.fromJson({
         "content": [
@@ -314,7 +514,7 @@ class A2AMCPBridge {
     }
 
     // No previous response, query the agent
-    final url = _taskToAgent[taskId];
+    final url = taskToAgent(taskId);
     // Create a client for the agent and send the message to it
     try {
       final client = A2AClient(url!);
@@ -355,6 +555,7 @@ class A2AMCPBridge {
         }
       }
       // Return success
+      addTaskResponse(taskId, responseText);
       print(
         '${Colorize('A2AMCPBridge:: Get task result successful for agent at $url').blue()}',
       );
@@ -400,7 +601,7 @@ class A2AMCPBridge {
 
     final taskId = args['task_id'];
 
-    if (!_taskToAgent.containsKey(taskId)) {
+    if (taskToAgent(taskId) == null) {
       print(
         '${Colorize('A2AMCPBridge::_cancelTaskCallback - no registered agent for task Id $taskId').yellow()}',
       );
@@ -409,10 +610,9 @@ class A2AMCPBridge {
         isError: true,
       );
     }
-    // Check the cache
-    if (_taskIdToResponse.containsKey(taskId)) {
-      _taskIdToResponse.remove(taskId);
-      _taskToAgent.remove(taskId);
+    if (taskHasResponse(taskId)) {
+      removeTaskToAgent(taskId);
+      removeTaskResponse(taskId);
       final result = {"task_id": taskId};
       return CallToolResult.fromJson({
         "content": [
@@ -446,9 +646,9 @@ class A2AMCPBridge {
         print(
           '${Colorize('A2AMCPBridge:: Cancel task completed for agent at $url').blue()}',
         );
-        if (_taskIdToResponse.containsKey(taskId)) {
-          _taskIdToResponse.remove(taskId);
-          _taskToAgent.remove(taskId);
+        if (taskHasResponse(taskId)) {
+          removeTaskToAgent(taskId);
+          removeTaskResponse(taskId);
         }
         final result = {"task_id": taskId};
         return CallToolResult.fromJson({
@@ -472,9 +672,11 @@ class A2AMCPBridge {
   }
 
   // Initialise the tools
+  // Super classes must call the super constructor to run this method to
+  // register the base too set.
   void _initialiseTools() {
     // Register agent
-    //  Register an A2A agent with the bridge server.
+    // Register an A2A agent with the bridge server.
     var inputSchema = ToolInputSchema(
       properties: {
         "url": {"type": "string", "description": "The agent URL"},
@@ -494,8 +696,7 @@ class A2AMCPBridge {
       inputSchema: inputSchema,
       outputSchema: outputSchema,
     );
-    _registeredTools.add(registerAgent);
-    _mcpServer.registerTool(registerAgent, _registerAgentCallback);
+    registerTool(registerAgent, _registerAgentCallback);
 
     // List Agents
     //  List all registered A2A agents.
@@ -513,8 +714,7 @@ class A2AMCPBridge {
       inputSchema: inputSchema,
       outputSchema: outputSchema,
     );
-    _registeredTools.add(listAgents);
-    _mcpServer.registerTool(listAgents, _listAgentsCallback);
+    registerTool(listAgents, _listAgentsCallback);
 
     // Unregister agent
     // Unregister an A2A agent from the bridge server.
@@ -535,8 +735,7 @@ class A2AMCPBridge {
       inputSchema: inputSchema,
       outputSchema: outputSchema,
     );
-    _registeredTools.add(unRegisterAgent);
-    _mcpServer.registerTool(unRegisterAgent, _unregisterAgentCallback);
+    registerTool(unRegisterAgent, _unregisterAgentCallback);
 
     // Send Message
     // Send a message to an A2A agent, non-streaming.
@@ -570,8 +769,7 @@ class A2AMCPBridge {
       inputSchema: inputSchema,
       outputSchema: outputSchema,
     );
-    _registeredTools.add(sendMessage);
-    _mcpServer.registerTool(sendMessage, _sendMessageCallback);
+    registerTool(sendMessage, _sendMessageCallback);
 
     // Get Task result
     // Retrieve the result of a task from an A2A agent.
@@ -601,8 +799,7 @@ class A2AMCPBridge {
       inputSchema: inputSchema,
       outputSchema: outputSchema,
     );
-    _registeredTools.add(getTaskResult);
-    _mcpServer.registerTool(getTaskResult, _getTaskResultCallback);
+    registerTool(getTaskResult, _getTaskResultCallback);
 
     // Cancel a task
     // Cancel a running task on an A2A agent.
@@ -624,20 +821,6 @@ class A2AMCPBridge {
       inputSchema: inputSchema,
       outputSchema: outputSchema,
     );
-    _registeredTools.add(cancelTask);
-    _mcpServer.registerTool(cancelTask, _cancelTaskCallback);
-  }
-
-  // Get the registered agent by name
-  List<String> _getRegisteredAgentNames() {
-    final names = <String>[];
-    for (final key in _registeredAgents.keys) {
-      final agentCard = _registeredAgents[key];
-      names.add(agentCard!.name);
-    }
-    if (names.isEmpty) {
-      names.add('No Agents Registered');
-    }
-    return names;
+    registerTool(cancelTask, _cancelTaskCallback);
   }
 }
