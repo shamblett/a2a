@@ -24,9 +24,13 @@ class A2ARequest {
   bool unknownRequest = false;
 
   factory A2ARequest.fromJson(Map<String, dynamic> json) {
+    print('--- A2ARequest.fromJson ---');
+    print('Received JSON: $json');
     if (!json.containsKey('method')) {
+      print('Error: JSON has no "method" key.');
       return A2ARequest();
     } else {
+      print('Method is: ${json['method']}');
       switch (json['method']) {
         case messageSend:
           return A2ASendMessageRequest.fromJson(json);
@@ -389,7 +393,7 @@ class A2AMessageSendConfiguration {
   List<String> acceptedOutputModes = [];
 
   /// If true, the client will wait for the task to complete. The server may reject this if the task is long-running.
-  bool blocking = false;
+  bool? blocking;
 
   /// The number of most recent messages from the task's history to retrieve in the response.
   num? historyLength;

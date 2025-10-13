@@ -522,7 +522,7 @@ A2AMessageSendConfiguration _$A2AMessageSendConfigurationFromJson(
   ..acceptedOutputModes = (json['acceptedOutputModes'] as List<dynamic>)
       .map((e) => e as String)
       .toList()
-  ..blocking = json['blocking'] as bool
+  ..blocking = json['blocking'] as bool?
   ..historyLength = json['historyLength'] as num?
   ..pushNotificationConfig = json['pushNotificationConfig'] == null
       ? null
