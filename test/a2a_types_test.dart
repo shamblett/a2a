@@ -71,9 +71,11 @@ void main() {
       card.documentationUrl = 'Card doc url';
       card.iconUrl = 'Card icon url';
       card.name = 'Card name';
-      card.security = {
-        'security': ['1', '2'],
-      };
+      card.security = [
+        {
+          'security': ['1', '2'],
+        },
+      ];
       card.securitySchemes = {'First': A2ASecurityScheme()};
       card.skills = [A2AAgentSkill()];
       card.supportsAuthenticatedExtendedCard = true;
