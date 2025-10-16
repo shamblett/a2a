@@ -1289,10 +1289,16 @@ A2AAgentCard _$A2AAgentCardFromJson(Map<String, dynamic> json) => A2AAgentCard()
   ..agentProvider = json['agentProvider'] == null
       ? null
       : A2AAgentProvider.fromJson(json['agentProvider'] as Map<String, dynamic>)
-  ..security = (json['security'] as Map<String, dynamic>?)?.map(
-    (k, e) =>
-        MapEntry(k, (e as List<dynamic>).map((e) => e as String).toList()),
-  )
+  ..security = (json['security'] as List<dynamic>?)
+      ?.map(
+        (e) => (e as Map<String, dynamic>).map(
+          (k, e) => MapEntry(
+            k,
+            (e as List<dynamic>).map((e) => e as String).toList(),
+          ),
+        ),
+      )
+      .toList()
   ..securitySchemes = (json['securitySchemes'] as Map<String, dynamic>?)?.map(
     (k, e) =>
         MapEntry(k, A2ASecurityScheme.fromJson(e as Map<String, dynamic>)),

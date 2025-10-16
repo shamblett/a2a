@@ -151,7 +151,7 @@ final class A2AAgentCard extends A2AAgent {
   /// This list can be seen as an OR of ANDs. Each object in the list describes one possible
   /// set of security requirements that must be present on a request. This allows specifying,
   /// for example, "callers must either use OAuth OR an API Key AND mTLS."
-  Map<String, List<String>>? security;
+  List<Map<String, List<String>>>? security;
 
   /// A declaration of the security schemes available to authorize requests. The key is the
   /// scheme name. Follows the OpenAPI 3.0 Security Scheme Object.
