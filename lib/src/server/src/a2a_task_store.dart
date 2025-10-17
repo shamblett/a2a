@@ -36,7 +36,7 @@ class A2AInMemoryTaskStore implements A2ATaskStore {
   }
 
   @override
-  Future<A2ATask?> load(String taskId) async {
+  Future<A2ATask?> load(String taskId) {
     // Return copies to prevent external mutation
     A2ATask? task;
     final completer = Completer<A2ATask?>();

@@ -127,7 +127,7 @@ dart_code_metrics:
     #- avoid-nullable-tostring
     #- avoid-one-field-records
     #- avoid-only-rethrow
-    - avoid-passing-async-when-sync-expected
+    - avoid-passing-async-when-sync-expected : false
     #- avoid-passing-default-values
     - avoid-passing-self-as-argument
     #- avoid-positional-record-field-access
@@ -259,7 +259,7 @@ dart_code_metrics:
     - prefer-iterable-of
     - prefer-last
     - prefer-match-file-name
-    - prefer-moving-to-variable
+    - prefer-moving-to-variable : false
     #- prefer-named-boolean-parameters
     # - prefer-named-imports # explicitly disabled
     #- prefer-named-parameters

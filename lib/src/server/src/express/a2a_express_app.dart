@@ -107,12 +107,12 @@ class A2AExpressApp {
         print(
           '${Colorize('A2AExpressApp::setupRoutes - Push notifications are not supported').yellow()}',
         );
-        final errorResponse = A2AJSONRPCErrorResponse()..error = e as A2AError;
+        final errorResponse = A2AJSONRPCErrorResponse()..error = e;
         if (!res.finished) {
           res.status(500).json(errorResponse.toJson());
         }
       } on A2ATaskNotFoundError catch (e) {
-        final errorResponse = A2AJSONRPCErrorResponse()..error = e as A2AError;
+        final errorResponse = A2AJSONRPCErrorResponse()..error = e;
         if (!res.finished) {
           res.status(500).json(errorResponse.toJson());
         }

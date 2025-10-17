@@ -13,7 +13,7 @@ part of '../a2a_client.dart';
 class A2AClient {
   String agentBaseUrl = '';
 
-  String _agentCardPath = A2AConstants.agentCardPath;
+  String agentCardPath = A2AConstants.agentCardPath;
 
   String _serviceEndpointUrl = '';
 
@@ -59,7 +59,7 @@ class A2AClient {
 
     _serviceEndpointUrl = '$agentBaseUrl/';
 
-    _agentCardPath = agentCardPath.endsWith('/')
+    this.agentCardPath = agentCardPath.endsWith('/')
         ? agentCardPath.substring(0, agentCardPath.length - 1)
         : agentCardPath;
 
@@ -81,7 +81,7 @@ class A2AClient {
     if (agentBaseUrl != null) {
       return _fetchAndCacheAgentCard(
         baseUrl: agentBaseUrl,
-        agentCardPath: _agentCardPath,
+        agentCardPath: agentCardPath,
       );
     } else {
       if (_agentCard == null) {

@@ -159,10 +159,10 @@ class A2AMCPBridge {
   }
 
   /// Task to agent mapping
-  Map<String, String> get tasksToAgent => Map.from(_taskToAgent);
+  Map<String, String> get tasksToAgent => Map.of(_taskToAgent);
 
   /// Task to result mapping
-  Map<String, String> get tasksToResult => Map.from(_taskIdToResponse);
+  Map<String, String> get tasksToResult => Map.of(_taskIdToResponse);
 
   /// Construction
   A2AMCPBridge() {
@@ -383,7 +383,7 @@ class A2AMCPBridge {
       );
     }
 
-    final url = args['url'];
+    final String url = args['url'];
     final message = args['message'];
     // Session id if present
     final sessionId = args['session_id'] ?? uuid.v4();
@@ -599,7 +599,7 @@ class A2AMCPBridge {
       );
     }
 
-    final taskId = args['task_id'];
+    final String taskId = args['task_id'];
 
     if (taskToAgent(taskId) == null) {
       print(

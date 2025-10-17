@@ -293,7 +293,8 @@ class A2AExecutorConstructor {
     ..parts = parts ?? []
     ..extensions = extensions ?? []
     ..metadata = metadata ?? {}
-    ..role = 'agent';
+    ..role = 'agent'
+    ..referenceTaskIds = referenceTaskIds;
 
   /// Create a text part.
   A2ATextPart createTextPart(String text, {A2ASV? metadata}) {
