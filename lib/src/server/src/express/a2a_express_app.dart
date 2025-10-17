@@ -46,13 +46,20 @@ class A2AExpressApp {
 
     router.post('/', (Request req, Response res) async {
       final body = await req.body;
+      // Brute-force check for streaming method to work around parsing bugs.
+      final bodyAsString = (body is String) ? body : json.encode(body);
+      if (bodyAsString.contains('"method":"message/stream"') ||
+          bodyAsString.contains('"method":"tasks/resubscribe"')) {
+        res.set('Content-Type', 'text/event-stream');
+        res.set('Cache-Control', 'no-cache');
+        res.set('Connection', 'keep-alive');
+      }
+
       try {
         final rpcResponseOrStream = await _jsonRpcTransportHandler.handle(body);
-        // Check if it's an AsyncGenerator (stream)
+
         if (rpcResponseOrStream is Function) {
-          res.set('Content-Type', 'text/event-stream');
-          res.set('Cache-Control', 'no-cache');
-          res.set('Connection', 'keep-alive');
+          // The handler returned a stream generator.
           try {
             await for (final event in rpcResponseOrStream()) {
               final jsonData = event.toJson();
@@ -66,34 +73,16 @@ class A2AExpressApp {
             }
           } catch (e) {
             print(
-              '${Colorize('A2AExpressApp::setupRoutes - Error during SSE streaming (request ${body?.id}').red()}, '
+              '${Colorize('A2AExpressApp::setupRoutes - Error during SSE streaming').red()}, '
               '$e',
             );
-            // If the stream itself throws an error, send a final JSONRPCErrorResponse
-            final error = e is A2AServerError
-                ? e
-                : A2AServerError.internalError('Streaming error.', null);
-            final errorResponse = A2AJSONRPCErrorResponse()
-              ..id = '<error marker>'
-              ..error = (error as A2AServerError).toJSONRPCError();
-            res.status(500).json(errorResponse.toJson());
           } finally {
             if (!res.finished) {
               res.end();
             }
           }
         } else {
-          // Single JSON-RPC response
-
-          // Check for a result resolver
-          final rpcResult = (rpcResponseOrStream as dynamic).result;
-          if (rpcResult is A2AResultResolver) {
-            if (rpcResult.result != null) {
-              (rpcResponseOrStream as dynamic).result = rpcResult.result;
-            } else if (rpcResult.result != null) {
-              (rpcResponseOrStream as dynamic).result = rpcResult.error;
-            }
-          }
+          // The handler returned a single response.
           final responseMap = (rpcResponseOrStream as dynamic).toJson();
           if (A2AServerDebug.isOn) {
             final jsonString = A2AServerDebug.printJson(responseMap);
@@ -117,7 +106,6 @@ class A2AExpressApp {
           res.status(500).json(errorResponse.toJson());
         }
       } catch (e) {
-        // Check more here if needed
         // General error
         print(
           '${Colorize('A2AExpressApp::setupRoutes - Unhandled error in A2AExpressApp POST handler:').red()}, '
