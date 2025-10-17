@@ -15,3 +15,4 @@ import 'package:oxy/oxy.dart' as http;
 
 part 'src/a2a_client.dart';
 part 'src/a2a_authentication_handler.dart';
+part 'src/a2a_cli_client_support.dart';

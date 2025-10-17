@@ -15,8 +15,6 @@ import 'package:uuid/uuid.dart';
 import 'package:a2a/a2a.dart';
 
 // The client and its base URL
-A2AClient? client;
-String baseUrl = '';
 
 // Agent name
 String agentName = 'Agent'; // Default, try to get from agent card later
@@ -38,7 +36,8 @@ bool noStreaming = false;
 // remote or on local host. Note remote means not localhost
 // or 127.0.0.1
 bool isBaseUrlRemote() {
-  if (baseUrl.contains('localhost') || baseUrl.contains('127.0.0.1')) {
+  if (A2ACLIClientSupport.baseUrl.contains('localhost') ||
+      A2ACLIClientSupport.baseUrl.contains('127.0.0.1')) {
     return false;
   }
   return true;
@@ -48,7 +47,7 @@ bool isBaseUrlRemote() {
 Future<void> fetchAnDisplayAgentCard() async {
   // Construct the client, this will fetch the agent card
   try {
-    client = A2AClient(baseUrl);
+    A2ACLIClientSupport.client = A2AClient(A2ACLIClientSupport.baseUrl);
     // Delay a little longer if the agent is remote
     if (isBaseUrlRemote()) {
       await Future.delayed(Duration(seconds: 5));
@@ -64,7 +63,7 @@ Future<void> fetchAnDisplayAgentCard() async {
 
   // Get the cached agent card
   try {
-    final card = await client!.getAgentCard();
+    final card = await A2ACLIClientSupport.client!.getAgentCard();
     print('${Colorize('✓ Agent Card Found')..green()}');
     agentName = card.name;
     print('  Agent Name : $agentName');
@@ -387,7 +386,7 @@ Future<void> queryAgent(String query) async {
   // Send the message, streaming if supported
   try {
     if (agentSupportsStreaming && !noStreaming) {
-      final events = client?.sendMessageStream(params);
+      final events = A2ACLIClientSupport.client?.sendMessageStream(params);
       await for (final event in events!) {
         processAgentStreamingResponse(event);
       }
@@ -397,7 +396,7 @@ Future<void> queryAgent(String query) async {
         '${Colorize('Agent does not support streaming or streaming methods are disabled.')..blue()}',
       );
       params.configuration?.blocking = true;
-      final response = await client?.sendMessage(params);
+      final response = await A2ACLIClientSupport.client?.sendMessage(params);
       if (response != null) {
         processAgentResponse(response);
       } else {
@@ -429,7 +428,7 @@ Future<void> queryAgentResub() async {
 
   // Resubscribe the task
   try {
-    final events = client?.resubscribeTask(params);
+    final events = A2ACLIClientSupport.client?.resubscribeTask(params);
     await for (final event in events!) {
       processAgentStreamingResponse(event);
     }
@@ -477,14 +476,16 @@ Future<int> main(List<String> argv) async {
     noStreaming = true;
   }
 
-  baseUrl = results.rest.isNotEmpty
+  A2ACLIClientSupport.baseUrl = results.rest.isNotEmpty
       ? results.rest.join('')
       : 'https://sample-a2a-agent-908687846511.us-central1.run.app';
 
   // Announce
   print('');
   print('A2A CLI Client');
-  print('${Colorize('Agent Base URL: $baseUrl')..dark()}');
+  print(
+    '${Colorize('Agent Base URL: ${A2ACLIClientSupport.baseUrl}')..dark()}',
+  );
 
   // Get the agent card
   await fetchAnDisplayAgentCard();
