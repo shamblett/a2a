@@ -10,27 +10,8 @@ import 'dart:async';
 
 import 'package:colorize/colorize.dart';
 import 'package:args/args.dart';
-import 'package:uuid/uuid.dart';
 
 import 'package:a2a/a2a.dart';
-
-// The client and its base URL
-
-// Agent name
-String agentName = 'Agent'; // Default, try to get from agent card later
-
-// Streaming support
-bool agentSupportsStreaming = false;
-
-// State
-String currentTaskId = '';
-String currentContextId = '';
-
-// Uuid
-final uuid = Uuid();
-
-// No streaming
-bool noStreaming = false;
 
 // Utility function to check if the base URL is
 // remote or on local host. Note remote means not localhost
@@ -65,8 +46,8 @@ Future<void> fetchAnDisplayAgentCard() async {
   try {
     final card = await A2ACLIClientSupport.client!.getAgentCard();
     print('${Colorize('✓ Agent Card Found')..green()}');
-    agentName = card.name;
-    print('  Agent Name : $agentName');
+    A2ACLIClientSupport.agentName = card.name;
+    print('  Agent Name : ${A2ACLIClientSupport.agentName}');
     if (card.description.isNotEmpty) {
       print('  Description : ${card.description}');
     }
@@ -75,7 +56,7 @@ Future<void> fetchAnDisplayAgentCard() async {
     }
     if (card.capabilities.streaming == true) {
       print('${Colorize('  Streaming supported')..green()}');
-      agentSupportsStreaming = true;
+      A2ACLIClientSupport.agentSupportsStreaming = true;
     } else {
       print(
         '${Colorize('  ❌ Streaming not supported or not specified')..yellow()}',
@@ -93,7 +74,7 @@ Future<void> fetchAnDisplayAgentCard() async {
 // Read a line from the terminal
 // Returns an empty string if no line is entered
 String readLine() {
-  final prompt = Colorize('$agentName > You : ')..cyan();
+  final prompt = Colorize('${A2ACLIClientSupport.agentName} > You : ')..cyan();
   print('');
   print(prompt);
   print('');
@@ -105,7 +86,7 @@ String readLine() {
 }
 
 // Id generator
-String generateId() => uuid.v4();
+String generateId() => A2ACLIClientSupport.uuid.v4();
 
 String generateTaskProgress(String prefix, A2ATaskState state) {
   String output;
@@ -216,7 +197,8 @@ void printArtifactContent(A2AArtifact? artifact) {
 void commonPrintHandling(Object event) {
   final timestamp = DateTime.now()
     ..toLocal(); // Get fresh timestamp for each event
-  final prefix = Colorize('$agentName $timestamp :')..magenta();
+  final prefix = Colorize('${A2ACLIClientSupport.agentName} $timestamp :')
+    ..magenta();
   String output = '';
 
   if (event is A2ATask) {
@@ -224,17 +206,17 @@ void commonPrintHandling(Object event) {
     final state = update.status?.state;
     print('');
     print('${prefix.toString()} ${Colorize('Task Stream Event').blue()}');
-    if (update.id != currentTaskId) {
+    if (update.id != A2ACLIClientSupport.currentTaskId) {
       print(
-        '${Colorize('Task Id updated from ${currentTaskId.isEmpty ? '<none>' : currentTaskId} to ${update.id}')..dark()}',
+        '${Colorize('Task Id updated from ${A2ACLIClientSupport.currentTaskId.isEmpty ? '<none>' : A2ACLIClientSupport.currentTaskId} to ${update.id}')..dark()}',
       );
-      currentTaskId = update.id;
+      A2ACLIClientSupport.currentTaskId = update.id;
     }
-    if (update.contextId != currentContextId) {
+    if (update.contextId != A2ACLIClientSupport.currentContextId) {
       print(
-        '${Colorize('Context Id updated from ${currentContextId.isEmpty ? '<none>' : currentContextId} to ${update.contextId}')..dark()}',
+        '${Colorize('Context Id updated from ${A2ACLIClientSupport.currentContextId.isEmpty ? '<none>' : A2ACLIClientSupport.currentContextId} to ${update.contextId}')..dark()}',
       );
-      currentContextId = update.contextId;
+      A2ACLIClientSupport.currentContextId = update.contextId;
     }
     if (update.status?.message != null) {
       printMessageContent(update.status?.message);
@@ -252,8 +234,8 @@ void commonPrintHandling(Object event) {
     // If the event is a TaskStatusUpdateEvent and it's final, reset currentTaskId and
     // context id
     if (update.end == true) {
-      currentContextId = '';
-      currentTaskId = '';
+      A2ACLIClientSupport.currentContextId = '';
+      A2ACLIClientSupport.currentTaskId = '';
       print(
         '${Colorize('Task ${update.taskId} is FINAL. Clearing current task ID.')..yellow()}',
       );
@@ -277,19 +259,19 @@ void commonPrintHandling(Object event) {
     );
     printMessageContent(update);
     if (update.taskId != null) {
-      if (update.taskId != currentTaskId) {
+      if (update.taskId != A2ACLIClientSupport.currentTaskId) {
         print(
-          '${Colorize('Task ID updated from $currentTaskId to ${update.taskId} from message event')..dark()}',
+          '${Colorize('Task ID updated from ${A2ACLIClientSupport.currentTaskId} to ${update.taskId} from message event')..dark()}',
         );
-        currentTaskId = update.taskId!;
+        A2ACLIClientSupport.currentTaskId = update.taskId!;
       }
     }
     if (update.contextId != null) {
-      if (update.contextId != currentContextId) {
+      if (update.contextId != A2ACLIClientSupport.currentContextId) {
         print(
-          '${Colorize('Context ID updated from $currentContextId to ${update.contextId} from message event')..dark()}',
+          '${Colorize('Context ID updated from ${A2ACLIClientSupport.currentContextId} to ${update.contextId} from message event')..dark()}',
         );
-        currentContextId = update.contextId!;
+        A2ACLIClientSupport.currentContextId = update.contextId!;
       }
     }
   } else {
@@ -365,13 +347,13 @@ Future<void> queryAgent(String query) async {
     ..parts = [part];
 
   // Conditionally add taskId to the message payload
-  if (currentTaskId.isNotEmpty) {
-    messagePayload.taskId = currentTaskId;
+  if (A2ACLIClientSupport.currentTaskId.isNotEmpty) {
+    messagePayload.taskId = A2ACLIClientSupport.currentTaskId;
   }
 
   // Conditionally add contextId to the message payload
-  if (currentContextId.isNotEmpty) {
-    messagePayload.contextId = currentContextId;
+  if (A2ACLIClientSupport.currentContextId.isNotEmpty) {
+    messagePayload.contextId = A2ACLIClientSupport.currentContextId;
   }
 
   final configuration = A2AMessageSendConfiguration()
@@ -385,7 +367,8 @@ Future<void> queryAgent(String query) async {
 
   // Send the message, streaming if supported
   try {
-    if (agentSupportsStreaming && !noStreaming) {
+    if (A2ACLIClientSupport.agentSupportsStreaming &&
+        !A2ACLIClientSupport.noStreaming) {
       final events = A2ACLIClientSupport.client?.sendMessageStream(params);
       await for (final event in events!) {
         processAgentStreamingResponse(event);
@@ -411,20 +394,21 @@ Future<void> queryAgent(String query) async {
 
 // Resubscribe a task
 Future<void> queryAgentResub() async {
-  if (!agentSupportsStreaming || noStreaming) {
+  if (!A2ACLIClientSupport.agentSupportsStreaming ||
+      A2ACLIClientSupport.noStreaming) {
     print(
       '${Colorize('Agent does not support streaming or streaming methods are disabled, cannot resubscribe')..yellow()}',
     );
     return;
   }
 
-  if (currentTaskId.isEmpty) {
+  if (A2ACLIClientSupport.currentTaskId.isEmpty) {
     print('${Colorize('No current task Id, cannot resubscribe')..yellow()}');
     return;
   }
 
   // Parameters
-  final params = A2ATaskIdParams()..id = currentTaskId;
+  final params = A2ATaskIdParams()..id = A2ACLIClientSupport.currentTaskId;
 
   // Resubscribe the task
   try {
@@ -473,7 +457,7 @@ Future<int> main(List<String> argv) async {
 
   // No streaming
   if (results['no-streaming']) {
-    noStreaming = true;
+    A2ACLIClientSupport.noStreaming = true;
   }
 
   A2ACLIClientSupport.baseUrl = results.rest.isNotEmpty
@@ -504,8 +488,8 @@ Future<int> main(List<String> argv) async {
     line = readLine();
     if (line.isNotEmpty) {
       if (line == '/new') {
-        currentTaskId = '';
-        currentContextId = '';
+        A2ACLIClientSupport.currentTaskId = '';
+        A2ACLIClientSupport.currentContextId = '';
         print('Starting new session. Task and Context IDs are cleared.');
         continue;
       }
