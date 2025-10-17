@@ -1,3 +1,5 @@
+// ignore_for_file: prefer-static-class
+
 /*
 * Package : a2a
 * Author : S. Hamblett <steve.hamblett@linux.com>
@@ -103,11 +105,7 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
     final resultManager = A2AResultManager(_taskStore);
     resultManager.context = incomingMessage;
 
-    final requestContext = await _createRequestContext(
-      incomingMessage,
-      taskId,
-      false,
-    );
+    final requestContext = await _createRequestContext(incomingMessage, taskId);
     // Use the (potentially updated) contextId from requestContext
     final finalMessageForAgent = requestContext.userMessage;
 
@@ -166,11 +164,7 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
       }
       resolver.result = finalResult;
       completer.complete(resolver);
-    } // else { Non blocking response - not yet implemented
-    // In non-blocking mode, return a Future that will be settled by fullProcessing.
-    // resolver.result = _processEvents(taskId, resultManager, eventQueue);
-    // completer.complete(resolver);
-    //}
+    }
     return completer.future;
   }
 
@@ -190,11 +184,7 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
     final resultManager = A2AResultManager(_taskStore);
     resultManager.context = incomingMessage;
 
-    final requestContext = await _createRequestContext(
-      incomingMessage,
-      taskId,
-      false,
-    );
+    final requestContext = await _createRequestContext(incomingMessage, taskId);
     final finalMessageForAgent = requestContext.userMessage;
 
     final eventBus = _eventBusManager.createOrGetByTaskId(taskId);
@@ -489,7 +479,6 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
   Future<A2ARequestContext> _createRequestContext(
     A2AMessage incomingMessage,
     String taskId,
-    bool isStream,
   ) async {
     A2ATask? task;
     List<A2ATask>? referenceTasks;

@@ -1,3 +1,5 @@
+// ignore_for_file: prefer-static-class
+
 /*
 * Package : a2a
 * Author : S. Hamblett <steve.hamblett@linux.com>
