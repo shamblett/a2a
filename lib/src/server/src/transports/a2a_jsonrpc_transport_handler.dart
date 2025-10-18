@@ -100,14 +100,11 @@ class A2AJsonRpcTransportHandler {
         return (() async* {
           try {
             for (final event in agentEventStream) {
-              // Manually construct the correct JSON-RPC response structure
               final responseMap = {
                 'jsonrpc': '2.0',
                 'id': requestId,
-                'result': (event as dynamic)
-                    .toJson(), // The event itself is the result
+                'result': (event as dynamic).toJson(),
               };
-              // Yield a response object that will serialize this map correctly
               yield A2ASendStreamMessageResponse.fromJson(responseMap);
             }
           } catch (e, s) {
