@@ -53,12 +53,16 @@ class A2AJsonRpcTransportHandler {
       final requestMap = requestBody as Map<String, dynamic>;
       if (requestMap.containsKey('method') &&
           requestMap['method'] == A2ARequest.messageStream) {
-        print(Colorize('Caught parsing error, manually constructing streaming request.')
-          ..yellow());
+        print(
+          Colorize(
+            'Caught parsing error, manually constructing streaming request.',
+          )..yellow(),
+        );
         rpcRequest = A2ASendStreamingMessageRequest()
           ..id = requestMap['id']
           ..params = A2AMessageSendParams.fromJson(
-              requestMap['params'] as Map<String, dynamic>);
+            requestMap['params'] as Map<String, dynamic>,
+          );
       } else {
         rethrow;
       }
