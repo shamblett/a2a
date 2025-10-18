@@ -1036,17 +1036,14 @@ void main() {
     test('Body is corrupt JSON TH', () async {
       final jrth = A2AJsonRpcTransportHandler(drq);
       await expectLater(
-        jrth.handle({'kkk' : 'jjj'}),
+        jrth.handle({'kkk': 'jjj'}),
         throwsA(isA<A2AInternalError>()),
       );
     });
     test('Request is not valid TH', () async {
       final jrth = A2AJsonRpcTransportHandler(drq);
       final request = A2ASendMessageResponse().toJson();
-      await expectLater(
-        jrth.handle(request),
-        throwsA(isA<A2AInternalError>()),
-      );
+      await expectLater(jrth.handle(request), throwsA(isA<A2AInternalError>()));
     });
     test('Streaming request but not streaming capable TH', () async {
       final jrth = A2AJsonRpcTransportHandler(drq);
