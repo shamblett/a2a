@@ -130,9 +130,12 @@ class A2AJsonRpcTransportHandler {
             );
             final ret = result as A2AResultResolver;
             if (ret.result != null) {
-              return A2ASendMessageSuccessResponse()
-                ..id = rpcRequest.id
-                ..result = result;
+              final responseMap = {
+                'jsonrpc': '2.0',
+                'id': rpcRequest.id,
+                'result': (ret.result as dynamic).toJson(),
+              };
+              return A2ASendMessageSuccessResponse().fromJson(responseMap);
             } else {
               // Error
               if (ret.error != null) {
