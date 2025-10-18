@@ -7,6 +7,7 @@
 
 library;
 
+import 'package:colorize/colorize.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'src/a2a_type.dart';

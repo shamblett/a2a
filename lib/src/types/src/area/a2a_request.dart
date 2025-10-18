@@ -24,13 +24,10 @@ class A2ARequest {
   bool unknownRequest = false;
 
   factory A2ARequest.fromJson(Map<String, dynamic> json) {
-    print('--- A2ARequest.fromJson ---');
-    print('Received JSON: $json');
     if (!json.containsKey('method')) {
-      print('Error: JSON has no "method" key.');
+      print('${Colorize('Error: JSON has no "method" key.').red()}');
       return A2ARequest();
     } else {
-      print('Method is: ${json['method']}');
       switch (json['method']) {
         case messageSend:
           return A2ASendMessageRequest.fromJson(json);
