@@ -41,21 +41,31 @@ class A2AJsonRpcTransportHandler {
       rpcRequest = requestBody is String
           ? A2ARequest.fromJson(json.decode(requestBody))
           : A2ARequest.fromJson(requestBody as Map<String, dynamic>);
-      if (!supportedTypes.contains(rpcRequest.runtimeType)) {
+      if (rpcRequest.unknownRequest) {
         throw A2AServerError.invalidRequest(
           'A2AJsonRpcTransportHandler::handle '
           'Invalid JSON-RPC request structure.',
           null,
         );
       }
-    } catch (e, s) {
-      Error.throwWithStackTrace(
-        A2AServerError.unsupportedOperation(
-          'A2AJsonRpcTransportHandler::handle '
-          ' Supplied request body cannot be parsed - { $requestBody }',
-        ),
-        s,
-      );
+    } catch (e) {
+      // Fallback for parsing error, likely from A2A Inspector
+      final requestMap = requestBody as Map<String, dynamic>;
+      if (requestMap.containsKey('method') &&
+          requestMap['method'] == A2ARequest.messageStream) {
+        print(
+          Colorize(
+            'Caught parsing error, manually constructing streaming request.',
+          )..yellow(),
+        );
+        rpcRequest = A2ASendStreamingMessageRequest()
+          ..id = requestMap['id']
+          ..params = A2AMessageSendParams.fromJson(
+            requestMap['params'] as Map<String, dynamic>,
+          );
+      } else {
+        rethrow;
+      }
     }
     // rpcRequest is a valid request now
     try {

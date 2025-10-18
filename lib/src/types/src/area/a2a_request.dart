@@ -25,6 +25,7 @@ class A2ARequest {
 
   factory A2ARequest.fromJson(Map<String, dynamic> json) {
     if (!json.containsKey('method')) {
+      print('${Colorize('Error: JSON has no "method" key.').red()}');
       return A2ARequest();
     } else {
       switch (json['method']) {
@@ -389,7 +390,7 @@ class A2AMessageSendConfiguration {
   List<String> acceptedOutputModes = [];
 
   /// If true, the client will wait for the task to complete. The server may reject this if the task is long-running.
-  bool blocking = false;
+  bool? blocking;
 
   /// The number of most recent messages from the task's history to retrieve in the response.
   num? historyLength;

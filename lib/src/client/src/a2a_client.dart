@@ -484,7 +484,9 @@ class A2AClient {
       }
       return agentCard;
     } catch (e) {
-      print('_fetchAndCacheAgentCard:: Error fetching or parsing Agent Card:');
+      print(
+        '${Colorize('_fetchAndCacheAgentCard:: Error fetching or parsing Agent Card:').yellow()}',
+      );
       rethrow;
     }
   }
