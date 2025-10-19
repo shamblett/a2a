@@ -100,10 +100,12 @@ class A2AJsonRpcTransportHandler {
         return (() async* {
           try {
             for (final event in agentEventStream) {
-              final ret = A2ASendStreamingMessageSuccessResponse();
-              ret.id = requestId;
-              ret.result = event;
-              yield ret;
+              final responseMap = {
+                'jsonrpc': '2.0',
+                'id': requestId,
+                'result': (event as dynamic).toJson(),
+              };
+              yield A2ASendStreamMessageResponse.fromJson(responseMap);
             }
           } catch (e, s) {
             // If the underlying agent stream throws an error, we need to yield a JSONRPCErrorResponse.
@@ -128,9 +130,12 @@ class A2AJsonRpcTransportHandler {
             );
             final ret = result as A2AResultResolver;
             if (ret.result != null) {
-              return A2ASendMessageSuccessResponse()
-                ..id = rpcRequest.id
-                ..result = result;
+              final responseMap = {
+                'jsonrpc': '2.0',
+                'id': rpcRequest.id,
+                'result': (ret.result as dynamic).toJson(),
+              };
+              return A2ASendMessageSuccessResponse().fromJson(responseMap);
             } else {
               // Error
               if (ret.error != null) {
