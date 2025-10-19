@@ -1,3 +1,9 @@
+# 3.0.0
+Updates to server SSE implementation
+- [Issue 43](https://github.com/shamblett/a2a/issues/43)
+- [Issue 45](https://github.com/shamblett/a2a/issues/45)
+- [Issue 47](https://github.com/shamblett/a2a/issues/47)
+
 # 2.5.0
 - [Issue 41](https://github.com/shamblett/a2a/issues/41)
 
