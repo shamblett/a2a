@@ -25,8 +25,8 @@ dependencies:
     darto: '^0.0.34'
     darto_types: '^0.0.2'
     mcp_dart: '^0.6.3'
-    meta: '^1.17.0'
-   
+    meta: '^1.16.0'
+
 
 dev_dependencies:
   test: '^1.26.3'
