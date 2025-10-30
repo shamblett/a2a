@@ -594,7 +594,8 @@ class A2AClient {
       LineSplitter ls = LineSplitter();
       final lines = ls.convert(text);
       for (final line in lines) {
-        if (line.isEmpty) {
+        // Ignore empty lines and comment lines that are not SSE events.
+        if (line.isEmpty || !line.startsWith(':')) {
           continue;
         }
         final j = json.decode(line.substring(6));
