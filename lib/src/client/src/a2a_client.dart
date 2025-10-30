@@ -594,7 +594,11 @@ class A2AClient {
       LineSplitter ls = LineSplitter();
       final lines = ls.convert(text);
       for (final line in lines) {
-        if (line.isEmpty) {
+        if (!line.startsWith('data: ')) {
+          // Ignore empty lines and comment lines beginning with a colon that
+          // are not SSE data lines.
+          // Also ignores SSE event: id: and retry: lines, which aren't relevant
+          // here.
           continue;
         }
         final j = json.decode(line.substring(6));
