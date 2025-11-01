@@ -5,18 +5,18 @@ DocumentName: a2a
 DocumentNamespace: https://pub.dev/packages/a2a
 LicenseListVersion: 3.8
 Creator: Tool: https://pub.dev/packages/sbom
-Created: 2025-10-19T10:18:44Z
+Created: 2025-11-01T09:27:00Z
 
 
 PackageName: a2a
 SPDXID: SPDXRef-Package-a2a
-PackageVersion: 3.0.0
+PackageVersion: 3.0.1
 PackageFileName: a2a
 PackageSupplier: NOASSERTION
 PackageOriginator: NOASSERTION
 PackageDownloadLocation: https://pub.dev/packages/a2a
 FilesAnalyzed: true
-PackageVerificationCode: 5f40b1771859dd4e9f0ce4eea225a57b51e0d893
+PackageVerificationCode: e2f21880f30f72f90255e3942c55e9bd98900517
 PackageHomePage: https://pub.dev/packages/a2a
 PackageLicenseConcluded: MIT
 PackageLicenseInfoFromFiles: NOASSERTION
@@ -406,7 +406,7 @@ FileCopyrightText: NOASSERTION
 FileName: pubspec.yaml
 SPDXID: SPDXRef-pubspec-42
 FileType: TEXT
-FileChecksum: SHA1: eed79868ae354f740bd77c58c855ae6e21a01387
+FileChecksum: SHA1: 489dea48bf1a81c933dd14216c5070d7e49c7110
 LicenseConcluded: NOASSERTION
 LicenseInfoInFile: NOASSERTION
 FileCopyrightText: NOASSERTION

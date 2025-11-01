@@ -1,3 +1,6 @@
+# 3.0.1
+- [PR 52](https://github.com/shamblett/a2a/pull/52)
+
 # 3.0.0
 Updates to server SSE implementation
 - [Issue 43](https://github.com/shamblett/a2a/issues/43)
