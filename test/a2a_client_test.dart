@@ -5,6 +5,7 @@ import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as io;
 import 'package:test/test.dart';
 
+// Client tests
 void main() {
   group('A2AClient', () {
     late A2AClient client;
