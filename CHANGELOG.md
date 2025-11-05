@@ -1,3 +1,6 @@
+# 3.1.0
+- [PR 53](https://github.com/shamblett/a2a/pull/53)
+
 # 3.0.1
 - [PR 52](https://github.com/shamblett/a2a/pull/52)
 
