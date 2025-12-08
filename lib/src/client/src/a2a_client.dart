@@ -60,7 +60,7 @@ class A2AClient {
     String cardPath = A2AConstants.agentCardPath,
     Map<String, String>? customHeaders,
     this.authenticationHandler,
-    bool fetchAgentCard = true,
+    bool agentCardBackgroundFetch = true,
   }) {
     // Remove any trailing slash from baseUrl.
     baseUrl = baseUrl.replaceAll(RegExp(r'/$'), '');
