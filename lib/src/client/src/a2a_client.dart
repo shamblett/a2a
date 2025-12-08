@@ -184,8 +184,8 @@ class A2AClient {
         if (errorJson.containsKey('error')) {
           throw Exception(
             'sendMessageStream:: HTTP error establishing stream for message/stream: '
-            ' ${response.status} ${response.statusText}. RPC Error: ${(errorJson as dynamic).error.message} '
-            ' (Code: ${(errorJson as dynamic).error.code})',
+            ' ${response.status} ${response.statusText}. RPC Error: ${errorJson['error']['message']} '
+            ' (Code: ${errorJson['error']['code']})',
           );
         }
       } catch (e, s) {
@@ -600,6 +600,13 @@ class A2AClient {
           '_postRpcRequest:: RPC response ID mismatch for method $method. Expected $requestId, got ${rpcResponse["id"]}',
         );
       }
+    }
+
+    if (rpcResponse.containsKey('error')) {
+      final error = rpcResponse['error'];
+      throw Exception(
+        '_postRpcRequest:: RPC error for $method: ${error['message']} (Code: ${error['code']})',
+      );
     }
 
     // Return the response
