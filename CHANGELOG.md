@@ -1,7 +1,8 @@
 # 3.1.1
 - [Issue 56](https://github.com/shamblett/a2a/issues/56)
-  - Added custom headers support to the A2AClient constructor.
-  - Updated preferredTransport to be nullable to avoid serialization issues when the property does not exist in the Agent Card (e.g. Elastic Agent Cards).
+  - Updated the `A2AClient` with custom headers support.
+  - Updated `preferredTransport` to be nullable to avoid serialization issues when the property does not exist in the Agent Card (e.g. Elastic Agent Cards).
+  - Added `agentCardBackgroundFetch` property to the A2AClient constructor to control whether the Agent Card is fetched in the background upon client instantiation.
 
 # 3.1.0
 - [PR 53](https://github.com/shamblett/a2a/pull/53)
