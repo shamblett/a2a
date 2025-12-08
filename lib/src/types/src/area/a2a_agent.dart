@@ -171,7 +171,7 @@ final class A2AAgentCard extends A2AAgent {
   /// IMPORTANT: The transport specified here MUST be available at the main 'url'.
   /// This creates a binding between the main URL and its supported transport protocol.
   /// Clients should prefer this transport and URL combination when both are supported.
-  A2ATransportProtocol preferredTransport = A2ATransportProtocol.jsonRpc;
+  A2ATransportProtocol? preferredTransport = A2ATransportProtocol.jsonRpc;
 
   /// A list of additional supported interfaces (transport and URL combinations).
   /// This allows agents to expose multiple transports, potentially at different URLs.
