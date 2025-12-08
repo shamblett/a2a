@@ -74,7 +74,7 @@ class A2AClient {
     }
 
     // Fetch the agent card in the background
-    if (fetchAgentCard) {
+    if (agentCardBackgroundFetch) {
       Timer(Duration(milliseconds: 10), _getAgentCard);
     }
   }
