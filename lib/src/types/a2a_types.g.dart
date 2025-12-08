@@ -681,14 +681,14 @@ A2AAPIKeySecurityScheme _$A2AAPIKeySecuritySchemeFromJson(
   Map<String, dynamic> json,
 ) => A2AAPIKeySecurityScheme()
   ..description = json['description'] as String?
-  ..location = json['location'] as String
+  ..location = json['in'] as String
   ..name = json['name'] as String?;
 
 Map<String, dynamic> _$A2AAPIKeySecuritySchemeToJson(
   A2AAPIKeySecurityScheme instance,
 ) => <String, dynamic>{
   'description': instance.description,
-  'location': instance.location,
+  'in': instance.location,
   'name': instance.name,
   'type': instance.type,
 };
