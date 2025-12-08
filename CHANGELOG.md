@@ -1,3 +1,8 @@
+# 3.1.1
+- [Issue 56](https://github.com/shamblett/a2a/issues/56)
+  - Added custom headers support to the A2AClient constructor.
+  - Updated preferredTransport to be nullable to avoid serialization issues when the property does not exist in the Agent Card (e.g. Elastic Agent Cards).
+
 # 3.1.0
 - [PR 53](https://github.com/shamblett/a2a/pull/53)
 
