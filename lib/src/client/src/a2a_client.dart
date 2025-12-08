@@ -49,13 +49,8 @@ class A2AClient {
 
   /// Constructs an A2AClient instance.
   ///
-  /// The agent card is fetched from the provided agent baseUrl.
-  /// The Agent Card is fetched from a path relative to the agentBaseUrl, which defaults to '.well-known/agent-card.json'.
+  /// The Agent Card is fetched from a path relative to the agentBaseUrl, which defaults to '/.well-known/agent-card.json'.
   /// The `url` field from the Agent Card will be used as the RPC service endpoint.
-  /// @param agentBaseUrl The base URL of the A2A agent (e.g., https://agent.example.com).
-  /// @param optional agentCardPath path to the agent card, defaults to .well-known/agent-card.json
-  /// @param optional customHeaders Map of custom headers to include in all requests.
-  /// @param optional authenticationHandler Handler for dynamic authentication.
   A2AClient(
     String baseUrl, {
     String cardPath = A2AConstants.agentCardPath,
@@ -72,6 +67,32 @@ class A2AClient {
 
     // Fetch the agent card in the background
     // Timer(Duration(milliseconds: 10), _getAgentCard);
+  }
+
+  /// Initialize an A2AClient instance and executes the getAgentCard.
+  /// @param [baseUrl] The base URL of the A2A agent (e.g., https://agent.example.com or https://example.com/agent-id) - **without** a trailing slash.
+  /// @param optional [cardPath] path to the agent card, **relative** to the [baseUrl] and defaults to `/.well-known/agent-card.json`
+  /// @param optional customHeaders Map of custom headers to include in all requests.
+  /// @param optional authenticationHandler Handler for dynamic authentication.
+  Future<A2AClient> init(
+    String baseUrl, {
+    String cardPath = A2AConstants.agentCardPath,
+    Map<String, String>? customHeaders,
+    A2AAuthenticationHandler? authenticationHandler,
+  }) async {
+    // Remove any trailing slash from baseUrl.
+    baseUrl = baseUrl.replaceAll(RegExp(r'/$'), '');
+
+    final client = A2AClient(
+      baseUrl,
+      cardPath: cardPath,
+      customHeaders: customHeaders,
+      authenticationHandler: authenticationHandler,
+    );
+
+    await client._fetchAndCacheAgentCard();
+
+    return client;
   }
 
   /// Retrieves the Agent Card.
