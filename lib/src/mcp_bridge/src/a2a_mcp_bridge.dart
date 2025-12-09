@@ -115,6 +115,12 @@ class A2AMCPBridge {
   /// Uuid generator
   final uuid = Uuid();
 
+  /// Server name
+  String name = A2AMCPServer.serverName;
+
+  /// Server version
+  String version = A2AMCPServer.serverVersion;
+
   // The MCP server
   final A2AMCPServer _mcpServer = A2AMCPServer();
 
@@ -166,6 +172,11 @@ class A2AMCPBridge {
 
   /// Construction
   A2AMCPBridge() {
+
+    // Initialise the MCP server
+    _mcpServer.name = name;
+    _mcpServer.version = version;
+
     // Initialise the base tools
     _initialiseTools();
   }

@@ -22,10 +22,16 @@ class A2AMCPServer {
   /// The url of the server
   String url = defaultUrl;
 
+  /// The name of the server
+  String name = serverName;
+
+  /// The version of the server
+  String version = serverVersion;
+
   /// The transport to use, always [StreamableHttpClientTransport]
   StreamableHTTPServerTransport? transport;
 
-  static final _implementation = Implementation(
+  static Implementation _implementation = Implementation(
     name: serverName,
     version: serverVersion,
   );
@@ -36,6 +42,8 @@ class A2AMCPServer {
 
   /// Construction
   A2AMCPServer() {
+    _implementation = Implementation(name: name, version: version);
+    _server = McpServer(_implementation);
     final serverCapabilities = ServerCapabilities(
       tools: ServerCapabilitiesTools(listChanged: false),
     );
@@ -78,7 +86,7 @@ class A2AMCPServer {
     // Start the HTTTServer
     _httpServer = await HttpServer.bind(host, port);
     print(
-      '${Colorize('A2AMcpServer: - MCP Streamable HTTP Server listening on port $defaultServerPort').blue()}',
+      '${Colorize('A2AMcpServer: - MCP Streamable HTTP Server listening on port $port').blue()}',
     );
     _httpServer?.listen((request) async {
       if (request.uri.path == '/mcp') {

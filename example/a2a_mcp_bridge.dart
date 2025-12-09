@@ -21,6 +21,8 @@ Future<void> main() async {
   // Create and start the bridge
   print('${Colorize('Creating MCP Bridge').blue()}');
   A2AMCPBridge a2aMcpBridge = A2AMCPBridge();
+  a2aMcpBridge.name = 'A2A MCP Bridge Manual Test';
+  a2aMcpBridge.version = '1.0.1';
   try {
     await a2aMcpBridge
         .startServer(); // Set your port if you do not want the default
