@@ -20,7 +20,7 @@ class AuthProvider implements OAuthClientProvider {
 
 final implementation = Implementation(
   name: 'A2A MCP Bridge Manual Test',
-  version: '1.0.1'
+  version: '1.0.1',
 );
 final options = ClientOptions();
 final client = Client(implementation, options: options);

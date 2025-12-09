@@ -41,7 +41,7 @@ class A2AMCPServer {
   McpServer _server = McpServer(_implementation); // Default
 
   /// Construction
-  A2AMCPServer() {
+  A2AMCPServer({this.name = serverName, this.version = serverVersion}) {
     _implementation = Implementation(name: name, version: version);
     _server = McpServer(_implementation);
     final serverCapabilities = ServerCapabilities(
