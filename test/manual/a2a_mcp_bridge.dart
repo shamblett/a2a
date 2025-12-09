@@ -20,7 +20,7 @@ class AuthProvider implements OAuthClientProvider {
 
 final implementation = Implementation(
   name: 'A2A MCP Bridge Manual Test',
-  version: '1.0.0',
+  version: '1.0.1',
 );
 final options = ClientOptions();
 final client = Client(implementation, options: options);
@@ -43,8 +43,8 @@ Future<void> main() async {
   test('Server Version', () async {
     final serverVersion = client.getServerVersion();
     expect(serverVersion, isNotNull);
-    expect(serverVersion?.name, 'A2A MCP Bridge Server');
-    expect(serverVersion?.version, '1.0.0');
+    expect(serverVersion?.name, 'A2A MCP Bridge Manual Test');
+    expect(serverVersion?.version, '1.0.1');
   });
   test('List Tools', () async {
     final tools = await client.listTools();

@@ -115,8 +115,14 @@ class A2AMCPBridge {
   /// Uuid generator
   final uuid = Uuid();
 
+  /// Server name
+  String name = A2AMCPServer.serverName;
+
+  /// Server version
+  String version = A2AMCPServer.serverVersion;
+
   // The MCP server
-  final A2AMCPServer _mcpServer = A2AMCPServer();
+  A2AMCPServer _mcpServer = A2AMCPServer();
 
   // Tools registered with the MCP server
   final List<Tool> _registeredTools = [];
@@ -165,7 +171,13 @@ class A2AMCPBridge {
   Map<String, String> get tasksToResult => Map.of(_taskIdToResponse);
 
   /// Construction
-  A2AMCPBridge() {
+  A2AMCPBridge({
+    this.name = A2AMCPServer.serverName,
+    this.version = A2AMCPServer.serverVersion,
+  }) {
+    // Initialise the MCP server
+    _mcpServer = A2AMCPServer(name: name, version: version);
+
     // Initialise the base tools
     _initialiseTools();
   }
