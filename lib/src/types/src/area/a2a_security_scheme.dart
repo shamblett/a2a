@@ -42,6 +42,7 @@ final class A2AAPIKeySecurityScheme extends A2ASecurityScheme {
 
   /// The location of the API key. Valid values are "query", "header", or "cookie"
   /// Named 'in' in the TS code, Dart can't use this as its a reserved word..
+  @JsonKey(name: 'in')
   String location = '';
 
   /// The name of the header, query or cookie parameter to be used.

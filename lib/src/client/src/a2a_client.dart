@@ -11,60 +11,79 @@ part of '../a2a_client.dart';
 /// with A2A-compliant agents.
 ///
 class A2AClient {
-  String agentBaseUrl = '';
-
-  String agentCardPath = A2AConstants.agentCardPath;
-
-  String _serviceEndpointUrl = '';
-
+  String? agentBaseUrl;
+  String? agentCardPath;
+  String? _serviceEndpointUrl;
   A2AAgentCard? _agentCard;
-
   int _requestIdCounter = 1;
+
+  /// Custom headers to be included in all HTTP requests (e.g. Authorization).
+  Map<String, String> customHeaders = {};
+
+  /// Authentication handler for dynamic header injection and retry logic.
+  A2AAuthenticationHandler? authenticationHandler;
 
   /// Gets the RPC service endpoint URL. Ensures the agent card has been fetched first.
   /// @returns a [Future] that resolves to the service endpoint URL string.
   /// Defaults to the agent base url [agentBaseUrl].
   Future<String> get serviceEndpoint async {
-    if (_serviceEndpointUrl.isNotEmpty) {
-      return _serviceEndpointUrl;
+    if (_serviceEndpointUrl?.isNotEmpty == true) {
+      return _serviceEndpointUrl!;
     }
+
     // If serviceEndpointUrl is not set, it means the agent card fetch is pending or failed.
     // Awaiting agentCard will either resolve it or throw if fetching failed.
     if (_agentCard == null) {
       await _fetchAndCacheAgentCard();
     }
-    if (_serviceEndpointUrl.isEmpty) {
+
+    if (_serviceEndpointUrl == null || _serviceEndpointUrl?.isEmpty == true) {
       // This case should ideally be covered by the error handling in _fetchAndCacheAgentCard
       throw Exception(
         'serviceEndpoint:: Agent Card URL for RPC endpoint is not available. Fetching might have failed.',
       );
     }
-    return _serviceEndpointUrl;
+
+    return _serviceEndpointUrl!;
   }
 
   /// Constructs an A2AClient instance.
   ///
-  /// The agent card is fetched from the provided agent baseUrl.
-  /// The Agent Card is fetched from a path relative to the agentBaseUrl, which defaults to '.well-known/agent-card.json'.
+  /// The Agent Card is fetched from a path relative to the agentBaseUrl, which defaults to '/.well-known/agent-card.json'.
   /// The `url` field from the Agent Card will be used as the RPC service endpoint.
-  /// @param agentBaseUrl The base URL of the A2A agent (e.g., https://agent.example.com).
-  /// @param optional agentCardPath path to the agent card, defaults to .well-known/agent-card.json
+  /// @param [baseUrl] The base URL of the A2A agent (e.g., https://agent.example.com or https://example.com/agent-id) - **without** a trailing slash.
+  /// @param optional [cardPath] path to the agent card, **relative** to the [baseUrl] and defaults to `/.well-known/agent-card.json`
+  /// @param optional [customHeaders] Map of custom headers to include in all requests.
+  /// @param optional [authenticationHandler] Handler for dynamic authentication.
   A2AClient(
-    String agentBaseUrl, [
-    String agentCardPath = A2AConstants.agentCardPath,
-  ]) {
-    this.agentBaseUrl = agentBaseUrl.endsWith('/')
-        ? agentBaseUrl.substring(0, agentBaseUrl.length - 1)
-        : this.agentBaseUrl = agentBaseUrl;
+    String baseUrl, {
+    String cardPath = A2AConstants.agentCardPath,
+    Map<String, String>? customHeaders,
+    this.authenticationHandler,
+    bool agentCardBackgroundFetch = true,
+  }) {
+    // Remove any trailing slash from baseUrl.
+    baseUrl = baseUrl.replaceAll(RegExp(r'/$'), '');
 
-    _serviceEndpointUrl = '$agentBaseUrl/';
+    agentBaseUrl = baseUrl;
+    _serviceEndpointUrl = baseUrl;
 
-    this.agentCardPath = agentCardPath.endsWith('/')
-        ? agentCardPath.substring(0, agentCardPath.length - 1)
-        : agentCardPath;
+    agentCardPath = cardPath;
+    if (customHeaders != null) {
+      this.customHeaders = customHeaders;
+    }
 
     // Fetch the agent card in the background
-    Timer(Duration(milliseconds: 10), _getAgentCard);
+    if (agentCardBackgroundFetch) {
+      Timer(Duration(milliseconds: 10), _getAgentCard);
+    }
+  }
+
+  /// Initialize an A2AClient instance and executes the getAgentCard.
+  Future<A2AClient> init() async {
+    await _fetchAndCacheAgentCard();
+
+    return this;
   }
 
   /// Retrieves the Agent Card.
@@ -76,19 +95,12 @@ class A2AClient {
   /// @returns A [Future] that resolves to the [A2AAgentCard].
   Future<A2AAgentCard> getAgentCard({
     String? agentBaseUrl,
-    String agentCardPath = A2AConstants.agentCardPath,
+    String? agentCardPath,
   }) async {
-    if (agentBaseUrl != null) {
-      return _fetchAndCacheAgentCard(
-        baseUrl: agentBaseUrl,
-        agentCardPath: agentCardPath,
-      );
-    } else {
-      if (_agentCard == null) {
-        return _fetchAndCacheAgentCard();
-      }
-    }
-    return _agentCard!;
+    return _fetchAndCacheAgentCard(
+      baseUrl: agentBaseUrl,
+      cardPath: agentCardPath,
+    );
   }
 
   /// Sends a message to the agent.
@@ -150,6 +162,9 @@ class A2AClient {
     final headers = http.Headers()
       ..append('Accept', 'application/json')
       ..append('Content-Type', 'text/event-stream');
+
+    await _applyHeaders(headers);
+
     if (params.extensions.isNotEmpty) {
       headers.append('X-A2A-Extensions', params.extensions.join(','));
     }
@@ -169,8 +184,8 @@ class A2AClient {
         if (errorJson.containsKey('error')) {
           throw Exception(
             'sendMessageStream:: HTTP error establishing stream for message/stream: '
-            ' ${response.status} ${response.statusText}. RPC Error: ${(errorJson as dynamic).error.message} '
-            ' (Code: ${(errorJson as dynamic).error.code})',
+            ' ${response.status} ${response.statusText}. RPC Error: ${errorJson['error']['message']} '
+            ' (Code: ${errorJson['error']['code']})',
           );
         }
       } catch (e, s) {
@@ -412,6 +427,9 @@ class A2AClient {
     final headers = http.Headers()
       ..append('Accept', 'application/json')
       ..append('Content-Type', 'text/event-stream');
+
+    await _applyHeaders(headers);
+
     final response = await http.fetch(
       endpoint,
       method: 'POST',
@@ -440,6 +458,20 @@ class A2AClient {
     yield* _parseA2ASseStream(response, requestId);
   }
 
+  // Helper to apply custom and authentication headers to a request.
+  Future<void> _applyHeaders(http.Headers headers) async {
+    // Apply static custom headers
+    customHeaders.forEach((key, value) => headers.append(key, value));
+
+    // Apply dynamic authentication headers
+    if (authenticationHandler != null) {
+      final authHeaders = await authenticationHandler!.headers;
+      for (final entry in authHeaders.entries()) {
+        headers.append(entry.$1, entry.$2);
+      }
+    }
+  }
+
   // Fetches the Agent Card from the agent's well-known URI and caches its service endpoint URL.
   //
   // If a [baseUrl] parameter is supplied this will be used instead of the agent base url and
@@ -447,24 +479,25 @@ class A2AClient {
   // This method is called by the constructor via a timer callback
   // @returns A Future that resolves to the AgentCard.
   Future<A2AAgentCard> _fetchAndCacheAgentCard({
-    String baseUrl = '',
-    String agentCardPath = A2AConstants.agentCardPath,
+    String? baseUrl,
+    String? cardPath,
   }) async {
-    var fetchUrl = agentBaseUrl;
+    String? fetchUrl = agentBaseUrl;
+    cardPath ??= agentCardPath;
+
     bool cache = true;
-    if (baseUrl.isNotEmpty) {
-      if (baseUrl.endsWith('/')) {
-        baseUrl = baseUrl.substring(0, baseUrl.length - 1);
-      }
+    if (baseUrl != null && baseUrl.isNotEmpty) {
       fetchUrl = baseUrl;
       cache = false;
     }
-    final agentCardUrl = '$fetchUrl/$agentCardPath';
+
+    final agentCardUrl = '$fetchUrl$cardPath';
+
     try {
-      final response = await http.fetch(
-        agentCardUrl,
-        headers: http.Headers()..append('Accept', 'application/json'),
-      );
+      final headers = http.Headers()..append('Accept', 'application/json');
+      await _applyHeaders(headers);
+
+      final response = await http.fetch(agentCardUrl, headers: headers);
       if (!response.ok) {
         throw Exception(
           'fetchAndCacheAgentCard:: Failed to fetch Agent Card from $agentCardUrl: ${response.status} :  '
@@ -510,6 +543,9 @@ class A2AClient {
     final headers = http.Headers()
       ..append('Accept', 'application/json')
       ..append('Content-Type', 'application/json');
+
+    await _applyHeaders(headers);
+
     if (params is A2AMessageSendParams && params.extensions.isNotEmpty) {
       headers.append('X-A2A-Extensions', params.extensions.join(','));
     }
@@ -564,6 +600,13 @@ class A2AClient {
           '_postRpcRequest:: RPC response ID mismatch for method $method. Expected $requestId, got ${rpcResponse["id"]}',
         );
       }
+    }
+
+    if (rpcResponse.containsKey('error')) {
+      final error = rpcResponse['error'];
+      throw Exception(
+        '_postRpcRequest:: RPC error for $method: ${error['message']} (Code: ${error['code']})',
+      );
     }
 
     // Return the response

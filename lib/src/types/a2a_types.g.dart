@@ -681,14 +681,14 @@ A2AAPIKeySecurityScheme _$A2AAPIKeySecuritySchemeFromJson(
   Map<String, dynamic> json,
 ) => A2AAPIKeySecurityScheme()
   ..description = json['description'] as String?
-  ..location = json['location'] as String
+  ..location = json['in'] as String
   ..name = json['name'] as String?;
 
 Map<String, dynamic> _$A2AAPIKeySecuritySchemeToJson(
   A2AAPIKeySecurityScheme instance,
 ) => <String, dynamic>{
   'description': instance.description,
-  'location': instance.location,
+  'in': instance.location,
   'name': instance.name,
   'type': instance.type,
 };
@@ -1309,7 +1309,7 @@ A2AAgentCard _$A2AAgentCardFromJson(Map<String, dynamic> json) => A2AAgentCard()
   ..supportsAuthenticatedExtendedCard =
       json['supportsAuthenticatedExtendedCard'] as bool?
   ..url = json['url'] as String
-  ..preferredTransport = $enumDecode(
+  ..preferredTransport = $enumDecodeNullable(
     _$A2ATransportProtocolEnumMap,
     json['preferredTransport'],
   )
@@ -1341,7 +1341,7 @@ Map<String, dynamic> _$A2AAgentCardToJson(A2AAgentCard instance) =>
           instance.supportsAuthenticatedExtendedCard,
       'url': instance.url,
       'preferredTransport':
-          _$A2ATransportProtocolEnumMap[instance.preferredTransport]!,
+          _$A2ATransportProtocolEnumMap[instance.preferredTransport],
       'additionalInterfaces': instance.additionalInterfaces
           ?.map((e) => e.toJson())
           .toList(),

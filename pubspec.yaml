@@ -11,37 +11,36 @@ executables:
   a2a_cli_client:
 
 environment:
-  sdk: '>=3.9.0 <4.0.0'
+  sdk: ">=3.9.0 <4.0.0"
 
 dependencies:
-    genkit: '^0.9.0'
-    oxy: '^0.0.4'
-    web: '^1.1.1'
-    json_annotation: '^4.9.0'
-    colorize: '^3.0.0'
-    args: '^2.7.0'
-    uuid: '^4.5.1'
-    events_emitter: '^0.6.0'
-    darto: '^0.0.34'
-    darto_types: '^0.0.2'
-    mcp_dart: '^0.6.3'
-    meta: '^1.16.0'
-
+  genkit: "^0.9.0"
+  oxy: "^0.0.4"
+  web: "^1.1.1"
+  json_annotation: "^4.9.0"
+  colorize: "^3.0.0"
+  args: "^2.7.0"
+  uuid: "^4.5.1"
+  events_emitter: "^0.6.0"
+  darto: "^0.0.34"
+  darto_types: "^0.0.2"
+  mcp_dart: "^0.6.3"
+  meta: "^1.16.0"
 
 dev_dependencies:
-  test: '^1.26.3'
-  lints: '^6.0.0'
-  shelf: '^1.4.2'
-  shelf_router: '^1.1.4'
-  shelf_static: '^1.1.3'
-  http: '^1.5.0'
-  json_serializable: '^6.11.0'
-  build_runner: '^2.9.0'
-  json_rpc_2: '^4.0.0'
-  stream_channel: '^2.1.4'
-  build_test: '^3.4.1'
-  build_web_compilers: '^4.3.0'
-  llm_dart: '^0.9.0'
+  test: "^1.26.3"
+  lints: "^6.0.0"
+  shelf: "^1.4.2"
+  shelf_router: "^1.1.4"
+  shelf_static: "^1.1.3"
+  http: "^1.5.0"
+  json_serializable: "^6.11.0"
+  build_runner: "^2.9.0"
+  json_rpc_2: "^4.0.0"
+  stream_channel: "^2.1.4"
+  build_test: "^3.4.1"
+  build_web_compilers: "^4.3.0"
+  llm_dart: "^0.9.0"
 
 topics:
   - ai
@@ -49,5 +48,5 @@ topics:
   - web
 
 screenshots:
-    - description: 'Agent 2 Agent(A2A)'
-      path: example/screenshots/a2a.jpg
+  - description: "Agent 2 Agent(A2A)"
+    path: example/screenshots/a2a.jpg
