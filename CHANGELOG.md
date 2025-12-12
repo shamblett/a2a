@@ -1,3 +1,6 @@
+# 3.2.1
+- [Issue 60](https://github.com/shamblett/a2a/issues/60)
+
 # 3.2.0
 - [Issue 58](https://github.com/shamblett/a2a/issues/58)
 
