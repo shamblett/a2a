@@ -169,7 +169,7 @@ Future<int> main() async {
         );
       }
     });
-    test('Get Task', () async {
+    test('Get Task 1', () async {
       testClient ??= A2AClient(baseUrl);
       final taskParams = A2ATaskQueryParams()..id = '1';
 

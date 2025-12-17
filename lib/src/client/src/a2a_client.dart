@@ -602,13 +602,6 @@ class A2AClient {
       }
     }
 
-    if (rpcResponse.containsKey('error')) {
-      final error = rpcResponse['error'];
-      throw Exception(
-        '_postRpcRequest:: RPC error for $method: ${error['message']} (Code: ${error['code']})',
-      );
-    }
-
     // Return the response
     return rpcResponse;
   }
