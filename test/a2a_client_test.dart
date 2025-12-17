@@ -60,7 +60,7 @@ void main() {
 
       final server = await io.serve(handler, 'localhost', 0);
       serverUrl = Uri.parse('http://${server.address.host}:${server.port}');
-      client = A2AClient(serverUrl.toString());
+      client = A2AClient(serverUrl.toString(), agentCardBackgroundFetch: false);
     });
 
     test(

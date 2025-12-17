@@ -55,6 +55,10 @@ class A2AClient {
   /// @param optional [cardPath] path to the agent card, **relative** to the [baseUrl] and defaults to `/.well-known/agent-card.json`
   /// @param optional [customHeaders] Map of custom headers to include in all requests.
   /// @param optional [authenticationHandler] Handler for dynamic authentication.
+  /// @param optional [agentCardBackgroundFetch] if false background fetching of the agent card is disabled.
+  /// Default is true.
+  /// If false the user must manually fetch the agent card using the [getAgentCard] method before
+  /// using the client.
   A2AClient(
     String baseUrl, {
     String cardPath = A2AConstants.agentCardPath,
