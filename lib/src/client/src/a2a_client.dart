@@ -13,15 +13,15 @@ part of '../a2a_client.dart';
 class A2AClient {
   String? agentBaseUrl;
   String? agentCardPath;
-  String? _serviceEndpointUrl;
-  A2AAgentCard? _agentCard;
-  int _requestIdCounter = 1;
 
   /// Custom headers to be included in all HTTP requests (e.g. Authorization).
   Map<String, String> customHeaders = {};
 
   /// Authentication handler for dynamic header injection and retry logic.
   A2AAuthenticationHandler? authenticationHandler;
+  String? _serviceEndpointUrl;
+  A2AAgentCard? _agentCard;
+  int _requestIdCounter = 1;
 
   /// Gets the RPC service endpoint URL. Ensures the agent card has been fetched first.
   /// @returns a [Future] that resolves to the service endpoint URL string.
@@ -96,7 +96,7 @@ class A2AClient {
   Future<A2AAgentCard> getAgentCard({
     String? agentBaseUrl,
     String? agentCardPath,
-  }) async {
+  }) {
     return _fetchAndCacheAgentCard(
       baseUrl: agentBaseUrl,
       cardPath: agentCardPath,
