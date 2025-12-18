@@ -1,3 +1,6 @@
+# 3.3.0
+- [PR 57](https://github.com/shamblett/a2a/pull/57)
+
 # 3.2.1
 - [Issue 60](https://github.com/shamblett/a2a/issues/60)
 
