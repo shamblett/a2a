@@ -44,7 +44,7 @@ Future<int> main() async {
     test('Construction', () async {
       testClient = A2AClient(baseUrl);
       expect(testClient!.agentBaseUrl, 'http://localhost:41242');
-      expect(await testClient!.serviceEndpoint, 'http://localhost:41242/');
+      expect(await testClient!.serviceEndpoint, 'http://localhost:41242');
     });
     test('Get Agent Card', () async {
       testClient ??= A2AClient(baseUrl);
@@ -52,7 +52,7 @@ Future<int> main() async {
         agentBaseUrl: 'http://localhost:41242',
       );
       expect(testClient!.agentBaseUrl, 'http://localhost:41242');
-      expect(await testClient!.serviceEndpoint, 'http://localhost:41242/');
+      expect(await testClient!.serviceEndpoint, 'http://localhost:41242');
       expect(agentCard.capabilities.streaming, isTrue);
       expect(agentCard.defaultInputModes, ['text/plain']);
       expect(agentCard.defaultOutputModes, ['text/plain']);
