@@ -1,3 +1,12 @@
+# 4.0.0
+The MCP Bridge Server component has now been removed from this package and
+moved into its own package [a2a_mcp_bridge](https://pub.dev/packages/a2a_mcp_bridge).
+Although a useful component of the Dart A2A ecosystem it is not a core
+component of A2A itself.
+Users of the bridge server should now include the a2a_mcp_bridge package along with
+a2a.
+- [Issue 65](https://github.com/shamblett/a2a/issues/65)
+
 # 3.3.0
 - [PR 57](https://github.com/shamblett/a2a/pull/57)
 
