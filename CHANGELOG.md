@@ -1,3 +1,6 @@
+# 4.1.0
+- [PR 68](https://github.com/shamblett/a2a/pull/68)
+- 
 # 4.0.0
 The MCP Bridge Server component has now been removed from this package and
 moved into its own package [a2a_mcp_bridge](https://pub.dev/packages/a2a_mcp_bridge).
