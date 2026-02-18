@@ -23,6 +23,9 @@ class A2AClient {
   A2AAgentCard? _agentCard;
   int _requestIdCounter = 1;
 
+  static const http.RequestOptions _nonThrowingHttpErrorPolicy =
+      http.RequestOptions(httpErrorPolicy: http.HttpErrorPolicy.returnResponse);
+
   /// Gets the RPC service endpoint URL. Ensures the agent card has been fetched first.
   /// @returns a [Future] that resolves to the service endpoint URL string.
   /// Defaults to the agent base url [agentBaseUrl].
@@ -177,7 +180,8 @@ class A2AClient {
       endpoint,
       method: 'POST',
       headers: headers,
-      body: http.Body.json(rpcRequest.toJson()),
+      json: rpcRequest.toJson(),
+      options: _nonThrowingHttpErrorPolicy,
     );
 
     if (!response.ok) {
@@ -438,7 +442,8 @@ class A2AClient {
       endpoint,
       method: 'POST',
       headers: headers,
-      body: http.Body.json(rpcRequest.toJson()),
+      json: rpcRequest.toJson(),
+      options: _nonThrowingHttpErrorPolicy,
     );
 
     if (!response.ok) {
@@ -470,8 +475,8 @@ class A2AClient {
     // Apply dynamic authentication headers
     if (authenticationHandler != null) {
       final authHeaders = await authenticationHandler!.headers;
-      for (final entry in authHeaders.entries()) {
-        headers.append(entry.$1, entry.$2);
+      for (final entry in authHeaders) {
+        headers.append(entry.key, entry.value);
       }
     }
   }
@@ -501,7 +506,11 @@ class A2AClient {
       final headers = http.Headers()..append('Accept', 'application/json');
       await _applyHeaders(headers);
 
-      final response = await http.fetch(agentCardUrl, headers: headers);
+      final response = await http.fetch(
+        agentCardUrl,
+        headers: headers,
+        options: _nonThrowingHttpErrorPolicy,
+      );
       if (!response.ok) {
         throw Exception(
           'fetchAndCacheAgentCard:: Failed to fetch Agent Card from $agentCardUrl: ${response.status} :  '
@@ -557,7 +566,8 @@ class A2AClient {
       endpoint,
       method: 'POST',
       headers: headers,
-      body: http.Body.json(rpcRequest.toJson()),
+      json: rpcRequest.toJson(),
+      options: _nonThrowingHttpErrorPolicy,
     );
 
     if (!httpResponse.ok) {
@@ -624,8 +634,7 @@ class A2AClient {
     A2AId originalRequestId,
   ) async* {
     try {
-      final body = http.Body(response.body);
-      final text = await body.text();
+      final text = await response.text();
       if (text.isEmpty) {
         throw Exception(
           '_parseA2ASseStream:: SSE response body is undefined. Cannot read stream.',
