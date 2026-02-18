@@ -15,7 +15,7 @@ environment:
 
 dependencies:
     genkit: '^0.9.0'
-    oxy: '^0.0.4'
+    oxy: '^0.1.0'
     web: '^1.1.1'
     json_annotation: '^4.9.0'
     colorize: '^3.0.0'
