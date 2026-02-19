@@ -25,6 +25,7 @@ dependencies:
     darto: '^0.0.34'
     darto_types: '^0.0.2'
     meta: '^1.16.0'
+    genai_primitives: ^0.2.2
 
 
 dev_dependencies:
