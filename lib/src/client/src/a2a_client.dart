@@ -221,6 +221,58 @@ class A2AClient {
     yield* _parseA2ASseStream(response, requestId);
   }
 
+  /// Sends a ChatMessage to the agent.
+  ///
+  /// This is a convenience wrapper around [sendMessage] that accepts a [ChatMessage]
+  /// Returns A [Future] resolving to [A2ASendMessageResponse].
+  Future<A2ASendMessageResponse> sendChatMessage(
+    ChatMessage chatMessage, {
+    A2AMessageSendConfiguration? configuration,
+    String? taskId,
+    String? contextId,
+    List<String> extensions = const [],
+  }) {
+    final a2aMessage = chatMessage.toA2AMessage(
+      taskId: taskId,
+      contextId: contextId,
+    );
+
+    final params = A2AMessageSendParams()
+      ..message = a2aMessage
+      ..configuration = configuration;
+    if (extensions.isNotEmpty) {
+      params.extensions = extensions;
+    }
+
+    return sendMessage(params);
+  }
+
+  /// Sends a ChatMessage to the agent and streams back responses.
+  ///
+  /// This is a convenience wrapper around [sendMessageStream] that accepts a [ChatMessage]
+  /// Returns A Stream of [A2ASendStreamMessageResponse].
+  Stream<A2ASendStreamMessageResponse> sendChatMessageStream(
+    ChatMessage chatMessage, {
+    A2AMessageSendConfiguration? configuration,
+    String? taskId,
+    String? contextId,
+    List<String> extensions = const [],
+  }) {
+    final a2aMessage = chatMessage.toA2AMessage(
+      taskId: taskId,
+      contextId: contextId,
+    );
+
+    final params = A2AMessageSendParams()
+      ..message = a2aMessage
+      ..configuration = configuration;
+    if (extensions.isNotEmpty) {
+      params.extensions = extensions;
+    }
+
+    return sendMessageStream(params);
+  }
+
   /// Sets or updates the push notification configuration for a given task.
   ///
   /// Requires the agent to support push notifications (`capabilities.pushNotifications: true` in AgentCard).
