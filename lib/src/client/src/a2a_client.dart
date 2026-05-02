@@ -24,7 +24,12 @@ class A2AClient {
   int _requestIdCounter = 1;
 
   static const http.RequestOptions _nonThrowingHttpErrorPolicy =
-      http.RequestOptions(httpErrorPolicy: http.HttpErrorPolicy.returnResponse);
+      http.RequestOptions(
+        httpErrorPolicy: http.HttpErrorPolicy.returnResponse,
+        requestTimeout: Duration(
+          minutes: 5,
+        ), // Extend default 30s timeout for slow LLMs
+      );
 
   /// Gets the RPC service endpoint URL. Ensures the agent card has been fetched first.
   /// @returns a [Future] that resolves to the service endpoint URL string.
