@@ -12,9 +12,8 @@ import 'package:test/test.dart';
 
 import 'package:a2a/a2a.dart';
 
-/// Tests the client against the local 'helloworld' agent located at
-/// http://localhost:9999. Either the local agent example or the podman
-/// Python example.
+/// Tests the client against the local 'helloworld' agent example/a2a_server_agent_helloworld.dart,
+/// located at url http://localhost:9999.
 ///
 /// Please start this before running this test otherwise the test will exit
 /// with an error message.

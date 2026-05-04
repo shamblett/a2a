@@ -37,7 +37,7 @@ Future<int> main() async {
       );
       expect(
         await testClient!.serviceEndpoint,
-        'https://sample-a2a-agent-908687846511.us-central1.run.app/',
+        'https://sample-a2a-agent-908687846511.us-central1.run.app',
       );
     });
     test('Get Agent Card', () async {
@@ -52,7 +52,7 @@ Future<int> main() async {
       );
       expect(
         await testClient!.serviceEndpoint,
-        'https://sample-a2a-agent-908687846511.us-central1.run.app/',
+        'https://sample-a2a-agent-908687846511.us-central1.run.app',
       );
       expect(agentCard.capabilities.streaming, isTrue);
       expect(agentCard.defaultInputModes, ['text', 'text/plain']);

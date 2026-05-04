@@ -12,7 +12,7 @@ import 'package:test/test.dart';
 
 import 'package:a2a/a2a.dart';
 
-/// Tests the client against the local example agent located at
+/// Tests the client against the local example server agent located at
 /// http://localhost:41242
 ///
 /// Please start this before running this test otherwise the test will exit
