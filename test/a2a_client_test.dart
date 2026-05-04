@@ -25,8 +25,8 @@ void main() {
                 {
                   'url': serverUrl.toString(),
                   'protocolBinding': 'JSONRPC',
-                  'protocolVersion': '1.0'
-                }
+                  'protocolVersion': '1.0',
+                },
               ],
               'capabilities': {'streaming': true},
               'defaultInputModes': [],
