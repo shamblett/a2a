@@ -37,7 +37,11 @@ final helloworldAgentCard = A2AAgentCard()
   ..name = 'Hello World Agent'
   ..description = 'Just a hello world agent'
   // Adjust the base URL and port as needed.
-  ..url = 'http://localhost:9999/'
+  ..supportedInterfaces.add(
+    A2ASupportedInterface()
+      ..url = 'http://localhost:9999/'
+      ..protocolBinding = 'JSONRPC',
+  )
   ..version = '1.0.0'
   ..capabilities =
       (A2AAgentCapabilities()..streaming = true) // Supports streaming)

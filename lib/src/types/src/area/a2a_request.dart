@@ -9,8 +9,8 @@ part of '../../a2a_types.dart';
 
 /// A2A supported request types
 class A2ARequest {
-  static const messageSend = 'message/send';
-  static const messageStream = 'message/stream';
+  static const messageSend = 'SendMessage';
+  static const messageStream = 'SendStreamingMessage';
   static const tasksGet = 'tasks/get';
   static const tasksCancel = 'tasks/cancel';
   static const tasksPncSet = 'tasks/pushNotificationConfig/set';

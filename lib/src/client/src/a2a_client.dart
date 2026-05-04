@@ -122,7 +122,7 @@ class A2AClient {
   ) async {
     final result =
         await _postRpcRequest<A2AMessageSendParams, A2ASendMessageResponse>(
-          'message/send',
+          A2ARequest.messageSend,
           params,
         );
     return A2ASendMessageResponse.fromJson(result);
@@ -162,7 +162,7 @@ class A2AClient {
     final endpoint = await serviceEndpoint;
     final requestId = _requestIdCounter++;
     final rpcRequest = A2AJsonRpcRequest()
-      ..method = 'message/stream'
+      ..method = A2ARequest.messageStream
       ..id = requestId
       ..params = (params as dynamic).toJson();
 
@@ -208,6 +208,9 @@ class A2AClient {
         'Status text: ${response.statusText}',
       );
     }
+
+    print('DEBUG: Content-Type is: ${response.headers.get('Content-Type')}');
+
     if (!response.headers
         .get('Content-Type')!
         .startsWith('text/event-stream')) {
@@ -571,13 +574,14 @@ class A2AClient {
       }
       final agentCardJson = await response.json();
       final agentCard = A2AAgentCard.fromJson(agentCardJson);
-      if (agentCard.url.isEmpty) {
+      if (agentCard.supportedInterfaces.isEmpty ||
+          agentCard.supportedInterfaces.first.url.isEmpty) {
         throw Exception(
           'fetchAndCacheAgentCard:: Fetched Agent Card does not contain a valid "url" for the service endpoint.',
         );
       }
       if (cache) {
-        _serviceEndpointUrl = agentCard.url;
+        _serviceEndpointUrl = agentCard.supportedInterfaces.first.url;
         _agentCard = agentCard;
       }
       return agentCard;
@@ -702,6 +706,7 @@ class A2AClient {
           // here.
           continue;
         }
+        print('DEBUG SSE LINE: $line');
         final j = json.decode(line.substring(6));
         final item = A2ASendStreamMessageResponse.fromJson(j);
         if (item.isError) {
@@ -721,5 +726,12 @@ class A2AClient {
   }
 
   // Construction timer callback to get the agent card
-  Future<void> _getAgentCard() async => await _fetchAndCacheAgentCard();
+  Future<void> _getAgentCard() async {
+    try {
+      await _fetchAndCacheAgentCard();
+    } catch (e) {
+      // Ignore background fetch errors to prevent app crashes when server is down
+      print('Background Agent Card fetch failed: \$e');
+    }
+  }
 }

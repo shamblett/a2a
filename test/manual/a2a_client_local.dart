@@ -69,9 +69,7 @@ Future<int> main() async {
   group('Client Methods', () {
     test('Send Message', () async {
       testClient ??= A2AClient(baseUrl);
-      final part = A2ATextPart()
-        ..text = 'how much is 10 USD in INR?'
-        ..kind = 'text';
+      final part = A2ATextPart()..text = 'how much is 10 USD in INR?';
 
       final message = A2AMessage()
         ..messageId = '12345'

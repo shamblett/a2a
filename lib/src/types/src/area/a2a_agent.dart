@@ -67,24 +67,24 @@ enum A2ATransportProtocol {
   httpJson,
 }
 
-/// Declares a combination of a target URL and a transport protocol for interacting with the agent.
-/// This allows agents to expose the same functionality over multiple transport mechanisms.
+/// Represents an interface supported by an agent in A2A 1.0 protocol.
 @JsonSerializable(explicitToJson: true)
-class A2AAgentInterface {
-  /// The URL where this interface is available. Must be a valid absolute HTTPS URL in production.
-  /// examples ["https://api.example.com/a2a/v1",
-  /// "https://grpc.example.com/a2a", "https://rest.example.com/v1"]
+class A2ASupportedInterface {
+  /// The URL of the interface.
   String url = '';
 
-  /// The transport protocol supported at this URL.
-  A2ATransportProtocol transport = A2ATransportProtocol.jsonRpc;
+  /// The protocol binding (e.g. JSONRPC, REST).
+  String protocolBinding = '';
 
-  A2AAgentInterface();
+  /// The version of the A2A protocol this interface supports.
+  String protocolVersion = '1.0';
 
-  factory A2AAgentInterface.fromJson(Map<String, dynamic> json) =>
-      _$A2AAgentInterfaceFromJson(json);
+  A2ASupportedInterface();
 
-  Map<String, dynamic> toJson() => _$A2AAgentInterfaceToJson(this);
+  factory A2ASupportedInterface.fromJson(Map<String, dynamic> json) =>
+      _$A2ASupportedInterfaceFromJson(json);
+
+  Map<String, dynamic> toJson() => _$A2ASupportedInterfaceToJson(this);
 }
 
 /// AgentCardSignature represents a JWS signature of an AgentCard.
@@ -116,8 +116,8 @@ class A2AAgentCardSignature {
 /// - Authentication requirements.
 @JsonSerializable(explicitToJson: true)
 final class A2AAgentCard extends A2AAgent {
-  /// The version of the A2A protocol this agent supports.
-  String protocolVersion = '0.3.0';
+  /// A list of interfaces the agent supports for interaction (A2A 1.0).
+  List<A2ASupportedInterface> supportedInterfaces = [];
 
   /// A declaration of optional capabilities supported by the agent.
   A2AAgentCapabilities capabilities = A2AAgentCapabilities();
@@ -163,28 +163,6 @@ final class A2AAgentCard extends A2AAgent {
   /// True if the agent supports providing an extended agent card when the user is authenticated.
   /// Defaults to false if not specified.
   bool? supportsAuthenticatedExtendedCard;
-
-  /// The preferred endpoint URL for interacting with the agent.
-  /// This URL MUST support the transport specified by 'preferredTransport'.
-  String url = '';
-
-  /// IMPORTANT: The transport specified here MUST be available at the main 'url'.
-  /// This creates a binding between the main URL and its supported transport protocol.
-  /// Clients should prefer this transport and URL combination when both are supported.
-  A2ATransportProtocol? preferredTransport = A2ATransportProtocol.jsonRpc;
-
-  /// A list of additional supported interfaces (transport and URL combinations).
-  /// This allows agents to expose multiple transports, potentially at different URLs.
-  ///
-  /// Best practices:
-  ///   SHOULD include all supported transports for completeness
-  ///   SHOULD include an entry matching the main 'url' and 'preferredTransport'
-  ///   MAY reuse URLs if multiple transports are available at the same endpoint
-  ///   MUST accurately declare the transport available at each URL
-  ///
-  /// Clients can select any interface from this list based on their transport capabilities
-  /// and preferences. This enables transport negotiation and fallback scenarios.
-  List<A2AAgentInterface>? additionalInterfaces;
 
   /// JSON Web Signatures computed for this AgentCard.
   List<A2AAgentCardSignature>? signatures;

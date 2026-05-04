@@ -29,39 +29,39 @@ typedef A2AResponseOrGenerator = Object;
 /// Represents the possible lifecycle states of a Task.
 enum A2ATaskState {
   /// The task has been submitted and is awaiting execution.
-  @JsonValue('submitted')
+  @JsonValue('TASK_STATE_SUBMITTED')
   submitted,
 
   /// The agent is actively working on the task
-  @JsonValue('working')
+  @JsonValue('TASK_STATE_WORKING')
   working,
 
   /// The task is paused and waiting for input from the user.
-  @JsonValue('input-required')
+  @JsonValue('TASK_STATE_INPUT_REQUIRED')
   inputRequired,
 
   /// he task has been successfully completed.
-  @JsonValue('completed')
+  @JsonValue('TASK_STATE_COMPLETED')
   completed,
 
   /// The task has been canceled by the user.
-  @JsonValue('canceled')
+  @JsonValue('TASK_STATE_CANCELED')
   canceled,
 
   /// The task failed due to an error during execution.
-  @JsonValue('failed')
+  @JsonValue('TASK_STATE_FAILED')
   failed,
 
   /// The task was rejected by the agent and was not started.
-  @JsonValue('rejected')
+  @JsonValue('TASK_STATE_REJECTED')
   rejected,
 
   /// The task requires authentication to proceed.
-  @JsonValue('auth-required')
+  @JsonValue('TASK_STATE_AUTH_REQUIRED')
   authRequired,
 
   ///  The task is in an unknown or indeterminate state.
-  @JsonValue('unknown')
+  @JsonValue('TASK_STATE_UNKNOWN')
   unknown,
 }
 

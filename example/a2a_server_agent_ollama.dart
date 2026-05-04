@@ -39,7 +39,11 @@ final movieAgentCard = A2AAgentCard()
       'An agent that sends a prompt to two LLM\'s, gemma3 and gemma3:270m models '
       'allowing the response from each model to be compared.'
   // Adjust the base URL and port as needed.
-  ..url = 'http://localhost:41242/'
+  ..supportedInterfaces.add(
+    A2ASupportedInterface()
+      ..url = 'http://localhost:41242/'
+      ..protocolBinding = 'JSONRPC',
+  )
   ..agentProvider = (A2AAgentProvider()
     ..organization = 'Darticulate A2A Agents'
     ..url = 'https://example.com/a2a-agents')

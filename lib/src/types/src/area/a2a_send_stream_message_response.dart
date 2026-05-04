@@ -62,26 +62,49 @@ final class A2ASendStreamMessageSuccessResponse
   ) {
     final response = _$A2ASendStreamMessageSuccessResponseFromJson(json);
 
-    if (json.containsKey('result')) {
-      if (json['result']['kind'] == 'task') {
-        response.result = A2ATask.fromJson(json['result']);
+    if (json.containsKey('result') && json['result'] != null) {
+      final res = json['result'] as Map<String, dynamic>;
+      if (res.containsKey('task')) {
+        response.result = A2ATask.fromJson(res['task']);
         return response;
       }
-      if (json['result']['kind'] == 'message') {
-        response.result = A2AMessage.fromJson(json['result']);
+      if (res.containsKey('message')) {
+        response.result = A2AMessage.fromJson(res['message']);
         return response;
       }
-      if (json['result']['kind'] == 'status-update') {
-        response.result = A2ATaskStatusUpdateEvent.fromJson(json['result']);
+      if (res.containsKey('statusUpdate')) {
+        response.result = A2ATaskStatusUpdateEvent.fromJson(
+          res['statusUpdate'],
+        );
         return response;
       }
-      if (json['result']['kind'] == 'artifact-update') {
-        response.result = A2ATaskArtifactUpdateEvent.fromJson(json['result']);
+      if (res.containsKey('artifactUpdate')) {
+        response.result = A2ATaskArtifactUpdateEvent.fromJson(
+          res['artifactUpdate'],
+        );
+        return response;
+      }
+
+      // Fallback for older 0.3.0 'kind' field just in case
+      if (res['kind'] == 'task') {
+        response.result = A2ATask.fromJson(res);
+        return response;
+      }
+      if (res['kind'] == 'message') {
+        response.result = A2AMessage.fromJson(res);
+        return response;
+      }
+      if (res['kind'] == 'status-update') {
+        response.result = A2ATaskStatusUpdateEvent.fromJson(res);
+        return response;
+      }
+      if (res['kind'] == 'artifact-update') {
+        response.result = A2ATaskArtifactUpdateEvent.fromJson(res);
         return response;
       }
     }
 
-    return A2ASendStreamMessageSuccessResponse();
+    return response;
   }
 
   @override

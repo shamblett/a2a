@@ -120,7 +120,7 @@ final class A2AJSONRPCError extends A2AError {
 
   /// A Primitive or Structured value that contains additional information about the error.
   /// This may be omitted.
-  A2ASV? data;
+  dynamic data;
 
   /// A String providing a short description of the error.
   String message = '';
@@ -142,7 +142,7 @@ final class A2AJSONParseError extends A2AError {
   int code = A2AError.jsonParse;
 
   /// A Primitive or Structured value that contains additional information about the error.
-  A2ASV? data;
+  dynamic data;
 
   /// A String providing a short description of the error.
   String message = '';
@@ -164,7 +164,7 @@ final class A2AInvalidRequestError extends A2AError {
   int code = A2AError.invalidRequest;
 
   /// A Primitive or Structured value that contains additional information about the error.
-  A2ASV? data;
+  dynamic data;
 
   /// A String providing a short description of the error.
   String message = '';
@@ -186,7 +186,7 @@ final class A2AMethodNotFoundError extends A2AError {
   int code = A2AError.methodNotFound;
 
   /// A Primitive or Structured value that contains additional information about the error.
-  A2ASV? data;
+  dynamic data;
 
   /// A String providing a short description of the error.
   String message = '';
@@ -208,7 +208,7 @@ final class A2AInvalidParamsError extends A2AError {
   int code = A2AError.invalidParams;
 
   /// A Primitive or Structured value that contains additional information about the error.
-  A2ASV? data;
+  dynamic data;
 
   /// A String providing a short description of the error.
   String message = '';
@@ -230,7 +230,7 @@ final class A2AInternalError extends A2AError {
   int code = A2AError.internal;
 
   /// A Primitive or Structured value that contains additional information about the error.
-  A2ASV? data;
+  dynamic data;
 
   /// A String providing a short description of the error.
   String message = '';
@@ -253,7 +253,7 @@ final class A2ATaskNotFoundError extends A2AError {
 
   /// A Primitive or Structured value that contains additional information about the error.
   /// In this case 'taskId' will contain the Task Id
-  A2ASV? data;
+  dynamic data;
 
   /// A String providing a short description of the error.
   String message = '';
@@ -276,7 +276,7 @@ final class A2ATaskNotCancelableError extends A2AError {
 
   /// A Primitive or Structured value that contains additional information about the error.
   /// In this case 'taskId' will contain the Task Id
-  A2ASV? data;
+  dynamic data;
 
   /// A String providing a short description of the error.
   String message = '';
@@ -298,7 +298,7 @@ final class A2APushNotificationNotSupportedError extends A2AError {
   int code = A2AError.pushNotificationNotSupported;
 
   /// A Primitive or Structured value that contains additional information about the error.
-  A2ASV? data;
+  dynamic data;
 
   /// A String providing a short description of the error.
   String message = '';
@@ -322,7 +322,7 @@ final class A2AUnsupportedOperationError extends A2AError {
   int code = A2AError.unsupportedOperation;
 
   /// A Primitive or Structured value that contains additional information about the error.
-  A2ASV? data;
+  dynamic data;
 
   /// A String providing a short description of the error.
   String message = '';
@@ -344,7 +344,7 @@ final class A2AContentTypeNotSupportedError extends A2AError {
   int code = A2AError.contentTypeNotSupported;
 
   /// A Primitive or Structured value that contains additional information about the error.
-  A2ASV? data;
+  dynamic data;
 
   /// A String providing a short description of the error.
   String message = '';
@@ -367,7 +367,7 @@ final class A2AInvalidAgentResponseError extends A2AError {
   int code = A2AError.invalidAgentResponse;
 
   /// A Primitive or Structured value that contains additional information about the error.
-  A2ASV? data;
+  dynamic data;
 
   /// A String providing a short description of the error.
   String message = '';
@@ -389,7 +389,7 @@ final class A2AAuthenticatedExtendedCardNotConfiguredError extends A2AError {
   int code = A2AError.authenticatedExtendedCardNotConfigured;
 
   /// A Primitive or Structured value that contains additional information about the error.
-  A2ASV? data;
+  dynamic data;
 
   /// A String providing a short description of the error.
   String message = '';

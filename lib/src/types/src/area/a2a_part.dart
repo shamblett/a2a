@@ -13,6 +13,17 @@ class A2APart {
   A2APart();
 
   factory A2APart.fromJson(Map<String, dynamic> json) {
+    if (json.containsKey('text')) {
+      return A2ATextPart.fromJson(json);
+    }
+    if (json.containsKey('file')) {
+      return A2AFilePart.fromJson(json);
+    }
+    if (json.containsKey('data')) {
+      return A2ADataPart.fromJson(json);
+    }
+
+    // Fallback for older 0.3.0 'kind' field
     if (json.containsKey('kind')) {
       if (json['kind'] == 'text') {
         return A2ATextPart.fromJson(json);
@@ -34,10 +45,6 @@ class A2APart {
 /// Represents a text segment within a message or artifact.
 @JsonSerializable(explicitToJson: true)
 final class A2ATextPart extends A2APart {
-  /// The type of this part, used as a discriminator. Always 'text'
-  @JsonKey(includeToJson: true, includeFromJson: false)
-  String kind = 'text';
-
   /// Optional metadata associated with the part.
   A2ASV? metadata;
 

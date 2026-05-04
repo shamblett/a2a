@@ -18,16 +18,20 @@ void main() {
         if (request.url.path.endsWith('agent-card.json')) {
           return shelf.Response.ok(
             json.encode({
-              'protocolVersion': '0.3.0',
               'name': 'Test Agent',
               'description': 'A test agent',
               'version': '1.0.0',
-              'url': serverUrl.toString(),
+              'supportedInterfaces': [
+                {
+                  'url': serverUrl.toString(),
+                  'protocolBinding': 'JSONRPC',
+                  'protocolVersion': '1.0'
+                }
+              ],
               'capabilities': {'streaming': true},
               'defaultInputModes': [],
               'defaultOutputModes': [],
               'skills': [],
-              'preferredTransport': 'JSONRPC',
             }),
             headers: {'Content-Type': 'application/json'},
           );

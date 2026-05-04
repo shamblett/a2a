@@ -97,15 +97,15 @@ Map<String, dynamic> _$A2ATaskStatusToJson(A2ATaskStatus instance) =>
     };
 
 const _$A2ATaskStateEnumMap = {
-  A2ATaskState.submitted: 'submitted',
-  A2ATaskState.working: 'working',
-  A2ATaskState.inputRequired: 'input-required',
-  A2ATaskState.completed: 'completed',
-  A2ATaskState.canceled: 'canceled',
-  A2ATaskState.failed: 'failed',
-  A2ATaskState.rejected: 'rejected',
-  A2ATaskState.authRequired: 'auth-required',
-  A2ATaskState.unknown: 'unknown',
+  A2ATaskState.submitted: 'TASK_STATE_SUBMITTED',
+  A2ATaskState.working: 'TASK_STATE_WORKING',
+  A2ATaskState.inputRequired: 'TASK_STATE_INPUT_REQUIRED',
+  A2ATaskState.completed: 'TASK_STATE_COMPLETED',
+  A2ATaskState.canceled: 'TASK_STATE_CANCELED',
+  A2ATaskState.failed: 'TASK_STATE_FAILED',
+  A2ATaskState.rejected: 'TASK_STATE_REJECTED',
+  A2ATaskState.authRequired: 'TASK_STATE_AUTH_REQUIRED',
+  A2ATaskState.unknown: 'TASK_STATE_UNKNOWN',
 };
 
 A2AJsonRpcRequest _$A2AJsonRpcRequestFromJson(Map<String, dynamic> json) =>
@@ -124,7 +124,7 @@ Map<String, dynamic> _$A2AJsonRpcRequestToJson(A2AJsonRpcRequest instance) =>
 
 A2AJSONRPCError _$A2AJSONRPCErrorFromJson(Map<String, dynamic> json) =>
     A2AJSONRPCError()
-      ..data = json['data'] as Map<String, dynamic>?
+      ..data = json['data']
       ..message = json['message'] as String;
 
 Map<String, dynamic> _$A2AJSONRPCErrorToJson(A2AJSONRPCError instance) =>
@@ -136,7 +136,7 @@ Map<String, dynamic> _$A2AJSONRPCErrorToJson(A2AJSONRPCError instance) =>
 
 A2AJSONParseError _$A2AJSONParseErrorFromJson(Map<String, dynamic> json) =>
     A2AJSONParseError()
-      ..data = json['data'] as Map<String, dynamic>?
+      ..data = json['data']
       ..message = json['message'] as String;
 
 Map<String, dynamic> _$A2AJSONParseErrorToJson(A2AJSONParseError instance) =>
@@ -149,7 +149,7 @@ Map<String, dynamic> _$A2AJSONParseErrorToJson(A2AJSONParseError instance) =>
 A2AInvalidRequestError _$A2AInvalidRequestErrorFromJson(
   Map<String, dynamic> json,
 ) => A2AInvalidRequestError()
-  ..data = json['data'] as Map<String, dynamic>?
+  ..data = json['data']
   ..message = json['message'] as String;
 
 Map<String, dynamic> _$A2AInvalidRequestErrorToJson(
@@ -163,7 +163,7 @@ Map<String, dynamic> _$A2AInvalidRequestErrorToJson(
 A2AMethodNotFoundError _$A2AMethodNotFoundErrorFromJson(
   Map<String, dynamic> json,
 ) => A2AMethodNotFoundError()
-  ..data = json['data'] as Map<String, dynamic>?
+  ..data = json['data']
   ..message = json['message'] as String;
 
 Map<String, dynamic> _$A2AMethodNotFoundErrorToJson(
@@ -177,7 +177,7 @@ Map<String, dynamic> _$A2AMethodNotFoundErrorToJson(
 A2AInvalidParamsError _$A2AInvalidParamsErrorFromJson(
   Map<String, dynamic> json,
 ) => A2AInvalidParamsError()
-  ..data = json['data'] as Map<String, dynamic>?
+  ..data = json['data']
   ..message = json['message'] as String;
 
 Map<String, dynamic> _$A2AInvalidParamsErrorToJson(
@@ -190,7 +190,7 @@ Map<String, dynamic> _$A2AInvalidParamsErrorToJson(
 
 A2AInternalError _$A2AInternalErrorFromJson(Map<String, dynamic> json) =>
     A2AInternalError()
-      ..data = json['data'] as Map<String, dynamic>?
+      ..data = json['data']
       ..message = json['message'] as String;
 
 Map<String, dynamic> _$A2AInternalErrorToJson(A2AInternalError instance) =>
@@ -203,7 +203,7 @@ Map<String, dynamic> _$A2AInternalErrorToJson(A2AInternalError instance) =>
 A2ATaskNotFoundError _$A2ATaskNotFoundErrorFromJson(
   Map<String, dynamic> json,
 ) => A2ATaskNotFoundError()
-  ..data = json['data'] as Map<String, dynamic>?
+  ..data = json['data']
   ..message = json['message'] as String;
 
 Map<String, dynamic> _$A2ATaskNotFoundErrorToJson(
@@ -217,7 +217,7 @@ Map<String, dynamic> _$A2ATaskNotFoundErrorToJson(
 A2ATaskNotCancelableError _$A2ATaskNotCancelableErrorFromJson(
   Map<String, dynamic> json,
 ) => A2ATaskNotCancelableError()
-  ..data = json['data'] as Map<String, dynamic>?
+  ..data = json['data']
   ..message = json['message'] as String;
 
 Map<String, dynamic> _$A2ATaskNotCancelableErrorToJson(
@@ -231,7 +231,7 @@ Map<String, dynamic> _$A2ATaskNotCancelableErrorToJson(
 A2APushNotificationNotSupportedError
 _$A2APushNotificationNotSupportedErrorFromJson(Map<String, dynamic> json) =>
     A2APushNotificationNotSupportedError()
-      ..data = json['data'] as Map<String, dynamic>?
+      ..data = json['data']
       ..message = json['message'] as String;
 
 Map<String, dynamic> _$A2APushNotificationNotSupportedErrorToJson(
@@ -245,7 +245,7 @@ Map<String, dynamic> _$A2APushNotificationNotSupportedErrorToJson(
 A2AUnsupportedOperationError _$A2AUnsupportedOperationErrorFromJson(
   Map<String, dynamic> json,
 ) => A2AUnsupportedOperationError()
-  ..data = json['data'] as Map<String, dynamic>?
+  ..data = json['data']
   ..message = json['message'] as String;
 
 Map<String, dynamic> _$A2AUnsupportedOperationErrorToJson(
@@ -259,7 +259,7 @@ Map<String, dynamic> _$A2AUnsupportedOperationErrorToJson(
 A2AContentTypeNotSupportedError _$A2AContentTypeNotSupportedErrorFromJson(
   Map<String, dynamic> json,
 ) => A2AContentTypeNotSupportedError()
-  ..data = json['data'] as Map<String, dynamic>?
+  ..data = json['data']
   ..message = json['message'] as String;
 
 Map<String, dynamic> _$A2AContentTypeNotSupportedErrorToJson(
@@ -273,7 +273,7 @@ Map<String, dynamic> _$A2AContentTypeNotSupportedErrorToJson(
 A2AInvalidAgentResponseError _$A2AInvalidAgentResponseErrorFromJson(
   Map<String, dynamic> json,
 ) => A2AInvalidAgentResponseError()
-  ..data = json['data'] as Map<String, dynamic>?
+  ..data = json['data']
   ..message = json['message'] as String;
 
 Map<String, dynamic> _$A2AInvalidAgentResponseErrorToJson(
@@ -288,7 +288,7 @@ A2AAuthenticatedExtendedCardNotConfiguredError
 _$A2AAuthenticatedExtendedCardNotConfiguredErrorFromJson(
   Map<String, dynamic> json,
 ) => A2AAuthenticatedExtendedCardNotConfiguredError()
-  ..data = json['data'] as Map<String, dynamic>?
+  ..data = json['data']
   ..message = json['message'] as String;
 
 Map<String, dynamic> _$A2AAuthenticatedExtendedCardNotConfiguredErrorToJson(
@@ -621,11 +621,7 @@ A2ATextPart _$A2ATextPartFromJson(Map<String, dynamic> json) => A2ATextPart()
   ..text = json['text'] as String;
 
 Map<String, dynamic> _$A2ATextPartToJson(A2ATextPart instance) =>
-    <String, dynamic>{
-      'kind': instance.kind,
-      'metadata': instance.metadata,
-      'text': instance.text,
-    };
+    <String, dynamic>{'metadata': instance.metadata, 'text': instance.text};
 
 A2AFilePart _$A2AFilePartFromJson(Map<String, dynamic> json) => A2AFilePart()
   ..metadata = json['metadata'] as Map<String, dynamic>?
@@ -1236,24 +1232,19 @@ Map<String, dynamic> _$A2AAgentExtensionToJson(A2AAgentExtension instance) =>
       'uri': instance.uri,
     };
 
-A2AAgentInterface _$A2AAgentInterfaceFromJson(Map<String, dynamic> json) =>
-    A2AAgentInterface()
-      ..url = json['url'] as String
-      ..transport = $enumDecode(
-        _$A2ATransportProtocolEnumMap,
-        json['transport'],
-      );
+A2ASupportedInterface _$A2ASupportedInterfaceFromJson(
+  Map<String, dynamic> json,
+) => A2ASupportedInterface()
+  ..url = json['url'] as String
+  ..protocolBinding = json['protocolBinding'] as String
+  ..protocolVersion = json['protocolVersion'] as String;
 
-Map<String, dynamic> _$A2AAgentInterfaceToJson(A2AAgentInterface instance) =>
-    <String, dynamic>{
-      'url': instance.url,
-      'transport': _$A2ATransportProtocolEnumMap[instance.transport]!,
-    };
-
-const _$A2ATransportProtocolEnumMap = {
-  A2ATransportProtocol.jsonRpc: 'JSONRPC',
-  A2ATransportProtocol.gRpc: 'GRPC',
-  A2ATransportProtocol.httpJson: 'HTTP+JSON',
+Map<String, dynamic> _$A2ASupportedInterfaceToJson(
+  A2ASupportedInterface instance,
+) => <String, dynamic>{
+  'url': instance.url,
+  'protocolBinding': instance.protocolBinding,
+  'protocolVersion': instance.protocolVersion,
 };
 
 A2AAgentCardSignature _$A2AAgentCardSignatureFromJson(
@@ -1272,7 +1263,9 @@ Map<String, dynamic> _$A2AAgentCardSignatureToJson(
 };
 
 A2AAgentCard _$A2AAgentCardFromJson(Map<String, dynamic> json) => A2AAgentCard()
-  ..protocolVersion = json['protocolVersion'] as String
+  ..supportedInterfaces = (json['supportedInterfaces'] as List<dynamic>)
+      .map((e) => A2ASupportedInterface.fromJson(e as Map<String, dynamic>))
+      .toList()
   ..capabilities = A2AAgentCapabilities.fromJson(
     json['capabilities'] as Map<String, dynamic>,
   )
@@ -1308,14 +1301,6 @@ A2AAgentCard _$A2AAgentCardFromJson(Map<String, dynamic> json) => A2AAgentCard()
       .toList()
   ..supportsAuthenticatedExtendedCard =
       json['supportsAuthenticatedExtendedCard'] as bool?
-  ..url = json['url'] as String
-  ..preferredTransport = $enumDecodeNullable(
-    _$A2ATransportProtocolEnumMap,
-    json['preferredTransport'],
-  )
-  ..additionalInterfaces = (json['additionalInterfaces'] as List<dynamic>?)
-      ?.map((e) => A2AAgentInterface.fromJson(e as Map<String, dynamic>))
-      .toList()
   ..signatures = (json['signatures'] as List<dynamic>?)
       ?.map((e) => A2AAgentCardSignature.fromJson(e as Map<String, dynamic>))
       .toList()
@@ -1323,7 +1308,9 @@ A2AAgentCard _$A2AAgentCardFromJson(Map<String, dynamic> json) => A2AAgentCard()
 
 Map<String, dynamic> _$A2AAgentCardToJson(A2AAgentCard instance) =>
     <String, dynamic>{
-      'protocolVersion': instance.protocolVersion,
+      'supportedInterfaces': instance.supportedInterfaces
+          .map((e) => e.toJson())
+          .toList(),
       'capabilities': instance.capabilities.toJson(),
       'defaultInputModes': instance.defaultInputModes,
       'defaultOutputModes': instance.defaultOutputModes,
@@ -1339,12 +1326,6 @@ Map<String, dynamic> _$A2AAgentCardToJson(A2AAgentCard instance) =>
       'skills': instance.skills.map((e) => e.toJson()).toList(),
       'supportsAuthenticatedExtendedCard':
           instance.supportsAuthenticatedExtendedCard,
-      'url': instance.url,
-      'preferredTransport':
-          _$A2ATransportProtocolEnumMap[instance.preferredTransport],
-      'additionalInterfaces': instance.additionalInterfaces
-          ?.map((e) => e.toJson())
-          .toList(),
       'signatures': instance.signatures?.map((e) => e.toJson()).toList(),
       'version': instance.version,
     };

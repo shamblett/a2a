@@ -79,13 +79,13 @@ void main() {
       card.securitySchemes = {'First': A2ASecurityScheme()};
       card.skills = [A2AAgentSkill()];
       card.supportsAuthenticatedExtendedCard = true;
-      card.url = 'Card.uri';
+      card.supportedInterfaces.add(A2ASupportedInterface()..url = 'Card.uri');
       card.version = '1.0.0';
       card.agentProvider = A2AAgentProvider();
       final json = card.toJson();
       final newCard = A2AAgentCard.fromJson(json);
       expect(newCard.version, '1.0.0');
-      expect(newCard.url, 'Card.uri');
+      expect(newCard.supportedInterfaces.first.url, 'Card.uri');
       expect(newCard.supportsAuthenticatedExtendedCard, isTrue);
       expect(newCard.skills.length, 1);
       expect(newCard.securitySchemes?.length, 1);
@@ -953,15 +953,7 @@ void main() {
     });
     test('A2APart unknown part kind', () {
       var part = A2APart();
-      var json = <String, dynamic>{};
-
-      final textPart = A2ATextPart()
-        ..metadata = {'First': 1}
-        ..text = 'The text'
-        ..kind = 'unknown';
-      part = textPart;
-      json = part.toJson();
-      part = A2APart();
+      final json = <String, dynamic>{'unknown_key': 'some_value'};
       part = A2APart.fromJson(json);
       expect(part.toJson(), {});
     });

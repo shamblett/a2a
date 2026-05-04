@@ -49,7 +49,9 @@ Future<int> main() async {
     print('Is the agent streaming capable "$streaming"');
     print('Default input modes "${agentCard.defaultInputModes}"');
     print('Default output modes "${agentCard.defaultOutputModes}"');
-    print('Service endpoint "${agentCard.url}"');
+    print(
+      'Service endpoint "${agentCard.supportedInterfaces.firstOrNull?.url}"',
+    );
   } catch (e) {
     print('');
     print(
