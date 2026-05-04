@@ -209,8 +209,6 @@ class A2AClient {
       );
     }
 
-    print('DEBUG: Content-Type is: ${response.headers.get('Content-Type')}');
-
     if (!response.headers
         .get('Content-Type')!
         .startsWith('text/event-stream')) {
@@ -706,7 +704,6 @@ class A2AClient {
           // here.
           continue;
         }
-        print('DEBUG SSE LINE: $line');
         final j = json.decode(line.substring(6));
         final item = A2ASendStreamMessageResponse.fromJson(j);
         if (item.isError) {
