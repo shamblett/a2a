@@ -1325,8 +1325,7 @@ void main() {
         ..contextId = '300'
         ..taskId = '2'
         ..append = false
-        ..artifact = A2AArtifact()
-        ..kind = 'unknown';
+        ..artifact = A2AArtifact();
       var testResponse = A2ASendStreamMessageSuccessResponse()
         ..id = 2
         ..result = update;
