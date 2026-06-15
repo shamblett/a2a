@@ -48,7 +48,7 @@ class A2AExpressApp {
       final body = await req.body;
       // Brute-force check for streaming method to work around parsing bugs.
       final bodyAsString = (body is String) ? body : json.encode(body);
-      if (bodyAsString.contains('"method":"message/stream"') ||
+      if (bodyAsString.contains('"method":${A2ARequest.messageSend}') ||
           bodyAsString.contains('"method":"tasks/resubscribe"')) {
         res.set('Content-Type', 'text/event-stream');
         res.set('Cache-Control', 'no-cache');

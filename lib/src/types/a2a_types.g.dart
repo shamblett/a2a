@@ -1172,7 +1172,6 @@ Map<String, dynamic> _$A2ATaskStatusUpdateEventToJson(
 ) => <String, dynamic>{
   'contextId': instance.contextId,
   'end': instance.end,
-  'kind': instance.kind,
   'metadata': instance.metadata,
   'status': instance.status?.toJson(),
   'taskId': instance.taskId,
@@ -1196,7 +1195,6 @@ Map<String, dynamic> _$A2ATaskArtifactUpdateEventToJson(
   'append': instance.append,
   'artifact': instance.artifact?.toJson(),
   'contextId': instance.contextId,
-  'kind': instance.kind,
   'lastChunk': instance.lastChunk,
   'metadata': instance.metadata,
   'taskId': instance.taskId,

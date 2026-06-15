@@ -40,7 +40,7 @@ class A2AJsonRpcResponse {
   Map<String, dynamic> toJson() => {};
 }
 
-/// JSON-RPC response model for the 'message/send' method.
+/// JSON-RPC response model for the 'SendMessage' method.
 class A2ASendMessageResponse extends A2AJsonRpcResponse {
   A2ASendMessageResponse();
 
@@ -54,7 +54,7 @@ class A2ASendMessageResponse extends A2AJsonRpcResponse {
   Map<String, dynamic> toJson() => {};
 }
 
-/// JSON-RPC response model for the 'message/stream' method.
+/// JSON-RPC response model for the 'SendStreamingMessage' method.
 class A2ASendStreamingMessageResponse extends A2AJsonRpcResponse {
   A2ASendStreamingMessageResponse();
 
@@ -124,7 +124,7 @@ final class A2AJSONRPCErrorResponsePNCR
   Map<String, dynamic> toJson() => _$A2AJSONRPCErrorResponsePNCRToJson(this);
 }
 
-/// JSON-RPC success response model for the 'message/send' method.
+/// JSON-RPC success response model for the 'SendMessage' method.
 @JsonSerializable(explicitToJson: true)
 final class A2ASendMessageSuccessResponse extends A2ASendMessageResponse {
   /// An identifier established by the Client that MUST contain a String, Number.
@@ -174,7 +174,7 @@ final class A2ASendMessageSuccessResponse extends A2ASendMessageResponse {
   }
 }
 
-/// JSON-RPC success response model for the 'message/stream' method.
+/// JSON-RPC success response model for the 'SendStreamingMessage' method.
 @JsonSerializable(explicitToJson: true)
 final class A2ASendStreamingMessageSuccessResponse
     extends A2ASendStreamingMessageResponse {

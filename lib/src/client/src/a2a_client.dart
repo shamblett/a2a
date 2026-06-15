@@ -122,7 +122,7 @@ class A2AClient {
   ) async {
     final result =
         await _postRpcRequest<A2AMessageSendParams, A2ASendMessageResponse>(
-          'message/send',
+          A2ARequest.messageSend,
           params,
         );
     return A2ASendMessageResponse.fromJson(result);
@@ -162,7 +162,7 @@ class A2AClient {
     final endpoint = await serviceEndpoint;
     final requestId = _requestIdCounter++;
     final rpcRequest = A2AJsonRpcRequest()
-      ..method = 'message/stream'
+      ..method = A2ARequest.messageStream
       ..id = requestId
       ..params = (params as dynamic).toJson();
 
@@ -191,7 +191,7 @@ class A2AClient {
         final errorJson = json.decode(errorBody) as Map<String, dynamic>;
         if (errorJson.containsKey('error')) {
           throw Exception(
-            'sendMessageStream:: HTTP error establishing stream for message/stream: '
+            'sendMessageStream:: HTTP error establishing stream for SendStreamingMessage: '
             ' ${response.status} ${response.statusText}. RPC Error: ${errorJson['error']['message']} '
             ' (Code: ${errorJson['error']['code']})',
           );

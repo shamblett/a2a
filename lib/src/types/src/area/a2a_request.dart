@@ -9,8 +9,8 @@ part of '../../a2a_types.dart';
 
 /// A2A supported request types
 class A2ARequest {
-  static const messageSend = 'message/send';
-  static const messageStream = 'message/stream';
+  static const messageSend = 'SendMessage';
+  static const messageStream = 'SendStreamingMessage';
   static const tasksGet = 'tasks/get';
   static const tasksCancel = 'tasks/cancel';
   static const tasksPncSet = 'tasks/pushNotificationConfig/set';
@@ -58,7 +58,7 @@ class A2ARequest {
   Map<String, dynamic> toJson() => {};
 }
 
-/// JSON-RPC request model for the 'message/send' method.
+/// JSON-RPC request model for the 'SendMessage' method.
 @JsonSerializable(explicitToJson: true)
 final class A2ASendMessageRequest extends A2ARequest {
   /// An identifier established by the Client that MUST contain a String, Number.
@@ -84,7 +84,7 @@ final class A2ASendMessageRequest extends A2ARequest {
   Map<String, dynamic> toJson() => _$A2ASendMessageRequestToJson(this);
 }
 
-/// JSON-RPC request model for the 'message/stream' method.
+/// JSON-RPC request model for the 'SendStreamingMessage' method.
 @JsonSerializable(explicitToJson: true)
 final class A2ASendStreamingMessageRequest extends A2ARequest {
   /// An identifier established by the Client that MUST contain a String, Number.
@@ -383,7 +383,7 @@ class A2AMessageSendParams {
   Map<String, dynamic> toJson() => _$A2AMessageSendParamsToJson(this);
 }
 
-/// Defines configuration options for a `message/send` or `message/stream` request.
+/// Defines configuration options for a `SendMessage` or `SendStreamingMessage` request.
 @JsonSerializable(explicitToJson: true)
 class A2AMessageSendConfiguration {
   /// A list of output MIME types the client is prepared to accept in the response.

@@ -7,7 +7,7 @@
 
 part of '../../a2a_types.dart';
 
-/// JSON-RPC response model for the 'message/send' method.
+/// JSON-RPC response model for the 'SendMessage' method.
 class A2ASendStreamMessageResponse {
   /// True if the response is an error
   @JsonKey(includeFromJson: false)
@@ -37,7 +37,7 @@ final class A2AJSONRPCErrorResponseSSM extends A2ASendStreamMessageResponse
   Map<String, dynamic> toJson() => _$A2AJSONRPCErrorResponseSSMToJson(this);
 }
 
-/// JSON-RPC success response model for the 'message/stream' method.
+/// JSON-RPC success response model for the 'SendStreamingMessage' method.
 /// This response is also used to carry streaming responses from the server(SSE)
 /// in its [result] parameter.
 @JsonSerializable(explicitToJson: true)
@@ -120,10 +120,6 @@ final class A2ATaskStatusUpdateEvent {
   /// Note, this is called 'final' in the TS code.
   bool? end;
 
-  /// The type of this event, used as a discriminator. Always 'status-update'.
-  @JsonKey(includeToJson: true, includeFromJson: false)
-  String kind = 'status-update';
-
   /// Extension metadata.
   A2ASV? metadata;
 
@@ -154,10 +150,6 @@ final class A2ATaskArtifactUpdateEvent {
 
   /// The context ID associated with the task.
   String contextId = '';
-
-  /// he type of this event, used as a discriminator. Always 'artifact-update'.
-  @JsonKey(includeToJson: true, includeFromJson: false)
-  String kind = 'artifact-update';
 
   /// If true, this is the final chunk of the artifact.
   bool? lastChunk;
