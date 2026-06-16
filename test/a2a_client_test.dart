@@ -1,3 +1,13 @@
+/*
+* Package : a2a
+* Author : S. Hamblett <steve.hamblett@linux.com>
+* Date   : 16/06/2026
+* Copyright :  S.Hamblett
+*/
+
+@TestOn('vm')
+library;
+
 import 'dart:convert';
 
 import 'package:a2a/a2a.dart';
