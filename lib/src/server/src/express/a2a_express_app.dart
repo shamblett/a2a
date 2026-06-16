@@ -48,11 +48,7 @@ class A2AExpressApp {
         dynamic body;
         try {
           final bodyAsString = await c.req.text();
-          if (bodyAsString.isNotEmpty) {
-            body = json.decode(bodyAsString);
-          } else {
-            body = {};
-          }
+          body = bodyAsString.isNotEmpty ? json.decode(bodyAsString) : {};
         } catch (_) {
           body = await c.req.json();
         }
