@@ -20,15 +20,16 @@ class A2AJsonRpcResponse {
   factory A2AJsonRpcResponse.fromJson(Map<String, dynamic> json) {
     if (json.containsKey('result')) {
       // Not an error
-      if ((json['result'] as Map).containsKey('kind')) {
-        // Check which message response it is
-        return json['result']['kind'] == 'artifact-update' ||
-                json['result']['kind'] == 'status-update'
-            ? A2ASendStreamingMessageSuccessResponse().fromJson(json)
-            : A2ASendMessageSuccessResponse().fromJson(json);
+      final resultMap = json['result'] as Map;
+      if (resultMap.containsKey('kind')) {
+        return A2ASendMessageSuccessResponse().fromJson(json);
+      }
+      if (resultMap.containsKey('status') ||
+          resultMap.containsKey('artifact')) {
+        return A2ASendStreamingMessageSuccessResponse().fromJson(json);
       }
       // Check for Push notification
-      return (json['result'] as Map).containsKey('token')
+      return resultMap.containsKey('token')
           ? A2ASetTaskPushNotificationConfigSuccessResponse().fromJson(json)
           : A2ASendMessageSuccessResponse().fromJson(json);
     } else {
@@ -196,19 +197,20 @@ final class A2ASendStreamingMessageSuccessResponse
     final response = _$A2ASendStreamingMessageSuccessResponseFromJson(json);
 
     if (json.containsKey('result')) {
-      if (json['result']['kind'] == 'task') {
+      final result = json['result'] as Map;
+      if (result['kind'] == 'task') {
         response.result = A2ATask.fromJson(json['result']);
         return response;
       }
-      if (json['result']['kind'] == 'message') {
+      if (result['kind'] == 'message') {
         response.result = A2AMessage.fromJson(json['result']);
         return response;
       }
-      if (json['result']['kind'] == 'status-update') {
+      if (result.containsKey('status')) {
         response.result = A2ATaskStatusUpdateEvent.fromJson(json['result']);
         return response;
       }
-      if (json['result']['kind'] == 'artifact-update') {
+      if (result.containsKey('artifact')) {
         response.result = A2ATaskArtifactUpdateEvent.fromJson(json['result']);
         return response;
       }

@@ -63,19 +63,20 @@ final class A2ASendStreamMessageSuccessResponse
     final response = _$A2ASendStreamMessageSuccessResponseFromJson(json);
 
     if (json.containsKey('result')) {
-      if (json['result']['kind'] == 'task') {
+      final result = json['result'] as Map;
+      if (result['kind'] == 'task') {
         response.result = A2ATask.fromJson(json['result']);
         return response;
       }
-      if (json['result']['kind'] == 'message') {
+      if (result['kind'] == 'message') {
         response.result = A2AMessage.fromJson(json['result']);
         return response;
       }
-      if (json['result']['kind'] == 'status-update') {
+      if (result.containsKey('status')) {
         response.result = A2ATaskStatusUpdateEvent.fromJson(json['result']);
         return response;
       }
-      if (json['result']['kind'] == 'artifact-update') {
+      if (result.containsKey('artifact')) {
         response.result = A2ATaskArtifactUpdateEvent.fromJson(json['result']);
         return response;
       }
