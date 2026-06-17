@@ -429,7 +429,7 @@ class A2AClient {
   Future<A2AGetTaskResponse> getTask(A2ATaskQueryParams params) async {
     final result =
         await _postRpcRequest<A2ATaskQueryParams, A2AGetTaskResponse>(
-          'tasks/get',
+          'GetTask',
           params,
         );
     return A2AGetTaskResponse.fromJson(result);

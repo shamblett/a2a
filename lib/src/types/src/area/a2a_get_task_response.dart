@@ -7,7 +7,7 @@
 
 part of '../../a2a_types.dart';
 
-/// JSON-RPC response for the 'tasks/get' method.
+/// JSON-RPC response for the 'GetTask' method.
 class A2AGetTaskResponse {
   /// True if the response is an error
   @JsonKey(includeFromJson: false)
@@ -41,7 +41,7 @@ final class A2AJSONRPCErrorResponseT extends A2AGetTaskResponse
   Map<String, dynamic> toJson() => _$A2AJSONRPCErrorResponseTToJson(this);
 }
 
-/// JSON-RPC success response for the 'tasks/get' method.
+/// JSON-RPC success response for the 'GetTask' method.
 @JsonSerializable(explicitToJson: true)
 final class A2AGetTaskSuccessResponse extends A2AGetTaskResponse {
   /// An identifier established by the Client that MUST contain a String, Number.

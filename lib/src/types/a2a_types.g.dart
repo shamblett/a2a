@@ -62,10 +62,16 @@ A2ATask _$A2ATaskFromJson(Map<String, dynamic> json) => A2ATask()
       ?.map((e) => A2AArtifact.fromJson(e as Map<String, dynamic>))
       .toList()
   ..contextId = json['contextId'] as String
+  ..createdAt = json['createdAt'] == null
+      ? null
+      : DateTime.parse(json['createdAt'] as String)
   ..history = (json['history'] as List<dynamic>?)
       ?.map((e) => A2AMessage.fromJson(e as Map<String, dynamic>))
       .toList()
   ..id = json['id'] as String
+  ..lastModified = json['lastModified'] == null
+      ? null
+      : DateTime.parse(json['lastModified'] as String)
   ..metadata = json['metadata'] as Map<String, dynamic>?
   ..status = json['status'] == null
       ? null
@@ -74,9 +80,11 @@ A2ATask _$A2ATaskFromJson(Map<String, dynamic> json) => A2ATask()
 Map<String, dynamic> _$A2ATaskToJson(A2ATask instance) => <String, dynamic>{
   'artifacts': instance.artifacts?.map((e) => e.toJson()).toList(),
   'contextId': instance.contextId,
+  'createdAt': instance.createdAt?.toIso8601String(),
   'history': instance.history?.map((e) => e.toJson()).toList(),
   'id': instance.id,
   'kind': instance.kind,
+  'lastModified': instance.lastModified?.toIso8601String(),
   'metadata': instance.metadata,
   'status': instance.status?.toJson(),
 };

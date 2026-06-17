@@ -167,6 +167,9 @@ class A2ATask {
   /// context across multiple related tasks or interactions.
   String contextId = '';
 
+  /// The time the task was created.
+  DateTime? createdAt;
+
   ///  An array of messages exchanged during the task, representing the conversation history.
   List<A2AMessage>? history;
 
@@ -176,6 +179,9 @@ class A2ATask {
   /// The type of this object, used as a discriminator. Always 'task' for a Task.
   @JsonKey(includeToJson: true, includeFromJson: false)
   String kind = 'task';
+
+  /// The time the task was last modified.
+  DateTime? lastModified;
 
   /// Optional metadata for extensions. The key is an extension-specific identifier.
   A2ASV? metadata;

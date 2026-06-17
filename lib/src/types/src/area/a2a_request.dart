@@ -11,7 +11,7 @@ part of '../../a2a_types.dart';
 class A2ARequest {
   static const messageSend = 'SendMessage';
   static const messageStream = 'SendStreamingMessage';
-  static const tasksGet = 'tasks/get';
+  static const tasksGet = 'GetTask';
   static const tasksCancel = 'tasks/cancel';
   static const tasksPncSet = 'tasks/pushNotificationConfig/set';
   static const tasksPncGet = 'tasks/pushNotificationConfig/get';
@@ -110,7 +110,7 @@ final class A2ASendStreamingMessageRequest extends A2ARequest {
   Map<String, dynamic> toJson() => _$A2ASendStreamingMessageRequestToJson(this);
 }
 
-/// JSON-RPC request model for the 'tasks/get' method.
+/// JSON-RPC request model for the 'GetTask' method.
 @JsonSerializable(explicitToJson: true)
 final class A2AGetTaskRequest extends A2ARequest {
   /// An identifier established by the Client that MUST contain a String, Number.
