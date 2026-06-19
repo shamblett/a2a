@@ -12,6 +12,7 @@ class A2ARequest {
   static const messageSend = 'SendMessage';
   static const messageStream = 'SendStreamingMessage';
   static const tasksGet = 'GetTask';
+  static const tasksList = 'ListTasks';
   static const tasksCancel = 'tasks/cancel';
   static const tasksPncSet = 'tasks/pushNotificationConfig/set';
   static const tasksPncGet = 'tasks/pushNotificationConfig/get';
@@ -134,6 +135,55 @@ final class A2AGetTaskRequest extends A2ARequest {
 
   @override
   Map<String, dynamic> toJson() => _$A2AGetTaskRequestToJson(this);
+}
+
+/// JSON-RPC request model for the 'ListTasks' method.
+@JsonSerializable(explicitToJson: true)
+final class A2AListTasksRequest extends A2ARequest {
+  /// Optional. Opaque routing identifier. Must match the tenant value from the selected AgentInterface
+  /// in the Agent Card when that field is set.
+  String? tenant;
+
+  /// Filter tasks by context ID to get tasks from a specific conversation or session.
+  String? contextId;
+
+  /// Filter tasks by their current status state.
+  A2ATaskStatus? status;
+
+  /// The maximum number of tasks to return. The service may return fewer than this value.
+  /// If unspecified, at most 50 tasks will be returned. The minimum value is 1.
+  /// The maximum value is 100.
+  int? pageSize;
+
+  /// A page token, received from a previous ListTasks call. ListTasksResponse.next_page_token.
+  /// Provide this to retrieve the subsequent page.
+  String? pageToken;
+
+  /// The maximum number of messages to include in each task's history.
+  int? historyLength;
+
+  /// Filter tasks which have a status updated after the provided timestamp in ISO 8601 format (e.g., "2023-10-27T10:00:00Z").
+  /// Only tasks with a status timestamp time greater than or equal to this value will be returned.
+  String? statusTimestampAfter;
+
+  /// Whether to include artifacts in the returned tasks. Defaults to false to reduce payload size.
+  bool includeArtifacts = false;
+
+  /// Specifies the version of the JSON-RPC protocol. MUST be exactly "2.0".
+  @JsonKey(includeToJson: true, includeFromJson: false)
+  String jsonrpc = '2.0';
+
+  /// A String containing the name of the method to be invoked.
+  @JsonKey(includeToJson: true, includeFromJson: false)
+  String method = A2ARequest.tasksList;
+
+  A2AListTasksRequest();
+
+  factory A2AListTasksRequest.fromJson(Map<String, dynamic> json) =>
+      _$A2AListTasksRequestFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$A2AListTasksRequestToJson(this);
 }
 
 /// JSON-RPC request model for the 'tasks/cancel' method.

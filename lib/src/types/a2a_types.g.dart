@@ -356,6 +356,34 @@ Map<String, dynamic> _$A2AGetTaskRequestToJson(A2AGetTaskRequest instance) =>
       'params': instance.params?.toJson(),
     };
 
+A2AListTasksRequest _$A2AListTasksRequestFromJson(Map<String, dynamic> json) =>
+    A2AListTasksRequest()
+      ..tenant = json['tenant'] as String?
+      ..contextId = json['contextId'] as String?
+      ..status = json['status'] == null
+          ? null
+          : A2ATaskStatus.fromJson(json['status'] as Map<String, dynamic>)
+      ..pageSize = (json['pageSize'] as num?)?.toInt()
+      ..pageToken = json['pageToken'] as String?
+      ..historyLength = (json['historyLength'] as num?)?.toInt()
+      ..statusTimestampAfter = json['statusTimestampAfter'] as String?
+      ..includeArtifacts = json['includeArtifacts'] as bool;
+
+Map<String, dynamic> _$A2AListTasksRequestToJson(
+  A2AListTasksRequest instance,
+) => <String, dynamic>{
+  'tenant': instance.tenant,
+  'contextId': instance.contextId,
+  'status': instance.status?.toJson(),
+  'pageSize': instance.pageSize,
+  'pageToken': instance.pageToken,
+  'historyLength': instance.historyLength,
+  'statusTimestampAfter': instance.statusTimestampAfter,
+  'includeArtifacts': instance.includeArtifacts,
+  'jsonrpc': instance.jsonrpc,
+  'method': instance.method,
+};
+
 A2ACancelTaskRequest _$A2ACancelTaskRequestFromJson(
   Map<String, dynamic> json,
 ) => A2ACancelTaskRequest()
@@ -867,6 +895,42 @@ Map<String, dynamic> _$A2ACancelTaskSuccessResponseToJson(
   'id': instance.id,
   'jsonrpc': instance.jsonrpc,
   'result': instance.result?.toJson(),
+};
+
+A2AJSONRPCErrorResponseTL _$A2AJSONRPCErrorResponseTLFromJson(
+  Map<String, dynamic> json,
+) => A2AJSONRPCErrorResponseTL()
+  ..error = json['error'] == null
+      ? null
+      : A2AError.fromJson(json['error'] as Map<String, dynamic>)
+  ..id = json['id'];
+
+Map<String, dynamic> _$A2AJSONRPCErrorResponseTLToJson(
+  A2AJSONRPCErrorResponseTL instance,
+) => <String, dynamic>{
+  'error': instance.error?.toJson(),
+  'id': instance.id,
+  'jsonrpc': instance.jsonrpc,
+};
+
+A2AListTasksSuccessResponse _$A2AListTasksSuccessResponseFromJson(
+  Map<String, dynamic> json,
+) => A2AListTasksSuccessResponse()
+  ..tasks = (json['tasks'] as List<dynamic>)
+      .map((e) => A2ATask.fromJson(e as Map<String, dynamic>))
+      .toList()
+  ..nextPageToken = json['nextPageToken'] as String
+  ..pageSize = (json['pageSize'] as num).toInt()
+  ..totalSize = (json['totalSize'] as num).toInt();
+
+Map<String, dynamic> _$A2AListTasksSuccessResponseToJson(
+  A2AListTasksSuccessResponse instance,
+) => <String, dynamic>{
+  'tasks': instance.tasks.map((e) => e.toJson()).toList(),
+  'nextPageToken': instance.nextPageToken,
+  'pageSize': instance.pageSize,
+  'totalSize': instance.totalSize,
+  'jsonrpc': instance.jsonrpc,
 };
 
 A2AJSONRPCErrorResponseGTPR _$A2AJSONRPCErrorResponseGTPRFromJson(
