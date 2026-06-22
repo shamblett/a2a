@@ -22,7 +22,7 @@ dependencies:
     args: '^2.7.0'
     uuid: '^4.5.3'
     events_emitter: '^0.6.0'
-    darto: ^1.2.0
+    darto: '^1.2.0'
     meta: '^1.18.3'
     genai_primitives: '^0.2.3'
 
