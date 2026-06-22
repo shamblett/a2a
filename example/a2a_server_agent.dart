@@ -190,11 +190,11 @@ class MovieAgentExecutor implements A2AAgentExecutor {
 ///
 
 /// Define a middleware function to log incoming requests
-final mwLogging = ((Request req, Response res, NextFunction next) {
+final mwLogging = ((Context c, Function next) async {
   print(
-    '${Colorize('📝 Request: ${req.method} ${req.uri} from ${req.hostname}').blue()}',
+    '${Colorize('📝 Request: ${c.req.method} ${c.req.url} from ${c.req.ip}').blue()}',
   );
-  next();
+  return next();
 });
 
 void main() {
