@@ -12,12 +12,17 @@ class A2ARequest {
   static const messageSend = 'message/send';
   static const messageStream = 'message/stream';
   static const tasksGet = 'tasks/get';
+  // Defined in the protocol specification only for gRPC and REST
+  // so not implemented here with the only supported transport being JSON-RPC
+  static const tasksList = 'tasks/list';
   static const tasksCancel = 'tasks/cancel';
   static const tasksPncSet = 'tasks/pushNotificationConfig/set';
   static const tasksPncGet = 'tasks/pushNotificationConfig/get';
   static const tasksPncList = 'tasks/pushNotificationConfig/list';
   static const tasksPncDelete = 'tasks/pushNotificationConfig/delete';
   static const tasksResubscribe = 'tasks/resubscribe';
+  // TODO
+  static const getAuthenticatedAgentCard = 'agent/getAuthenticatedExtendedCard';
 
   /// Set if a valid request cannot be formed by [fromJson].
   @JsonKey(includeFromJson: false)
