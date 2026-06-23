@@ -287,7 +287,7 @@ final class A2ATaskResubscriptionRequest extends A2ARequest {
 
   /// A String containing the name of the method to be invoked.
   @JsonKey(includeToJson: true, includeFromJson: false)
-  String method = 'tasks/resubscribe';
+  String method = A2ARequest.tasksResubscribe;
 
   A2ATaskIdParams? params;
 
