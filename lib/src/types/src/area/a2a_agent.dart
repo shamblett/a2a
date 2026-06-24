@@ -10,29 +10,6 @@ part of '../../a2a_types.dart';
 /// Agent class
 class A2AAgent {}
 
-/// A declaration of an extension supported by an Agent.
-@JsonSerializable(explicitToJson: true)
-final class A2AAgentExtension {
-  /// A description of how this agent uses this extension.
-  String? description;
-
-  /// Optional configuration for the extension.
-  A2ASV? params;
-
-  /// Whether the client must follow specific requirements of the extension.
-  bool? required;
-
-  /// The URI of the extension.
-  String uri = '';
-
-  A2AAgentExtension();
-
-  factory A2AAgentExtension.fromJson(Map<String, dynamic> json) =>
-      _$A2AAgentExtensionFromJson(json);
-
-  Map<String, dynamic> toJson() => _$A2AAgentExtensionToJson(this);
-}
-
 /// Supported A2A transport protocols.
 enum A2ATransportProtocol {
   /// he task has been submitted and is awaiting execution.
@@ -216,6 +193,30 @@ final class A2AAgentCapabilities {
       _$A2AAgentCapabilitiesFromJson(json);
 
   Map<String, dynamic> toJson() => _$A2AAgentCapabilitiesToJson(this);
+}
+
+/// Specifies an extension to the A2A protocol supported by the agent.
+@JsonSerializable(explicitToJson: true)
+final class A2AAgentExtension {
+  /// he unique URL identifying the extension.
+  String uri = '';
+
+  /// A human readable description of how this agent uses this extension.
+  String? description;
+
+  /// If true, the client must understand and comply with the extension's requirements
+  /// to interact with the agent.
+  bool? required;
+
+  /// Optional, extension-specific configuration parameters.
+  A2ASV? params;
+
+  A2AAgentExtension();
+
+  factory A2AAgentExtension.fromJson(Map<String, dynamic> json) =>
+      _$A2AAgentExtensionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$A2AAgentExtensionToJson(this);
 }
 
 /// Represents a unit of capability that an agent can perform.
