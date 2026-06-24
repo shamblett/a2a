@@ -10,29 +10,6 @@ part of '../../a2a_types.dart';
 /// Agent class
 class A2AAgent {}
 
-/// Defines optional capabilities supported by an agent.
-@JsonSerializable(explicitToJson: true)
-final class A2AAgentCapabilities {
-  /// Extensions supported by this agent.
-  List<A2AAgentExtension>? extensions;
-
-  /// True if the agent can notify updates to client.
-  bool? pushNotifications;
-
-  /// True if the agent exposes status change history for tasks.
-  bool? stateTransitionHistory;
-
-  /// True if the agent supports SSE.
-  bool? streaming;
-
-  A2AAgentCapabilities();
-
-  factory A2AAgentCapabilities.fromJson(Map<String, dynamic> json) =>
-      _$A2AAgentCapabilitiesFromJson(json);
-
-  Map<String, dynamic> toJson() => _$A2AAgentCapabilitiesToJson(this);
-}
-
 /// A declaration of an extension supported by an Agent.
 @JsonSerializable(explicitToJson: true)
 final class A2AAgentExtension {
@@ -216,6 +193,29 @@ final class A2AAgentProvider extends A2AAgent {
       _$A2AAgentProviderFromJson(json);
 
   Map<String, dynamic> toJson() => _$A2AAgentProviderToJson(this);
+}
+
+/// Defines optional capabilities supported by an agent.
+@JsonSerializable(explicitToJson: true)
+final class A2AAgentCapabilities {
+  /// True if the agent supports SSE.
+  bool? streaming;
+
+  /// True if the agent can notify updates to client.
+  bool? pushNotifications;
+
+  /// True if the agent exposes status change history for tasks.
+  bool? stateTransitionHistory;
+
+  /// A list of protocol extensions supported by the agent.
+  List<A2AAgentExtension>? extensions;
+
+  A2AAgentCapabilities();
+
+  factory A2AAgentCapabilities.fromJson(Map<String, dynamic> json) =>
+      _$A2AAgentCapabilitiesFromJson(json);
+
+  Map<String, dynamic> toJson() => _$A2AAgentCapabilitiesToJson(this);
 }
 
 /// Represents a unit of capability that an agent can perform.
