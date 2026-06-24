@@ -219,31 +219,37 @@ final class A2AAgentExtension {
   Map<String, dynamic> toJson() => _$A2AAgentExtensionToJson(this);
 }
 
-/// Represents a unit of capability that an agent can perform.
+/// Represents a distinct capability or function that an agent can perform.
 @JsonSerializable(explicitToJson: true)
 final class A2AAgentSkill extends A2AAgent {
-  /// Description of the skill - will be used by the client or a human
-  /// as a hint to understand what the skill does.
-  String description = '';
-
-  /// The set of example scenarios that the skill can perform.
-  /// Will be used by the client as a hint to understand how the skill can be used.
-  List<String> examples = [];
-
   /// Unique identifier for the agent's skill.
   String id = '';
-
-  /// The set of supported input MIME types for this skill, overriding the agent's defaults.
-  List<String>? inputModes;
 
   /// Human readable name of the skill.
   String name = '';
 
+  /// A detailed description of the skill, intended to help clients or users
+  /// understand its purpose and functionality.
+  String description = '';
+
+  ///  A set of keywords describing the skill's capabilities.
+  List<String>? tags;
+
+  /// Example prompts or scenarios that this skill can handle. Provides a hint to
+  /// the client on how to use the skill.
+  List<String> examples = [];
+
+  /// The set of supported input MIME types for this skill, overriding the agent's defaults.
+  List<String>? inputModes;
+
   /// he set of supported output MIME types for this skill, overriding the agent's defaults.
   List<String>? outputModes;
 
-  /// Set of tag words describing classes of capabilities for this specific skill.
-  List<String>? tags;
+  /// Security schemes necessary for the agent to leverage this skill.
+  /// As in the overall AgentCard.security, this list represents a logical OR of security
+  /// requirement objects. Each object is a set of security schemes that must be used together
+  /// * (a logical AND).
+  List<Map<String, List<String>>>? security;
 
   A2AAgentSkill();
 

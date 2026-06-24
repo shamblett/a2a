@@ -1202,40 +1202,6 @@ Map<String, dynamic> _$A2ATaskArtifactUpdateEventToJson(
   'taskId': instance.taskId,
 };
 
-A2AAgentCapabilities _$A2AAgentCapabilitiesFromJson(
-  Map<String, dynamic> json,
-) => A2AAgentCapabilities()
-  ..extensions = (json['extensions'] as List<dynamic>?)
-      ?.map((e) => A2AAgentExtension.fromJson(e as Map<String, dynamic>))
-      .toList()
-  ..pushNotifications = json['pushNotifications'] as bool?
-  ..stateTransitionHistory = json['stateTransitionHistory'] as bool?
-  ..streaming = json['streaming'] as bool?;
-
-Map<String, dynamic> _$A2AAgentCapabilitiesToJson(
-  A2AAgentCapabilities instance,
-) => <String, dynamic>{
-  'extensions': instance.extensions?.map((e) => e.toJson()).toList(),
-  'pushNotifications': instance.pushNotifications,
-  'stateTransitionHistory': instance.stateTransitionHistory,
-  'streaming': instance.streaming,
-};
-
-A2AAgentExtension _$A2AAgentExtensionFromJson(Map<String, dynamic> json) =>
-    A2AAgentExtension()
-      ..description = json['description'] as String?
-      ..params = json['params'] as Map<String, dynamic>?
-      ..required = json['required'] as bool?
-      ..uri = json['uri'] as String;
-
-Map<String, dynamic> _$A2AAgentExtensionToJson(A2AAgentExtension instance) =>
-    <String, dynamic>{
-      'description': instance.description,
-      'params': instance.params,
-      'required': instance.required,
-      'uri': instance.uri,
-    };
-
 A2AAgentInterface _$A2AAgentInterfaceFromJson(Map<String, dynamic> json) =>
     A2AAgentInterface()
       ..url = json['url'] as String
@@ -1360,31 +1326,76 @@ Map<String, dynamic> _$A2AAgentProviderToJson(A2AAgentProvider instance) =>
       'url': instance.url,
     };
 
+A2AAgentCapabilities _$A2AAgentCapabilitiesFromJson(
+  Map<String, dynamic> json,
+) => A2AAgentCapabilities()
+  ..streaming = json['streaming'] as bool?
+  ..pushNotifications = json['pushNotifications'] as bool?
+  ..stateTransitionHistory = json['stateTransitionHistory'] as bool?
+  ..extensions = (json['extensions'] as List<dynamic>?)
+      ?.map((e) => A2AAgentExtension.fromJson(e as Map<String, dynamic>))
+      .toList();
+
+Map<String, dynamic> _$A2AAgentCapabilitiesToJson(
+  A2AAgentCapabilities instance,
+) => <String, dynamic>{
+  'streaming': instance.streaming,
+  'pushNotifications': instance.pushNotifications,
+  'stateTransitionHistory': instance.stateTransitionHistory,
+  'extensions': instance.extensions?.map((e) => e.toJson()).toList(),
+};
+
+A2AAgentExtension _$A2AAgentExtensionFromJson(Map<String, dynamic> json) =>
+    A2AAgentExtension()
+      ..uri = json['uri'] as String
+      ..description = json['description'] as String?
+      ..required = json['required'] as bool?
+      ..params = json['params'] as Map<String, dynamic>?;
+
+Map<String, dynamic> _$A2AAgentExtensionToJson(A2AAgentExtension instance) =>
+    <String, dynamic>{
+      'uri': instance.uri,
+      'description': instance.description,
+      'required': instance.required,
+      'params': instance.params,
+    };
+
 A2AAgentSkill _$A2AAgentSkillFromJson(Map<String, dynamic> json) =>
     A2AAgentSkill()
+      ..id = json['id'] as String
+      ..name = json['name'] as String
       ..description = json['description'] as String
+      ..tags = (json['tags'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList()
       ..examples = (json['examples'] as List<dynamic>)
           .map((e) => e as String)
           .toList()
-      ..id = json['id'] as String
       ..inputModes = (json['inputModes'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList()
-      ..name = json['name'] as String
       ..outputModes = (json['outputModes'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList()
-      ..tags = (json['tags'] as List<dynamic>?)
-          ?.map((e) => e as String)
+      ..security = (json['security'] as List<dynamic>?)
+          ?.map(
+            (e) => (e as Map<String, dynamic>).map(
+              (k, e) => MapEntry(
+                k,
+                (e as List<dynamic>).map((e) => e as String).toList(),
+              ),
+            ),
+          )
           .toList();
 
 Map<String, dynamic> _$A2AAgentSkillToJson(A2AAgentSkill instance) =>
     <String, dynamic>{
-      'description': instance.description,
-      'examples': instance.examples,
       'id': instance.id,
-      'inputModes': instance.inputModes,
       'name': instance.name,
-      'outputModes': instance.outputModes,
+      'description': instance.description,
       'tags': instance.tags,
+      'examples': instance.examples,
+      'inputModes': instance.inputModes,
+      'outputModes': instance.outputModes,
+      'security': instance.security,
     };
