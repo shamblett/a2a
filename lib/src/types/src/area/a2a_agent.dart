@@ -109,65 +109,28 @@ class A2AAgentCardSignature {
   Map<String, dynamic> toJson() => _$A2AAgentCardSignatureToJson(this);
 }
 
-/// An AgentCard conveys key information:
-/// - Overall details (version, name, description, uses)
-/// - Skills: A set of capabilities the agent can perform
-/// - Default modalities/content types supported by the agent.
-/// - Authentication requirements.
+/// The AgentCard is a self-describing manifest for an agent. It provides essential
+/// metadata including the agent's identity, capabilities, skills, supported
+/// communication methods, and security requirements.
 @JsonSerializable(explicitToJson: true)
 final class A2AAgentCard extends A2AAgent {
   /// The version of the A2A protocol this agent supports.
   String protocolVersion = '0.3.0';
 
-  /// A declaration of optional capabilities supported by the agent.
-  A2AAgentCapabilities capabilities = A2AAgentCapabilities();
-
-  /// Default set of supported input MIME types for all skills, which can be
-  /// overridden on a per-skill basis.
-  List<String> defaultInputModes = [];
-
-  /// Default set of supported output MIME types for all skills, which can be
-  /// overridden on a per-skill basis.
-  List<String> defaultOutputModes = [];
+  /// Human readable name of the agent.
+  String name = '';
 
   /// A human-readable description of the agent. Used to assist users and
   /// other agents in understanding what the agent can do.
   String description = '';
 
-  /// A URL to documentation for the agent.
-  String? documentationUrl;
-
-  /// An optional URL to an icon for the agent.
-  String? iconUrl;
-
-  /// Human readable name of the agent.
-  String name = '';
-
-  /// Information about the agent's service provider.
-  A2AAgentProvider? agentProvider;
-
-  /// A list of security requirement objects that apply to all agent interactions. Each object
-  /// lists security schemes that can be used. Follows the OpenAPI 3.0 Security Requirement Object.
-  /// This list can be seen as an OR of ANDs. Each object in the list describes one possible
-  /// set of security requirements that must be present on a request. This allows specifying,
-  /// for example, "callers must either use OAuth OR an API Key AND mTLS."
-  List<Map<String, List<String>>>? security;
-
-  /// A declaration of the security schemes available to authorize requests. The key is the
-  /// scheme name. Follows the OpenAPI 3.0 Security Scheme Object.
-  Map<String, A2ASecurityScheme>? securitySchemes;
-
-  /// The set of skills, or distinct capabilities, that the agent can perform.
-  List<A2AAgentSkill> skills = [];
-
-  /// True if the agent supports providing an extended agent card when the user is authenticated.
-  /// Defaults to false if not specified.
-  bool? supportsAuthenticatedExtendedCard;
-
   /// The preferred endpoint URL for interacting with the agent.
   /// This URL MUST support the transport specified by 'preferredTransport'.
   String url = '';
 
+  /// The transport protocol for the preferred endpoint (the main 'url' field).
+  /// If not specified, defaults to 'JSONRPC'.
+  ///
   /// IMPORTANT: The transport specified here MUST be available at the main 'url'.
   /// This creates a binding between the main URL and its supported transport protocol.
   /// Clients should prefer this transport and URL combination when both are supported.
@@ -186,11 +149,49 @@ final class A2AAgentCard extends A2AAgent {
   /// and preferences. This enables transport negotiation and fallback scenarios.
   List<A2AAgentInterface>? additionalInterfaces;
 
-  /// JSON Web Signatures computed for this AgentCard.
-  List<A2AAgentCardSignature>? signatures;
+  /// An optional URL to an icon for the agent.
+  String? iconUrl;
+
+  /// Information about the agent's service provider.
+  A2AAgentProvider? agentProvider;
 
   /// The agent's own version number. The format is defined by the provider.
   String version = '';
+
+  /// An optional URL to documentation for the agent.
+  String? documentationUrl;
+
+  /// A declaration of optional capabilities supported by the agent.
+  A2AAgentCapabilities capabilities = A2AAgentCapabilities();
+
+  /// A declaration of the security schemes available to authorize requests. The key is the
+  /// scheme name. Follows the OpenAPI 3.0 Security Scheme Object.
+  Map<String, A2ASecurityScheme>? securitySchemes;
+
+  /// A list of security requirement objects that apply to all agent interactions. Each object
+  /// lists security schemes that can be used. Follows the OpenAPI 3.0 Security Requirement Object.
+  /// This list can be seen as an OR of ANDs. Each object in the list describes one possible
+  /// set of security requirements that must be present on a request. This allows specifying,
+  /// for example, "callers must either use OAuth OR an API Key AND mTLS."
+  List<Map<String, List<String>>>? security;
+
+  /// Default set of supported input MIME types for all skills, which can be
+  /// overridden on a per-skill basis.
+  List<String> defaultInputModes = [];
+
+  /// Default set of supported output MIME types for all skills, which can be
+  /// overridden on a per-skill basis.
+  List<String> defaultOutputModes = [];
+
+  /// The set of skills, or distinct capabilities, that the agent can perform.
+  List<A2AAgentSkill> skills = [];
+
+  /// True if the agent supports providing an extended agent card when the user is authenticated.
+  /// Defaults to false if not specified.
+  bool? supportsAuthenticatedExtendedCard;
+
+  /// JSON Web Signatures computed for this AgentCard.
+  List<A2AAgentCardSignature>? signatures;
 
   A2AAgentCard();
 

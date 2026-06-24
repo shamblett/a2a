@@ -1273,22 +1273,29 @@ Map<String, dynamic> _$A2AAgentCardSignatureToJson(
 
 A2AAgentCard _$A2AAgentCardFromJson(Map<String, dynamic> json) => A2AAgentCard()
   ..protocolVersion = json['protocolVersion'] as String
-  ..capabilities = A2AAgentCapabilities.fromJson(
-    json['capabilities'] as Map<String, dynamic>,
-  )
-  ..defaultInputModes = (json['defaultInputModes'] as List<dynamic>)
-      .map((e) => e as String)
-      .toList()
-  ..defaultOutputModes = (json['defaultOutputModes'] as List<dynamic>)
-      .map((e) => e as String)
-      .toList()
-  ..description = json['description'] as String
-  ..documentationUrl = json['documentationUrl'] as String?
-  ..iconUrl = json['iconUrl'] as String?
   ..name = json['name'] as String
+  ..description = json['description'] as String
+  ..url = json['url'] as String
+  ..preferredTransport = $enumDecodeNullable(
+    _$A2ATransportProtocolEnumMap,
+    json['preferredTransport'],
+  )
+  ..additionalInterfaces = (json['additionalInterfaces'] as List<dynamic>?)
+      ?.map((e) => A2AAgentInterface.fromJson(e as Map<String, dynamic>))
+      .toList()
+  ..iconUrl = json['iconUrl'] as String?
   ..agentProvider = json['agentProvider'] == null
       ? null
       : A2AAgentProvider.fromJson(json['agentProvider'] as Map<String, dynamic>)
+  ..version = json['version'] as String
+  ..documentationUrl = json['documentationUrl'] as String?
+  ..capabilities = A2AAgentCapabilities.fromJson(
+    json['capabilities'] as Map<String, dynamic>,
+  )
+  ..securitySchemes = (json['securitySchemes'] as Map<String, dynamic>?)?.map(
+    (k, e) =>
+        MapEntry(k, A2ASecurityScheme.fromJson(e as Map<String, dynamic>)),
+  )
   ..security = (json['security'] as List<dynamic>?)
       ?.map(
         (e) => (e as Map<String, dynamic>).map(
@@ -1299,54 +1306,47 @@ A2AAgentCard _$A2AAgentCardFromJson(Map<String, dynamic> json) => A2AAgentCard()
         ),
       )
       .toList()
-  ..securitySchemes = (json['securitySchemes'] as Map<String, dynamic>?)?.map(
-    (k, e) =>
-        MapEntry(k, A2ASecurityScheme.fromJson(e as Map<String, dynamic>)),
-  )
+  ..defaultInputModes = (json['defaultInputModes'] as List<dynamic>)
+      .map((e) => e as String)
+      .toList()
+  ..defaultOutputModes = (json['defaultOutputModes'] as List<dynamic>)
+      .map((e) => e as String)
+      .toList()
   ..skills = (json['skills'] as List<dynamic>)
       .map((e) => A2AAgentSkill.fromJson(e as Map<String, dynamic>))
       .toList()
   ..supportsAuthenticatedExtendedCard =
       json['supportsAuthenticatedExtendedCard'] as bool?
-  ..url = json['url'] as String
-  ..preferredTransport = $enumDecodeNullable(
-    _$A2ATransportProtocolEnumMap,
-    json['preferredTransport'],
-  )
-  ..additionalInterfaces = (json['additionalInterfaces'] as List<dynamic>?)
-      ?.map((e) => A2AAgentInterface.fromJson(e as Map<String, dynamic>))
-      .toList()
   ..signatures = (json['signatures'] as List<dynamic>?)
       ?.map((e) => A2AAgentCardSignature.fromJson(e as Map<String, dynamic>))
-      .toList()
-  ..version = json['version'] as String;
+      .toList();
 
 Map<String, dynamic> _$A2AAgentCardToJson(A2AAgentCard instance) =>
     <String, dynamic>{
       'protocolVersion': instance.protocolVersion,
-      'capabilities': instance.capabilities.toJson(),
-      'defaultInputModes': instance.defaultInputModes,
-      'defaultOutputModes': instance.defaultOutputModes,
-      'description': instance.description,
-      'documentationUrl': instance.documentationUrl,
-      'iconUrl': instance.iconUrl,
       'name': instance.name,
-      'agentProvider': instance.agentProvider?.toJson(),
-      'security': instance.security,
-      'securitySchemes': instance.securitySchemes?.map(
-        (k, e) => MapEntry(k, e.toJson()),
-      ),
-      'skills': instance.skills.map((e) => e.toJson()).toList(),
-      'supportsAuthenticatedExtendedCard':
-          instance.supportsAuthenticatedExtendedCard,
+      'description': instance.description,
       'url': instance.url,
       'preferredTransport':
           _$A2ATransportProtocolEnumMap[instance.preferredTransport],
       'additionalInterfaces': instance.additionalInterfaces
           ?.map((e) => e.toJson())
           .toList(),
-      'signatures': instance.signatures?.map((e) => e.toJson()).toList(),
+      'iconUrl': instance.iconUrl,
+      'agentProvider': instance.agentProvider?.toJson(),
       'version': instance.version,
+      'documentationUrl': instance.documentationUrl,
+      'capabilities': instance.capabilities.toJson(),
+      'securitySchemes': instance.securitySchemes?.map(
+        (k, e) => MapEntry(k, e.toJson()),
+      ),
+      'security': instance.security,
+      'defaultInputModes': instance.defaultInputModes,
+      'defaultOutputModes': instance.defaultOutputModes,
+      'skills': instance.skills.map((e) => e.toJson()).toList(),
+      'supportsAuthenticatedExtendedCard':
+          instance.supportsAuthenticatedExtendedCard,
+      'signatures': instance.signatures?.map((e) => e.toJson()).toList(),
     };
 
 A2AAgentProvider _$A2AAgentProviderFromJson(Map<String, dynamic> json) =>
