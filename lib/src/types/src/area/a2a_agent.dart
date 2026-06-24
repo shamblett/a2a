@@ -201,13 +201,13 @@ final class A2AAgentCard extends A2AAgent {
   Map<String, dynamic> toJson() => _$A2AAgentCardToJson(this);
 }
 
-/// The service provider of the agent
+/// Information about the organization or entity providing the agent.
 @JsonSerializable(explicitToJson: true)
 final class A2AAgentProvider extends A2AAgent {
   /// Agent provider's organization name.
   String organization = '';
 
-  /// Agent provider's URL.
+  /// A URL for the agent provider's website or relevant documentation.
   String url = '';
 
   A2AAgentProvider();
