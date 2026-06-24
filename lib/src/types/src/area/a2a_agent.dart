@@ -21,26 +21,6 @@ enum A2ATransportProtocol {
   httpJson,
 }
 
-/// Declares a combination of a target URL and a transport protocol for interacting with the agent.
-/// This allows agents to expose the same functionality over multiple transport mechanisms.
-@JsonSerializable(explicitToJson: true)
-class A2AAgentInterface {
-  /// The URL where this interface is available. Must be a valid absolute HTTPS URL in production.
-  /// examples ["https://api.example.com/a2a/v1",
-  /// "https://grpc.example.com/a2a", "https://rest.example.com/v1"]
-  String url = '';
-
-  /// The transport protocol supported at this URL.
-  A2ATransportProtocol transport = A2ATransportProtocol.jsonRpc;
-
-  A2AAgentInterface();
-
-  factory A2AAgentInterface.fromJson(Map<String, dynamic> json) =>
-      _$A2AAgentInterfaceFromJson(json);
-
-  Map<String, dynamic> toJson() => _$A2AAgentInterfaceToJson(this);
-}
-
 /// AgentCardSignature represents a JWS signature of an AgentCard.
 /// This follows the JSON format of an RFC 7515 JSON Web Signature (JWS).
 @JsonSerializable(explicitToJson: true)
@@ -257,4 +237,24 @@ final class A2AAgentSkill extends A2AAgent {
       _$A2AAgentSkillFromJson(json);
 
   Map<String, dynamic> toJson() => _$A2AAgentSkillToJson(this);
+}
+
+/// Declares a combination of a target URL and a transport protocol for interacting with the agent.
+/// This allows agents to expose the same functionality over multiple transport mechanisms.
+@JsonSerializable(explicitToJson: true)
+class A2AAgentInterface {
+  /// The URL where this interface is available. Must be a valid absolute HTTPS URL in production.
+  /// examples ["https://api.example.com/a2a/v1",
+  /// "https://grpc.example.com/a2a", "https://rest.example.com/v1"]
+  String url = '';
+
+  /// The transport protocol supported at this URL.
+  A2ATransportProtocol transport = A2ATransportProtocol.jsonRpc;
+
+  A2AAgentInterface();
+
+  factory A2AAgentInterface.fromJson(Map<String, dynamic> json) =>
+      _$A2AAgentInterfaceFromJson(json);
+
+  Map<String, dynamic> toJson() => _$A2AAgentInterfaceToJson(this);
 }
