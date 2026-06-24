@@ -12,35 +12,12 @@ class A2AAgent {}
 
 /// Supported A2A transport protocols.
 enum A2ATransportProtocol {
-  /// he task has been submitted and is awaiting execution.
   @JsonValue('JSONRPC')
   jsonRpc,
   @JsonValue('GRPC')
   gRpc,
   @JsonValue('HTTP+JSON')
   httpJson,
-}
-
-/// AgentCardSignature represents a JWS signature of an AgentCard.
-/// This follows the JSON format of an RFC 7515 JSON Web Signature (JWS).
-@JsonSerializable(explicitToJson: true)
-class A2AAgentCardSignature {
-  /// The protected JWS header for the signature. This is a Base64url-encoded
-  /// JSON object, as per RFC 7515.
-  String protected = '';
-
-  /// The computed signature, Base64url-encoded.
-  String signature = '';
-
-  /// The unprotected JWS header values.
-  A2ASV? header;
-
-  A2AAgentCardSignature();
-
-  factory A2AAgentCardSignature.fromJson(Map<String, dynamic> json) =>
-      _$A2AAgentCardSignatureFromJson(json);
-
-  Map<String, dynamic> toJson() => _$A2AAgentCardSignatureToJson(this);
 }
 
 /// The AgentCard is a self-describing manifest for an agent. It provides essential
@@ -257,4 +234,26 @@ class A2AAgentInterface {
       _$A2AAgentInterfaceFromJson(json);
 
   Map<String, dynamic> toJson() => _$A2AAgentInterfaceToJson(this);
+}
+
+/// AgentCardSignature represents a JWS signature of an AgentCard.
+/// This follows the JSON format of an RFC 7515 JSON Web Signature (JWS).
+@JsonSerializable(explicitToJson: true)
+class A2AAgentCardSignature {
+  /// The protected JWS header for the signature. This is a Base64url-encoded
+  /// JSON object, as per RFC 7515.
+  String protected = '';
+
+  /// The computed signature, Base64url-encoded.
+  String signature = '';
+
+  /// The unprotected JWS header values.
+  A2ASV? header;
+
+  A2AAgentCardSignature();
+
+  factory A2AAgentCardSignature.fromJson(Map<String, dynamic> json) =>
+      _$A2AAgentCardSignatureFromJson(json);
+
+  Map<String, dynamic> toJson() => _$A2AAgentCardSignatureToJson(this);
 }
