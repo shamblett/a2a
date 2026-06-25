@@ -694,9 +694,9 @@ Map<String, dynamic> _$A2AAPIKeySecuritySchemeToJson(
 };
 
 const _$A2ASecuritySchemeTypeEnumMap = {
-  A2ASecuritySchemeType.apiKey: 'apikey',
+  A2ASecuritySchemeType.apikey: 'apikey',
   A2ASecuritySchemeType.http: 'http',
-  A2ASecuritySchemeType.oAuth2: 'oauth2',
+  A2ASecuritySchemeType.oauth2: 'oauth2',
   A2ASecuritySchemeType.openIdConnect: 'openIdConnect',
   A2ASecuritySchemeType.mutualTLS: 'mutualTLS',
 };
@@ -759,29 +759,29 @@ Map<String, dynamic> _$A2AMutualTLSSecuritySchemeToJson(
 A2AOAuthFlows _$A2AOAuthFlowsFromJson(
   Map<String, dynamic> json,
 ) => A2AOAuthFlows()
-  ..authorizationCode = json['authorizationCode'] == null
-      ? null
-      : A2AAuthorizationCodeOAuthFlow.fromJson(
-          json['authorizationCode'] as Map<String, dynamic>,
-        )
-  ..clientCredentials = json['clientCredentials'] == null
-      ? null
-      : A2AClientCredentialsOAuthFlow.fromJson(
-          json['clientCredentials'] as Map<String, dynamic>,
-        )
   ..implicit = json['implicit'] == null
       ? null
       : A2AImplicitOAuthFlow.fromJson(json['implicit'] as Map<String, dynamic>)
   ..password = json['password'] == null
       ? null
-      : A2APasswordOAuthFlow.fromJson(json['password'] as Map<String, dynamic>);
+      : A2APasswordOAuthFlow.fromJson(json['password'] as Map<String, dynamic>)
+  ..clientCredentials = json['clientCredentials'] == null
+      ? null
+      : A2AClientCredentialsOAuthFlow.fromJson(
+          json['clientCredentials'] as Map<String, dynamic>,
+        )
+  ..authorizationCode = json['authorizationCode'] == null
+      ? null
+      : A2AAuthorizationCodeOAuthFlow.fromJson(
+          json['authorizationCode'] as Map<String, dynamic>,
+        );
 
 Map<String, dynamic> _$A2AOAuthFlowsToJson(A2AOAuthFlows instance) =>
     <String, dynamic>{
-      'authorizationCode': instance.authorizationCode?.toJson(),
-      'clientCredentials': instance.clientCredentials?.toJson(),
       'implicit': instance.implicit?.toJson(),
       'password': instance.password?.toJson(),
+      'clientCredentials': instance.clientCredentials?.toJson(),
+      'authorizationCode': instance.authorizationCode?.toJson(),
     };
 
 A2AImplicitOAuthFlow _$A2AImplicitOAuthFlowFromJson(
@@ -804,46 +804,46 @@ A2AAuthorizationCodeOAuthFlow _$A2AAuthorizationCodeOAuthFlowFromJson(
 ) => A2AAuthorizationCodeOAuthFlow()
   ..authorizationUrl = json['authorizationUrl'] as String
   ..refreshUrl = json['refreshUrl'] as String?
-  ..scopes = Map<String, String>.from(json['scopes'] as Map)
-  ..tokenUrl = json['tokenUrl'] as String;
+  ..tokenUrl = json['tokenUrl'] as String
+  ..scopes = Map<String, String>.from(json['scopes'] as Map);
 
 Map<String, dynamic> _$A2AAuthorizationCodeOAuthFlowToJson(
   A2AAuthorizationCodeOAuthFlow instance,
 ) => <String, dynamic>{
   'authorizationUrl': instance.authorizationUrl,
   'refreshUrl': instance.refreshUrl,
-  'scopes': instance.scopes,
   'tokenUrl': instance.tokenUrl,
+  'scopes': instance.scopes,
 };
 
 A2AClientCredentialsOAuthFlow _$A2AClientCredentialsOAuthFlowFromJson(
   Map<String, dynamic> json,
 ) => A2AClientCredentialsOAuthFlow()
   ..refreshUrl = json['refreshUrl'] as String
-  ..scopes = Map<String, String>.from(json['scopes'] as Map)
-  ..tokenUrl = json['tokenUrl'] as String;
+  ..tokenUrl = json['tokenUrl'] as String
+  ..scopes = Map<String, String>.from(json['scopes'] as Map);
 
 Map<String, dynamic> _$A2AClientCredentialsOAuthFlowToJson(
   A2AClientCredentialsOAuthFlow instance,
 ) => <String, dynamic>{
   'refreshUrl': instance.refreshUrl,
-  'scopes': instance.scopes,
   'tokenUrl': instance.tokenUrl,
+  'scopes': instance.scopes,
 };
 
 A2APasswordOAuthFlow _$A2APasswordOAuthFlowFromJson(
   Map<String, dynamic> json,
 ) => A2APasswordOAuthFlow()
   ..refreshUrl = json['refreshUrl'] as String
-  ..scopes = Map<String, String>.from(json['scopes'] as Map)
-  ..tokenUrl = json['tokenUrl'] as String;
+  ..tokenUrl = json['tokenUrl'] as String
+  ..scopes = Map<String, String>.from(json['scopes'] as Map);
 
 Map<String, dynamic> _$A2APasswordOAuthFlowToJson(
   A2APasswordOAuthFlow instance,
 ) => <String, dynamic>{
   'refreshUrl': instance.refreshUrl,
-  'scopes': instance.scopes,
   'tokenUrl': instance.tokenUrl,
+  'scopes': instance.scopes,
 };
 
 A2AJSONRPCErrorResponse _$A2AJSONRPCErrorResponseFromJson(

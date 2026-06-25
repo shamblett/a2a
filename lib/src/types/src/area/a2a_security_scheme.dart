@@ -18,15 +18,15 @@ class A2ASecurityScheme {
       return A2ASecurityScheme();
     } else {
       switch (json['type']) {
-        case A2ASecuritySchemeType.apiKey:
+        case 'apikey':
           return A2AAPIKeySecurityScheme.fromJson(json);
-        case A2ASecuritySchemeType.http:
+        case 'http':
           return A2AHTTPAuthSecurityScheme.fromJson(json);
-        case A2ASecuritySchemeType.oAuth2:
+        case 'oauth2':
           return A2AOAuth2SecurityScheme.fromJson(json);
-        case A2ASecuritySchemeType.openIdConnect:
+        case 'openIdConnect':
           return A2AOpenIdConnectSecurityScheme.fromJson(json);
-        case A2ASecuritySchemeType.mutualTLS:
+        case 'mutualTLS':
           return A2AMutualTLSSecurityScheme.fromJson(json);
         default:
           return A2ASecurityScheme();
@@ -40,13 +40,13 @@ class A2ASecurityScheme {
 /// Security scheme type
 enum A2ASecuritySchemeType {
   @JsonValue('apikey')
-  apiKey,
+  apikey,
 
   @JsonValue('http')
   http,
 
   @JsonValue('oauth2')
-  oAuth2,
+  oauth2,
 
   @JsonValue('openIdConnect')
   openIdConnect,
@@ -60,7 +60,7 @@ enum A2ASecuritySchemeType {
 final class A2AAPIKeySecurityScheme extends A2ASecurityScheme {
   /// The type of the security scheme.
   @JsonKey(includeToJson: true, includeFromJson: false)
-  A2ASecuritySchemeType type = A2ASecuritySchemeType.apiKey;
+  A2ASecuritySchemeType type = A2ASecuritySchemeType.apikey;
 
   /// Description of this security scheme.
   String? description;
@@ -116,7 +116,7 @@ final class A2AHTTPAuthSecurityScheme extends A2ASecurityScheme {
 final class A2AOAuth2SecurityScheme extends A2ASecurityScheme {
   /// The type of the security scheme.
   @JsonKey(includeToJson: true, includeFromJson: false)
-  A2ASecuritySchemeType type = A2ASecuritySchemeType.oAuth2;
+  A2ASecuritySchemeType type = A2ASecuritySchemeType.oauth2;
 
   /// Description of this security scheme.
   String? description;
@@ -177,10 +177,19 @@ final class A2AMutualTLSSecurityScheme extends A2ASecurityScheme {
 /// An object containing configuration information for the flow types supported.
 @JsonSerializable(explicitToJson: true)
 final class A2AOAuthFlows {
-  A2AAuthorizationCodeOAuthFlow? authorizationCode;
-  A2AClientCredentialsOAuthFlow? clientCredentials;
+  /// Configuration for the OAuth Implicit flow
   A2AImplicitOAuthFlow? implicit;
+
+  /// Configuration for the OAuth Resource Owner Password flow
   A2APasswordOAuthFlow? password;
+
+  /// Configuration for the OAuth Client Credentials flow.
+  /// Previously called application in OpenAPI 2.0.
+  A2AClientCredentialsOAuthFlow? clientCredentials;
+
+  /// Configuration for the OAuth Authorization Code flow.
+  /// Previously called accessCode in OpenAPI 2.0.
+  A2AAuthorizationCodeOAuthFlow? authorizationCode;
 
   A2AOAuthFlows();
 
@@ -224,13 +233,13 @@ final class A2AAuthorizationCodeOAuthFlow {
   /// standard requires the use of TLS.
   String? refreshUrl;
 
-  /// The available scopes for the OAuth2 security scheme. A map between the scope name and a short
-  /// description for it. The map MAY be empty.
-  Map<String, String> scopes = {};
-
   /// The token URL to be used for this flow. This MUST be in the form of a URL. The OAuth2 standard
   /// requires the use of TLS.
   String tokenUrl = '';
+
+  /// The available scopes for the OAuth2 security scheme. A map between the scope name and a short
+  /// description for it. The map MAY be empty.
+  Map<String, String> scopes = {};
 
   A2AAuthorizationCodeOAuthFlow();
 
@@ -247,13 +256,13 @@ final class A2AClientCredentialsOAuthFlow {
   /// standard requires the use of TLS.
   String refreshUrl = '';
 
-  /// The available scopes for the OAuth2 security scheme. A map between the scope name and a short
-  /// description for it. The map MAY be empty.
-  Map<String, String> scopes = {};
-
   /// The token URL to be used for this flow. This MUST be in the form of a URL. The OAuth2 standard
   /// requires the use of TLS.
   String tokenUrl = '';
+
+  /// The available scopes for the OAuth2 security scheme. A map between the scope name and a short
+  /// description for it. The map MAY be empty.
+  Map<String, String> scopes = {};
 
   A2AClientCredentialsOAuthFlow();
 
@@ -270,13 +279,13 @@ final class A2APasswordOAuthFlow {
   /// standard requires the use of TLS.
   String refreshUrl = '';
 
-  /// The available scopes for the OAuth2 security scheme. A map between the scope name and a short
-  /// description for it. The map MAY be empty.
-  Map<String, String> scopes = {};
-
   /// The token URL to be used for this flow. This MUST be in the form of a URL. The OAuth2 standard
   /// requires the use of TLS.
   String tokenUrl = '';
+
+  /// The available scopes for the OAuth2 security scheme. A map between the scope name and a short
+  /// description for it. The map MAY be empty.
+  Map<String, String> scopes = {};
 
   A2APasswordOAuthFlow();
 

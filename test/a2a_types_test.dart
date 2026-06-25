@@ -147,7 +147,7 @@ void main() {
       expect(testScheme1.name, 'The Name');
       expect(testScheme1.description, 'The Description');
       expect(testScheme1.location, 'query');
-      expect(testScheme1.type, 'apiKey');
+      expect(testScheme1.type.name, 'apikey');
     });
     test('A2AHTTPAuthSecurityScheme', () {
       var securityScheme = A2ASecurityScheme();
@@ -162,9 +162,9 @@ void main() {
       securityScheme = A2ASecurityScheme.fromJson(json);
       expect(securityScheme is A2AHTTPAuthSecurityScheme, isTrue);
       final testScheme1 = securityScheme as A2AHTTPAuthSecurityScheme;
-      expect(testScheme1.headerFormat, isNull);
+      expect(testScheme1.bearerFormat, isNull);
       expect(testScheme1.description, 'The Description');
-      expect(testScheme1.type, 'http');
+      expect(testScheme1.type.name, 'http');
     });
     test('A2AOAuth2SecurityScheme', () {
       var securityScheme = A2ASecurityScheme();
@@ -184,12 +184,12 @@ void main() {
       expect(securityScheme is A2AOAuth2SecurityScheme, isTrue);
       final testScheme1 = securityScheme as A2AOAuth2SecurityScheme;
       expect(testScheme1.flows, isNotNull);
-      expect(testScheme1.flows?.password, isNotNull);
-      expect(testScheme1.flows?.implicit, isNotNull);
-      expect(testScheme1.flows?.clientCredentials, isNotNull);
-      expect(testScheme1.flows?..authorizationCode, isNotNull);
+      expect(testScheme1.flows.password, isNotNull);
+      expect(testScheme1.flows.implicit, isNotNull);
+      expect(testScheme1.flows.clientCredentials, isNotNull);
+      expect(testScheme1.flows..authorizationCode, isNotNull);
       expect(testScheme1.description, 'The Description');
-      expect(testScheme1.type, 'oauth2');
+      expect(testScheme1.type.name, 'oauth2');
     });
     test('A2AOpenIdConnectSecurityScheme', () {
       var securityScheme = A2ASecurityScheme();
@@ -206,7 +206,22 @@ void main() {
       final testScheme1 = securityScheme as A2AOpenIdConnectSecurityScheme;
       expect(testScheme1.openIdConnectUrl, 'Connect URL');
       expect(testScheme1.description, 'The Description');
-      expect(testScheme1.type, 'openIdConnect');
+      expect(testScheme1.type.name, 'openIdConnect');
+    });
+    test('A2AMutualTLSSecurityScheme', () {
+      var securityScheme = A2ASecurityScheme();
+      var json = <String, dynamic>{};
+
+      var testScheme = A2AMutualTLSSecurityScheme()
+        ..description = 'The Description';
+      securityScheme = testScheme;
+      json = securityScheme.toJson();
+      securityScheme = A2AMutualTLSSecurityScheme();
+      securityScheme = A2AMutualTLSSecurityScheme.fromJson(json);
+      expect(securityScheme is A2AMutualTLSSecurityScheme, isTrue);
+      final testScheme1 = securityScheme as A2AMutualTLSSecurityScheme;
+      expect(testScheme1.description, 'The Description');
+      expect(testScheme1.type.name, 'mutualTLS');
     });
   });
   group('Cancel Task Response', () {
