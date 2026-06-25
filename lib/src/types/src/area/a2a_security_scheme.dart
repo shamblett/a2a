@@ -9,6 +9,7 @@ part of '../../a2a_types.dart';
 
 /// Defines a security scheme that can be used to secure an agent's endpoints.
 /// This is a discriminated union type based on the OpenAPI 3.0 Security Scheme Object.
+/// see [https://swagger.io/specification/#security-scheme-object]
 class A2ASecurityScheme {
   A2ASecurityScheme();
 
@@ -17,14 +18,16 @@ class A2ASecurityScheme {
       return A2ASecurityScheme();
     } else {
       switch (json['type']) {
-        case 'apiKey':
+        case A2ASecuritySchemeName.apiKey:
           return A2AAPIKeySecurityScheme.fromJson(json);
-        case 'http':
+        case A2ASecuritySchemeName.http:
           return A2AHTTPAuthSecurityScheme.fromJson(json);
-        case 'oauth2':
+        case A2ASecuritySchemeName.oAuth2:
           return A2AOAuth2SecurityScheme.fromJson(json);
-        case 'openIdConnect':
+        case A2ASecuritySchemeName.openIdConnect:
           return A2AOpenIdConnectSecurityScheme.fromJson(json);
+        case A2ASecuritySchemeName.mutualTLS:
+          return A2AMutualTLSSecurityScheme.fromJson(json);
         default:
           return A2ASecurityScheme();
       }
@@ -32,6 +35,25 @@ class A2ASecurityScheme {
   }
 
   Map<String, dynamic> toJson() => {};
+}
+
+/// Security scheme names
+enum A2ASecuritySchemeName {
+
+  @JsonValue('apikey')
+  apiKey,
+
+  @JsonValue('http')
+  http,
+
+  @JsonValue('oauth2')
+  oAuth2,
+
+  @JsonValue('openIdConnect')
+  openIdConnect,
+
+  @JsonValue('mutualTLS')
+  mutualTLS
 }
 
 /// API Key security scheme.
