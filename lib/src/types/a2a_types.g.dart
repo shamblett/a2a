@@ -681,48 +681,54 @@ A2AAPIKeySecurityScheme _$A2AAPIKeySecuritySchemeFromJson(
   Map<String, dynamic> json,
 ) => A2AAPIKeySecurityScheme()
   ..description = json['description'] as String?
-  ..location = json['in'] as String
-  ..name = json['name'] as String?;
+  ..name = json['name'] as String
+  ..location = json['in'] as String;
 
 Map<String, dynamic> _$A2AAPIKeySecuritySchemeToJson(
   A2AAPIKeySecurityScheme instance,
 ) => <String, dynamic>{
+  'type': _$A2ASecuritySchemeTypeEnumMap[instance.type]!,
   'description': instance.description,
-  'in': instance.location,
   'name': instance.name,
-  'type': instance.type,
+  'in': instance.location,
+};
+
+const _$A2ASecuritySchemeTypeEnumMap = {
+  A2ASecuritySchemeType.apiKey: 'apikey',
+  A2ASecuritySchemeType.http: 'http',
+  A2ASecuritySchemeType.oAuth2: 'oauth2',
+  A2ASecuritySchemeType.openIdConnect: 'openIdConnect',
+  A2ASecuritySchemeType.mutualTLS: 'mutualTLS',
 };
 
 A2AHTTPAuthSecurityScheme _$A2AHTTPAuthSecuritySchemeFromJson(
   Map<String, dynamic> json,
 ) => A2AHTTPAuthSecurityScheme()
-  ..headerFormat = json['headerFormat'] as String?
   ..description = json['description'] as String?
-  ..scheme = json['scheme'] as String;
+  ..scheme = json['scheme'] as String
+  ..bearerFormat = json['bearerFormat'] as String?;
 
 Map<String, dynamic> _$A2AHTTPAuthSecuritySchemeToJson(
   A2AHTTPAuthSecurityScheme instance,
 ) => <String, dynamic>{
-  'headerFormat': instance.headerFormat,
+  'type': _$A2ASecuritySchemeTypeEnumMap[instance.type]!,
   'description': instance.description,
   'scheme': instance.scheme,
-  'type': instance.type,
+  'bearerFormat': instance.bearerFormat,
 };
 
 A2AOAuth2SecurityScheme _$A2AOAuth2SecuritySchemeFromJson(
   Map<String, dynamic> json,
 ) => A2AOAuth2SecurityScheme()
   ..description = json['description'] as String?
-  ..flows = json['flows'] == null
-      ? null
-      : A2AOAuthFlows.fromJson(json['flows'] as Map<String, dynamic>);
+  ..flows = A2AOAuthFlows.fromJson(json['flows'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$A2AOAuth2SecuritySchemeToJson(
   A2AOAuth2SecurityScheme instance,
 ) => <String, dynamic>{
+  'type': _$A2ASecuritySchemeTypeEnumMap[instance.type]!,
   'description': instance.description,
-  'flows': instance.flows?.toJson(),
-  'type': instance.type,
+  'flows': instance.flows.toJson(),
 };
 
 A2AOpenIdConnectSecurityScheme _$A2AOpenIdConnectSecuritySchemeFromJson(
@@ -734,9 +740,20 @@ A2AOpenIdConnectSecurityScheme _$A2AOpenIdConnectSecuritySchemeFromJson(
 Map<String, dynamic> _$A2AOpenIdConnectSecuritySchemeToJson(
   A2AOpenIdConnectSecurityScheme instance,
 ) => <String, dynamic>{
+  'type': _$A2ASecuritySchemeTypeEnumMap[instance.type]!,
   'description': instance.description,
   'openIdConnectUrl': instance.openIdConnectUrl,
-  'type': instance.type,
+};
+
+A2AMutualTLSSecurityScheme _$A2AMutualTLSSecuritySchemeFromJson(
+  Map<String, dynamic> json,
+) => A2AMutualTLSSecurityScheme()..description = json['description'] as String?;
+
+Map<String, dynamic> _$A2AMutualTLSSecuritySchemeToJson(
+  A2AMutualTLSSecurityScheme instance,
+) => <String, dynamic>{
+  'type': _$A2ASecuritySchemeTypeEnumMap[instance.type]!,
+  'description': instance.description,
 };
 
 A2AOAuthFlows _$A2AOAuthFlowsFromJson(
@@ -1202,41 +1219,6 @@ Map<String, dynamic> _$A2ATaskArtifactUpdateEventToJson(
   'taskId': instance.taskId,
 };
 
-A2AAgentInterface _$A2AAgentInterfaceFromJson(Map<String, dynamic> json) =>
-    A2AAgentInterface()
-      ..url = json['url'] as String
-      ..transport = $enumDecode(
-        _$A2ATransportProtocolEnumMap,
-        json['transport'],
-      );
-
-Map<String, dynamic> _$A2AAgentInterfaceToJson(A2AAgentInterface instance) =>
-    <String, dynamic>{
-      'url': instance.url,
-      'transport': _$A2ATransportProtocolEnumMap[instance.transport]!,
-    };
-
-const _$A2ATransportProtocolEnumMap = {
-  A2ATransportProtocol.jsonRpc: 'JSONRPC',
-  A2ATransportProtocol.gRpc: 'GRPC',
-  A2ATransportProtocol.httpJson: 'HTTP+JSON',
-};
-
-A2AAgentCardSignature _$A2AAgentCardSignatureFromJson(
-  Map<String, dynamic> json,
-) => A2AAgentCardSignature()
-  ..protected = json['protected'] as String
-  ..signature = json['signature'] as String
-  ..header = json['header'] as Map<String, dynamic>?;
-
-Map<String, dynamic> _$A2AAgentCardSignatureToJson(
-  A2AAgentCardSignature instance,
-) => <String, dynamic>{
-  'protected': instance.protected,
-  'signature': instance.signature,
-  'header': instance.header,
-};
-
 A2AAgentCard _$A2AAgentCardFromJson(Map<String, dynamic> json) => A2AAgentCard()
   ..protocolVersion = json['protocolVersion'] as String
   ..name = json['name'] as String
@@ -1314,6 +1296,12 @@ Map<String, dynamic> _$A2AAgentCardToJson(A2AAgentCard instance) =>
           instance.supportsAuthenticatedExtendedCard,
       'signatures': instance.signatures?.map((e) => e.toJson()).toList(),
     };
+
+const _$A2ATransportProtocolEnumMap = {
+  A2ATransportProtocol.jsonRpc: 'JSONRPC',
+  A2ATransportProtocol.gRpc: 'GRPC',
+  A2ATransportProtocol.httpJson: 'HTTP+JSON',
+};
 
 A2AAgentProvider _$A2AAgentProviderFromJson(Map<String, dynamic> json) =>
     A2AAgentProvider()
@@ -1399,3 +1387,32 @@ Map<String, dynamic> _$A2AAgentSkillToJson(A2AAgentSkill instance) =>
       'outputModes': instance.outputModes,
       'security': instance.security,
     };
+
+A2AAgentInterface _$A2AAgentInterfaceFromJson(Map<String, dynamic> json) =>
+    A2AAgentInterface()
+      ..url = json['url'] as String
+      ..transport = $enumDecode(
+        _$A2ATransportProtocolEnumMap,
+        json['transport'],
+      );
+
+Map<String, dynamic> _$A2AAgentInterfaceToJson(A2AAgentInterface instance) =>
+    <String, dynamic>{
+      'url': instance.url,
+      'transport': _$A2ATransportProtocolEnumMap[instance.transport]!,
+    };
+
+A2AAgentCardSignature _$A2AAgentCardSignatureFromJson(
+  Map<String, dynamic> json,
+) => A2AAgentCardSignature()
+  ..protected = json['protected'] as String
+  ..signature = json['signature'] as String
+  ..header = json['header'] as Map<String, dynamic>?;
+
+Map<String, dynamic> _$A2AAgentCardSignatureToJson(
+  A2AAgentCardSignature instance,
+) => <String, dynamic>{
+  'protected': instance.protected,
+  'signature': instance.signature,
+  'header': instance.header,
+};
