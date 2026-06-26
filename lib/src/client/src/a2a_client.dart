@@ -571,11 +571,37 @@ class A2AClient {
       }
       final agentCardJson = await response.json();
       final agentCard = A2AAgentCard.fromJson(agentCardJson);
+
+      // Specification section 5.6.1 support
+
+      // Check main url(service endpoint) is present
       if (agentCard.url.isEmpty) {
         throw Exception(
           'fetchAndCacheAgentCard:: Fetched Agent Card does not contain a valid "url" for the service endpoint.',
         );
       }
+
+      // Specification section 5.6.3 and 5.6.4 support
+
+      // Check we support the preferred transport
+      bool found = false;
+      if ( agentCard.preferredTransport != A2ATransportProtocol.jsonRpc) {
+        // Check additional interfaces
+        if (agentCard.additionalInterfaces != null ) {
+          for ( final interface in agentCard.additionalInterfaces! ) {
+            if ( interface.transport == A2ATransportProtocol.jsonRpc) {
+              agentCard.url = interface.url;
+              found = true;
+            }
+          }
+        }
+        if ( !found) {
+          throw Exception(
+              'fetchAndCacheAgentCard:: Fetched Agent Card does not contain a supportable preferred protocol.');
+        }
+      }
+
+
       if (cache) {
         _serviceEndpointUrl = agentCard.url;
         _agentCard = agentCard;

@@ -1224,7 +1224,7 @@ A2AAgentCard _$A2AAgentCardFromJson(Map<String, dynamic> json) => A2AAgentCard()
   ..name = json['name'] as String
   ..description = json['description'] as String
   ..url = json['url'] as String
-  ..preferredTransport = $enumDecodeNullable(
+  ..preferredTransport = $enumDecode(
     _$A2ATransportProtocolEnumMap,
     json['preferredTransport'],
   )
@@ -1276,7 +1276,7 @@ Map<String, dynamic> _$A2AAgentCardToJson(A2AAgentCard instance) =>
       'description': instance.description,
       'url': instance.url,
       'preferredTransport':
-          _$A2ATransportProtocolEnumMap[instance.preferredTransport],
+          _$A2ATransportProtocolEnumMap[instance.preferredTransport]!,
       'additionalInterfaces': instance.additionalInterfaces
           ?.map((e) => e.toJson())
           .toList(),
