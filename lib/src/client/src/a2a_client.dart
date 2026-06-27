@@ -585,22 +585,36 @@ class A2AClient {
 
       // Check we support the preferred transport
       bool found = false;
-      if ( agentCard.preferredTransport != A2ATransportProtocol.jsonRpc) {
-        // Check additional interfaces
-        if (agentCard.additionalInterfaces != null ) {
-          for ( final interface in agentCard.additionalInterfaces! ) {
-            if ( interface.transport == A2ATransportProtocol.jsonRpc) {
-              agentCard.url = interface.url;
+      if (agentCard.preferredTransport != A2ATransportProtocol.jsonRpc) {
+        // No, check additional interfaces
+        final urls = <String, Set<A2ATransportProtocol>>{};
+        if (agentCard.additionalInterfaces != null) {
+          for (final interface in agentCard.additionalInterfaces!) {
+            if (!urls[interface.url]!.add(interface.transport)) {
+              // Failed to add an interface for a url, url is defined with more than one transport
+              throw Exception(
+                'fetchAndCacheAgentCard:: URL ${interface.url} is mapped to more than one transport.',
+              );
+            }
+          }
+
+          // Find an additional interface that has a JSONRPC transport.
+          for (final interface in urls.entries) {
+            if (interface.value.contains(A2ATransportProtocol.jsonRpc)) {
+              agentCard.url = interface.key;
+              agentCard.preferredTransport = A2ATransportProtocol.jsonRpc;
               found = true;
             }
           }
         }
-        if ( !found) {
-          throw Exception(
-              'fetchAndCacheAgentCard:: Fetched Agent Card does not contain a supportable preferred protocol.');
-        }
       }
 
+      // Check for transport not found, we only support JSONRPC
+      if (!found) {
+        throw Exception(
+          'fetchAndCacheAgentCard:: No interfaces found that support the JSONRPC transport',
+        );
+      }
 
       if (cache) {
         _serviceEndpointUrl = agentCard.url;
