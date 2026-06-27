@@ -7,7 +7,7 @@ import 'package:test/test.dart';
 
 // Client tests
 void main() {
-  group('A2AClient', () {
+  group('A2AClient - SSE parsing', () {
     late A2AClient client;
     late Uri serverUrl;
 
@@ -80,5 +80,44 @@ void main() {
         expect(results[1].isError, isFalse);
       },
     );
+  });
+
+  group('A2AClient - Agent Card Validation', () {
+    late A2AClient client;
+    late Uri serverUrl;
+
+    setUp(() async {
+      final handler = const shelf.Pipeline().addHandler((
+        shelf.Request request,
+      ) {
+        if (request.url.path.endsWith('agent-card.json')) {
+          return shelf.Response.ok(
+            json.encode({
+              'protocolVersion': '0.3.0',
+              'name': 'Test Agent',
+              'description': 'A test agent',
+              'version': '1.0.0',
+              'url': serverUrl.toString(),
+              'capabilities': {'streaming': true},
+              'defaultInputModes': [],
+              'defaultOutputModes': [],
+              'skills': [],
+              'preferredTransport': 'JSONRPC',
+            }),
+            headers: {'Content-Type': 'application/json'},
+          );
+        }
+        return shelf.Response.notFound('Not Found');
+      });
+
+      final server = await io.serve(handler, 'localhost', 0);
+      serverUrl = Uri.parse('http://${server.address.host}:${server.port}');
+      client = A2AClient(serverUrl.toString(), agentCardBackgroundFetch: false);
+    });
+
+    test('No url or preferred transport', () async {
+      // We need to wait for the agent card to be fetched before we can send a message.
+      await client.getAgentCard();
+    });
   });
 }
