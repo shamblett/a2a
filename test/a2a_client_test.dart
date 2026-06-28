@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:a2a/a2a.dart';
 import 'package:shelf/shelf.dart' as shelf;
@@ -85,6 +86,9 @@ void main() {
   group('A2AClient - Agent Card Validation', () {
     late A2AClient client;
     late Uri serverUrl;
+    late HttpServer server;
+    final agentCards = List<String>.filled(5, '');
+    var agentCardIndex = 0;
 
     setUp(() async {
       final handler = const shelf.Pipeline().addHandler((
@@ -92,27 +96,19 @@ void main() {
       ) {
         if (request.url.path.endsWith('agent-card.json')) {
           return shelf.Response.ok(
-            json.encode({
-              'protocolVersion': '0.3.0',
-              'name': 'Test Agent',
-              'description': 'A test agent',
-              'version': '1.0.0',
-              'url': serverUrl.toString(),
-              'capabilities': {'streaming': true},
-              'defaultInputModes': [],
-              'defaultOutputModes': [],
-              'skills': [],
-              'preferredTransport': 'JSONRPC',
-            }),
+            agentCards[agentCardIndex],
             headers: {'Content-Type': 'application/json'},
           );
         }
         return shelf.Response.notFound('Not Found');
       });
-
-      final server = await io.serve(handler, 'localhost', 0);
+      server = await io.serve(handler, 'localhost', 0);
       serverUrl = Uri.parse('http://${server.address.host}:${server.port}');
       client = A2AClient(serverUrl.toString(), agentCardBackgroundFetch: false);
+    });
+
+    tearDown(() async {
+      await server.close(force: true);
     });
 
     test('No url or preferred transport', () async {
