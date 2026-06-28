@@ -11,6 +11,7 @@ void main() {
   group('A2AClient - SSE parsing', () {
     late A2AClient client;
     late Uri serverUrl;
+    late HttpServer server;
 
     setUp(() async {
       final handler = const shelf.Pipeline().addHandler((
@@ -59,9 +60,13 @@ void main() {
         return shelf.Response.notFound('Not Found');
       });
 
-      final server = await io.serve(handler, 'localhost', 0);
+      server = await io.serve(handler, 'localhost', 0);
       serverUrl = Uri.parse('http://${server.address.host}:${server.port}');
       client = A2AClient(serverUrl.toString(), agentCardBackgroundFetch: false);
+    });
+
+    tearDown(() async {
+      await server.close(force: true);
     });
 
     test(
@@ -103,6 +108,20 @@ void main() {
       'preferredTransport': 'JSONRPC',
     });
 
+    // Main url empty
+    agentCards[1] = json.encode({
+      'protocolVersion': '0.3.0',
+      'name': 'Test Agent Validation 0',
+      'description': 'An agent card validation test agent',
+      'version': '1.0.0',
+      'url': '',
+      'capabilities': {'streaming': true},
+      'defaultInputModes': [],
+      'defaultOutputModes': [],
+      'skills': [],
+      'preferredTransport': 'JSONRPC',
+    });
+
     setUp(() async {
       final handler = const shelf.Pipeline().addHandler((
         shelf.Request request,
@@ -125,13 +144,23 @@ void main() {
     });
 
     test('No url', () async {
-      agentCardIndex = 0;
       try {
         await client.getAgentCard();
       } catch (e) {
         expect(
           e.toString(),
           'type \'Null\' is not a subtype of type \'String\' in type cast',
+        );
+      }
+      agentCardIndex = 1;
+    });
+    test('Url empty', () async {
+      try {
+        await client.getAgentCard();
+      } catch (e) {
+        expect(
+          e.toString(),
+          'Exception: fetchAndCacheAgentCard:: Fetched Agent Card does not contain a valid "url" for the service endpoint.',
         );
       }
     });
