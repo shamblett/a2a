@@ -20,7 +20,7 @@ void main() {
           return shelf.Response.ok(
             json.encode({
               'protocolVersion': '0.3.0',
-              'name': 'Test Agent',
+              'name': 'Test Agent Streaming',
               'description': 'A test agent',
               'version': '1.0.0',
               'url': serverUrl.toString(),
@@ -90,6 +90,19 @@ void main() {
     final agentCards = List<String>.filled(5, '');
     var agentCardIndex = 0;
 
+    // Main url not present
+    agentCards[0] = json.encode({
+      'protocolVersion': '0.3.0',
+      'name': 'Test Agent Validation 0',
+      'description': 'An agent card validation test agent',
+      'version': '1.0.0',
+      'capabilities': {'streaming': true},
+      'defaultInputModes': [],
+      'defaultOutputModes': [],
+      'skills': [],
+      'preferredTransport': 'JSONRPC',
+    });
+
     setUp(() async {
       final handler = const shelf.Pipeline().addHandler((
         shelf.Request request,
@@ -111,9 +124,16 @@ void main() {
       await server.close(force: true);
     });
 
-    test('No url or preferred transport', () async {
-      // We need to wait for the agent card to be fetched before we can send a message.
-      await client.getAgentCard();
+    test('No url', () async {
+      agentCardIndex = 0;
+      try {
+        await client.getAgentCard();
+      } catch (e) {
+        expect(
+          e.toString(),
+          'type \'Null\' is not a subtype of type \'String\' in type cast',
+        );
+      }
     });
   });
 }

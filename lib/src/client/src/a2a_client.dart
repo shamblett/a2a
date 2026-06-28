@@ -607,13 +607,13 @@ class A2AClient {
             }
           }
         }
-      }
 
-      // Check for transport not found, we only support JSONRPC
-      if (!found) {
-        throw Exception(
-          'fetchAndCacheAgentCard:: No interfaces found that support the JSONRPC transport',
-        );
+        // Check for transport not found, we only support JSONRPC
+        if (!found) {
+          throw Exception(
+            'fetchAndCacheAgentCard:: No interfaces found that support the JSONRPC transport',
+          );
+        }
       }
 
       if (cache) {
@@ -623,7 +623,7 @@ class A2AClient {
       return agentCard;
     } catch (e) {
       print(
-        '${Colorize('_fetchAndCacheAgentCard:: Error fetching or parsing Agent Card:').yellow()}',
+        '${Colorize('_fetchAndCacheAgentCard:: Error fetching or parsing Agent Card:').red()}',
       );
       rethrow;
     }
