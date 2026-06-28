@@ -111,7 +111,7 @@ void main() {
     // Main url empty
     agentCards[1] = json.encode({
       'protocolVersion': '0.3.0',
-      'name': 'Test Agent Validation 0',
+      'name': 'Test Agent Validation 1',
       'description': 'An agent card validation test agent',
       'version': '1.0.0',
       'url': '',
@@ -120,6 +120,20 @@ void main() {
       'defaultOutputModes': [],
       'skills': [],
       'preferredTransport': 'JSONRPC',
+    });
+
+    // Preferred transport not JSONRPC
+    agentCards[2] = json.encode({
+      'protocolVersion': '0.3.0',
+      'name': 'Test Agent Validation 2',
+      'description': 'An agent card validation test agent',
+      'version': '1.0.0',
+      'url': 'http://localhost',
+      'capabilities': {'streaming': true},
+      'defaultInputModes': [],
+      'defaultOutputModes': [],
+      'skills': [],
+      'preferredTransport': 'GRPC',
     });
 
     setUp(() async {
@@ -163,6 +177,18 @@ void main() {
           'Exception: fetchAndCacheAgentCard:: Fetched Agent Card does not contain a valid "url" for the service endpoint.',
         );
       }
+      agentCardIndex = 2;
+    });
+    test('Preferred transport not JSONRPC', () async {
+      try {
+        await client.getAgentCard();
+      } catch (e) {
+        expect(
+          e.toString(),
+          'Exception: fetchAndCacheAgentCard:: No interfaces found that support the JSONRPC transport',
+        );
+      }
+      agentCardIndex = 3;
     });
   });
 }
