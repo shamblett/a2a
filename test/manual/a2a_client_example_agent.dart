@@ -132,10 +132,10 @@ Future<int> main() async {
         expect(result.history?.last.parts?.isEmpty, isTrue);
         final status = result.status;
         expect(status, isNotNull);
-        expect(status?.timestamp, isNotEmpty);
-        expect(status?.state, A2ATaskState.completed);
-        expect(status?.message?.messageId.isNotEmpty, isTrue);
-        expect(status?.message?.role, 'agent');
+        expect(status.timestamp, isNotEmpty);
+        expect(status.state, A2ATaskState.completed);
+        expect(status.message?.messageId.isNotEmpty, isTrue);
+        expect(status.message?.role, 'agent');
       } catch (e) {
         rethrow;
       }
@@ -172,7 +172,7 @@ Future<int> main() async {
       final firstEvent =
           ((events.first as A2ASendStreamMessageSuccessResponse).result)
               as A2ATask;
-      expect(firstEvent.status?.state, A2ATaskState.submitted);
+      expect(firstEvent.status.state, A2ATaskState.submitted);
       expect(
         (events[1] as A2ASendStreamMessageSuccessResponse).result
             is A2ATaskStatusUpdateEvent,

@@ -58,41 +58,39 @@ Map<String, dynamic> _$A2AArtifactToJson(A2AArtifact instance) =>
     };
 
 A2ATask _$A2ATaskFromJson(Map<String, dynamic> json) => A2ATask()
-  ..artifacts = (json['artifacts'] as List<dynamic>?)
-      ?.map((e) => A2AArtifact.fromJson(e as Map<String, dynamic>))
-      .toList()
+  ..id = json['id'] as String
   ..contextId = json['contextId'] as String
+  ..status = A2ATaskStatus.fromJson(json['status'] as Map<String, dynamic>)
   ..history = (json['history'] as List<dynamic>?)
       ?.map((e) => A2AMessage.fromJson(e as Map<String, dynamic>))
       .toList()
-  ..id = json['id'] as String
-  ..metadata = json['metadata'] as Map<String, dynamic>?
-  ..status = json['status'] == null
-      ? null
-      : A2ATaskStatus.fromJson(json['status'] as Map<String, dynamic>);
+  ..artifacts = (json['artifacts'] as List<dynamic>?)
+      ?.map((e) => A2AArtifact.fromJson(e as Map<String, dynamic>))
+      .toList()
+  ..metadata = json['metadata'] as Map<String, dynamic>?;
 
 Map<String, dynamic> _$A2ATaskToJson(A2ATask instance) => <String, dynamic>{
-  'artifacts': instance.artifacts?.map((e) => e.toJson()).toList(),
-  'contextId': instance.contextId,
-  'history': instance.history?.map((e) => e.toJson()).toList(),
   'id': instance.id,
-  'kind': instance.kind,
+  'contextId': instance.contextId,
+  'status': instance.status.toJson(),
+  'history': instance.history?.map((e) => e.toJson()).toList(),
+  'artifacts': instance.artifacts?.map((e) => e.toJson()).toList(),
   'metadata': instance.metadata,
-  'status': instance.status?.toJson(),
+  'kind': instance.kind,
 };
 
 A2ATaskStatus _$A2ATaskStatusFromJson(Map<String, dynamic> json) =>
     A2ATaskStatus()
+      ..state = $enumDecode(_$A2ATaskStateEnumMap, json['state'])
       ..message = json['message'] == null
           ? null
           : A2AMessage.fromJson(json['message'] as Map<String, dynamic>)
-      ..state = $enumDecodeNullable(_$A2ATaskStateEnumMap, json['state'])
       ..timestamp = json['timestamp'] as String?;
 
 Map<String, dynamic> _$A2ATaskStatusToJson(A2ATaskStatus instance) =>
     <String, dynamic>{
+      'state': _$A2ATaskStateEnumMap[instance.state]!,
       'message': instance.message?.toJson(),
-      'state': _$A2ATaskStateEnumMap[instance.state],
       'timestamp': instance.timestamp,
     };
 

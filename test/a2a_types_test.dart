@@ -635,7 +635,6 @@ void main() {
       final taskResponse = testResponse1.result as A2ATask;
       expect(taskResponse.contextId, 'Context id');
       expect(taskResponse.id, '3');
-      expect(taskResponse.status is A2ATaskStatus, isTrue);
       expect(testResponse1.id, 2);
     });
     test('Send Message Response - Success - Message', () {
@@ -1231,7 +1230,6 @@ void main() {
       final taskResponse = testResponse1.result as A2ATask;
       expect(taskResponse.contextId, 'Context id');
       expect(taskResponse.id, '3');
-      expect(taskResponse.status is A2ATaskStatus, isTrue);
       expect(testResponse1.id, 2);
     });
     test('Send Stream Message Response - Success - Message', () {

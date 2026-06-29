@@ -229,7 +229,7 @@ class A2ACLIClientSupport {
 
     if (event is A2ATask) {
       final update = event;
-      final state = update.status?.state;
+      final state = update.status.state;
       print('');
       print('${prefix.toString()} ${Colorize('Task Stream Event').blue()}');
       if (update.id != A2ACLIClientSupport.currentTaskId) {
@@ -244,15 +244,15 @@ class A2ACLIClientSupport {
         );
         A2ACLIClientSupport.currentContextId = update.contextId;
       }
-      if (update.status?.message != null) {
-        A2ACLIClientSupport.printMessageContent(update.status?.message);
+      if (update.status.message != null) {
+        A2ACLIClientSupport.printMessageContent(update.status.message);
       }
       if (update.artifacts != null && update.artifacts?.isNotEmpty == true) {
         print('${Colorize('   Task includes artifacts:')..darkGray()}');
       }
       output = A2ACLIClientSupport.generateTaskProgress(
         prefix.toString(),
-        state!,
+        state,
       );
       output += '(  Task: ${update.id}, Context: ${update.contextId}';
       print(output);

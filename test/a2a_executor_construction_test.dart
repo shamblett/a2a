@@ -121,7 +121,7 @@ void main() {
         final update = event as A2ATask;
         expect(update.contextId, contextId);
         expect(update.id, taskId);
-        expect(update.status?.state, A2ATaskState.submitted);
+        expect(update.status.state, A2ATaskState.submitted);
       }));
       ec.publishInitialTaskUpdate();
     });
@@ -133,7 +133,7 @@ void main() {
         final update = event as A2ATask;
         expect(update.contextId, contextId);
         expect(update.id, taskId);
-        expect(update.status?.state, A2ATaskState.unknown);
+        expect(update.status.state, A2ATaskState.unknown);
       }));
       ec.initialTaskUpdate = testTask;
       ec.publishInitialTaskUpdate();

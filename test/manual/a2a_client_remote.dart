@@ -111,8 +111,8 @@ Future<int> main() async {
         expect(result.id, '123');
         expect(result.metadata, isNull);
         expect(result.status, isNotNull);
-        expect(result.status?.message, isNull);
-        expect(result.status?.state, A2ATaskState.completed);
+        expect(result.status.message, isNull);
+        expect(result.status.state, A2ATaskState.completed);
       } catch (e) {
         rethrow;
       }
@@ -145,8 +145,8 @@ Future<int> main() async {
         expect(result.id, '123');
         expect(result.metadata, isNull);
         expect(result.status, isNotNull);
-        expect(result.status?.message, isNull);
-        expect(result.status?.state, A2ATaskState.completed);
+        expect(result.status.message, isNull);
+        expect(result.status.state, A2ATaskState.completed);
       } catch (e) {
         rethrow;
       }
