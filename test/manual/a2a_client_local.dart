@@ -88,8 +88,8 @@ Future<int> main() async {
         expect(response.result is A2AMessage, isTrue);
         final result = response.result as A2AMessage;
         expect(result.role, 'agent');
-        expect(result.parts?.isNotEmpty, isTrue);
-        final tPartList = result.parts as List<A2APart>;
+        expect(result.parts.isNotEmpty, isTrue);
+        final tPartList = result.parts;
         final tPart = tPartList.first as A2ATextPart;
         expect(tPart.text, 'Hello World');
       } catch (e) {
@@ -123,8 +123,8 @@ Future<int> main() async {
           if (response.result is A2AMessage) {
             final result = response.result as A2AMessage;
             expect(result.role, 'agent');
-            expect(result.parts?.isNotEmpty, isTrue);
-            final tPartList = result.parts as List<A2APart>;
+            expect(result.parts.isNotEmpty, isTrue);
+            final tPartList = result.parts;
             final tPart = tPartList.first as A2ATextPart;
             expect(tPart.text, 'Hello World');
           }

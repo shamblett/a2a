@@ -131,7 +131,7 @@ class LLMComparisonExecutor implements A2AAgentExecutor {
     final textPart = ec.createTextPart('Querying the LLM\'s');
     ec.publishWorkingTaskUpdate(part: [textPart]);
 
-    String prompt = (ec.userMessage.parts?.first as A2ATextPart).text;
+    String prompt = (ec.userMessage.parts.first as A2ATextPart).text;
 
     final messages = [ChatMessage.user(prompt)];
 

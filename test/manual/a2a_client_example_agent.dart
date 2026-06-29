@@ -128,8 +128,8 @@ Future<int> main() async {
         expect(result.history, isNotNull);
         expect(result.history?.length, 3);
         expect(result.history?.first.messageId, '10');
-        expect(result.history?[1].parts?.length, 1);
-        expect(result.history?.last.parts?.isEmpty, isTrue);
+        expect(result.history?[1].parts.length, 1);
+        expect(result.history?.last.parts.isEmpty, isTrue);
         final status = result.status;
         expect(status, isNotNull);
         expect(status.timestamp, isNotEmpty);

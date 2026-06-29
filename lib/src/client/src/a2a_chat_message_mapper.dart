@@ -37,7 +37,7 @@ extension A2AChatMessageMapper on ChatMessage {
       for (final part in parts) {
         if (part is TextPart) {
           final a2aPart = A2ATextPart()..text = part.text;
-          a2aMessage.parts!.add(a2aPart);
+          a2aMessage.parts.add(a2aPart);
         } else if (part is DataPart) {
           // Map to A2AFilePart with bytes
           final a2aPart = A2AFilePart();
@@ -46,7 +46,7 @@ extension A2AChatMessageMapper on ChatMessage {
           fileVariant.mimeType = part.mimeType;
           fileVariant.name = part.name ?? '';
           a2aPart.file = fileVariant;
-          a2aMessage.parts!.add(a2aPart);
+          a2aMessage.parts.add(a2aPart);
         } else if (part is LinkPart) {
           // Map to A2AFilePart with URI
           final a2aPart = A2AFilePart();
@@ -55,7 +55,7 @@ extension A2AChatMessageMapper on ChatMessage {
           fileVariant.mimeType = part.mimeType ?? '';
           fileVariant.name = part.name ?? '';
           a2aPart.file = fileVariant;
-          a2aMessage.parts!.add(a2aPart);
+          a2aMessage.parts.add(a2aPart);
         }
       }
     }

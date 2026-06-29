@@ -1259,7 +1259,7 @@ void main() {
       final taskResponse = testResponse1.result as A2AMessage;
       expect(taskResponse.contextId, '300');
       expect(taskResponse.taskId, '2');
-      expect(taskResponse.parts?.length, 1);
+      expect(taskResponse.parts.length, 1);
       expect(taskResponse.messageId, '100');
       expect(taskResponse.extensions, ['text']);
       expect(taskResponse.metadata, {'First': 1});

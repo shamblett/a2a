@@ -779,9 +779,9 @@ void main() {
       expect(taskRet.status.state, A2ATaskState.canceled);
       expect(taskRet.status.message?.messageId, isNotNull);
       expect(taskRet.status.message?.messageId.length, 36);
-      expect(taskRet.status.message?.parts?.length, 1);
+      expect(taskRet.status.message?.parts.length, 1);
       expect(
-        (taskRet.status.message?.parts?.first as A2ATextPart).text,
+        (taskRet.status.message?.parts.first as A2ATextPart).text,
         'Task cancellation requested by user.',
       );
       expect(taskRet.status.message?.contextId, isNotNull);
@@ -895,7 +895,7 @@ void main() {
       expect(updateMessage?.taskId, '1');
       expect(updateMessage?.contextId, '100');
       expect(
-        (updateMessage?.parts?.first as A2ATextPart).text,
+        (updateMessage?.parts.first as A2ATextPart).text,
         'Agent execution error: Invalid argument(s): Argument Error from execute',
       );
     });
@@ -976,7 +976,7 @@ void main() {
       expect(updateMessage?.taskId, '1');
       expect(updateMessage?.contextId, '100');
       expect(
-        (updateMessage?.parts?.first as A2ATextPart).text,
+        (updateMessage?.parts.first as A2ATextPart).text,
         'Agent execution error: Invalid argument(s): Argument Error from execute',
       );
     });

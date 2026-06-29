@@ -12,9 +12,9 @@ void main() {
       final a2aMessage = chatMessage.toA2AMessage();
 
       expect(a2aMessage.role, equals('user'));
-      expect(a2aMessage.parts!.length, equals(1));
-      expect(a2aMessage.parts![0], isA<A2ATextPart>());
-      expect((a2aMessage.parts![0] as A2ATextPart).text, equals('Hello world'));
+      expect(a2aMessage.parts.length, equals(1));
+      expect(a2aMessage.parts[0], isA<A2ATextPart>());
+      expect((a2aMessage.parts[0] as A2ATextPart).text, equals('Hello world'));
     });
 
     test('Maps model message', () {
@@ -22,7 +22,7 @@ void main() {
       final a2aMessage = chatMessage.toA2AMessage();
 
       expect(a2aMessage.role, equals('agent'));
-      expect(a2aMessage.parts!.length, equals(1));
+      expect(a2aMessage.parts.length, equals(1));
     });
 
     test('Maps system message', () {
@@ -30,7 +30,7 @@ void main() {
       final a2aMessage = chatMessage.toA2AMessage();
 
       expect(a2aMessage.role, equals('system'));
-      expect(a2aMessage.parts!.length, equals(1));
+      expect(a2aMessage.parts.length, equals(1));
     });
 
     test('Maps message with taskId and contextId', () {
@@ -57,9 +57,9 @@ void main() {
       );
 
       final a2aMessage = chatMessage.toA2AMessage();
-      expect(a2aMessage.parts!.length, equals(1));
-      expect(a2aMessage.parts![0], isA<A2AFilePart>());
-      final filePart = a2aMessage.parts![0] as A2AFilePart;
+      expect(a2aMessage.parts.length, equals(1));
+      expect(a2aMessage.parts[0], isA<A2AFilePart>());
+      final filePart = a2aMessage.parts[0] as A2AFilePart;
       expect(filePart.file, isA<A2AFileWithBytes>());
       final fileBytes = filePart.file as A2AFileWithBytes;
       expect(fileBytes.bytes, equals(base64Encode(bytes)));
@@ -76,9 +76,9 @@ void main() {
       );
 
       final a2aMessage = chatMessage.toA2AMessage();
-      expect(a2aMessage.parts!.length, equals(1));
-      expect(a2aMessage.parts![0], isA<A2AFilePart>());
-      final filePart = a2aMessage.parts![0] as A2AFilePart;
+      expect(a2aMessage.parts.length, equals(1));
+      expect(a2aMessage.parts[0], isA<A2AFilePart>());
+      final filePart = a2aMessage.parts[0] as A2AFilePart;
       expect(filePart.file, isA<A2AFileWithUri>());
       final fileUri = filePart.file as A2AFileWithUri;
       expect(fileUri.uri, equals('https://example.com/image.png'));

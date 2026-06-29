@@ -7,32 +7,32 @@ part of 'a2a_types.dart';
 // **************************************************************************
 
 A2AMessage _$A2AMessageFromJson(Map<String, dynamic> json) => A2AMessage()
-  ..contextId = json['contextId'] as String?
+  ..role = json['role'] as String
+  ..parts = (json['parts'] as List<dynamic>)
+      .map((e) => A2APart.fromJson(e as Map<String, dynamic>))
+      .toList()
+  ..metadata = json['metadata'] as Map<String, dynamic>?
   ..extensions = (json['extensions'] as List<dynamic>?)
       ?.map((e) => e as String)
-      .toList()
-  ..messageId = json['messageId'] as String
-  ..metadata = json['metadata'] as Map<String, dynamic>?
-  ..parts = (json['parts'] as List<dynamic>?)
-      ?.map((e) => A2APart.fromJson(e as Map<String, dynamic>))
       .toList()
   ..referenceTaskIds = (json['referenceTaskIds'] as List<dynamic>?)
       ?.map((e) => e as String)
       .toList()
-  ..role = json['role'] as String
-  ..taskId = json['taskId'] as String?;
+  ..messageId = json['messageId'] as String
+  ..taskId = json['taskId'] as String?
+  ..contextId = json['contextId'] as String?;
 
 Map<String, dynamic> _$A2AMessageToJson(A2AMessage instance) =>
     <String, dynamic>{
-      'contextId': instance.contextId,
-      'extensions': instance.extensions,
-      'kind': instance.kind,
-      'messageId': instance.messageId,
-      'metadata': instance.metadata,
-      'parts': instance.parts?.map((e) => e.toJson()).toList(),
-      'referenceTaskIds': instance.referenceTaskIds,
       'role': instance.role,
+      'parts': instance.parts.map((e) => e.toJson()).toList(),
+      'metadata': instance.metadata,
+      'extensions': instance.extensions,
+      'referenceTaskIds': instance.referenceTaskIds,
+      'messageId': instance.messageId,
       'taskId': instance.taskId,
+      'contextId': instance.contextId,
+      'kind': instance.kind,
     };
 
 A2AArtifact _$A2AArtifactFromJson(Map<String, dynamic> json) => A2AArtifact()
