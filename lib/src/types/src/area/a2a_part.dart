@@ -79,15 +79,15 @@ final class A2AFilePart extends A2APart {
 /// Represents a structured data segment (e.g., JSON) within a message or artifact.
 @JsonSerializable(explicitToJson: true)
 final class A2ADataPart extends A2APart {
-  /// Structured data content
-  A2ASV data = {};
-
   /// Part type - data for DataParts
   @JsonKey(includeToJson: true, includeFromJson: false)
   String kind = 'data';
 
   /// Optional metadata associated with the part.
   A2ASV? metadata;
+
+  /// Structured data content
+  A2ASV data = {};
 
   A2ADataPart();
 
@@ -122,11 +122,11 @@ final class A2AFileWithBytes extends A2AFilePartVariant {
   /// The base64 encoded content of the file
   String bytes = '';
 
-  /// Optional mimeType for the file
-  String mimeType = '';
+  /// Optional mimeType for the file (e.g., "document.pdf")
+  String? mimeType;
 
-  /// Optional name for the file
-  String name = '';
+  /// Optional name for the file (e.g., "application/pdf")
+  String? name;
 
   A2AFileWithBytes();
 
@@ -140,14 +140,14 @@ final class A2AFileWithBytes extends A2AFilePartVariant {
 /// Represents a file with its content located at a specific URI.
 @JsonSerializable(explicitToJson: true)
 final class A2AFileWithUri extends A2AFilePartVariant {
-  /// Optional mimeType for the file
-  String mimeType = '';
-
-  /// Optional name for the file
-  String name = '';
-
   /// A URL pointing to the file's content
   String uri = '';
+
+  /// Optional mimeType for the file
+  String? mimeType;
+
+  /// Optional name for the file
+  String? name;
 
   A2AFileWithUri();
 

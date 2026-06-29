@@ -151,8 +151,8 @@ class A2ACLIClientSupport {
       if (part is A2ATextPart) {
         print('$partPrefix ${Colorize('📝 Text:')..green()}, ${part.text}');
       } else if (part is A2AFilePart) {
-        String name = '';
-        String mimeType = '';
+        String? name = '';
+        String? mimeType = '';
         String variant = '';
         if (part.file is A2AFileWithBytes) {
           final tmp = part.file as A2AFileWithBytes;
@@ -189,8 +189,8 @@ class A2ACLIClientSupport {
       if (part is A2ATextPart) {
         print('$partPrefix ${Colorize('📝 Text:')..green()}, ${part.text}');
       } else if (part is A2AFilePart) {
-        String name = '';
-        String mimeType = '';
+        String? name = '';
+        String? mimeType = '';
         String variant = '';
         if (part.file is A2AFileWithBytes) {
           final tmp = part.file as A2AFileWithBytes;

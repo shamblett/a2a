@@ -639,21 +639,21 @@ Map<String, dynamic> _$A2AFilePartToJson(A2AFilePart instance) =>
     };
 
 A2ADataPart _$A2ADataPartFromJson(Map<String, dynamic> json) => A2ADataPart()
-  ..data = json['data'] as Map<String, dynamic>
-  ..metadata = json['metadata'] as Map<String, dynamic>?;
+  ..metadata = json['metadata'] as Map<String, dynamic>?
+  ..data = json['data'] as Map<String, dynamic>;
 
 Map<String, dynamic> _$A2ADataPartToJson(A2ADataPart instance) =>
     <String, dynamic>{
-      'data': instance.data,
       'kind': instance.kind,
       'metadata': instance.metadata,
+      'data': instance.data,
     };
 
 A2AFileWithBytes _$A2AFileWithBytesFromJson(Map<String, dynamic> json) =>
     A2AFileWithBytes()
       ..bytes = json['bytes'] as String
-      ..mimeType = json['mimeType'] as String
-      ..name = json['name'] as String;
+      ..mimeType = json['mimeType'] as String?
+      ..name = json['name'] as String?;
 
 Map<String, dynamic> _$A2AFileWithBytesToJson(A2AFileWithBytes instance) =>
     <String, dynamic>{
@@ -664,15 +664,15 @@ Map<String, dynamic> _$A2AFileWithBytesToJson(A2AFileWithBytes instance) =>
 
 A2AFileWithUri _$A2AFileWithUriFromJson(Map<String, dynamic> json) =>
     A2AFileWithUri()
-      ..mimeType = json['mimeType'] as String
-      ..name = json['name'] as String
-      ..uri = json['uri'] as String;
+      ..uri = json['uri'] as String
+      ..mimeType = json['mimeType'] as String?
+      ..name = json['name'] as String?;
 
 Map<String, dynamic> _$A2AFileWithUriToJson(A2AFileWithUri instance) =>
     <String, dynamic>{
+      'uri': instance.uri,
       'mimeType': instance.mimeType,
       'name': instance.name,
-      'uri': instance.uri,
     };
 
 A2AAPIKeySecurityScheme _$A2AAPIKeySecuritySchemeFromJson(
