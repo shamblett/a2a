@@ -590,11 +590,16 @@ class A2AClient {
         final urls = <String, Set<A2ATransportProtocol>>{};
         if (agentCard.additionalInterfaces != null) {
           for (final interface in agentCard.additionalInterfaces!) {
-            if (!urls[interface.url]!.add(interface.transport)) {
-              // Failed to add an interface for a url, url is defined with more than one transport
-              throw Exception(
-                'fetchAndCacheAgentCard:: URL ${interface.url} is mapped to more than one transport.',
-              );
+            if (!urls.keys.contains(interface.url)) {
+              urls[interface.url] = <A2ATransportProtocol>{}
+                ..add(interface.transport);
+            } else {
+              if (!urls[interface.url]!.add(interface.transport)) {
+                // Failed to add an interface for a url, url is defined with more than one transport
+                throw Exception(
+                  'fetchAndCacheAgentCard:: URL "${interface.url}" is mapped to more than one transport.',
+                );
+              }
             }
           }
 

@@ -92,7 +92,7 @@ void main() {
     late A2AClient client;
     late Uri serverUrl;
     late HttpServer server;
-    final agentCards = List<String>.filled(5, '');
+    final agentCards = List<String>.filled(6, '');
     var agentCardIndex = 0;
 
     // Main url not present
@@ -134,6 +134,58 @@ void main() {
       'defaultOutputModes': [],
       'skills': [],
       'preferredTransport': 'GRPC',
+    });
+
+    // Preferred transport not JSONRPC, no viable additional interface
+    agentCards[3] = json.encode({
+      'protocolVersion': '0.3.0',
+      'name': 'Test Agent Validation 3',
+      'description': 'An agent card validation test agent',
+      'version': '1.0.0',
+      'url': 'http://localhost',
+      'capabilities': {'streaming': true},
+      'defaultInputModes': [],
+      'defaultOutputModes': [],
+      'skills': [],
+      'preferredTransport': 'GRPC',
+      'additionalInterfaces': [
+        {'url': 'http://localhost', 'transport': 'GRPC'},
+      ],
+    });
+
+    // Preferred transport not JSONRPC, additional interface url has more than one transport
+    agentCards[4] = json.encode({
+      'protocolVersion': '0.3.0',
+      'name': 'Test Agent Validation 4',
+      'description': 'An agent card validation test agent',
+      'version': '1.0.0',
+      'url': 'http://localhost',
+      'capabilities': {'streaming': true},
+      'defaultInputModes': [],
+      'defaultOutputModes': [],
+      'skills': [],
+      'preferredTransport': 'GRPC',
+      'additionalInterfaces': [
+        {'url': 'http://localhost', 'transport': 'GRPC'},
+        {'url': 'http://localhost', 'transport': 'GRPC'},
+      ],
+    });
+
+    // Preferred transport not JSONRPC, viable additional interface
+    agentCards[5] = json.encode({
+      'protocolVersion': '0.3.0',
+      'name': 'Test Agent Validation 5',
+      'description': 'An agent card validation test agent',
+      'version': '1.0.0',
+      'url': 'http://localhost',
+      'capabilities': {'streaming': true},
+      'defaultInputModes': [],
+      'defaultOutputModes': [],
+      'skills': [],
+      'preferredTransport': 'GRPC',
+      'additionalInterfaces': [
+        {'url': 'http://localhost1', 'transport': 'JSONRPC'},
+      ],
     });
 
     setUp(() async {
@@ -189,6 +241,37 @@ void main() {
         );
       }
       agentCardIndex = 3;
+    });
+    test('No additional interfaces support JSONRPC', () async {
+      try {
+        await client.getAgentCard();
+      } catch (e) {
+        expect(
+          e.toString(),
+          'Exception: fetchAndCacheAgentCard:: No interfaces found that support the JSONRPC transport',
+        );
+      }
+      agentCardIndex = 4;
+    });
+    test(
+      'No additional interface url supports more than one transport',
+      () async {
+        try {
+          await client.getAgentCard();
+        } catch (e) {
+          expect(
+            e.toString(),
+            'Exception: fetchAndCacheAgentCard:: URL "http://localhost" is mapped to more than one transport.',
+          );
+        }
+        agentCardIndex = 5;
+      },
+    );
+    test('Additional interface supports JSONRPC', () async {
+      final agentCard = await client.getAgentCard();
+      expect(agentCard.preferredTransport, A2ATransportProtocol.jsonRpc);
+      expect(agentCard.url, 'http://localhost1');
+      expect(agentCard.name, 'Test Agent Validation 5');
     });
   });
 }
