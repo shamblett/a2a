@@ -5,20 +5,7 @@
 * Copyright :  S.Hamblett
 */
 
-part of '../../a2a_types.dart';
-
-/// Agent class
-class A2AAgent {}
-
-/// Supported A2A transport protocols.
-enum A2ATransportProtocol {
-  @JsonValue('JSONRPC')
-  jsonRpc,
-  @JsonValue('GRPC')
-  gRpc,
-  @JsonValue('HTTP+JSON')
-  httpJson,
-}
+part of '../a2a_types.dart';
 
 /// The AgentCard is a self-describing manifest for an agent. It provides essential
 /// metadata including the agent's identity, capabilities, skills, supported
@@ -112,6 +99,16 @@ final class A2AAgentCard extends A2AAgent {
   Map<String, dynamic> toJson() => _$A2AAgentCardToJson(this);
 }
 
+/// Supported A2A transport protocols.
+enum A2ATransportProtocol {
+  @JsonValue('JSONRPC')
+  jsonRpc,
+  @JsonValue('GRPC')
+  gRpc,
+  @JsonValue('HTTP+JSON')
+  httpJson,
+}
+
 /// Information about the organization or entity providing the agent.
 @JsonSerializable(explicitToJson: true)
 final class A2AAgentProvider extends A2AAgent {
@@ -138,7 +135,7 @@ final class A2AAgentCapabilities {
   /// True if the agent can notify updates to client.
   bool? pushNotifications;
 
-  /// True if the agent exposes status change history for tasks.
+  /// True if the agent exposes statuspart 'src/protocol_objects/a2a_message.dart'; change history for tasks.
   bool? stateTransitionHistory;
 
   /// A list of protocol extensions supported by the agent.

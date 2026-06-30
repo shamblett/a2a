@@ -10,11 +10,14 @@ library;
 import 'package:colorize/colorize.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'src/a2a_type.dart';
+part 'src/a2a_common.dart';
 part 'src/a2a_constants.dart';
+part 'src/protocol_objects/a2a_task.dart';
+part 'src/protocol_objects/a2a_message.dart';
+part 'src/protocol_objects/a2a_artifact.dart';
 part 'src/area/a2a_error.dart';
 part 'src/area/a2a_request.dart';
-part 'src/area/a2a_part.dart';
+part 'src/protocol_objects/a2a_part.dart';
 part 'src/area/a2a_security_scheme.dart';
 part 'src/area/a2a_cancel_task_response.dart';
 part 'src/area/a2a_get_task_push_notification_config_response.dart';
@@ -24,7 +27,7 @@ part 'src/area/a2a_delete_task_push_notification_config_response.dart';
 part 'src/area/a2a_get_task_response.dart';
 part 'src/area/a2a_json_rpc_response.dart';
 part 'src/area/a2a_send_stream_message_response.dart';
-part 'src/area/a2a_agent.dart';
+part 'src/a2a_agent_card.dart';
 part 'src/a2a_utilities.dart';
 
 /// JSON
