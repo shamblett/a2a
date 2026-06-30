@@ -32,7 +32,7 @@ enum A2ATaskState {
   @JsonValue('submitted')
   submitted,
 
-  /// The agent is actively working on the task
+  /// The agent is actively working on the task.
   @JsonValue('working')
   working,
 
@@ -65,7 +65,7 @@ enum A2ATaskState {
   unknown,
 }
 
-/// Represents a single message in the conversation between a user and an agent
+/// Represents a single message in the conversation between a user and an agent.
 @JsonSerializable(explicitToJson: true)
 class A2AMessage {
   /// Identifies the sender of the message. `user` for the client,
@@ -123,20 +123,20 @@ class A2AArtifact {
   /// A unique identifier (e.g. UUID) for the artifact within the scope of the task.
   String artifactId = '';
 
-  /// Optional description for the artifact.
-  String? description;
-
-  /// The URIs of extensions that are present or contributed to this Artifact.
-  List<String>? extensions;
-
-  /// Extension metadata.
-  A2ASV? metadata;
-
-  /// Optional name for the artifact.
+  /// Optional, human-readable name for the artifact.
   String? name;
 
-  /// Artifact parts
+  /// Optional, human-readable description for the artifact.
+  String? description;
+
+  /// An array of content parts that make up the artifact.
   List<A2APart> parts = [];
+
+  /// Optional metadata for extensions. The key is an extension-specific identifier.
+  A2ASV? metadata;
+
+  /// The URIs of extensions that are relevant to this Artifact.
+  List<String>? extensions;
 
   @override
   int get hashCode => artifactId.hashCode;
@@ -166,7 +166,7 @@ class A2ATask {
   /// context across multiple related tasks or interactions.
   String contextId = '';
 
-  /// The current status of the task, including its state and a descriptive message
+  /// The current status of the task, including its state and a descriptive message.
   A2ATaskStatus status = A2ATaskStatus();
 
   ///  An array of messages exchanged during the task, representing the conversation history.

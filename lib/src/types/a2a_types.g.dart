@@ -37,24 +37,24 @@ Map<String, dynamic> _$A2AMessageToJson(A2AMessage instance) =>
 
 A2AArtifact _$A2AArtifactFromJson(Map<String, dynamic> json) => A2AArtifact()
   ..artifactId = json['artifactId'] as String
-  ..description = json['description'] as String?
-  ..extensions = (json['extensions'] as List<dynamic>?)
-      ?.map((e) => e as String)
-      .toList()
-  ..metadata = json['metadata'] as Map<String, dynamic>?
   ..name = json['name'] as String?
+  ..description = json['description'] as String?
   ..parts = (json['parts'] as List<dynamic>)
       .map((e) => A2APart.fromJson(e as Map<String, dynamic>))
+      .toList()
+  ..metadata = json['metadata'] as Map<String, dynamic>?
+  ..extensions = (json['extensions'] as List<dynamic>?)
+      ?.map((e) => e as String)
       .toList();
 
 Map<String, dynamic> _$A2AArtifactToJson(A2AArtifact instance) =>
     <String, dynamic>{
       'artifactId': instance.artifactId,
-      'description': instance.description,
-      'extensions': instance.extensions,
-      'metadata': instance.metadata,
       'name': instance.name,
+      'description': instance.description,
       'parts': instance.parts.map((e) => e.toJson()).toList(),
+      'metadata': instance.metadata,
+      'extensions': instance.extensions,
     };
 
 A2ATask _$A2ATaskFromJson(Map<String, dynamic> json) => A2ATask()

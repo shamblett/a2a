@@ -54,7 +54,7 @@ final class A2AAgentCard extends A2AAgent {
   ///   SHOULD include all supported transports for completeness
   ///   SHOULD include an entry matching the main 'url' and 'preferredTransport'
   ///   MAY reuse URLs if multiple transports are available at the same endpoint
-  ///   MUST accurately declare the transport available at each URL
+  ///   MUST accurately declare the transport available at each URL.
   ///
   /// Clients can select any interface from this list based on their transport capabilities
   /// and preferences. This enables transport negotiation and fallback scenarios.
@@ -222,7 +222,7 @@ final class A2AAgentSkill extends A2AAgent {
 class A2AAgentInterface {
   /// The URL where this interface is available. Must be a valid absolute HTTPS URL in production.
   /// examples ["https://api.example.com/a2a/v1",
-  /// "https://grpc.example.com/a2a", "https://rest.example.com/v1"]
+  /// "https://grpc.example.com/a2a", "https://rest.example.com/v1"].
   String url = '';
 
   /// The transport protocol supported at this URL.
