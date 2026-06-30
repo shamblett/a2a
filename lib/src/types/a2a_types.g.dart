@@ -812,23 +812,6 @@ Map<String, dynamic> _$A2AJSONRPCErrorToJson(A2AJSONRPCError instance) =>
       'data': instance.data,
     };
 
-A2ACancelTaskRequest _$A2ACancelTaskRequestFromJson(
-  Map<String, dynamic> json,
-) => A2ACancelTaskRequest()
-  ..id = json['id']
-  ..params = json['params'] == null
-      ? null
-      : A2ATaskIdParams.fromJson(json['params'] as Map<String, dynamic>);
-
-Map<String, dynamic> _$A2ACancelTaskRequestToJson(
-  A2ACancelTaskRequest instance,
-) => <String, dynamic>{
-  'id': instance.id,
-  'jsonrpc': instance.jsonrpc,
-  'method': instance.method,
-  'params': instance.params?.toJson(),
-};
-
 A2ASetTaskPushNotificationConfigRequest
 _$A2ASetTaskPushNotificationConfigRequestFromJson(Map<String, dynamic> json) =>
     A2ASetTaskPushNotificationConfigRequest()
@@ -922,14 +905,6 @@ Map<String, dynamic> _$A2ATaskResubscriptionRequestToJson(
   'method': instance.method,
   'params': instance.params?.toJson(),
 };
-
-A2ATaskIdParams _$A2ATaskIdParamsFromJson(Map<String, dynamic> json) =>
-    A2ATaskIdParams()
-      ..id = json['id'] as String
-      ..metadata = json['metadata'] as Map<String, dynamic>?;
-
-Map<String, dynamic> _$A2ATaskIdParamsToJson(A2ATaskIdParams instance) =>
-    <String, dynamic>{'id': instance.id, 'metadata': instance.metadata};
 
 A2AListTaskPushNotificationConfigParams
 _$A2AListTaskPushNotificationConfigParamsFromJson(Map<String, dynamic> json) =>
@@ -1404,13 +1379,38 @@ Map<String, dynamic> _$A2AGetTaskRequestToJson(A2AGetTaskRequest instance) =>
 
 A2ATaskQueryParams _$A2ATaskQueryParamsFromJson(Map<String, dynamic> json) =>
     A2ATaskQueryParams()
-      ..historyLength = (json['historyLength'] as num?)?.toInt()
       ..id = json['id'] as String
-      ..metadata = json['metadata'] as Map<String, dynamic>?;
+      ..metadata = json['metadata'] as Map<String, dynamic>?
+      ..historyLength = (json['historyLength'] as num?)?.toInt();
 
 Map<String, dynamic> _$A2ATaskQueryParamsToJson(A2ATaskQueryParams instance) =>
     <String, dynamic>{
-      'historyLength': instance.historyLength,
       'id': instance.id,
       'metadata': instance.metadata,
+      'historyLength': instance.historyLength,
     };
+
+A2ACancelTaskRequest _$A2ACancelTaskRequestFromJson(
+  Map<String, dynamic> json,
+) => A2ACancelTaskRequest()
+  ..id = json['id']
+  ..params = json['params'] == null
+      ? null
+      : A2ATaskIdParams.fromJson(json['params'] as Map<String, dynamic>);
+
+Map<String, dynamic> _$A2ACancelTaskRequestToJson(
+  A2ACancelTaskRequest instance,
+) => <String, dynamic>{
+  'jsonrpc': instance.jsonrpc,
+  'method': instance.method,
+  'id': instance.id,
+  'params': instance.params?.toJson(),
+};
+
+A2ATaskIdParams _$A2ATaskIdParamsFromJson(Map<String, dynamic> json) =>
+    A2ATaskIdParams()
+      ..id = json['id'] as String
+      ..metadata = json['metadata'] as Map<String, dynamic>?;
+
+Map<String, dynamic> _$A2ATaskIdParamsToJson(A2ATaskIdParams instance) =>
+    <String, dynamic>{'id': instance.id, 'metadata': instance.metadata};

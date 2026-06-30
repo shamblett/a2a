@@ -34,6 +34,7 @@ part 'src/rpc_methods/response/a2a_send_stream_message_response.dart';
 part 'src/rpc_methods/request/a2a_send_message_request.dart';
 part 'src/rpc_methods/request/a2a_send_streaming_message_request.dart';
 part 'src/rpc_methods/request/a2a_get_task_request.dart';
+part 'src/rpc_methods/request/a2a_cancel_task_request.dart';
 
 /// JSON
 part 'a2a_types.g.dart';

@@ -36,20 +36,15 @@ final class A2AGetTaskRequest extends A2ARequest {
 /// A Structured value that holds the parameter values to be used during the invocation of
 /// the method.
 @JsonSerializable(explicitToJson: true)
-class A2ATaskQueryParams {
+class A2ATaskQueryParams extends A2ATaskIdParams{
   /// Number of recent messages to be retrieved.
   int? historyLength;
-
-  /// Task Id
-  String id = '';
-
-  /// Metadata
-  A2ASV? metadata;
 
   A2ATaskQueryParams();
 
   factory A2ATaskQueryParams.fromJson(Map<String, dynamic> json) =>
       _$A2ATaskQueryParamsFromJson(json);
 
+  @override
   Map<String, dynamic> toJson() => _$A2ATaskQueryParamsToJson(this);
 }
