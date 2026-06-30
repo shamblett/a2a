@@ -18,6 +18,7 @@ part 'src/protocol_objects/a2a_artifact.dart';
 part 'src/protocol_objects/a2a_push_notification_config.dart';
 part 'src/json_rpc/a2a_json_rpc_request.dart';
 part 'src/json_rpc/a2a_json_rpc_response.dart';
+part 'src/json_rpc/a2a_json_rpc_error.dart';
 part 'src/area/a2a_error.dart';
 part 'src/area/a2a_request.dart';
 part 'src/protocol_objects/a2a_part.dart';
