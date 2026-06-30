@@ -305,23 +305,6 @@ final class A2ATaskResubscriptionRequest extends A2ARequest {
   Map<String, dynamic> toJson() => _$A2ATaskResubscriptionRequestToJson(this);
 }
 
-/// A container associating a push notification configuration with a specific task.
-@JsonSerializable(explicitToJson: true)
-class A2ATaskPushNotificationConfig {
-  ///  The push notification configuration for this task.
-  A2APushNotificationConfig? pushNotificationConfig;
-
-  /// The unique identifier (e.g. UUID) of the task.
-  String taskId = '';
-
-  A2ATaskPushNotificationConfig();
-
-  factory A2ATaskPushNotificationConfig.fromJson(Map<String, dynamic> json) =>
-      _$A2ATaskPushNotificationConfigFromJson(json);
-
-  Map<String, dynamic> toJson() => _$A2ATaskPushNotificationConfigToJson(this);
-}
-
 /// A Structured value that holds the parameter values to be used during the invocation of
 /// the method.
 @JsonSerializable(explicitToJson: true)
@@ -409,59 +392,6 @@ class A2AMessageSendConfiguration {
       _$A2AMessageSendConfigurationFromJson(json);
 
   Map<String, dynamic> toJson() => _$A2AMessageSendConfigurationToJson(this);
-}
-
-/// Defines the configuration for setting up push notifications for task updates.
-@JsonSerializable(explicitToJson: true)
-class A2APushNotificationConfig {
-  /// Optional authentication details for the agent to use when calling the notification URL.
-  A2APushNotificationAuthenticationInfo? authentication;
-
-  /// A unique identifier (e.g. UUID) for the push notification configuration, set by the client
-  /// to support multiple notification callbacks.
-  String? id;
-
-  /// A unique token for this task or session to validate incoming push notifications.
-  String? token;
-
-  /// The callback URL where the agent should send push notifications.
-  String url = '';
-
-  @override
-  int get hashCode => id.hashCode;
-
-  A2APushNotificationConfig();
-
-  factory A2APushNotificationConfig.fromJson(Map<String, dynamic> json) =>
-      _$A2APushNotificationConfigFromJson(json);
-
-  Map<String, dynamic> toJson() => _$A2APushNotificationConfigToJson(this);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is A2APushNotificationConfig &&
-          runtimeType == other.runtimeType &&
-          id == other.id;
-}
-
-/// Defines authentication details for a push notification endpoint.
-@JsonSerializable(explicitToJson: true)
-class A2APushNotificationAuthenticationInfo {
-  /// Optional credentials required by the push notification endpoint.
-  String? credentials;
-
-  /// Supported authentication schemes - e.g. Basic, Bearer
-  List<String> schemes = [];
-
-  A2APushNotificationAuthenticationInfo();
-
-  factory A2APushNotificationAuthenticationInfo.fromJson(
-    Map<String, dynamic> json,
-  ) => _$A2APushNotificationAuthenticationInfoFromJson(json);
-
-  Map<String, dynamic> toJson() =>
-      _$A2APushNotificationAuthenticationInfoToJson(this);
 }
 
 /// The parameters identifying the task whose configurations are to be listed.

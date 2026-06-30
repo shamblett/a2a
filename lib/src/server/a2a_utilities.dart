@@ -5,7 +5,7 @@
 * Copyright :  S.Hamblett
 */
 
-part of '../a2a_types.dart';
+part of '../types/a2a_types.dart';
 
 /// Server utilities class
 class A2AUtilities {

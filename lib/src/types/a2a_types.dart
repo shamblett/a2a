@@ -15,6 +15,7 @@ part 'src/a2a_constants.dart';
 part 'src/protocol_objects/a2a_task.dart';
 part 'src/protocol_objects/a2a_message.dart';
 part 'src/protocol_objects/a2a_artifact.dart';
+part 'src/protocol_objects/a2a_push_notification_config.dart';
 part 'src/area/a2a_error.dart';
 part 'src/area/a2a_request.dart';
 part 'src/protocol_objects/a2a_part.dart';
@@ -28,7 +29,7 @@ part 'src/area/a2a_get_task_response.dart';
 part 'src/area/a2a_json_rpc_response.dart';
 part 'src/area/a2a_send_stream_message_response.dart';
 part 'src/a2a_agent_card.dart';
-part 'src/a2a_utilities.dart';
+part '../server/a2a_utilities.dart';
 
 /// JSON
 part 'a2a_types.g.dart';
