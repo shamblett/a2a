@@ -35,3 +35,4 @@ part 'src/agent_execution/a2a_request_context.dart';
 part 'src/agent_execution/a2a_executor_constructor.dart';
 part 'src/transports/a2a_jsonrpc_transport_handler.dart';
 part 'src/debug/a2a_server_debug.dart';
+part 'src/a2a_utilities.dart';
