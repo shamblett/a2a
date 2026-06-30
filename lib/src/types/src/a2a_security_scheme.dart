@@ -5,7 +5,7 @@
 * Copyright :  S.Hamblett
 */
 
-part of '../../a2a_types.dart';
+part of '../a2a_types.dart';
 
 /// Defines a security scheme that can be used to secure an agent's endpoints.
 /// This is a discriminated union type based on the OpenAPI 3.0 Security Scheme Object.

@@ -5,7 +5,7 @@
 * Copyright :  S.Hamblett
 */
 
-part of '../../a2a_types.dart';
+part of '../../../a2a_types.dart';
 
 /// A2A supported request types
 class A2ARequest {
