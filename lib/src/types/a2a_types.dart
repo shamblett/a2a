@@ -31,6 +31,9 @@ part 'src/rpc_methods/response/a2a_list_task_push_notification_config_response.d
 part 'src/rpc_methods/response/a2a_delete_task_push_notification_config_response.dart';
 part 'src/rpc_methods/response/a2a_get_task_response.dart';
 part 'src/rpc_methods/response/a2a_send_stream_message_response.dart';
+part 'src/rpc_methods/request/a2a_send_message_request.dart';
+part 'src/rpc_methods/request/a2a_send_streaming_message_request.dart';
+part 'src/rpc_methods/request/a2a_get_task_request.dart';
 
 /// JSON
 part 'a2a_types.g.dart';
