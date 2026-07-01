@@ -83,6 +83,12 @@ class A2ACLIClientSupport {
         print(
           '${Colorize('  Client will fallback to using non streaming API calls')..dark()}',
         );
+        // Authenticated extended agent card
+        if (card.supportsAuthenticatedExtendedCard == true) {
+          print(
+            '${Colorize('  Extended Agent Card available but not supported by the client.')..yellow()}',
+          );
+        }
       }
     } catch (e) {
       print(
