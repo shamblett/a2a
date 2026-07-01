@@ -35,6 +35,11 @@ part 'src/rpc_methods/request/a2a_send_message_request.dart';
 part 'src/rpc_methods/request/a2a_send_streaming_message_request.dart';
 part 'src/rpc_methods/request/a2a_get_task_request.dart';
 part 'src/rpc_methods/request/a2a_cancel_task_request.dart';
+part 'src/rpc_methods/request/a2a_set_task_push_notification_config_request.dart';
+part 'src/rpc_methods/request/a2a_get_task_push_notification_config_request.dart';
+part 'src/rpc_methods/request/a2a_list_task_push_notification_config_request.dart';
+part 'src/rpc_methods/request/a2a_delete_task_push_notification_config_request.dart';
+part 'src/rpc_methods/request/a2a_task_resubscription_request.dart';
 
 /// JSON
 part 'a2a_types.g.dart';
