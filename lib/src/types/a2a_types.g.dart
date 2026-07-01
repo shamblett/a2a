@@ -812,141 +812,6 @@ Map<String, dynamic> _$A2AJSONRPCErrorToJson(A2AJSONRPCError instance) =>
       'data': instance.data,
     };
 
-A2ASetTaskPushNotificationConfigRequest
-_$A2ASetTaskPushNotificationConfigRequestFromJson(Map<String, dynamic> json) =>
-    A2ASetTaskPushNotificationConfigRequest()
-      ..id = json['id']
-      ..params = json['params'] == null
-          ? null
-          : A2ATaskPushNotificationConfig.fromJson(
-              json['params'] as Map<String, dynamic>,
-            );
-
-Map<String, dynamic> _$A2ASetTaskPushNotificationConfigRequestToJson(
-  A2ASetTaskPushNotificationConfigRequest instance,
-) => <String, dynamic>{
-  'id': instance.id,
-  'jsonrpc': instance.jsonrpc,
-  'method': instance.method,
-  'params': instance.params?.toJson(),
-};
-
-A2AGetTaskPushNotificationConfigRequest
-_$A2AGetTaskPushNotificationConfigRequestFromJson(Map<String, dynamic> json) =>
-    A2AGetTaskPushNotificationConfigRequest()
-      ..id = json['id']
-      ..params = json['params'] == null
-          ? null
-          : A2AGetTaskPushNotificationConfigParams.fromJson(
-              json['params'] as Map<String, dynamic>,
-            );
-
-Map<String, dynamic> _$A2AGetTaskPushNotificationConfigRequestToJson(
-  A2AGetTaskPushNotificationConfigRequest instance,
-) => <String, dynamic>{
-  'id': instance.id,
-  'jsonrpc': instance.jsonrpc,
-  'method': instance.method,
-  'params': instance.params?.toJson(),
-};
-
-A2ADeleteTaskPushNotificationConfigRequest
-_$A2ADeleteTaskPushNotificationConfigRequestFromJson(
-  Map<String, dynamic> json,
-) => A2ADeleteTaskPushNotificationConfigRequest()
-  ..id = json['id']
-  ..params = json['params'] == null
-      ? null
-      : A2ADeleteTaskPushNotificationConfigParams.fromJson(
-          json['params'] as Map<String, dynamic>,
-        );
-
-Map<String, dynamic> _$A2ADeleteTaskPushNotificationConfigRequestToJson(
-  A2ADeleteTaskPushNotificationConfigRequest instance,
-) => <String, dynamic>{
-  'id': instance.id,
-  'jsonrpc': instance.jsonrpc,
-  'method': instance.method,
-  'params': instance.params?.toJson(),
-};
-
-A2AListTaskPushNotificationConfigRequest
-_$A2AListTaskPushNotificationConfigRequestFromJson(Map<String, dynamic> json) =>
-    A2AListTaskPushNotificationConfigRequest()
-      ..id = json['id']
-      ..params = json['params'] == null
-          ? null
-          : A2AListTaskPushNotificationConfigParams.fromJson(
-              json['params'] as Map<String, dynamic>,
-            );
-
-Map<String, dynamic> _$A2AListTaskPushNotificationConfigRequestToJson(
-  A2AListTaskPushNotificationConfigRequest instance,
-) => <String, dynamic>{
-  'id': instance.id,
-  'jsonrpc': instance.jsonrpc,
-  'method': instance.method,
-  'params': instance.params?.toJson(),
-};
-
-A2ATaskResubscriptionRequest _$A2ATaskResubscriptionRequestFromJson(
-  Map<String, dynamic> json,
-) => A2ATaskResubscriptionRequest()
-  ..id = json['id']
-  ..params = json['params'] == null
-      ? null
-      : A2ATaskIdParams.fromJson(json['params'] as Map<String, dynamic>);
-
-Map<String, dynamic> _$A2ATaskResubscriptionRequestToJson(
-  A2ATaskResubscriptionRequest instance,
-) => <String, dynamic>{
-  'id': instance.id,
-  'jsonrpc': instance.jsonrpc,
-  'method': instance.method,
-  'params': instance.params?.toJson(),
-};
-
-A2AListTaskPushNotificationConfigParams
-_$A2AListTaskPushNotificationConfigParamsFromJson(Map<String, dynamic> json) =>
-    A2AListTaskPushNotificationConfigParams()
-      ..id = json['id'] as String
-      ..metadata = json['metadata'] as Map<String, dynamic>?;
-
-Map<String, dynamic> _$A2AListTaskPushNotificationConfigParamsToJson(
-  A2AListTaskPushNotificationConfigParams instance,
-) => <String, dynamic>{'id': instance.id, 'metadata': instance.metadata};
-
-A2AGetTaskPushNotificationConfigParams
-_$A2AGetTaskPushNotificationConfigParamsFromJson(Map<String, dynamic> json) =>
-    A2AGetTaskPushNotificationConfigParams()
-      ..id = json['id'] as String
-      ..metadata = json['metadata'] as Map<String, dynamic>?
-      ..pushNotificationConfigId = json['pushNotificationConfigId'] as String?;
-
-Map<String, dynamic> _$A2AGetTaskPushNotificationConfigParamsToJson(
-  A2AGetTaskPushNotificationConfigParams instance,
-) => <String, dynamic>{
-  'id': instance.id,
-  'metadata': instance.metadata,
-  'pushNotificationConfigId': instance.pushNotificationConfigId,
-};
-
-A2ADeleteTaskPushNotificationConfigParams
-_$A2ADeleteTaskPushNotificationConfigParamsFromJson(
-  Map<String, dynamic> json,
-) => A2ADeleteTaskPushNotificationConfigParams()
-  ..id = json['id'] as String
-  ..metadata = json['metadata'] as Map<String, dynamic>?
-  ..pushNotificationConfigId = json['pushNotificationConfigId'] as String;
-
-Map<String, dynamic> _$A2ADeleteTaskPushNotificationConfigParamsToJson(
-  A2ADeleteTaskPushNotificationConfigParams instance,
-) => <String, dynamic>{
-  'id': instance.id,
-  'metadata': instance.metadata,
-  'pushNotificationConfigId': instance.pushNotificationConfigId,
-};
-
 A2ATextPart _$A2ATextPartFromJson(Map<String, dynamic> json) => A2ATextPart()
   ..metadata = json['metadata'] as Map<String, dynamic>?
   ..text = json['text'] as String;
@@ -1414,3 +1279,138 @@ A2ATaskIdParams _$A2ATaskIdParamsFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$A2ATaskIdParamsToJson(A2ATaskIdParams instance) =>
     <String, dynamic>{'id': instance.id, 'metadata': instance.metadata};
+
+A2ASetTaskPushNotificationConfigRequest
+_$A2ASetTaskPushNotificationConfigRequestFromJson(Map<String, dynamic> json) =>
+    A2ASetTaskPushNotificationConfigRequest()
+      ..id = json['id']
+      ..params = json['params'] == null
+          ? null
+          : A2ATaskPushNotificationConfig.fromJson(
+              json['params'] as Map<String, dynamic>,
+            );
+
+Map<String, dynamic> _$A2ASetTaskPushNotificationConfigRequestToJson(
+  A2ASetTaskPushNotificationConfigRequest instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'jsonrpc': instance.jsonrpc,
+  'method': instance.method,
+  'params': instance.params?.toJson(),
+};
+
+A2AGetTaskPushNotificationConfigRequest
+_$A2AGetTaskPushNotificationConfigRequestFromJson(Map<String, dynamic> json) =>
+    A2AGetTaskPushNotificationConfigRequest()
+      ..id = json['id']
+      ..params = json['params'] == null
+          ? null
+          : A2AGetTaskPushNotificationConfigParams.fromJson(
+              json['params'] as Map<String, dynamic>,
+            );
+
+Map<String, dynamic> _$A2AGetTaskPushNotificationConfigRequestToJson(
+  A2AGetTaskPushNotificationConfigRequest instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'jsonrpc': instance.jsonrpc,
+  'method': instance.method,
+  'params': instance.params?.toJson(),
+};
+
+A2AGetTaskPushNotificationConfigParams
+_$A2AGetTaskPushNotificationConfigParamsFromJson(Map<String, dynamic> json) =>
+    A2AGetTaskPushNotificationConfigParams()
+      ..id = json['id'] as String
+      ..metadata = json['metadata'] as Map<String, dynamic>?
+      ..pushNotificationConfigId = json['pushNotificationConfigId'] as String?;
+
+Map<String, dynamic> _$A2AGetTaskPushNotificationConfigParamsToJson(
+  A2AGetTaskPushNotificationConfigParams instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'metadata': instance.metadata,
+  'pushNotificationConfigId': instance.pushNotificationConfigId,
+};
+
+A2AListTaskPushNotificationConfigRequest
+_$A2AListTaskPushNotificationConfigRequestFromJson(Map<String, dynamic> json) =>
+    A2AListTaskPushNotificationConfigRequest()
+      ..id = json['id']
+      ..params = json['params'] == null
+          ? null
+          : A2AListTaskPushNotificationConfigParams.fromJson(
+              json['params'] as Map<String, dynamic>,
+            );
+
+Map<String, dynamic> _$A2AListTaskPushNotificationConfigRequestToJson(
+  A2AListTaskPushNotificationConfigRequest instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'jsonrpc': instance.jsonrpc,
+  'method': instance.method,
+  'params': instance.params?.toJson(),
+};
+
+A2AListTaskPushNotificationConfigParams
+_$A2AListTaskPushNotificationConfigParamsFromJson(Map<String, dynamic> json) =>
+    A2AListTaskPushNotificationConfigParams()
+      ..id = json['id'] as String
+      ..metadata = json['metadata'] as Map<String, dynamic>?;
+
+Map<String, dynamic> _$A2AListTaskPushNotificationConfigParamsToJson(
+  A2AListTaskPushNotificationConfigParams instance,
+) => <String, dynamic>{'id': instance.id, 'metadata': instance.metadata};
+
+A2ADeleteTaskPushNotificationConfigRequest
+_$A2ADeleteTaskPushNotificationConfigRequestFromJson(
+  Map<String, dynamic> json,
+) => A2ADeleteTaskPushNotificationConfigRequest()
+  ..id = json['id']
+  ..params = json['params'] == null
+      ? null
+      : A2ADeleteTaskPushNotificationConfigParams.fromJson(
+          json['params'] as Map<String, dynamic>,
+        );
+
+Map<String, dynamic> _$A2ADeleteTaskPushNotificationConfigRequestToJson(
+  A2ADeleteTaskPushNotificationConfigRequest instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'jsonrpc': instance.jsonrpc,
+  'method': instance.method,
+  'params': instance.params?.toJson(),
+};
+
+A2ADeleteTaskPushNotificationConfigParams
+_$A2ADeleteTaskPushNotificationConfigParamsFromJson(
+  Map<String, dynamic> json,
+) => A2ADeleteTaskPushNotificationConfigParams()
+  ..id = json['id'] as String
+  ..metadata = json['metadata'] as Map<String, dynamic>?
+  ..pushNotificationConfigId = json['pushNotificationConfigId'] as String;
+
+Map<String, dynamic> _$A2ADeleteTaskPushNotificationConfigParamsToJson(
+  A2ADeleteTaskPushNotificationConfigParams instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'metadata': instance.metadata,
+  'pushNotificationConfigId': instance.pushNotificationConfigId,
+};
+
+A2ATaskResubscriptionRequest _$A2ATaskResubscriptionRequestFromJson(
+  Map<String, dynamic> json,
+) => A2ATaskResubscriptionRequest()
+  ..id = json['id']
+  ..params = json['params'] == null
+      ? null
+      : A2ATaskIdParams.fromJson(json['params'] as Map<String, dynamic>);
+
+Map<String, dynamic> _$A2ATaskResubscriptionRequestToJson(
+  A2ATaskResubscriptionRequest instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'jsonrpc': instance.jsonrpc,
+  'method': instance.method,
+  'params': instance.params?.toJson(),
+};
