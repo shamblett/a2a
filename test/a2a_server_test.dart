@@ -38,11 +38,11 @@ void main() {
   });
   group('Error', () {
     test('Construction', () {
-      final error = A2AServerError(A2AError.internal, 'Unknown Error', {
+      final error = A2AServerError(A2AError.internal, 'Internal server error', {
         'd1': 1,
       }, '10');
       final jsonError = error.toJSONRPCError();
-      expect(jsonError.message, 'Unknown Error');
+      expect(jsonError.message, 'Internal server error');
       expect(jsonError.code, A2AError.internal);
       expect(jsonError.data, {'d1': 1});
       dynamic testError = A2AServerError.parseError('The message', {'d1': 1});
@@ -70,14 +70,14 @@ void main() {
       expect(testError.data, {'taskId': '10'});
       testError = A2AServerError.taskNotCancelable('10');
       expect(testError is A2ATaskNotCancelableError, isTrue);
-      expect(testError.message, 'Task not cancelable: 10');
+      expect(testError.message, 'Task cannot be canceled: 10');
       expect(testError.data, {'taskId': '10'});
       testError = A2AServerError.pushNotificationNotSupported();
       expect(testError is A2APushNotificationNotSupportedError, isTrue);
       expect(testError.message, 'Push Notification is not supported');
       testError = A2AServerError.unsupportedOperation('operation');
       expect(testError is A2AUnsupportedOperationError, isTrue);
-      expect(testError.message, 'Unsupported operation: operation');
+      expect(testError.message, 'This operation is not supported: operation');
     });
   });
   group('Result Manager', () {
