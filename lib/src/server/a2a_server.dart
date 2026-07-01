@@ -21,6 +21,8 @@ import 'package:uuid/uuid.dart';
 import '/src/types/a2a_types.dart';
 export '/src/types/a2a_types.dart';
 
+import '../a2a_constants.dart';
+
 part 'src/a2a_task_store.dart';
 part 'src/a2a_server_error.dart';
 part 'src/a2a_result_manager.dart';

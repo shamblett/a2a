@@ -11,7 +11,6 @@ import 'package:colorize/colorize.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'src/a2a_common.dart';
-part 'src/a2a_constants.dart';
 part 'src/a2a_error.dart';
 part 'src/a2a_security_scheme.dart';
 part 'src/a2a_agent_card.dart';
