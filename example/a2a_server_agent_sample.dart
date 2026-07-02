@@ -15,7 +15,7 @@ import 'package:a2a/a2a.dart';
 ///
 /// This is a runnable example of an A2A Agent -
 ///
-/// dart examples/a2a_server_agent.dart
+/// dart examples/a2a_server_agent_sample.dart
 ///
 /// Starts the agent server on http://localhost:41242
 ///
