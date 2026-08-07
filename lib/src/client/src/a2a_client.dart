@@ -1,3 +1,5 @@
+// ignore_for_file: prefer-commenting-analyzer-ignores
+
 /*
 * Package : a2a
 * Author : S. Hamblett <steve.hamblett@linux.com>
@@ -622,6 +624,21 @@ class A2AClient {
       }
 
       if (cache) {
+        // The agent card URL must be absolute
+        Uri uri;
+        try {
+          uri = Uri.parse(agentCard.url);
+        } on FormatException {
+          // ignore: avoid-throw-in-catch-block
+          throw Exception(
+            'fetchAndCacheAgentCard:: The Agent Card URL cannot be parsed - [${agentCard.url}]',
+          );
+        }
+        if (!uri.isAbsolute) {
+          throw Exception(
+            'fetchAndCacheAgentCard:: The Agent Card URL supplied is relative, not absolute - [${agentCard.url}]',
+          );
+        }
         _serviceEndpointUrl = agentCard.url;
         _agentCard = agentCard;
       }
