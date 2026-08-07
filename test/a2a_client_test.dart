@@ -92,7 +92,7 @@ void main() {
     late A2AClient client;
     late Uri serverUrl;
     late HttpServer server;
-    final agentCards = List<String>.filled(6, '');
+    final agentCards = List<String>.filled(7, '');
     var agentCardIndex = 0;
 
     // Main url not present
@@ -188,6 +188,20 @@ void main() {
       ],
     });
 
+    // Agent card URL is not absolute
+    agentCards[6] = json.encode({
+      'protocolVersion': '0.3.0',
+      'name': 'Test Agent Validation 6',
+      'description': 'An agent card validation test agent',
+      'version': '1.0.0',
+      'url': '/localhost',
+      'capabilities': {'streaming': true},
+      'defaultInputModes': [],
+      'defaultOutputModes': [],
+      'skills': [],
+      'preferredTransport': 'JSONRPC',
+    });
+
     setUp(() async {
       final handler = const shelf.Pipeline().addHandler((
         shelf.Request request,
@@ -272,6 +286,17 @@ void main() {
       expect(agentCard.preferredTransport, A2ATransportProtocol.jsonRpc);
       expect(agentCard.url, 'http://localhost1');
       expect(agentCard.name, 'Test Agent Validation 5');
+      agentCardIndex = 6;
+    });
+    test('Agent card URL is not absolute', () async {
+      try {
+        await client.getAgentCard();
+      } catch (e) {
+        expect(
+          e.toString(),
+          'Exception: fetchAndCacheAgentCard:: The Agent Card URL supplied is relative, not absolute - [/localhost]',
+        );
+      }
     });
   });
 }
