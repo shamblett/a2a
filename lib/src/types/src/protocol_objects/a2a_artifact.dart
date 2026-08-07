@@ -41,7 +41,7 @@ class A2AArtifact {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is A2AArtifact &&
-              runtimeType == other.runtimeType &&
-              artifactId == other.artifactId;
+      other is A2AArtifact &&
+          runtimeType == other.runtimeType &&
+          artifactId == other.artifactId;
 }

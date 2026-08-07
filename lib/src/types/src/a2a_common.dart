@@ -43,4 +43,3 @@ mixin A2AJSONRPCErrorResponseM {
   @JsonKey(includeToJson: true, includeFromJson: false)
   String jsonrpc = '2.0';
 }
-

@@ -36,7 +36,7 @@ final class A2AGetTaskRequest extends A2ARequest {
 /// A Structured value that holds the parameter values to be used during the invocation of
 /// the method.
 @JsonSerializable(explicitToJson: true)
-class A2ATaskQueryParams extends A2ATaskIdParams{
+class A2ATaskQueryParams extends A2ATaskIdParams {
   /// Number of recent messages to be retrieved.
   int? historyLength;
 
