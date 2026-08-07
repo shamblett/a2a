@@ -13,12 +13,15 @@ import 'dart:convert';
 
 import 'package:colorize/colorize.dart';
 import 'package:darto/darto.dart';
+import 'package:darto/stream.dart';
 export 'package:darto/darto.dart';
 import 'package:events_emitter/events_emitter.dart';
 import 'package:uuid/uuid.dart';
 
 import '/src/types/a2a_types.dart';
 export '/src/types/a2a_types.dart';
+
+import '../a2a_constants.dart';
 
 part 'src/a2a_task_store.dart';
 part 'src/a2a_server_error.dart';
@@ -34,3 +37,4 @@ part 'src/agent_execution/a2a_request_context.dart';
 part 'src/agent_execution/a2a_executor_constructor.dart';
 part 'src/transports/a2a_jsonrpc_transport_handler.dart';
 part 'src/debug/a2a_server_debug.dart';
+part 'src/a2a_utilities.dart';

@@ -21,6 +21,7 @@ const nonCancelableStates = [
   A2ATaskState.failed,
   A2ATaskState.canceled,
   A2ATaskState.rejected,
+  A2ATaskState.unknown,
 ];
 
 const finalStates = [
@@ -251,8 +252,7 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
     }
 
     // Check if task is in a cancelable state
-    if (task.status?.state == null ||
-        nonCancelableStates.contains(task.status?.state)) {
+    if (nonCancelableStates.contains(task.status.state)) {
       throw A2AServerError.taskNotCancelable(params.id);
     }
 
@@ -272,7 +272,7 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
         ..contextId = task.contextId;
 
       task.status
-        ?..state = A2ATaskState.canceled
+        ..state = A2ATaskState.canceled
         ..message = message
         ..timestamp = A2AUtilities.getCurrentTimestamp();
 
@@ -435,7 +435,7 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
     yield task;
 
     // If task is already in a final state, no more events will come.
-    if (finalStates.contains(task.status?.state)) {
+    if (finalStates.contains(task.status.state)) {
       return;
     }
 
@@ -490,10 +490,10 @@ class A2ADefaultRequestHandler implements A2ARequestHandler {
         throw A2AServerError.taskNotFound(incomingMessage.taskId!);
       }
 
-      if (terminalStates.contains(task.status?.state)) {
+      if (terminalStates.contains(task.status.state)) {
         // Throw an error that conforms to the JSON-RPC Invalid Request error specification.
         throw A2AServerError.invalidRequest(
-          'A2ADefaultRequestHandler::_createRequestContext Task ${task.id} is in a terminal state (${task.status?.state}) '
+          'A2ADefaultRequestHandler::_createRequestContext Task ${task.id} is in a terminal state (${task.status.state}) '
           'and cannot be modified.',
           null,
         );

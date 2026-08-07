@@ -122,7 +122,7 @@ class A2AClient {
   ) async {
     final result =
         await _postRpcRequest<A2AMessageSendParams, A2ASendMessageResponse>(
-          'message/send',
+          A2ARequest.messageSend,
           params,
         );
     return A2ASendMessageResponse.fromJson(result);
@@ -162,7 +162,7 @@ class A2AClient {
     final endpoint = await serviceEndpoint;
     final requestId = _requestIdCounter++;
     final rpcRequest = A2AJsonRpcRequest()
-      ..method = 'message/stream'
+      ..method = A2ARequest.messageStream
       ..id = requestId
       ..params = (params as dynamic).toJson();
 
@@ -304,7 +304,7 @@ class A2AClient {
         await _postRpcRequest<
           A2ATaskPushNotificationConfig,
           A2ASetTaskPushNotificationConfigResponse
-        >('tasks/pushNotificationConfig/set', params);
+        >(A2ARequest.tasksPncSet, params);
 
     return A2ASetTaskPushNotificationConfigResponse.fromJson(result);
   }
@@ -342,7 +342,7 @@ class A2AClient {
         await _postRpcRequest<
           A2AGetTaskPushNotificationConfigParams,
           A2AGetTaskPushNotificationConfigResponse
-        >('tasks/pushNotificationConfig/get', params);
+        >(A2ARequest.tasksPncGet, params);
 
     return A2AGetTaskPushNotificationConfigResponse.fromJson(result);
   }
@@ -379,7 +379,7 @@ class A2AClient {
         await _postRpcRequest<
           A2AListTaskPushNotificationConfigParams,
           A2AListTaskPushNotificationConfigResponse
-        >('tasks/pushNotificationConfig/get', params);
+        >(A2ARequest.tasksPncGet, params);
 
     return A2AListTaskPushNotificationConfigResponse.fromJson(result);
   }
@@ -417,7 +417,7 @@ class A2AClient {
         await _postRpcRequest<
           A2ADeleteTaskPushNotificationConfigParams,
           A2ADeleteTaskPushNotificationConfigResponse
-        >('tasks/pushNotificationConfig/get', params);
+        >(A2ARequest.tasksPncGet, params);
 
     return A2ADeleteTaskPushNotificationConfigResponse.fromJson(result);
   }
@@ -429,7 +429,7 @@ class A2AClient {
   Future<A2AGetTaskResponse> getTask(A2ATaskQueryParams params) async {
     final result =
         await _postRpcRequest<A2ATaskQueryParams, A2AGetTaskResponse>(
-          'tasks/get',
+          A2ARequest.tasksGet,
           params,
         );
     return A2AGetTaskResponse.fromJson(result);
@@ -442,7 +442,7 @@ class A2AClient {
   Future<A2ACancelTaskResponse> cancelTask(A2ATaskIdParams params) async {
     final result =
         await _postRpcRequest<A2ATaskIdParams, A2ACancelTaskResponse>(
-          'tasks/cancel',
+          A2ARequest.tasksCancel,
           params,
         );
     return A2ACancelTaskResponse.fromJson(result);
@@ -480,7 +480,7 @@ class A2AClient {
     final endpoint = await serviceEndpoint;
     final requestId = _requestIdCounter++;
     final rpcRequest = A2AJsonRpcRequest()
-      ..method = 'tasks/resubscribe'
+      ..method = A2ARequest.tasksResubscribe
       ..id = requestId
       ..params = (params as dynamic).toJson();
 
@@ -571,11 +571,56 @@ class A2AClient {
       }
       final agentCardJson = await response.json();
       final agentCard = A2AAgentCard.fromJson(agentCardJson);
+
+      // Specification section 5.6.1 support
+
+      // Check main url(service endpoint) is present
       if (agentCard.url.isEmpty) {
         throw Exception(
           'fetchAndCacheAgentCard:: Fetched Agent Card does not contain a valid "url" for the service endpoint.',
         );
       }
+
+      // Specification section 5.6.3 and 5.6.4 support
+
+      // Check we support the preferred transport
+      bool found = false;
+      if (agentCard.preferredTransport != A2ATransportProtocol.jsonRpc) {
+        // No, check additional interfaces
+        final urls = <String, Set<A2ATransportProtocol>>{};
+        if (agentCard.additionalInterfaces != null) {
+          for (final interface in agentCard.additionalInterfaces!) {
+            if (!urls.keys.contains(interface.url)) {
+              urls[interface.url] = <A2ATransportProtocol>{}
+                ..add(interface.transport);
+            } else {
+              if (!urls[interface.url]!.add(interface.transport)) {
+                // Failed to add an interface for a url, url is defined with more than one transport
+                throw Exception(
+                  'fetchAndCacheAgentCard:: URL "${interface.url}" is mapped to more than one transport.',
+                );
+              }
+            }
+          }
+
+          // Find an additional interface that has a JSONRPC transport.
+          for (final interface in urls.entries) {
+            if (interface.value.contains(A2ATransportProtocol.jsonRpc)) {
+              agentCard.url = interface.key;
+              agentCard.preferredTransport = A2ATransportProtocol.jsonRpc;
+              found = true;
+            }
+          }
+        }
+
+        // Check for transport not found, we only support JSONRPC
+        if (!found) {
+          throw Exception(
+            'fetchAndCacheAgentCard:: No interfaces found that support the JSONRPC transport',
+          );
+        }
+      }
+
       if (cache) {
         _serviceEndpointUrl = agentCard.url;
         _agentCard = agentCard;
@@ -583,7 +628,7 @@ class A2AClient {
       return agentCard;
     } catch (e) {
       print(
-        '${Colorize('_fetchAndCacheAgentCard:: Error fetching or parsing Agent Card:').yellow()}',
+        '${Colorize('_fetchAndCacheAgentCard:: Error fetching or parsing Agent Card:').red()}',
       );
       rethrow;
     }

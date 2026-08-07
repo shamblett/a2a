@@ -38,11 +38,11 @@ void main() {
   });
   group('Error', () {
     test('Construction', () {
-      final error = A2AServerError(A2AError.internal, 'Unknown Error', {
+      final error = A2AServerError(A2AError.internal, 'Internal server error', {
         'd1': 1,
       }, '10');
       final jsonError = error.toJSONRPCError();
-      expect(jsonError.message, 'Unknown Error');
+      expect(jsonError.message, 'Internal server error');
       expect(jsonError.code, A2AError.internal);
       expect(jsonError.data, {'d1': 1});
       dynamic testError = A2AServerError.parseError('The message', {'d1': 1});
@@ -70,14 +70,14 @@ void main() {
       expect(testError.data, {'taskId': '10'});
       testError = A2AServerError.taskNotCancelable('10');
       expect(testError is A2ATaskNotCancelableError, isTrue);
-      expect(testError.message, 'Task not cancelable: 10');
+      expect(testError.message, 'Task cannot be canceled: 10');
       expect(testError.data, {'taskId': '10'});
       testError = A2AServerError.pushNotificationNotSupported();
       expect(testError is A2APushNotificationNotSupportedError, isTrue);
       expect(testError.message, 'Push Notification is not supported');
       testError = A2AServerError.unsupportedOperation('operation');
       expect(testError is A2AUnsupportedOperationError, isTrue);
-      expect(testError.message, 'Unsupported operation: operation');
+      expect(testError.message, 'This operation is not supported: operation');
     });
   });
   group('Result Manager', () {
@@ -174,7 +174,7 @@ void main() {
         expect(store.count, 1);
         expect(rm.currentTask?.id, '10');
         unawaited(rm.processEvent(taskStatusUpdate));
-        expect(rm.currentTask?.status?.state, A2ATaskState.completed);
+        expect(rm.currentTask?.status.state, A2ATaskState.completed);
         expect(rm.currentTask?.history, []);
         expect(store.count, 1);
         final taskStatusUpdateMessage = A2ATaskStatusUpdateEvent()
@@ -182,7 +182,7 @@ void main() {
           ..status = (A2ATaskStatus()..state = A2ATaskState.authRequired)
           ..status?.message = (A2AMessage()..messageId = '100');
         unawaited(rm.processEvent(taskStatusUpdateMessage));
-        expect(rm.currentTask?.status?.state, A2ATaskState.authRequired);
+        expect(rm.currentTask?.status.state, A2ATaskState.authRequired);
         expect(rm.currentTask?.history?.first.messageId, '100');
         expect(store.count, 1);
       });
@@ -601,7 +601,7 @@ void main() {
       );
       await store.save(task);
       expect((await drq.resubscribe(params).first as A2ATask).id, '1');
-      task.status?.state = A2ATaskState.canceled;
+      task.status.state = A2ATaskState.canceled;
       await store.save(task);
       int eventCount = 0;
       await for (final event in drq.resubscribe(params)) {
@@ -609,7 +609,7 @@ void main() {
         eventCount++;
       }
       expect(eventCount, 1);
-      task.status?.state = A2ATaskState.submitted;
+      task.status.state = A2ATaskState.submitted;
       await store.save(task);
       await for (final event in drq.resubscribe(params)) {
         expect((event as A2ATask).id, '1');
@@ -766,34 +766,34 @@ void main() {
         drq.cancelTask(params),
         throwsA(isA<A2ATaskNotCancelableError>()),
       );
-      task.status?.state = A2ATaskState.completed;
+      task.status.state = A2ATaskState.completed;
       await store.save(task);
       await expectLater(
         drq.cancelTask(params),
         throwsA(isA<A2ATaskNotCancelableError>()),
       );
-      task.status?.state = A2ATaskState.submitted;
+      task.status.state = A2ATaskState.submitted;
       task.contextId = '2';
       await store.save(task);
       final taskRet = await drq.cancelTask((params));
-      expect(taskRet.status?.state, A2ATaskState.canceled);
-      expect(taskRet.status?.message?.messageId, isNotNull);
-      expect(taskRet.status?.message?.messageId.length, 36);
-      expect(taskRet.status?.message?.parts?.length, 1);
+      expect(taskRet.status.state, A2ATaskState.canceled);
+      expect(taskRet.status.message?.messageId, isNotNull);
+      expect(taskRet.status.message?.messageId.length, 36);
+      expect(taskRet.status.message?.parts.length, 1);
       expect(
-        (taskRet.status?.message?.parts?.first as A2ATextPart).text,
+        (taskRet.status.message?.parts.first as A2ATextPart).text,
         'Task cancellation requested by user.',
       );
-      expect(taskRet.status?.message?.contextId, isNotNull);
-      expect(taskRet.status?.message?.contextId, '2');
-      expect(taskRet.status?.timestamp, isNotNull);
-      expect(taskRet.status?.timestamp?.length, 23);
+      expect(taskRet.status.message?.contextId, isNotNull);
+      expect(taskRet.status.message?.contextId, '2');
+      expect(taskRet.status.timestamp, isNotNull);
+      expect(taskRet.status.timestamp?.length, 23);
       expect(taskRet.history, isNotNull);
       expect(taskRet.history?.length, 1);
       expect(taskRet.history?.first is A2AMessage, isTrue);
       expect(
         (taskRet.history?.first)?.messageId,
-        taskRet.status?.message?.messageId,
+        taskRet.status.message?.messageId,
       );
     });
     test('Cancel Task - Event Bus', () async {
@@ -811,12 +811,12 @@ void main() {
       final task = A2ATask()
         ..id = '1'
         ..status = A2ATaskStatus();
-      task.status?.state = A2ATaskState.submitted;
+      task.status.state = A2ATaskState.submitted;
       task.contextId = '2';
       await store.save(task);
       eventBus.createOrGetByTaskId('1');
       final taskRet = await drq.cancelTask((params));
-      expect(taskRet.status?.state, A2ATaskState.submitted);
+      expect(taskRet.status.state, A2ATaskState.submitted);
       expect(taskRet.contextId, '2');
       expect(taskRet.id, '1');
     });
@@ -895,7 +895,7 @@ void main() {
       expect(updateMessage?.taskId, '1');
       expect(updateMessage?.contextId, '100');
       expect(
-        (updateMessage?.parts?.first as A2ATextPart).text,
+        (updateMessage?.parts.first as A2ATextPart).text,
         'Agent execution error: Invalid argument(s): Argument Error from execute',
       );
     });
@@ -924,7 +924,7 @@ void main() {
         if (event is A2ATask) {
           expect(event.contextId, '100');
           expect(event.id, '1');
-          expect(event.status?.state, A2ATaskState.submitted);
+          expect(event.status.state, A2ATaskState.submitted);
         }
         if (event is A2ATaskStatusUpdateEvent) {
           if (event.end != null && event.end!) {
@@ -965,18 +965,18 @@ void main() {
       final update = event.result as A2ATask;
       expect(update.contextId, '100');
       expect(update.id, '1');
-      expect(update.status?.state, A2ATaskState.failed);
-      expect(update.status?.timestamp?.length, 23);
+      expect(update.status.state, A2ATaskState.failed);
+      expect(update.status.timestamp?.length, 23);
       expect(update.history, isNotNull);
       expect(update.history?.length, 2);
       expect(update.history?.first.messageId, '100');
-      final updateMessage = update.status?.message;
+      final updateMessage = update.status.message;
       expect(updateMessage, isNotNull);
       expect(updateMessage?.messageId.isNotEmpty, isTrue);
       expect(updateMessage?.taskId, '1');
       expect(updateMessage?.contextId, '100');
       expect(
-        (updateMessage?.parts?.first as A2ATextPart).text,
+        (updateMessage?.parts.first as A2ATextPart).text,
         'Agent execution error: Invalid argument(s): Argument Error from execute',
       );
     });
@@ -1007,7 +1007,7 @@ void main() {
       final update = event.result as A2ATask;
       expect(update.contextId, '100');
       expect(update.id, '1');
-      expect(update.status?.state, A2ATaskState.completed);
+      expect(update.status.state, A2ATaskState.completed);
       expect(update.history, isNotNull);
       expect(update.history?.length, 1);
       expect(update.history?.first.messageId, '100');

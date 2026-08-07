@@ -61,7 +61,7 @@ class A2AResultManager {
         return;
       }
       if (_currentTask != null && _currentTask?.id == event.taskId) {
-        _currentTask?.status = event.status;
+        _currentTask?.status = event.status!;
         _currentTask?.history ??= [];
         if (event.status?.message != null) {
           if (_currentTask?.history?.contains(event.status?.message) == false) {
@@ -75,7 +75,7 @@ class A2AResultManager {
         final loaded = await _taskStore.load(event.taskId);
         if (loaded != null) {
           _currentTask = loaded;
-          _currentTask?.status = event.status;
+          _currentTask?.status = event.status!;
           _currentTask?.history ??= [];
           if (event.status?.message != null) {
             if (_currentTask?.history?.contains(event.status?.message) ==

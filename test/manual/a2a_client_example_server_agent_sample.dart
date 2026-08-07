@@ -52,7 +52,7 @@ Future<int> main() async {
         agentBaseUrl: 'http://localhost:41242',
       );
       expect(testClient!.agentBaseUrl, 'http://localhost:41242');
-      expect(await testClient!.serviceEndpoint, 'http://localhost:41242');
+      expect(await testClient!.serviceEndpoint, 'http://localhost:41242/');
       expect(agentCard.capabilities.streaming, isTrue);
       expect(agentCard.defaultInputModes, ['text/plain']);
       expect(agentCard.defaultOutputModes, ['text/plain']);
@@ -128,14 +128,14 @@ Future<int> main() async {
         expect(result.history, isNotNull);
         expect(result.history?.length, 3);
         expect(result.history?.first.messageId, '10');
-        expect(result.history?[1].parts?.length, 1);
-        expect(result.history?.last.parts?.isEmpty, isTrue);
+        expect(result.history?[1].parts.length, 1);
+        expect(result.history?.last.parts.isEmpty, isTrue);
         final status = result.status;
         expect(status, isNotNull);
-        expect(status?.timestamp, isNotEmpty);
-        expect(status?.state, A2ATaskState.completed);
-        expect(status?.message?.messageId.isNotEmpty, isTrue);
-        expect(status?.message?.role, 'agent');
+        expect(status.timestamp, isNotEmpty);
+        expect(status.state, A2ATaskState.completed);
+        expect(status.message?.messageId.isNotEmpty, isTrue);
+        expect(status.message?.role, 'agent');
       } catch (e) {
         rethrow;
       }
@@ -172,7 +172,7 @@ Future<int> main() async {
       final firstEvent =
           ((events.first as A2ASendStreamMessageSuccessResponse).result)
               as A2ATask;
-      expect(firstEvent.status?.state, A2ATaskState.submitted);
+      expect(firstEvent.status.state, A2ATaskState.submitted);
       expect(
         (events[1] as A2ASendStreamMessageSuccessResponse).result
             is A2ATaskStatusUpdateEvent,

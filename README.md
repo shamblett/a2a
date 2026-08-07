@@ -127,12 +127,12 @@ Sample agent implementations for Dart can be found [here](https://github.com/sha
 
 ## Protocol implementation notes
 
-This SDK implements the A2A Protocol Specification found [here](https://a2a-protocol.org/latest/specification/)
+This SDK implements the A2A Protocol Specification V0.3 found [here](https://a2a-protocol.org/v0.3.0/specification)
 with the following notes :-
 
 * Only the JSON-RPC 2.0 transport is currently supported.
 * Authentication/Authorisation as outlined in section 4 of the specification(excepting HTTPS support) is not supported. 
-_The JS SDK which this package was ported from did not contain this_
+* Authenticated Extended Agent Card processing is not supported.
 
 ## Server implementation notes
 

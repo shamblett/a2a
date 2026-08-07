@@ -15,7 +15,7 @@ import 'package:a2a/a2a.dart';
 ///
 /// This is a runnable example of an A2A Agent -
 ///
-/// dart examples/a2a_server_agent.dart
+/// dart examples/a2a_server_agent_sample.dart
 ///
 /// Starts the agent server on http://localhost:41242
 ///
@@ -190,11 +190,11 @@ class MovieAgentExecutor implements A2AAgentExecutor {
 ///
 
 /// Define a middleware function to log incoming requests
-final mwLogging = ((Request req, Response res, NextFunction next) {
+final mwLogging = ((Context c, Function next) async {
   print(
-    '${Colorize('📝 Request: ${req.method} ${req.uri} from ${req.hostname}').blue()}',
+    '${Colorize('📝 Request: ${c.req.method} ${c.req.url} from ${c.req.ip}').blue()}',
   );
-  next();
+  return next();
 });
 
 void main() {

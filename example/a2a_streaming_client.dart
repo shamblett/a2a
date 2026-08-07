@@ -103,7 +103,7 @@ Future<int> main() async {
 
       /// Check if the task has completed
       A2AArtifact artifact;
-      if (result.status?.state == A2ATaskState.completed) {
+      if (result.status.state == A2ATaskState.completed) {
         print('${Colorize('Task has completed')..blue()}');
 
         /// Get the artifacts
@@ -134,7 +134,7 @@ Future<int> main() async {
       } else {
         print('');
         print(
-          'Task is not yet complete, state is ${Colorize('${result.status?.state}').green()}',
+          'Task is not yet complete, state is ${Colorize('${result.status.state}').green()}',
         );
         continue;
       }
@@ -143,7 +143,7 @@ Future<int> main() async {
       final result = response.result as A2AMessage;
 
       /// Get the part, we know its a text part
-      final part = result.parts?.first as A2ATextPart;
+      final part = result.parts.first as A2ATextPart;
 
       /// Get the textual response
       final text = part.text;

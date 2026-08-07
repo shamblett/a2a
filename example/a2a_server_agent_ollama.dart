@@ -131,7 +131,7 @@ class LLMComparisonExecutor implements A2AAgentExecutor {
     final textPart = ec.createTextPart('Querying the LLM\'s');
     ec.publishWorkingTaskUpdate(part: [textPart]);
 
-    String prompt = (ec.userMessage.parts?.first as A2ATextPart).text;
+    String prompt = (ec.userMessage.parts.first as A2ATextPart).text;
 
     final messages = [ChatMessage.user(prompt)];
 
@@ -204,11 +204,11 @@ class LLMComparisonExecutor implements A2AAgentExecutor {
 ///
 
 /// Define a middleware function to log incoming requests
-final mwLogging = ((Request req, Response res, NextFunction next) {
+final mwLogging = ((Context c, Function next) async {
   print(
-    '${Colorize('📝 Request: ${req.method} ${req.uri} from ${req.hostname}').blue()}',
+    '${Colorize('📝 Request: ${c.req.method} ${c.req.url} from ${c.req.ip}').blue()}',
   );
-  next();
+  return next();
 });
 
 void main() {

@@ -24,105 +24,97 @@ class A2AExpressApp {
     List<Middleware>? middlewares,
     String agentCardPath = A2AConstants.agentCardPath,
   }) {
-    final router = Router();
-    if (middlewares != null) {
-      for (final middleware in middlewares) {
-        router.use(middleware);
-      }
-    }
-
-    router.get(agentCardPath, (Request req, Response res) async {
-      try {
-        // getAgentCard is on A2ARequestHandler, which DefaultRequestHandler implements
-        final agentCard = await _requestHandler.agentCard;
-        res.json(agentCard.toJson());
-      } catch (e) {
-        print(
-          '${Colorize('A2AExpressApp::setupRoutes - Error fetching agent card:').red()} $e',
-        );
-        res.status(500).json({'error': 'Failed to retrieve agent card'});
-      }
-    });
-
-    router.post('/', (Request req, Response res) async {
-      final body = await req.body;
-      // Brute-force check for streaming method to work around parsing bugs.
-      final bodyAsString = (body is String) ? body : json.encode(body);
-      if (bodyAsString.contains('"method":"message/stream"') ||
-          bodyAsString.contains('"method":"tasks/resubscribe"')) {
-        res.set('Content-Type', 'text/event-stream');
-        res.set('Cache-Control', 'no-cache');
-        res.set('Connection', 'keep-alive');
+    app.route(baseUrl, (router) {
+      if (middlewares != null) {
+        for (final middleware in middlewares) {
+          router.use(middleware);
+        }
       }
 
-      try {
-        final rpcResponseOrStream = await _jsonRpcTransportHandler.handle(body);
+      router.get(agentCardPath, [], (Context c) async {
+        try {
+          // getAgentCard is on A2ARequestHandler, which DefaultRequestHandler implements
+          final agentCard = await _requestHandler.agentCard;
+          return c.json(agentCard.toJson());
+        } catch (e) {
+          print(
+            '${Colorize('A2AExpressApp::setupRoutes - Error fetching agent card:').red()} $e',
+          );
+          return c.status(500).json({'error': 'Failed to retrieve agent card'});
+        }
+      });
 
-        if (rpcResponseOrStream is Function) {
-          // The handler returned a stream generator.
-          try {
-            await for (final event in rpcResponseOrStream()) {
-              final jsonData = event.toJson();
-              if (A2AServerDebug.isOn) {
-                final jsonString = A2AServerDebug.printJson(jsonData);
+      router.post('/', [], (Context c) async {
+        dynamic body;
+        try {
+          final bodyAsString = await c.req.text();
+          body = bodyAsString.isNotEmpty ? json.decode(bodyAsString) : {};
+        } catch (_) {
+          body = await c.req.json();
+        }
+
+        try {
+          final rpcResponseOrStream = await _jsonRpcTransportHandler.handle(
+            body,
+          );
+
+          if (rpcResponseOrStream is Function) {
+            // The handler returned a stream generator.
+            return streamSSE(c, (sse) async {
+              try {
+                await for (final event in rpcResponseOrStream()) {
+                  final jsonData = event.toJson();
+                  if (A2AServerDebug.isOn) {
+                    final jsonString = A2AServerDebug.printJson(jsonData);
+                    print(
+                      '${Colorize('A2AExpressApp::setupRoutes - Sending SSE event $jsonString').green()}',
+                    );
+                  }
+                  await sse.writeSSE(SseEvent(data: json.encode(jsonData)));
+                }
+              } catch (e) {
                 print(
-                  '${Colorize('A2AExpressApp::setupRoutes - Sending SSE event $jsonString').green()}',
+                  '${Colorize('A2AExpressApp::setupRoutes - Error during SSE streaming').red()}, '
+                  '$e',
                 );
               }
-              res.write('data: ${json.encode(jsonData)}\n\n');
+            });
+          } else {
+            // The handler returned a single response.
+            final responseMap = (rpcResponseOrStream as dynamic).toJson();
+            if (A2AServerDebug.isOn) {
+              final jsonString = A2AServerDebug.printJson(responseMap);
+              print(
+                '${Colorize('A2AExpressApp::setupRoutes - Sending normal response $jsonString').green()}',
+              );
             }
-          } catch (e) {
-            print(
-              '${Colorize('A2AExpressApp::setupRoutes - Error during SSE streaming').red()}, '
-              '$e',
-            );
-          } finally {
-            if (!res.finished) {
-              res.end();
-            }
+            return c.status(200).json(responseMap);
           }
-        } else {
-          // The handler returned a single response.
-          final responseMap = (rpcResponseOrStream as dynamic).toJson();
-          if (A2AServerDebug.isOn) {
-            final jsonString = A2AServerDebug.printJson(responseMap);
-            print(
-              '${Colorize('A2AExpressApp::setupRoutes - Sending normal response $jsonString').green()}',
-            );
-          }
-          res.status(200).json(responseMap);
+        } on A2APushNotificationNotSupportedError catch (e) {
+          print(
+            '${Colorize('A2AExpressApp::setupRoutes - Push notifications are not supported').yellow()}',
+          );
+          final errorResponse = A2AJSONRPCErrorResponse()..error = e;
+          return c.status(500).json(errorResponse.toJson());
+        } on A2ATaskNotFoundError catch (e) {
+          final errorResponse = A2AJSONRPCErrorResponse()..error = e;
+          return c.status(500).json(errorResponse.toJson());
+        } catch (e) {
+          // General error
+          print(
+            '${Colorize('A2AExpressApp::setupRoutes - Unhandled error in A2AExpressApp POST handler:').red()}, '
+            '$e',
+          );
+          final error = e is A2AServerError
+              ? e
+              : A2AServerError.internalError('Streaming error.', null);
+          final errorResponse = A2AJSONRPCErrorResponse()
+            ..error = error as A2AError;
+          return c.status(500).json(errorResponse.toJson());
         }
-      } on A2APushNotificationNotSupportedError catch (e) {
-        print(
-          '${Colorize('A2AExpressApp::setupRoutes - Push notifications are not supported').yellow()}',
-        );
-        final errorResponse = A2AJSONRPCErrorResponse()..error = e;
-        if (!res.finished) {
-          res.status(500).json(errorResponse.toJson());
-        }
-      } on A2ATaskNotFoundError catch (e) {
-        final errorResponse = A2AJSONRPCErrorResponse()..error = e;
-        if (!res.finished) {
-          res.status(500).json(errorResponse.toJson());
-        }
-      } catch (e) {
-        // General error
-        print(
-          '${Colorize('A2AExpressApp::setupRoutes - Unhandled error in A2AExpressApp POST handler:').red()}, '
-          '$e',
-        );
-        final error = e is A2AServerError
-            ? e
-            : A2AServerError.internalError('Streaming error.', null);
-        final errorResponse = A2AJSONRPCErrorResponse()
-          ..error = error as A2AError;
-        if (!res.finished) {
-          res.status(500).json(errorResponse.toJson());
-        }
-      }
+      });
     });
 
-    app.use(baseUrl, router);
     return app;
   }
 }

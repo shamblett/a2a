@@ -58,7 +58,7 @@ class A2AServerError {
 
   static A2ATaskNotCancelableError taskNotCancelable(String taskId) =>
       A2ATaskNotCancelableError()
-        ..message = 'Task not cancelable: $taskId'
+        ..message = 'Task cannot be canceled: $taskId'
         ..data = {}
         ..data!['taskId'] = taskId;
 
@@ -68,12 +68,12 @@ class A2AServerError {
 
   static A2AUnsupportedOperationError unsupportedOperation(String operation) =>
       A2AUnsupportedOperationError()
-        ..message = 'Unsupported operation: $operation';
+        ..message = 'This operation is not supported: $operation';
 
   static A2AAuthenticatedExtendedCardNotConfiguredError
   authenticatedExtendedCardNotConfigured() =>
       A2AAuthenticatedExtendedCardNotConfiguredError()
-        ..message = 'Extended card not configured.';
+        ..message = 'Authenticated Extended Card not configured';
 
   /// Formats the error into a standard JSON-RPC error object structure.
   A2AJSONRPCError toJSONRPCError() {

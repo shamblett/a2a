@@ -5,7 +5,7 @@
 * Copyright :  S.Hamblett
 */
 
-part of '../../a2a_types.dart';
+part of '../../../a2a_types.dart';
 
 /// JSON-RPC response model for the 'message/send' method.
 class A2ASendStreamMessageResponse {

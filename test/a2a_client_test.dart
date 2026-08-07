@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:a2a/a2a.dart';
 import 'package:shelf/shelf.dart' as shelf;
@@ -7,9 +8,10 @@ import 'package:test/test.dart';
 
 // Client tests
 void main() {
-  group('A2AClient', () {
+  group('A2AClient - SSE parsing', () {
     late A2AClient client;
     late Uri serverUrl;
+    late HttpServer server;
 
     setUp(() async {
       final handler = const shelf.Pipeline().addHandler((
@@ -19,7 +21,7 @@ void main() {
           return shelf.Response.ok(
             json.encode({
               'protocolVersion': '0.3.0',
-              'name': 'Test Agent',
+              'name': 'Test Agent Streaming',
               'description': 'A test agent',
               'version': '1.0.0',
               'url': serverUrl.toString(),
@@ -58,9 +60,13 @@ void main() {
         return shelf.Response.notFound('Not Found');
       });
 
-      final server = await io.serve(handler, 'localhost', 0);
+      server = await io.serve(handler, 'localhost', 0);
       serverUrl = Uri.parse('http://${server.address.host}:${server.port}');
       client = A2AClient(serverUrl.toString(), agentCardBackgroundFetch: false);
+    });
+
+    tearDown(() async {
+      await server.close(force: true);
     });
 
     test(
@@ -80,5 +86,192 @@ void main() {
         expect(results[1].isError, isFalse);
       },
     );
+  });
+
+  group('A2AClient - Agent Card Validation', () {
+    late A2AClient client;
+    late Uri serverUrl;
+    late HttpServer server;
+    final agentCards = List<String>.filled(6, '');
+    var agentCardIndex = 0;
+
+    // Main url not present
+    agentCards[0] = json.encode({
+      'protocolVersion': '0.3.0',
+      'name': 'Test Agent Validation 0',
+      'description': 'An agent card validation test agent',
+      'version': '1.0.0',
+      'capabilities': {'streaming': true},
+      'defaultInputModes': [],
+      'defaultOutputModes': [],
+      'skills': [],
+      'preferredTransport': 'JSONRPC',
+    });
+
+    // Main url empty
+    agentCards[1] = json.encode({
+      'protocolVersion': '0.3.0',
+      'name': 'Test Agent Validation 1',
+      'description': 'An agent card validation test agent',
+      'version': '1.0.0',
+      'url': '',
+      'capabilities': {'streaming': true},
+      'defaultInputModes': [],
+      'defaultOutputModes': [],
+      'skills': [],
+      'preferredTransport': 'JSONRPC',
+    });
+
+    // Preferred transport not JSONRPC
+    agentCards[2] = json.encode({
+      'protocolVersion': '0.3.0',
+      'name': 'Test Agent Validation 2',
+      'description': 'An agent card validation test agent',
+      'version': '1.0.0',
+      'url': 'http://localhost',
+      'capabilities': {'streaming': true},
+      'defaultInputModes': [],
+      'defaultOutputModes': [],
+      'skills': [],
+      'preferredTransport': 'GRPC',
+    });
+
+    // Preferred transport not JSONRPC, no viable additional interface
+    agentCards[3] = json.encode({
+      'protocolVersion': '0.3.0',
+      'name': 'Test Agent Validation 3',
+      'description': 'An agent card validation test agent',
+      'version': '1.0.0',
+      'url': 'http://localhost',
+      'capabilities': {'streaming': true},
+      'defaultInputModes': [],
+      'defaultOutputModes': [],
+      'skills': [],
+      'preferredTransport': 'GRPC',
+      'additionalInterfaces': [
+        {'url': 'http://localhost', 'transport': 'GRPC'},
+      ],
+    });
+
+    // Preferred transport not JSONRPC, additional interface url has more than one transport
+    agentCards[4] = json.encode({
+      'protocolVersion': '0.3.0',
+      'name': 'Test Agent Validation 4',
+      'description': 'An agent card validation test agent',
+      'version': '1.0.0',
+      'url': 'http://localhost',
+      'capabilities': {'streaming': true},
+      'defaultInputModes': [],
+      'defaultOutputModes': [],
+      'skills': [],
+      'preferredTransport': 'GRPC',
+      'additionalInterfaces': [
+        {'url': 'http://localhost', 'transport': 'GRPC'},
+        {'url': 'http://localhost', 'transport': 'GRPC'},
+      ],
+    });
+
+    // Preferred transport not JSONRPC, viable additional interface
+    agentCards[5] = json.encode({
+      'protocolVersion': '0.3.0',
+      'name': 'Test Agent Validation 5',
+      'description': 'An agent card validation test agent',
+      'version': '1.0.0',
+      'url': 'http://localhost',
+      'capabilities': {'streaming': true},
+      'defaultInputModes': [],
+      'defaultOutputModes': [],
+      'skills': [],
+      'preferredTransport': 'GRPC',
+      'additionalInterfaces': [
+        {'url': 'http://localhost1', 'transport': 'JSONRPC'},
+      ],
+    });
+
+    setUp(() async {
+      final handler = const shelf.Pipeline().addHandler((
+        shelf.Request request,
+      ) {
+        if (request.url.path.endsWith('agent-card.json')) {
+          return shelf.Response.ok(
+            agentCards[agentCardIndex],
+            headers: {'Content-Type': 'application/json'},
+          );
+        }
+        return shelf.Response.notFound('Not Found');
+      });
+      server = await io.serve(handler, 'localhost', 0);
+      serverUrl = Uri.parse('http://${server.address.host}:${server.port}');
+      client = A2AClient(serverUrl.toString(), agentCardBackgroundFetch: false);
+    });
+
+    tearDown(() async {
+      await server.close(force: true);
+    });
+
+    test('No url', () async {
+      try {
+        await client.getAgentCard();
+      } catch (e) {
+        expect(
+          e.toString(),
+          'type \'Null\' is not a subtype of type \'String\' in type cast',
+        );
+      }
+      agentCardIndex = 1;
+    });
+    test('Url empty', () async {
+      try {
+        await client.getAgentCard();
+      } catch (e) {
+        expect(
+          e.toString(),
+          'Exception: fetchAndCacheAgentCard:: Fetched Agent Card does not contain a valid "url" for the service endpoint.',
+        );
+      }
+      agentCardIndex = 2;
+    });
+    test('Preferred transport not JSONRPC', () async {
+      try {
+        await client.getAgentCard();
+      } catch (e) {
+        expect(
+          e.toString(),
+          'Exception: fetchAndCacheAgentCard:: No interfaces found that support the JSONRPC transport',
+        );
+      }
+      agentCardIndex = 3;
+    });
+    test('No additional interfaces support JSONRPC', () async {
+      try {
+        await client.getAgentCard();
+      } catch (e) {
+        expect(
+          e.toString(),
+          'Exception: fetchAndCacheAgentCard:: No interfaces found that support the JSONRPC transport',
+        );
+      }
+      agentCardIndex = 4;
+    });
+    test(
+      'No additional interface url supports more than one transport',
+      () async {
+        try {
+          await client.getAgentCard();
+        } catch (e) {
+          expect(
+            e.toString(),
+            'Exception: fetchAndCacheAgentCard:: URL "http://localhost" is mapped to more than one transport.',
+          );
+        }
+        agentCardIndex = 5;
+      },
+    );
+    test('Additional interface supports JSONRPC', () async {
+      final agentCard = await client.getAgentCard();
+      expect(agentCard.preferredTransport, A2ATransportProtocol.jsonRpc);
+      expect(agentCard.url, 'http://localhost1');
+      expect(agentCard.name, 'Test Agent Validation 5');
+    });
   });
 }

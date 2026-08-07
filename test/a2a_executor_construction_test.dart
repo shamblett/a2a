@@ -121,7 +121,7 @@ void main() {
         final update = event as A2ATask;
         expect(update.contextId, contextId);
         expect(update.id, taskId);
-        expect(update.status?.state, A2ATaskState.submitted);
+        expect(update.status.state, A2ATaskState.submitted);
       }));
       ec.publishInitialTaskUpdate();
     });
@@ -133,7 +133,7 @@ void main() {
         final update = event as A2ATask;
         expect(update.contextId, contextId);
         expect(update.id, taskId);
-        expect(update.status?.state, A2ATaskState.unknown);
+        expect(update.status.state, A2ATaskState.unknown);
       }));
       ec.initialTaskUpdate = testTask;
       ec.publishInitialTaskUpdate();
@@ -404,7 +404,7 @@ void main() {
       expect(message.metadata, {'First': 1});
       expect(message.extensions, ['An extension']);
       expect(message.messageId, 'Message id');
-      expect((message.parts?.first as A2ATextPart).text, 'The text');
+      expect((message.parts.first as A2ATextPart).text, 'The text');
       expect(message.role, 'agent');
     });
     test('Has Task been cancelled  - cancelled', () {
