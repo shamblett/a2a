@@ -1,3 +1,6 @@
+# 4.3.1
+- [Issue 78](https://github.com/shamblett/a2a/issues/78)
+
 # 4.3.0
 - [Issue 74](https://github.com/shamblett/a2a/issues/74)
 
